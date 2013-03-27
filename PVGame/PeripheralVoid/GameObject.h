@@ -31,5 +31,6 @@ class GameObject
 		SurfaceMaterial surfaceMaterial;
 		btRigidBody* rigidBody;
 		XMFLOAT4X4 worldMatrix;
+		XMFLOAT3 localScale;
 };
 

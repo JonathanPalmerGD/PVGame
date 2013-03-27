@@ -104,8 +104,8 @@ bool PVGame::LoadXML()
 		{
 			const btRigidBody body = ptr->second;
 			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix, body);
-			//wallObj->translate(atof(col), 1.5f, atof(row));
-			//wallObj->scale(3.0,3.0,3.0);
+			wallObj->translate(atof(col), 1.5f, atof(row));
+			wallObj->scale(1.0,3.0,1.0);
 			gameObjects.push_back(wallObj);
 		}
 		else
