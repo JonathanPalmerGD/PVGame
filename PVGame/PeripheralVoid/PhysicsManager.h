@@ -33,5 +33,6 @@ public:
 	btRigidBody* createPlane(float x, float y, float z);
 	void addRigidBodyToMap(string handle, MeshData meshData, float mass = 0.0);
 	void addRigidBodyToWorld(btRigidBody* rigidBody);
+	void removeRigidBodyFromWorld(btRigidBody* rigidBody);
 };
 

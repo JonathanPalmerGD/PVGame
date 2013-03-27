@@ -7,8 +7,8 @@ class GameObject
 {
 	public:
 		GameObject(void);
-		GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldMatrix);
-		GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldMatrix, const btRigidBody& rB);
+		GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan);
+		GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldMatrix, const btRigidBody& rB, PhysicsManager* physicsMan);
 
 		void translate(float x, float y, float z);
 		void scale(float x, float y, float z);
@@ -17,7 +17,7 @@ class GameObject
 		void SetMeshKey(string aKey);
 		void SetSurfaceMaterial(SurfaceMaterial aMaterial);
 		void SetWorldMatrix(XMMATRIX* aMatrix);
-		void SetRigidBody(btRigidBody* rigidBody);
+		void SetRigidBody(btRigidBody* rBody);
 
 		string GetMeshKey();
 		SurfaceMaterial GetSurfaceMaterial();
@@ -32,5 +32,6 @@ class GameObject
 		btRigidBody* rigidBody;
 		XMFLOAT4X4 worldMatrix;
 		XMFLOAT3 localScale;
+		PhysicsManager* physicsMan; //Don't use for anything but adding to and deleting the rigid body from the world.
 };
 

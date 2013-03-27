@@ -53,11 +53,10 @@ btRigidBody* PhysicsManager::createPlane(float x, float y, float z)
 	btTransform t;
     t.setIdentity();
     t.setOrigin(btVector3(x,y,z));
-	btStaticPlaneShape plane(btVector3(0,1,0),0);
+	btCollisionShape* plane = new btStaticPlaneShape(btVector3(0,1,0),0);
     btMotionState* motion=new btDefaultMotionState(t);
-    btRigidBody::btRigidBodyConstructionInfo info(0.0,motion, &plane); //0 Mass means that this is a static object
+    btRigidBody::btRigidBodyConstructionInfo info(0.0,motion, plane); //0 Mass means that this is a static object
     btRigidBody* body=new btRigidBody(info);
-    world->addRigidBody(body);
 	return body;
 }
 
@@ -105,4 +104,13 @@ void PhysicsManager::addRigidBodyToMap(string handle, MeshData meshData, float m
 void PhysicsManager::addRigidBodyToWorld(btRigidBody* rigidBody)
 {
 	world->addRigidBody(rigidBody);
+}
+
+/* removeRigidBodyFromWorld()
+ *
+ * removes a rigid body from the world
+ */
+void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
+{
+	world->removeRigidBody(rigidBody);
 }

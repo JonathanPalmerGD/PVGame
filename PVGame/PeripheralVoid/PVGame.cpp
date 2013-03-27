@@ -10,7 +10,6 @@ PVGame::PVGame(HINSTANCE hInstance)
 	player = new Player();
 
 	gameState = PLAYING;
-	physicsMan = new PhysicsManager();
 }
 
 
@@ -33,12 +32,10 @@ bool PVGame::Init()
 	if (!D3DApp::Init())
 		return false;
 
+	physicsMan = new PhysicsManager();
+
 	renderMan->BuildBuffers();
 
-	BuildFX();
-	BuildVertexLayout();
-	BuildGeometryBuffers();
-	
 	//Cook Rigid Bodies from the meshes
 	map<string, MeshData>::const_iterator itr;
 	for(itr = MeshMaps::MESH_MAPS.begin(); itr != MeshMaps::MESH_MAPS.end(); itr++)
@@ -46,6 +43,10 @@ bool PVGame::Init()
 		physicsMan->addRigidBodyToMap((*itr).first, (*itr).second, 0.0);
 	}
 
+	BuildFX();
+	BuildVertexLayout();
+	BuildGeometryBuffers();
+	
 	LoadContent();
 
 	mPhi = 1.5f*MathHelper::Pi;
@@ -103,14 +104,14 @@ bool PVGame::LoadXML()
 		if(ptr != physicsMan->RIGID_BODIES.end())
 		{
 			const btRigidBody body = ptr->second;
-			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix, body);
+			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix, body, physicsMan);
 			wallObj->translate(atof(col), 1.5f, atof(row));
 			wallObj->scale(1.0,3.0,1.0);
 			gameObjects.push_back(wallObj);
 		}
 		else
 		{
-			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix);
+			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix, physicsMan);
 			gameObjects.push_back(wallObj);
 		}
 
@@ -243,10 +244,16 @@ void PVGame::BuildGeometryBuffers()
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	GameObject* aGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)));
+	GameObject* aGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
+	aGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
+	aGameObject->scale(20.0, 1.0, 20.0);
 	gameObjects.push_back(aGameObject);
 
-	GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)));
+	GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);
+	bGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
+	bGameObject->scale(20.0f, 1.0f, 20.0f);
+	bGameObject->translate(0.0f, 3.0f, 0.0f);
+	bGameObject->rotate(1, 0, 0, 0);wwww
 	gameObjects.push_back(bGameObject);
 }
  
