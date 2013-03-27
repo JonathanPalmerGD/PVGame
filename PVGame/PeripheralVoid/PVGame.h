@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PhysicsManager.h"
+//#include "PhysicsManager.h"
 #include "Common\d3dApp.h"
 #include "Common\d3dx11effect.h"
 #include "Common\MathHelper.h"

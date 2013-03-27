@@ -121,9 +121,9 @@ struct MeshMaps
 		Vertex planeVertices[] =
 		{
 			// Normals derived by hand - will want to be more efficient later.
-			{ XMFLOAT3(-0.5, -0.0, 0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)	},	//-1, 1
-			{ XMFLOAT3(0.5, -0.0, 0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)    },	//1, 1
-			{ XMFLOAT3(0.5, -0.0, -0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)	},	//1, -1
+			{ XMFLOAT3(-0.5, -0.0, +0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)	},	//-1, 1
+			{ XMFLOAT3(+0.5, -0.0, +0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)    },	//1, 1
+			{ XMFLOAT3(+0.5, -0.0, -0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)	},	//1, -1
 			{ XMFLOAT3(-0.5, -0.0, -0.5), XMFLOAT3(0.0f, 1.0f, 0.0f)	}	//-1,-1
 		};
 		m["Plane"].vertices.assign(planeVertices, planeVertices + 4);

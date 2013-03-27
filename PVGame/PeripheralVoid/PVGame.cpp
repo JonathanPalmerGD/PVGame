@@ -38,6 +38,14 @@ bool PVGame::Init()
 	BuildFX();
 	BuildVertexLayout();
 	BuildGeometryBuffers();
+	
+	//Cook Rigid Bodies from the meshes
+	map<string, MeshData>::const_iterator itr;
+	for(itr = MeshMaps::MESH_MAPS.begin(); itr != MeshMaps::MESH_MAPS.end(); itr++)
+	{
+		physicsMan->addRigidBodyToMap((*itr).first, (*itr).second, 0.0);
+	}
+
 	LoadContent();
 
 	mPhi = 1.5f*MathHelper::Pi;
@@ -89,8 +97,22 @@ bool PVGame::LoadXML()
 		matrix *= XMMatrixScaling(1.0f, 3.0f, 1.0f);
 		matrix *= XMMatrixTranslation(atof(col), 1.5f, atof(row));
 
-		GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix);
-		gameObjects.push_back(wallObj);
+		//FUCKING RIDICULOUS STUPID AS SHIT CODE, need to improve some how
+		//Due to error C2719, a known bug in Visual Studio dealing with stl containers
+		map<string, btRigidBody>::iterator ptr = physicsMan->RIGID_BODIES.find("Cube");
+		if(ptr != physicsMan->RIGID_BODIES.end())
+		{
+			const btRigidBody body = ptr->second;
+			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix, body);
+			//wallObj->translate(atof(col), 1.5f, atof(row));
+			//wallObj->scale(3.0,3.0,3.0);
+			gameObjects.push_back(wallObj);
+		}
+		else
+		{
+			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix);
+			gameObjects.push_back(wallObj);
+		}
 
 		// Debug output
 		OutputDebugString(TEXT("\nwall row: "));
@@ -221,8 +243,11 @@ void PVGame::BuildGeometryBuffers()
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	GameObject* aGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, -1.0f, 0.0f)));
+	GameObject* aGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)));
 	gameObjects.push_back(aGameObject);
+
+	GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)));
+	gameObjects.push_back(bGameObject);
 }
  
 void PVGame::BuildFX()

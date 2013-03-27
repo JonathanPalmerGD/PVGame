@@ -3,7 +3,7 @@
 Player::Player(void)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
-	XMVECTOR aPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
 	XMVECTOR aUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR aFwd = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	XMVECTOR aRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
