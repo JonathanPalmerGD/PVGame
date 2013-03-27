@@ -177,13 +177,18 @@ class RenderManager
 			D3DX11_TECHNIQUE_DESC techDesc;
 			mTech->GetDesc( &techDesc );
 
+			string prevKey = "";
 			for (int i = 0; i < gameObjects.size(); i++)
 			{
 				for(UINT p = 0; p < techDesc.Passes; ++p)
 				{
 					string currentKey = gameObjects[i]->GetMeshKey();
-					md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs[currentKey].vertexBuffer, &stride, &offset);
-					md3dImmediateContext->IASetIndexBuffer(bufferPairs[currentKey].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+					if (prevKey.compare(currentKey) != 0)
+					{
+						md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs[currentKey].vertexBuffer, &stride, &offset);
+						md3dImmediateContext->IASetIndexBuffer(bufferPairs[currentKey].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+						prevKey = currentKey;
+					}
 
 					D3D11_BUFFER_DESC buffDesc;
 					bufferPairs[currentKey].vertexBuffer->GetDesc(&buffDesc);
