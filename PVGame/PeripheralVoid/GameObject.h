@@ -19,10 +19,10 @@ class GameObject
 		void SetWorldMatrix(XMMATRIX* aMatrix);
 		void SetRigidBody(btRigidBody* rBody);
 
-		string GetMeshKey();
-		SurfaceMaterial GetSurfaceMaterial();
+		string GetMeshKey() const;
+		SurfaceMaterial GetSurfaceMaterial() const;
 		XMFLOAT4X4 GetWorldMatrix();
-		btRigidBody* getRigidBody();
+		btRigidBody* getRigidBody() const;
 
 		virtual ~GameObject(void);
 
@@ -35,3 +35,11 @@ class GameObject
 		PhysicsManager* physicsMan; //Don't use for anything but adding to and deleting the rigid body from the world.
 };
 
+struct GameObjectComparer
+{
+    inline bool operator() (const GameObject* objectA, const GameObject* objectB)
+    {
+		// Returns true if A's key is 'less than' B's key.
+        return (objectA->GetMeshKey().compare(objectB->GetMeshKey()) < 0);
+    }
+};

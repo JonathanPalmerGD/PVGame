@@ -8,7 +8,7 @@ PhysicsManager::PhysicsManager(void)
     broadphase      = new btDbvtBroadphase();
     solver          = new btSequentialImpulseConstraintSolver();
     world           = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
-    world->setGravity(btVector3(0,-9.81,0));
+    world->setGravity(btVector3(0.0f,-9.81f,0.0f));
 
 	pStepSize = 1.0f / 60.0f; //Update at 60 fps
 	pAccumulator = 0.0f;
@@ -81,7 +81,7 @@ void PhysicsManager::addRigidBodyToMap(string handle, MeshData meshData, float m
 	//OH GOD WHY
 	//Convert a mesh from our Vertex format to Bullet's btVector3 format
 	//This is what makes this method slow
-	for(int i = 0; i < meshData.indices.size(); i+=3)
+	for(UINT i = 0; i < meshData.indices.size(); i+=3)
 	{
 		 tMesh->addTriangle(btVector3(meshData.vertices[meshData.indices[i    ]].Pos.x, meshData.vertices[meshData.indices[i    ]].Pos.y, meshData.vertices[meshData.indices[i    ]].Pos.z), 
 							btVector3(meshData.vertices[meshData.indices[i + 1]].Pos.x, meshData.vertices[meshData.indices[i + 1]].Pos.y, meshData.vertices[meshData.indices[i + 1]].Pos.z),

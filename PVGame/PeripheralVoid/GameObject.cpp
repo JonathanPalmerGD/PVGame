@@ -59,9 +59,9 @@ void GameObject::SetMeshKey(string aKey) { meshKey = aKey; }
 void GameObject::SetSurfaceMaterial(SurfaceMaterial aMaterial) { surfaceMaterial = aMaterial; }
 void GameObject::SetWorldMatrix(XMMATRIX* aMatrix) { XMStoreFloat4x4(&worldMatrix, *aMatrix); }
 
-string GameObject::GetMeshKey() { return meshKey; }
-SurfaceMaterial GameObject::GetSurfaceMaterial() { return surfaceMaterial; }
-btRigidBody* GameObject::getRigidBody() { return rigidBody; }
+string GameObject::GetMeshKey() const { return meshKey; }
+SurfaceMaterial GameObject::GetSurfaceMaterial() const { return surfaceMaterial; }
+btRigidBody* GameObject::getRigidBody() const { return rigidBody; }
 
 void GameObject::SetRigidBody(btRigidBody* rBody)
 {
@@ -92,6 +92,7 @@ XMFLOAT4X4 GameObject::GetWorldMatrix()
 }
 GameObject::~GameObject(void)
 {
-	physicsMan->removeRigidBodyFromWorld(rigidBody);
-//	delete rigidBody;
+	if (rigidBody)
+		physicsMan->removeRigidBodyFromWorld(rigidBody);
+	//delete rigidBody;
 }

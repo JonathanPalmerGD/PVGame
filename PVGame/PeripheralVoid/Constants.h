@@ -4,6 +4,7 @@
 #include <vector>
 #include "Common\d3dUtil.h"
 #include "Common\LightHelper.h"
+#include "Common\GeometryGenerator.h"
 
 
 using std::vector;
@@ -12,7 +13,7 @@ using std::string;
 
 #define NUM_LEVELS 1
 
-#define USINGVLD 0
+#define USINGVLD 1
 #if USINGVLD 
 #include <vld.h>
 #endif
@@ -48,42 +49,18 @@ struct MeshMaps
     static map<string, MeshData> create_map()
     {
 		map<string, MeshData> m;
-		// Statically defining first triangle to just get it to render.
-		XMFLOAT3 a (2.0f, 1.0f, 10.0f); // Length = 105.
-		XMFLOAT3 b (1.0f, 0.0f, 10.0f); // Length = 101.
-		XMFLOAT3 c (0.0f, 1.0f, 10.0f); // Length = 101.
-
-		XMFLOAT3 ua (a.x / 105.0f, a.y / 105.0f, a.z / 105.0f);
-		XMFLOAT3 ub (b.x / 101.0f, b.y / 101.0f, b.z / 101.0f);
-		XMFLOAT3 uc (c.x / 101.0f, c.y / 101.0f, c.z / 101.0f);
-
-		Vertex triangleVertices[] =
-		{
-			// First triangle
-			{ a, ua },
-			{ b, ub },
-			{ c, uc }
-		};
-		for (int i = 0; i < 3; i++)
-		{
-			m["Triangle"].vertices.push_back(triangleVertices[i]);
-			m["Triangle"].indices.push_back(i);
-		}
-
-		m["Triangle"].bufferKey = "Triangle";
-
 		// Create cube.
 		Vertex vertices[] =
 		{
 			// Normals derived by hand - will want to be more efficient later.
-			{ XMFLOAT3(-0.5, -0.5, -0.5), XMFLOAT3(-0.5773502691896258, -0.5773502691896258, -0.5773502691896258)	},
-			{ XMFLOAT3(-0.5, +0.5, -0.5), XMFLOAT3(-0.5773502691896258, 0.5773502691896258, -0.5773502691896258)	},
-			{ XMFLOAT3(+0.5, +0.5, -0.5), XMFLOAT3(0.5773502691896258, 0.5773502691896258, -0.5773502691896258)    },
-			{ XMFLOAT3(+0.5, -0.5, -0.5), XMFLOAT3(0.5773502691896258, -0.5773502691896258, -0.5773502691896258)	},
-			{ XMFLOAT3(-0.5, -0.5, +0.5), XMFLOAT3(-0.5773502691896258, -0.5773502691896258, 0.5773502691896258)    },
-			{ XMFLOAT3(-0.5, +0.5, +0.5), XMFLOAT3(-0.5773502691896258, 0.5773502691896258, 0.5773502691896258)	},
-			{ XMFLOAT3(+0.5, +0.5, +0.5), XMFLOAT3(0.5773502691896258, 0.5773502691896258, 0.5773502691896258)    },
-			{ XMFLOAT3(+0.5, -0.5, +0.5), XMFLOAT3(0.5773502691896258, -0.5773502691896258, 0.5773502691896258)	}
+			{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(-0.5773502691896258f, -0.5773502691896258f, -0.5773502691896258f)	},
+			{ XMFLOAT3(-0.5f, +0.5f, -0.5f), XMFLOAT3(-0.5773502691896258f, 0.5773502691896258f, -0.5773502691896258f)	},
+			{ XMFLOAT3(+0.5f, +0.5f, -0.5f), XMFLOAT3(0.5773502691896258f, 0.5773502691896258f, -0.5773502691896258f)    },
+			{ XMFLOAT3(+0.5f, -0.5f, -0.5f), XMFLOAT3(0.5773502691896258f, -0.5773502691896258f, -0.5773502691896258f)	},
+			{ XMFLOAT3(-0.5f, -0.5f, +0.5f), XMFLOAT3(-0.5773502691896258f, -0.5773502691896258f, 0.5773502691896258f)    },
+			{ XMFLOAT3(-0.5f, +0.5f, +0.5f), XMFLOAT3(-0.5773502691896258f, 0.5773502691896258f, 0.5773502691896258f)	},
+			{ XMFLOAT3(+0.5f, +0.5f, +0.5f), XMFLOAT3(0.5773502691896258f, 0.5773502691896258f, 0.5773502691896258f)    },
+			{ XMFLOAT3(+0.5f, -0.5f, +0.5f), XMFLOAT3(0.5773502691896258f, -0.5773502691896258f, 0.5773502691896258f)	}
 		};
 		m["Cube"].vertices.assign(vertices, vertices + 8);
 
@@ -138,6 +115,60 @@ struct MeshMaps
 		m["Plane"].indices.assign(planeIndices, planeIndices + 6);
 		m["Plane"].bufferKey = "Plane";
 
+		GeometryGenerator aGeometryGenerator;
+		GeometryGenerator::MeshData sphereMeshData;
+		aGeometryGenerator.CreateSphere(1.0f, 20, 20, sphereMeshData);
+		m["Sphere"].bufferKey = "Sphere";
+		m["Sphere"].indices = sphereMeshData.Indices;
+		for (UINT i = 0; i < sphereMeshData.Vertices.size(); i++)
+		{
+			Vertex aVertex;
+			aVertex.Pos = sphereMeshData.Vertices[i].Position;
+			aVertex.Normal = sphereMeshData.Vertices[i].Normal;
+			m["Sphere"].vertices.push_back(aVertex);
+		}
+		
+
+		#define AVERAGE_NORMALS 1
+		#if AVERAGE_NORMALS
+			map<string, MeshData>::iterator itr = m.begin();
+			while (itr != m.end())
+			{
+				// Averaging algorithim adopted from Luna.
+				UINT numTriangles = itr->second.indices.size() / 3;
+				for (UINT i = 0; i < numTriangles; i++)
+				{
+					// Indices of ith triangles.
+					UINT i0 = itr->second.indices[i * 3 + 0];
+					UINT i1 = itr->second.indices[i * 3 + 1];
+					UINT i2 = itr->second.indices[i * 3 + 2];
+
+					// Vertices of ith triangle.
+					Vertex v0 = itr->second.vertices[i0];
+					Vertex v1 = itr->second.vertices[i1];
+					Vertex v2 = itr->second.vertices[i2];
+
+					// Compute face normal.
+					XMVECTOR e0 = (XMLoadFloat3(&v0.Pos) - XMLoadFloat3(&v1.Pos));
+					XMVECTOR e1 = (XMLoadFloat3(&v2.Pos) - XMLoadFloat3(&v0.Pos));
+
+					XMVECTOR faceNormal = XMVector3Cross(e0, e1);
+					for (UINT normalIndex = i0; normalIndex <= i2; normalIndex++)
+					{
+						XMVECTOR normal = XMLoadFloat3(&itr->second.vertices[normalIndex].Normal);
+						normal += faceNormal;
+						XMStoreFloat3(&itr->second.vertices[normalIndex].Normal, normal);
+					}
+				}
+
+				for (UINT i = 0; i < itr->second.vertices.size(); i++)
+				{
+					// Normalizes and sets the Normal at position i;
+					XMStoreFloat3(&itr->second.vertices[i].Normal, XMVector3Normalize(XMLoadFloat3(&itr->second.vertices[i].Normal)));
+				}
+				itr++;
+			}
+		#endif
 		return m;
     }
     static const map<string, MeshData> MESH_MAPS;

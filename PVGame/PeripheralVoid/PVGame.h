@@ -31,6 +31,7 @@ public:
 		void BuildGeometryBuffers();
 		void BuildFX();
 		void BuildVertexLayout();
+		void SortGameObjects();
 
 		Player*	player;
 

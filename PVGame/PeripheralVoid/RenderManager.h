@@ -178,7 +178,7 @@ class RenderManager
 			mTech->GetDesc( &techDesc );
 
 			string prevKey = "";
-			for (int i = 0; i < gameObjects.size(); i++)
+			for (UINT i = 0; i < gameObjects.size(); i++)
 			{
 				for(UINT p = 0; p < techDesc.Passes; ++p)
 				{

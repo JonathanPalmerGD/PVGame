@@ -1,54 +1,23 @@
-﻿Build started 3/27/2013 6:25:02 PM.
-     1>Project "\\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
+﻿Build started 3/29/2013 10:21:13 AM.
+     1>Project "C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\PeripheralVoid.unsuccessfulbuild" because "AlwaysCreate" was specified.
        CustomBuild:
-         '\\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\PeripheralVoid'
-         CMD.EXE was started with the above path as the current directory.
-         UNC paths are not supported.  Defaulting to Windows directory.
-         fxc compile for debug: \\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\PeripheralVoid\FX\Lighting.fx
-         Microsoft (R) Direct3D Shader Compiler 9.29.952.3111
-         Copyright (C) Microsoft Corporation 2002-2009. All rights reserved.
-         
-         compilation succeeded; see Lighting.cod
-         failed writing C:\Windows\FX\Lighting.fxo
+         All outputs are up-to-date.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt PVGame.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Common\d3dApp.cpp GameObject.cpp PVGame.cpp PhysicsManager.cpp Player.cpp
+         d3dApp.cpp
+         Generating Code...
+         Compiling...
+         Player.cpp
+         PhysicsManager.cpp
          PVGame.cpp
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(79): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(79): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(79): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(80): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(80): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(80): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(81): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(81): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(81): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(82): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(82): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(82): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(83): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(83): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(83): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(84): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(84): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(84): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(85): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(85): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(85): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(86): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(86): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\constants.h(86): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\rendermanager.h(181): warning C4018: '<' : signed/unsigned mismatch
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\pvgame.cpp(99): warning C4244: 'argument' : conversion from 'double' to 'FLOAT', possible loss of data
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\pvgame.cpp(99): warning C4244: 'argument' : conversion from 'double' to 'FLOAT', possible loss of data
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\pvgame.cpp(108): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\pvgame.cpp(108): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>\\banner.main.ad.rit.edu\students\jmm3896\igmprofile\documents\github\pvgame\peripheralvoid\pvgame.cpp(252): warning C4305: 'argument' : truncation from 'double' to 'FLOAT'
+         GameObject.cpp
+         Generating Code...
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"\\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\Debug\PeripheralVoid.exe" /INCREMENTAL /NOLOGO /LIBPATH:Audio\AL /LIBPATH:"bullet-2.81-rev2613\lib" BulletCollision_vs2010_debug.lib BulletDynamics_vs2010_debug.lib LinearMath_vs2010_debug.lib OpenAL32.lib d3d11.lib d3dx11d.lib XInput.lib D3DCompiler.lib Effects11d.lib dxerr.lib dxgi.lib dxguid.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\PeripheralVoid.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"\\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\Debug\PeripheralVoid.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"\\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\Debug\PeripheralVoid.lib" /MACHINE:X86 Debug\PeripheralVoid.exe.embed.manifest.res
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\PVGame\Debug\PeripheralVoid.exe" /INCREMENTAL /NOLOGO /LIBPATH:Audio\AL /LIBPATH:"bullet-2.81-rev2613\lib" BulletCollision_vs2010_debug.lib BulletDynamics_vs2010_debug.lib LinearMath_vs2010_debug.lib OpenAL32.lib d3d11.lib d3dx11d.lib XInput.lib D3DCompiler.lib Effects11d.lib dxerr.lib dxgi.lib dxguid.lib dxerr.lib dxgi.lib dxguid.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\PeripheralVoid.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\PVGame\Debug\PeripheralVoid.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\PVGame\Debug\PeripheralVoid.lib" /MACHINE:X86 Debug\PeripheralVoid.exe.embed.manifest.res
          Debug\AudioListener.obj
          Debug\AudioSource.obj
          Debug\Camera.obj
@@ -75,12 +44,12 @@
          All outputs are up-to-date.
        LinkEmbedManifest:
          All outputs are up-to-date.
-         PeripheralVoid.vcxproj -> \\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\Debug\PeripheralVoid.exe
+         PeripheralVoid.vcxproj -> C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\PVGame\Debug\PeripheralVoid.exe
        FinalizeBuildStatus:
          Deleting file "Debug\PeripheralVoid.unsuccessfulbuild".
          Touching "Debug\PeripheralVoid.lastbuildstate".
-     1>Done Building Project "\\banner.main.ad.rit.edu\students\jmm3896\IGMProfile\Documents\Github\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:19.54
+Time Elapsed 00:00:11.01

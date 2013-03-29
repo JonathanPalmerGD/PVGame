@@ -54,6 +54,8 @@ bool PVGame::Init()
 	mLastMousePos.x = 0;
 	mLastMousePos.y = 0;
 
+	SortGameObjects();
+
 	return true;
 }
 
@@ -96,7 +98,7 @@ bool PVGame::LoadXML()
 
 		XMMATRIX matrix = XMMatrixIdentity();
 		matrix *= XMMatrixScaling(1.0f, 3.0f, 1.0f);
-		matrix *= XMMatrixTranslation(atof(col), 1.5f, atof(row));
+		matrix *= XMMatrixTranslation((float)atof(col), 1.5f, (float)atof(row));
 
 		//FUCKING RIDICULOUS STUPID AS SHIT CODE, need to improve some how
 		//Due to error C2719, a known bug in Visual Studio dealing with stl containers
@@ -105,7 +107,7 @@ bool PVGame::LoadXML()
 		{
 			const btRigidBody body = ptr->second;
 			GameObject* wallObj = new GameObject("Cube", aMaterial, &matrix, body, physicsMan);
-			wallObj->translate(atof(col), 1.5f, atof(row));
+			wallObj->translate((float)atof(col), 1.5f, (float)atof(row));
 			wallObj->scale(1.0,3.0,1.0);
 			gameObjects.push_back(wallObj);
 		}
@@ -249,12 +251,17 @@ void PVGame::BuildGeometryBuffers()
 	aGameObject->scale(20.0, 1.0, 20.0);
 	gameObjects.push_back(aGameObject);
 
-	GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);
-	bGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
+	GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14f) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);
+	bGameObject->SetRigidBody(physicsMan->createPlane(0.0f,0.0f,0.0f));
 	bGameObject->scale(20.0f, 1.0f, 20.0f);
 	bGameObject->translate(0.0f, 3.0f, 0.0f);
-	bGameObject->rotate(1, 0, 0, 0);wwww
+	bGameObject->rotate(1.0f, 0.0f, 0.0f, 0.0f);
 	gameObjects.push_back(bGameObject);
+
+	aMaterial.Ambient = XMFLOAT4(0.46f, 0.46f, 0.46f, 1.0f);
+	GameObject* testSphere = new GameObject("Sphere", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(5.0f, 1.0f, 0.0f)), physicsMan);
+	testSphere->translate(5.0f, 1.0f, 0.0f);
+	gameObjects.push_back(testSphere);
 }
  
 void PVGame::BuildFX()
@@ -265,6 +272,13 @@ void PVGame::BuildFX()
 void PVGame::BuildVertexLayout()
 {
 	renderMan->BuildVertexLayout();
+}
+
+// Sorts game objects based on mesh key. Should only be called after a batch of GameObjects are added.
+void PVGame::SortGameObjects()
+{
+	// GameObjectCompaper() is defined in GameObject.h for now. It's a boolean operator.
+	sort(gameObjects.begin(), gameObjects.end(), GameObjectComparer());
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
