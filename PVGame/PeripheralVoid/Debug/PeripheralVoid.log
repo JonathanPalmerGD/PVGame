@@ -1,0 +1,22 @@
+﻿Build started 3/31/2013 1:35:30 PM.
+     1>Project "\\banner.main.ad.rit.edu\students\jkp2377\IGMProfile\Desktop\PeripheralVoid\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\PeripheralVoid.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       CustomBuild:
+         All outputs are up-to-date.
+       ClCompile:
+         All outputs are up-to-date.
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+       Manifest:
+         All outputs are up-to-date.
+       FinalizeBuildStatus:
+         Deleting file "Debug\PeripheralVoid.unsuccessfulbuild".
+         Touching "Debug\PeripheralVoid.lastbuildstate".
+     1>Done Building Project "\\banner.main.ad.rit.edu\students\jkp2377\IGMProfile\Desktop\PeripheralVoid\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.97
