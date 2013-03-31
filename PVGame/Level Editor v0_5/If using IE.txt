@@ -1,1 +1,0 @@
-﻿If using IE, open developer tools (F12) and make sure Document Mode is set to IE9 Standards or higher.
