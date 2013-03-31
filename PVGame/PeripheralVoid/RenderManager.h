@@ -178,7 +178,7 @@ class RenderManager
 
 			// Set per frame constants.
 			mfxDirLights->SetRawValue(&mDirLights[0], 0, sizeof(DirectionalLight) * mDirLights.size());
-			mfxPointLight->SetRawValue(&mPointLight, 0, sizeof(mPointLight));
+			mfxPointLights->SetRawValue(&mPointLights[0], 0, sizeof(PointLight) * mPointLights.size());
 			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
 			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
 			//Set the resources for the shader resource view
@@ -305,9 +305,9 @@ class RenderManager
 
 			// Quick fix to support DX10, assuming we don't care about lower levels.
 			if (usingDX11)
-				mTech                = mFX->GetTechniqueByName("Light1Tex");
+				mTech                = mFX->GetTechniqueByName("TestLights");
 			else
-				mTech                = mFX->GetTechniqueByName("Light1TexDX10");
+				mTech                = mFX->GetTechniqueByName("TestLightsDX10");
 
 			// Creates association between shader variables and program variables.
 			mfxWorldViewProj     = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
@@ -315,7 +315,7 @@ class RenderManager
 			mfxWorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 			mfxEyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
 			mfxDirLights          = mFX->GetVariableByName("gDirLights");
-			mfxPointLight        = mFX->GetVariableByName("gPointLight");
+			mfxPointLights        = mFX->GetVariableByName("testLights");
 			mfxSpotLight         = mFX->GetVariableByName("gSpotLight");
 			mfxMaterial          = mFX->GetVariableByName("gMaterial");
 			mfxDiffuseMapVar	 = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
@@ -430,7 +430,7 @@ class RenderManager
 		ID3DX11EffectMatrixVariable* TexTransform;
 		ID3DX11EffectVectorVariable* mfxEyePosW;
 		ID3DX11EffectVariable* mfxDirLights;
-		ID3DX11EffectVariable* mfxPointLight;
+		ID3DX11EffectVariable* mfxPointLights;
 		ID3DX11EffectVariable* mfxSpotLight;
 		ID3DX11EffectVariable* mfxMaterial;
 
@@ -464,7 +464,7 @@ class RenderManager
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;
-		PointLight mPointLight;
+		vector<PointLight> mPointLights;
 		SpotLight mSpotLight;
 
 		RenderManager() 
@@ -481,7 +481,7 @@ class RenderManager
 			mfxWorldViewProj = nullptr;
 			mfxWorldInvTranspose = nullptr;
 			mfxEyePosW = nullptr;
-			mfxPointLight = nullptr;
+			mfxPointLights = nullptr;
 			mfxSpotLight = nullptr;
 			mfxMaterial = nullptr;
 			mSpecMapRV = nullptr;
@@ -513,12 +513,47 @@ class RenderManager
 			//mDirLights[1].Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 16.0f);
 			//mDirLights[1].Direction = XMFLOAT3(-0.707f, 0.0f, 0.707f);
 
-			mPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-			mPointLight.Diffuse = XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f);
-			mPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-			mPointLight.Range = 4.5f;
-			mPointLight.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			mPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			// Add 4 lights to the scene. First is red.
+			PointLight aPointLight;
+			aPointLight.Ambient = XMFLOAT4(4.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Range = 2.0f;
+			aPointLight.Position = XMFLOAT3(-2.0f, 0.0f, -2.0f);
+			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			aPointLight.On = true;
+			mPointLights.push_back(PointLight(aPointLight));
+
+			// Second is green.
+			aPointLight.Ambient = XMFLOAT4(0.0f, 4.0f, 0.0f, 1.0f);
+			aPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Range = 2.0f;
+			aPointLight.Position = XMFLOAT3(2.0f, 0.0f, 2.0f);
+			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			aPointLight.On = true;
+			mPointLights.push_back(PointLight(aPointLight));
+
+			// Third is blue.
+			PointLight bPointLight;
+			bPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 4.0f, 1.0f);
+			bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			bPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			bPointLight.Range = 2.0f;
+			bPointLight.Position = XMFLOAT3(2.0f, 0.0f, -2.0f);
+			bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			bPointLight.On = true;
+			mPointLights.push_back(PointLight(bPointLight));
+
+			// Fourth is purple. 
+			aPointLight.Ambient = XMFLOAT4(4.0f, 0.0f, 4.0f, 1.0f);
+			aPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+			aPointLight.Range = 2.0f;
+			aPointLight.Position = XMFLOAT3(-2.0f, 0.0f, 2.0f);
+			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			aPointLight.On = true;
+			mPointLights.push_back(PointLight(aPointLight));
 		}
 
 		~RenderManager()
