@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(void) 
-	: PIXELS_PER_SEC(1.5f)
+	: PIXELS_PER_SEC(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);

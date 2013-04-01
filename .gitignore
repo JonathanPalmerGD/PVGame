@@ -3,3 +3,7 @@
 *.ipch
 *.tlog
 *.obj
+*.lastbuildstate
+*.log
+*.pdb
+*.idb

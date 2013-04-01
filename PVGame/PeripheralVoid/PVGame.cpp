@@ -360,14 +360,6 @@ void PVGame::BuildGeometryBuffers()
 	//testSphere->scale(0.5, 0.5, 0.5);
 	//testSphere->setLinearVelocity(0,0,0);
 	//gameObjects.push_back(testSphere);
-
-	aMaterial.Ambient = XMFLOAT4(0.46f, 0.46f, 0.46f, 1.0f);
-	GameObject* testSphere = new GameObject("Cube", aMaterial, physicsMan->createRigidBody("Cube", 5.0, 3.0, 0.0, 0.5, 0.5, 0.5, 1.0), physicsMan, 1.0);
-	//testSphere->setLinearVelocity(0,0,5);
-	//testSphere->translate(5.0f, 2.0f, 0.0f);
-	//testSphere->scale(0.5, 0.5, 0.5);
-	
-	gameObjects.push_back(testSphere);
 }
  
 void PVGame::BuildFX()

@@ -76,7 +76,15 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float mass)
 		t.setIdentity();
 		t.setOrigin(btVector3(0, 0, 0));
 
-		btCollisionShape* triMeshShape = new btConvexTriangleMeshShape(ptr->second);
+		btCollisionShape* triMeshShape;
+		if(handle.compare("Cube") == 0)
+			triMeshShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
+		else if(handle.compare("Sphere") == 0)
+			triMeshShape = new btSphereShape(3);
+		else
+			triMeshShape = new btConvexTriangleMeshShape(ptr->second);
+
+		triMeshShape->setLocalScaling(btVector3(1,1,1));
 		btDefaultMotionState* motionState = new btDefaultMotionState(t);
 
 		btVector3 inertia(0,0,0);
@@ -107,7 +115,15 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 		t.setIdentity();
 		t.setOrigin(btVector3(xPos, yPos, zPos));
 
-		btCollisionShape* triMeshShape = new btConvexTriangleMeshShape(ptr->second);
+		btCollisionShape* triMeshShape;
+		if(handle.compare("Cube") == 0)
+			triMeshShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
+		else if(handle.compare("Sphere") == 0)
+			triMeshShape = new btSphereShape(3);
+		else
+			triMeshShape = new btConvexTriangleMeshShape(ptr->second);
+
+		triMeshShape->setLocalScaling(btVector3(1,1,1));
 		btDefaultMotionState* motionState = new btDefaultMotionState(t);
 
 		btVector3 inertia(0,0,0);
@@ -139,7 +155,15 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 		t.setIdentity();
 		t.setOrigin(btVector3(xPos, yPos, zPos));
 
-		btCollisionShape* triMeshShape = new btConvexTriangleMeshShape(ptr->second);
+		btCollisionShape* triMeshShape;
+		if(handle.compare("Cube") == 0)
+			triMeshShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
+		else if(handle.compare("Sphere") == 0)
+			triMeshShape = new btSphereShape(3);
+		else
+			triMeshShape = new btConvexTriangleMeshShape(ptr->second);
+
+		triMeshShape->setLocalScaling(btVector3(1,1,1));
 		triMeshShape->setLocalScaling(btVector3(xScale, yScale, zScale));
 
 		btDefaultMotionState* motionState = new btDefaultMotionState(t);
@@ -154,6 +178,7 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 	}
 	return NULL;
 }
+
 /* addTriangleMesh
  *
  * Cooks a btTriangleMesh from a bunch of MeshData. This

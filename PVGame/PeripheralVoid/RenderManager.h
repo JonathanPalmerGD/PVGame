@@ -285,7 +285,7 @@ class RenderManager
 		void LoadContent()
 		{
 			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/WoodCrate01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
-			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/Wall01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/Wall01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
 			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,L"defaultspec.dds", 0, 0, &mSpecMapRV, 0 ));
 		}
 		
@@ -551,7 +551,6 @@ class RenderManager
 			bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
 			bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 			mPointLights.push_back(PointLight(bPointLight));
-			
 
 			// Fourth is purple. 
 			aPointLight.Ambient = XMFLOAT4(4.0f, 0.0f, 4.0f, 1.0f);
