@@ -285,6 +285,7 @@ class RenderManager
 		void LoadContent()
 		{
 			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/WoodCrate01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/Wall01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
 			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,L"defaultspec.dds", 0, 0, &mSpecMapRV, 0 ));
 		}
 		
@@ -338,6 +339,11 @@ class RenderManager
 			D3DX11_PASS_DESC passDesc;
 			mTech->GetPassByIndex(0)->GetDesc(&passDesc);
 			HR(md3dDevice->CreateInputLayout(vertexDesc, 3, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
+		}
+
+		void ToggleLight(int index)
+		{
+			mPointLights[index].On.x = (mPointLights[index].On.x == 0) ? 1 : 0;
 		}
 
 		void OnResize()
@@ -436,6 +442,7 @@ class RenderManager
 
 		//Things for the textures We might need more than these. It appears Luna's textures support specular and diffuse lighting
 		ID3D11ShaderResourceView* mDiffuseMapSRV;
+		ID3D11ShaderResourceView* crateSRV;
 		ID3D11ShaderResourceView* mSpecMapRV;
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
@@ -519,8 +526,9 @@ class RenderManager
 			aPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			aPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			aPointLight.Range = 2.0f;
-			aPointLight.Position = XMFLOAT3(-2.0f, 0.0f, -2.0f);
+			aPointLight.Position = XMFLOAT3(-1.5f, 0.0f, -1.5f);
 			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 			mPointLights.push_back(PointLight(aPointLight));
 
 			// Second is green.
@@ -528,8 +536,9 @@ class RenderManager
 			aPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			aPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			aPointLight.Range = 2.0f;
-			aPointLight.Position = XMFLOAT3(2.0f, 0.0f, 2.0f);
+			aPointLight.Position = XMFLOAT3(1.5f, 0.0f, 1.5f);
 			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 			mPointLights.push_back(PointLight(aPointLight));
 
 			// Third is blue.
@@ -538,17 +547,20 @@ class RenderManager
 			bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			bPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			bPointLight.Range = 2.0f;
-			bPointLight.Position = XMFLOAT3(2.0f, 0.0f, -2.0f);
+			bPointLight.Position = XMFLOAT3(1.5f, 0.0f, -1.5f);
 			bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 			mPointLights.push_back(PointLight(bPointLight));
+			
 
 			// Fourth is purple. 
 			aPointLight.Ambient = XMFLOAT4(4.0f, 0.0f, 4.0f, 1.0f);
 			aPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			aPointLight.Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 			aPointLight.Range = 2.0f;
-			aPointLight.Position = XMFLOAT3(-2.0f, 0.0f, 2.0f);
+			aPointLight.Position = XMFLOAT3(-1.5f, 0.0f, 1.5f);
 			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 			mPointLights.push_back(PointLight(aPointLight));
 		}
 

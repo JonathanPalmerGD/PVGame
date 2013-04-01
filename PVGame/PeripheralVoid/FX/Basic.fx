@@ -171,12 +171,15 @@ float4 TestPS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	[unroll]
 	for(int i = 0; i < 4; ++i)
 	{
-		float4 A, D, S;
-		ComputePointLight(gMaterial, testLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
+		if (testLights[i].On.x == 1)
+		{
+			float4 A, D, S;
+			ComputePointLight(gMaterial, testLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
 
-		ambient += A;
-		diffuse += D;
-		spec    += S;
+			ambient += A;
+			diffuse += D;
+			spec    += S;
+		}
 	}
 
 	float4 A, D, S;

@@ -231,6 +231,23 @@ void PVGame::UpdateScene(float dt)
 		player->Update(dt, input);
 		physicsMan->update(dt);
 
+		if(input->wasKeyPressed('0'))
+		{
+			renderMan->ToggleLight(0);
+		}
+		if(input->wasKeyPressed('9'))
+		{
+			renderMan->ToggleLight(1);
+		}
+		if(input->wasKeyPressed('8'))
+		{
+			renderMan->ToggleLight(2);
+		}
+		if(input->wasKeyPressed('7'))
+		{
+			renderMan->ToggleLight(3);
+		}
+
 		if(input->isKeyDown('1') && is1Up)
 		{
 			SurfaceMaterial aMaterial;

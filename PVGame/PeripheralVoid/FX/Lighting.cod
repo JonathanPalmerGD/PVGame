@@ -6,7 +6,7 @@
 cbuffer cbPerFrame
 {
     DirectionalLight gDirLight;         // Offset:    0, size:   64
-    PointLight gPointLight;             // Offset:   64, size:   84
+    PointLight gPointLight;             // Offset:   64, size:   96
     SpotLight gSpotLight;               // Offset:  160, size:   96
     float3  gEyePosW;                   // Offset:  256, size:   12
 }
@@ -146,9 +146,9 @@ fxgroup
                 //       float Range;                   // Offset:  124
                 //       float3 Att;                    // Offset:  128
                 //       float pad;                     // Offset:  140
-                //       bool On;                       // Offset:  144
+                //       float4 On;                     // Offset:  144
                 //
-                //   } gPointLight;                     // Offset:   64 Size:    84
+                //   } gPointLight;                     // Offset:   64 Size:    96
                 //   
                 //   struct SpotLight
                 //   {
