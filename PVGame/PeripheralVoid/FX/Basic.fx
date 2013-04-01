@@ -169,20 +169,17 @@ float4 TestPS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	
 	// Sum the light contribution from each light source.  
 	[unroll]
-
-	float4 A, D, S;
 	for(int i = 0; i < 4; ++i)
 	{
-		if (testLights[i].On)
-		{
-			ComputePointLight(gMaterial, testLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
+		float4 A, D, S;
+		ComputePointLight(gMaterial, testLights[i], pin.PosW, pin.NormalW, toEye, A, D, S);
 
-			ambient += A;
-			diffuse += D;
-			spec    += S;
-		}
+		ambient += A;
+		diffuse += D;
+		spec    += S;
 	}
 
+	float4 A, D, S;
 	ComputeDirectionalLight(gMaterial, gDirLights[0], pin.NormalW, toEye, 
 				A, D, S);
 

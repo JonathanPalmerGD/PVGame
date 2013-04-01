@@ -40,8 +40,6 @@ struct PointLight
 	// Packed into 4D vector: (A0, A1, A2, Pad)
 	XMFLOAT3 Att;
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
-
-	bool On;
 };
 
 struct SpotLight

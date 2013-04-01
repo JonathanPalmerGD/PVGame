@@ -24,8 +24,6 @@ struct PointLight
 
 	float3 Att;
 	float pad;
-
-	bool On;
 };
 
 struct SpotLight

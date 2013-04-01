@@ -178,7 +178,7 @@ class RenderManager
 
 			// Set per frame constants.
 			mfxDirLights->SetRawValue(&mDirLights[0], 0, sizeof(DirectionalLight) * mDirLights.size());
-			mfxPointLights->SetRawValue(&mPointLights[0], 0, sizeof(PointLight) * mPointLights.size());
+			mfxPointLights->SetRawValue(&mPointLights[0], 0, 4 * sizeof(PointLight));
 			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
 			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
 			//Set the resources for the shader resource view
@@ -521,7 +521,6 @@ class RenderManager
 			aPointLight.Range = 2.0f;
 			aPointLight.Position = XMFLOAT3(-2.0f, 0.0f, -2.0f);
 			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
-			aPointLight.On = true;
 			mPointLights.push_back(PointLight(aPointLight));
 
 			// Second is green.
@@ -531,7 +530,6 @@ class RenderManager
 			aPointLight.Range = 2.0f;
 			aPointLight.Position = XMFLOAT3(2.0f, 0.0f, 2.0f);
 			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
-			aPointLight.On = true;
 			mPointLights.push_back(PointLight(aPointLight));
 
 			// Third is blue.
@@ -542,7 +540,6 @@ class RenderManager
 			bPointLight.Range = 2.0f;
 			bPointLight.Position = XMFLOAT3(2.0f, 0.0f, -2.0f);
 			bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
-			bPointLight.On = true;
 			mPointLights.push_back(PointLight(bPointLight));
 
 			// Fourth is purple. 
@@ -552,7 +549,6 @@ class RenderManager
 			aPointLight.Range = 2.0f;
 			aPointLight.Position = XMFLOAT3(-2.0f, 0.0f, 2.0f);
 			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 1.0f);
-			aPointLight.On = true;
 			mPointLights.push_back(PointLight(aPointLight));
 		}
 
