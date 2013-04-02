@@ -68,8 +68,46 @@ bool PVGame::LoadContent()
 
 bool PVGame::LoadXML()
 {
-	//Get the filename from constants, hand it into tinyxml
 	tinyxml2::XMLDocument doc;
+
+	#pragma region Materials
+	doc.LoadFile(MATERIALS_FILE);
+	for (XMLElement* material = doc.FirstChildElement("MaterialsList")->FirstChildElement("Material"); 
+				material != NULL; material = material->NextSiblingElement("Material"))
+	{
+		GameMaterial aMaterial;
+		aMaterial.Name = material->Attribute("name");
+		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
+		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->Value();
+	}
+	#pragma endregion
+
+	#pragma region Surface Materials
+	doc.LoadFile(SURFACE_MATERIALS_FILE);
+	for (XMLElement* surfaceMaterial = doc.FirstChildElement("SurfaceMaterialsList")->FirstChildElement("SurfaceMaterial"); 
+				surfaceMaterial != NULL; surfaceMaterial = surfaceMaterial->NextSiblingElement("SurfaceMaterial"))
+	{
+		XMLElement* ambient = surfaceMaterial->FirstChildElement("Ambient");
+		XMLElement* diffuse = surfaceMaterial->FirstChildElement("Diffuse");
+		XMLElement* specular = surfaceMaterial->FirstChildElement("Specular");
+		XMLElement* reflect = surfaceMaterial->FirstChildElement("Reflect");
+		
+		SurfaceMaterial aMaterial;
+		aMaterial.Ambient = XMFLOAT4((float)atof(ambient->Attribute("r")), (float)atof(ambient->Attribute("g")), 
+									 (float)atof(ambient->Attribute("b")), (float)atof(ambient->Attribute("a")));
+		aMaterial.Diffuse = XMFLOAT4((float)atof(diffuse->Attribute("r")), (float)atof(diffuse->Attribute("g")), 
+									 (float)atof(diffuse->Attribute("b")), (float)atof(diffuse->Attribute("a")));
+		aMaterial.Specular = XMFLOAT4((float)atof(specular->Attribute("r")), (float)atof(specular->Attribute("g")), 
+									 (float)atof(specular->Attribute("b")), (float)atof(specular->Attribute("a")));
+		aMaterial.Reflect = XMFLOAT4((float)atof(reflect->Attribute("r")), (float)atof(reflect->Attribute("g")), 
+									 (float)atof(reflect->Attribute("b")), (float)atof(reflect->Attribute("a")));
+		SURFACE_MATERIALS[surfaceMaterial->Attribute("name")] = aMaterial;
+	}
+	#pragma endregion
+
+	#pragma region Map Loading
+	//Get the filename from constants, hand it into tinyxml
+
 
 	doc.LoadFile(MAP_LEVEL_1);
 	/*static const char* xml = 	
@@ -162,7 +200,7 @@ bool PVGame::LoadXML()
 		{
 			XMMATRIX matrix = XMMatrixIdentity();
 
-			GameObject* wallObj = new GameObject("Cube", aMaterial, physicsMan->createRigidBody("Cube", wallRowCol[i][j].centerX, 1.5f, wallRowCol[i][j].centerZ), physicsMan);
+			GameObject* wallObj = new GameObject("Cube", SURFACE_MATERIALS["TestRed"], physicsMan->createRigidBody("Cube", wallRowCol[i][j].centerX, 1.5f, wallRowCol[i][j].centerZ), physicsMan);
 			//wallObj->translate((float)atof(col), 1.5f, (float)atof(row));
 			wallObj->scale(wallRowCol[i][j].xLength,3.0,wallRowCol[i][j].zLength);
 			gameObjects.push_back(wallObj);
@@ -203,6 +241,8 @@ bool PVGame::LoadXML()
 //
 //	}
 //#endif
+
+	#pragma endregion
 
 	return true;
 }
@@ -250,16 +290,11 @@ void PVGame::UpdateScene(float dt)
 
 		if(input->isKeyDown('1') && is1Up)
 		{
-			SurfaceMaterial aMaterial;
-			aMaterial.Ambient = XMFLOAT4(1.0f, 0.46f, 0.46f, 1.0f);
-			aMaterial.Diffuse = XMFLOAT4(1.0f, 0.46f, 0.46f, 1.0f);
-			aMaterial.Specular = XMFLOAT4(1.0f, 0.2f, 0.2f, 16.0f);
-
 			XMFLOAT4 pos = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			float speed = 5;
 
-			GameObject* testSphere = new GameObject("Sphere", aMaterial, physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Sphere", SURFACE_MATERIALS["TestProjectile"], physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(testSphere);
 			is1Up = false;
@@ -269,16 +304,11 @@ void PVGame::UpdateScene(float dt)
 
 		if(input->isKeyDown('2') && is2Up)
 		{
-			SurfaceMaterial aMaterial;
-			aMaterial.Ambient = XMFLOAT4(1.0f, 0.46f, 0.46f, 1.0f);
-			aMaterial.Diffuse = XMFLOAT4(1.0f, 0.46f, 0.46f, 1.0f);
-			aMaterial.Specular = XMFLOAT4(1.0f, 0.2f, 0.2f, 16.0f);
-
 			XMFLOAT4 pos = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			float speed = 5;
 
-			GameObject* testSphere = new GameObject("Cube", aMaterial, physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Cube", SURFACE_MATERIALS["TestProjectile"], physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(testSphere);
 
@@ -330,18 +360,13 @@ void PVGame::DrawScene()
 
 void PVGame::BuildGeometryBuffers()
 {
-	SurfaceMaterial aMaterial;
-	aMaterial.Ambient = XMFLOAT4(1.0f, 0.46f, 0.46f, 1.0f);
-	aMaterial.Diffuse = XMFLOAT4(1.0f, 0.46f, 0.46f, 1.0f);
-	aMaterial.Specular = XMFLOAT4(1.0f, 0.2f, 0.2f, 16.0f);
-
 	//GameObject* aGameObject = new GameObject("Triangle", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	GameObject* aGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
+	GameObject* aGameObject = new GameObject("Plane", SURFACE_MATERIALS["TestProjectile"], &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
 	aGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
 	aGameObject->scale(20.0, 1.0, 20.0);
 	gameObjects.push_back(aGameObject);

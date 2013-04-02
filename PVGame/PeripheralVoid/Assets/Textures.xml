@@ -1,0 +1,6 @@
+<TextureList>
+	<Texture name="WoodCrate01">
+    <Filename>Textures/WoodCrate01.dds</Filename>
+    <Type>Diffuse</Type>
+	</Texture>
+</TextureList>

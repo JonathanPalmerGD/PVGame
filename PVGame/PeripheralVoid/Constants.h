@@ -163,7 +163,6 @@ struct Wall
 	float centerZ;
 };
 
-
 //These structs were gathered from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader
 // Create material structure
 struct SurfaceMaterial
@@ -192,9 +191,21 @@ struct SurfaceMaterial
 	*/
 };
 
+struct GameMaterial
+{
+	string Name;
+	string SurfaceKey;
+	string DiffuseKey;
+};
+
+static std::map<string, GameMaterial> GAME_MATERIALS;
+static std::map<string, SurfaceMaterial> SURFACE_MATERIALS;
 
 //List our levels:
 const char MAP_LEVEL_1[] = "Assets/level1.xml";
+const char TEXTURES_FIILE[] = "Assets/Textures.xml";
+const char SURFACE_MATERIALS_FILE[] = "Assets/SurfaceMaterials.xml";
+const char MATERIALS_FILE[] = "Assets/Materials.xml";
 
 /*
 

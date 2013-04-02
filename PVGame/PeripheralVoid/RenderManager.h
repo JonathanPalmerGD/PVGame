@@ -440,10 +440,8 @@ class RenderManager
 		ID3DX11EffectVariable* mfxSpotLight;
 		ID3DX11EffectVariable* mfxMaterial;
 
-		//Things for the textures We might need more than these. It appears Luna's textures support specular and diffuse lighting
-		ID3D11ShaderResourceView* mDiffuseMapSRV;
-		ID3D11ShaderResourceView* crateSRV;
-		ID3D11ShaderResourceView* mSpecMapRV;
+		map<string, ID3D11ShaderResourceView*> diffuseMaps;
+		
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
 		ID3DX11EffectShaderResourceVariable* DiffuseMap;

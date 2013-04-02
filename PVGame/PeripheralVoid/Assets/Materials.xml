@@ -1,0 +1,11 @@
+<MaterialsList>
+	<Material name="Test Wood">
+		<SurfaceMaterial>Red</SurfaceMaterial>
+		<DiffuseMap>WoodCrate01</DiffuseMap>
+	</Material>
+  
+  <Material name="Test Wall">
+    <SurfaceMaterial>Basic</SurfaceMaterial>
+    <DiffuseMap>Wall01</DiffuseMap>
+  </Material>
+</MaterialsList>

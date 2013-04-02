@@ -25,6 +25,9 @@
     <Filter Include="TinyXML2">
       <UniqueIdentifier>{50e790db-797f-4a0f-8993-e8cf7f3ce623}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XML Files">
+      <UniqueIdentifier>{efd5f48c-12e2-44bf-861a-73856ec6afcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\Camera.cpp">
@@ -167,6 +170,15 @@
     </None>
     <None Include="FX\LightHelper.fx">
       <Filter>FX</Filter>
+    </None>
+    <None Include="Assets\Materials.xml">
+      <Filter>XML Files</Filter>
+    </None>
+    <None Include="Assets\SurfaceMaterials.xml">
+      <Filter>XML Files</Filter>
+    </None>
+    <None Include="Assets\Textures.xml">
+      <Filter>XML Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
