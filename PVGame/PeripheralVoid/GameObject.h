@@ -1,6 +1,7 @@
 #pragma once
 #include "Constants.h"
 #include "PhysicsManager.h"
+#include "Audio\AudioSource.h"
 
 //Only GameObjects that need to be affected by physics, aka the player not walking through them need a rigid body
 class GameObject
@@ -27,6 +28,19 @@ class GameObject
 
 		virtual ~GameObject(void);
 
+		void initAudio(string file);
+		void playAudio();
+		void playAudioAt(float x, float y, float z);
+		void playAudioAt(float* position);
+		void playAudioAtAndMoveTo(float x, float y, float z);
+		void playAudioAtAndMoveTo(float* position);
+		void setAudioLooping(bool);
+		void stopAudio();
+		void pauseAudio();
+		void resumeAudio();
+		void restartAudio();
+		void restartAndPlayAudio();
+
 	private:
 		string meshKey;
 		string materialKey;
@@ -35,6 +49,8 @@ class GameObject
 		XMFLOAT3 localScale;
 		PhysicsManager* physicsMan; //Don't use for anything but adding to and deleting the rigid body from the world.
 		float mass;
+
+		AudioSource* audioSource;
 };
 
 struct GameObjectComparer

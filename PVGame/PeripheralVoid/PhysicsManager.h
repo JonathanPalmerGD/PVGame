@@ -3,14 +3,14 @@
 #include <map>
 #include <string>
 #include "Constants.h"
+#include "Common/Camera.h"
 #include "bullet-2.81-rev2613\src\btBulletCollisionCommon.h"
 #include "bullet-2.81-rev2613\src\btBulletDynamicsCommon.h"
 #include "bullet-2.81-rev2613\src\Bullet-C-Api.h"
-
+#include "bullet-2.81-rev2613\src\BulletDynamics\Character\btKinematicCharacterController.h"
+#include "bullet-2.81-rev2613\src\BulletCollision\CollisionDispatch\btGhostObject.h"
 
 using namespace std;
-
-
 
 class PhysicsManager
 {
@@ -37,5 +37,8 @@ public:
 	void addTriangleMesh(string handle, MeshData meshData);
 	void addRigidBodyToWorld(btRigidBody* rigidBody);
 	void removeRigidBodyFromWorld(btRigidBody* rigidBody);
+	bool broadPhase(Camera* playCamera, btVector3* targetV3);
+	btKinematicCharacterController* createCharacterController(float height, float radius, float stepHeight);
+	void removeCharacterController(btKinematicCharacterController* cc);
 };
 

@@ -1,11 +1,11 @@
 #include "PhysicsManager.h"
 
-
 PhysicsManager::PhysicsManager(void)
 {
 	collisionConfig = new btDefaultCollisionConfiguration();
     dispatcher      = new btCollisionDispatcher(collisionConfig);
     broadphase      = new btDbvtBroadphase();
+	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
     solver          = new btSequentialImpulseConstraintSolver();
     world           = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
     world->setGravity(btVector3(0.0f,-9.81f,0.0f));
@@ -97,7 +97,7 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float mass)
 	}
 	return NULL;
 }
-	
+
 /* createRigidBody()
  *
  * Creates a rigid body from saved Triangle Mesh Data at position (xPos,yPos,zPos) with scale (1,1,1)
@@ -225,4 +225,49 @@ void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
 {
 	if(rigidBody!= NULL)
 		world->removeRigidBody(rigidBody);
+}
+
+/* broadPhase()
+ *
+ * Takes the player's view info and the object to check.
+ * Returns true if the dot product of the player's view and the objects position is positive.
+ */
+bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
+{
+	//btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
+	btVector3* playerV3 = new btVector3(playCamera->GetLook().x, playCamera->GetLook().y, playCamera->GetLook().z);
+	btVector3 targetRelPosV3 = *targetV3 - *playerV3;
+	btScalar pDT= playerV3->dot(targetRelPosV3);
+	float angle = acos( pDT / (playerV3->length() * targetRelPosV3.length()));
+	playCamera->GetLook();
+	angle = angle * 180 / 3.14;
+	DBOUT(angle);
+
+	if(angle < 120 && angle > 30  )
+		return true;
+	else
+ 		return false;
+}
+
+btKinematicCharacterController* PhysicsManager::createCharacterController(float radius, float height, float stepHeight)
+{
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(0, 5, 0));
+	btCapsuleShape* capsule = new btCapsuleShape(radius, height);
+	btPairCachingGhostObject* ghost = new btPairCachingGhostObject();
+	ghost->setCollisionShape(capsule);
+	ghost->setWorldTransform(t);
+	
+	btKinematicCharacterController* cc = new btKinematicCharacterController(ghost, capsule, stepHeight);
+	world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
+
+	world->addCharacter(cc);
+	return cc;
+}
+
+void PhysicsManager::removeCharacterController(btKinematicCharacterController* cc)
+{
+	world->removeCollisionObject(cc->getGhostObject());
+	world->removeCharacter(cc);
 }

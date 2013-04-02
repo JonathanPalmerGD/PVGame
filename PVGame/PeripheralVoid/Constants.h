@@ -12,7 +12,7 @@ using std::string;
 
 #define NUM_LEVELS 1
 
-#define USINGVLD 1
+#define USINGVLD 0
 #if USINGVLD 
 #include <vld.h>
 #endif
@@ -218,6 +218,13 @@ static std::wstring s2ws(const std::string& s)
     std::wstring r(buf);
     delete[] buf;
     return r;
+}
+
+#define DBOUT( s )					\
+{									\
+	std::wostringstream os;			\
+	os << s << endl;				\
+	OutputDebugString(os.str().c_str());\
 }
 /*
 

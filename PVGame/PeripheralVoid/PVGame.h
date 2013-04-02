@@ -8,6 +8,8 @@
 #include "tinyxml2.h"
 #include "FileLoader.h"
 #include "GameObject.h"
+#include "Audio/AL/al.h"
+#include "Audio/AL/alc.h"
 #include <vector>
 
 using namespace tinyxml2;
@@ -42,4 +44,7 @@ public:
 		unsigned int gameState;
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjects;
+
+		ALCdevice* audioDevice;
+		ALCcontext* audioContext;
 };

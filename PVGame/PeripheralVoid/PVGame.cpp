@@ -7,8 +7,6 @@ PVGame::PVGame(HINSTANCE hInstance)
 {
 	// Initialize smart pointers.
 	input = new Input();
-	player = new Player();
-
 	gameState = PLAYING;
 }
 
@@ -25,6 +23,8 @@ PVGame::~PVGame(void)
 	
 	delete player;
 	delete physicsMan;
+	alcDestroyContext(audioContext);
+    alcCloseDevice(audioDevice);
 }
 
 bool PVGame::Init()
@@ -32,7 +32,23 @@ bool PVGame::Init()
 	if (!D3DApp::Init())
 		return false;
 
+	audioDevice=alcOpenDevice(NULL);
+    if(audioDevice==NULL)
+	{
+		//std::cout << "cannot open sound card" << std::endl;
+		return 0;
+	}
+	audioContext=alcCreateContext(audioDevice,NULL);
+	if(audioContext==NULL)
+	{
+		//std::cout << "cannot open context" << std::endl;
+		return 0;
+	}
+	alcMakeContextCurrent(audioContext);
+        
+
 	physicsMan = new PhysicsManager();
+	player = new Player(physicsMan);
 
 	renderMan->BuildBuffers();
 
@@ -285,19 +301,32 @@ void PVGame::UpdateScene(float dt)
 		player->Update(dt, input);
 		physicsMan->update(dt);
 
-		if(input->wasKeyPressed('0'))
+		//if(input->wasKeyPressed('0'))
+		//{
+		
+		for(int i = 0; i < 1; i++)
 		{
-			renderMan->ToggleLight(0);
+			btVector3* playerV3 = new btVector3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
+			btVector3 lightPos = renderMan->getLightPosition(i);
+			btVector3* targetV3 = &lightPos;
+			if(physicsMan->broadPhase(player->GetCamera(), targetV3))
+			{
+				renderMan->ToggleLight(i);
+			}
 		}
 		if(input->wasKeyPressed('9'))
 		{
-			renderMan->ToggleLight(1);
+			renderMan->ToggleLight(0);
 		}
 		if(input->wasKeyPressed('8'))
 		{
-			renderMan->ToggleLight(2);
+			renderMan->ToggleLight(1);
 		}
 		if(input->wasKeyPressed('7'))
+		{
+			renderMan->ToggleLight(2);
+		}
+		if(input->wasKeyPressed('6'))
 		{
 			renderMan->ToggleLight(3);
 		}
@@ -306,10 +335,12 @@ void PVGame::UpdateScene(float dt)
 		{
 			XMFLOAT4 pos = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
-			float speed = 5;
+			float speed = 15;
 
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+			testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			is1Up = false;
 		}
@@ -320,10 +351,12 @@ void PVGame::UpdateScene(float dt)
 		{
 			XMFLOAT4 pos = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
-			float speed = 5;
+			float speed = 15;
 
 			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+			testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 
 			is2Up = false;

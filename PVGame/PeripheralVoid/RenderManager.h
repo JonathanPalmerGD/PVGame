@@ -360,6 +360,11 @@ class RenderManager
 		{
 			mPointLights[index].On.x = (mPointLights[index].On.x == 0) ? 1 : 0;
 		}
+		
+		btVector3 getLightPosition(int index)
+		{
+			return btVector3(mPointLights[index].Position.x, mPointLights[index].Position.y, mPointLights[index].Position.z); 
+		}
 
 		void OnResize()
 		{

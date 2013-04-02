@@ -27,6 +27,7 @@ private:
 	bool isBigEndian();
 	int convertToInt(char* buffer,int len);
 
+	bool initialized;
 public:
 	static enum FILE_TYPE{WAV = 1000, MP3 = 1001, FLAC = 1002};
 
@@ -65,5 +66,7 @@ public:
 
 	bool isPlaying();
 	unsigned int getSourceID();
+
+	bool Initialized();
 };
 

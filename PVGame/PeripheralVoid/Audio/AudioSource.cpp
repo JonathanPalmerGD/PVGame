@@ -20,6 +20,7 @@ AudioSource::AudioSource(void)
 	bufferid    = 0;
 	format      = 0;
 	state       = AL_INITIAL;
+	initialized = false;
 }
 
 /* initialize()
@@ -79,9 +80,16 @@ bool AudioSource::initialize(const char* fileName, FILE_TYPE type)
 		alSourcei(sourceid,AL_LOOPING,AL_FALSE);
 		alSourcei(sourceid,AL_SOURCE_RELATIVE, AL_FALSE);
 		alGetSourcei(sourceid, AL_SOURCE_STATE, &state);
+		initialized = true;
 		return true;
 	}
+	initialized = false;
 	return false;
+}
+
+bool AudioSource::Initialized()
+{
+	return initialized;
 }
 
 /* Destructor
