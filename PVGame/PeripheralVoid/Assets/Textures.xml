@@ -3,4 +3,9 @@
     <Filename>Textures/WoodCrate01.dds</Filename>
     <Type>Diffuse</Type>
 	</Texture>
+
+  <Texture name="Wall01">
+    <Filename>Textures/Wall01.dds</Filename>
+    <Type>Diffuse</Type>
+  </Texture>
 </TextureList>

@@ -203,10 +203,22 @@ static std::map<string, SurfaceMaterial> SURFACE_MATERIALS;
 
 //List our levels:
 const char MAP_LEVEL_1[] = "Assets/level1.xml";
-const char TEXTURES_FIILE[] = "Assets/Textures.xml";
+const char TEXTURES_FILE[] = "Assets/Textures.xml";
 const char SURFACE_MATERIALS_FILE[] = "Assets/SurfaceMaterials.xml";
 const char MATERIALS_FILE[] = "Assets/Materials.xml";
 
+// http://stackoverflow.com/questions/27220/how-to-convert-stdstring-to-lpcwstr-in-c-unicode
+static std::wstring s2ws(const std::string& s)
+{
+    int len;
+    int slength = (int)s.length() + 1;
+    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0); 
+    wchar_t* buf = new wchar_t[len];
+    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+    std::wstring r(buf);
+    delete[] buf;
+    return r;
+}
 /*
 
 // Model Structure

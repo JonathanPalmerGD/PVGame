@@ -1,27 +1,32 @@
-﻿Build started 4/1/2013 10:50:36 PM.
+﻿Build started 4/2/2013 1:03:38 AM.
      1>Project "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\PeripheralVoid.unsuccessfulbuild" because "AlwaysCreate" was specified.
        CustomBuild:
          All outputs are up-to-date.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt PVGame.cpp
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Common\d3dApp.cpp PVGame.cpp
          PVGame.cpp
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\rendermanager.h(346): warning C4244: '=' : conversion from 'int' to 'FLOAT', possible loss of data
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(148): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(149): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(153): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(156): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(158): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(173): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(175): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(177): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(179): warning C4018: '>' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(201): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(203): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(301): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(301): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(301): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\rendermanager.h(360): warning C4244: '=' : conversion from 'int' to 'FLOAT', possible loss of data
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(158): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(159): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(163): warning C4244: 'argument' : conversion from 'double' to 'unsigned int', possible loss of data
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(166): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(168): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(183): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(185): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(187): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(189): warning C4018: '>' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(211): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(213): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(311): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(311): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\pvgame.cpp(311): warning C4305: 'argument' : truncation from 'double' to 'float'
+         Generating Code...
+         Compiling...
+         d3dApp.cpp
+     1>c:\users\owner\dropbox\git\peripheralvoid\pvgame\peripheralvoid\rendermanager.h(360): warning C4244: '=' : conversion from 'int' to 'FLOAT', possible loss of data
+         Generating Code...
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -60,4 +65,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.68
+Time Elapsed 00:00:08.42

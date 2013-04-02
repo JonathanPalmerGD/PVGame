@@ -145,9 +145,15 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fxc compile for release: %(FullPath)</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
     </CustomBuild>
-    <None Include="Assets\Materials.xml" />
-    <None Include="Assets\SurfaceMaterials.xml" />
-    <None Include="Assets\Textures.xml" />
+    <None Include="Assets\Materials.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Assets\SurfaceMaterials.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Assets\Textures.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="FX\color.cod" />
     <None Include="FX\LightHelper.fx" />
     <CustomBuild Include="FX\Lighting.fx">

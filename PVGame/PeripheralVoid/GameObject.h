@@ -7,8 +7,8 @@ class GameObject
 {
 	public:
 		GameObject(void);
-		GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan);
-		GameObject(string aKey, SurfaceMaterial aMaterial, btRigidBody* rB, PhysicsManager* physicsMan, float mass = 0.0);
+		GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan);
+		GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass = 0.0);
 
 		void translate(float x, float y, float z);
 		void scale(float x, float y, float z);
@@ -16,12 +16,12 @@ class GameObject
 		void setLinearVelocity(float x, float y, float z);
 
 		void SetMeshKey(string aKey);
-		void SetSurfaceMaterial(SurfaceMaterial aMaterial);
+		void SetMaterialKey(string aKey);
 		void SetWorldMatrix(XMMATRIX* aMatrix);
 		void SetRigidBody(btRigidBody* rBody);
 
 		string GetMeshKey() const;
-		SurfaceMaterial GetSurfaceMaterial() const;
+		string GetMaterialKey() const;
 		XMFLOAT4X4 GetWorldMatrix();
 		btRigidBody* getRigidBody() const;
 
@@ -29,7 +29,7 @@ class GameObject
 
 	private:
 		string meshKey;
-		SurfaceMaterial surfaceMaterial;
+		string materialKey;
 		btRigidBody* rigidBody;
 		XMFLOAT4X4 worldMatrix;
 		XMFLOAT3 localScale;

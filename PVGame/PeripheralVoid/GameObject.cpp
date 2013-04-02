@@ -7,10 +7,10 @@ GameObject::GameObject(void)
 	rigidBody = NULL;
 }
 
-GameObject::GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan)
+GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan)
 {
-	meshKey = aKey;
-	surfaceMaterial = aMaterial;
+	meshKey = aMeshKey;
+	materialKey = aMaterialKey;
 	XMStoreFloat4x4(&worldMatrix, *aWorldMatrix);
 	rigidBody = NULL;
 	localScale = XMFLOAT3(1.0,1.0,1.0);
@@ -18,10 +18,10 @@ GameObject::GameObject(string aKey, SurfaceMaterial aMaterial, XMMATRIX* aWorldM
 	mass = 0.0;
 }
 
-GameObject::GameObject(string aKey, SurfaceMaterial aMaterial, btRigidBody* rB, PhysicsManager* physicsMan, float mass)
+GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass)
 {
-	meshKey = aKey;
-	surfaceMaterial = aMaterial;
+	meshKey = aMeshKey;
+	materialKey = aMaterialKey;
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
 	rigidBody = rB;
 	localScale = XMFLOAT3(1.0,1.0,1.0);
@@ -71,11 +71,11 @@ void GameObject::setLinearVelocity(float x, float y, float z)
 }
 
 void GameObject::SetMeshKey(string aKey) { meshKey = aKey; }
-void GameObject::SetSurfaceMaterial(SurfaceMaterial aMaterial) { surfaceMaterial = aMaterial; }
+void GameObject::SetMaterialKey(string aKey) { materialKey = aKey; }
 void GameObject::SetWorldMatrix(XMMATRIX* aMatrix) { XMStoreFloat4x4(&worldMatrix, *aMatrix); }
 
 string GameObject::GetMeshKey() const { return meshKey; }
-SurfaceMaterial GameObject::GetSurfaceMaterial() const { return surfaceMaterial; }
+string GameObject::GetMaterialKey() const { return materialKey; }
 btRigidBody* GameObject::getRigidBody() const { return rigidBody; }
 
 void GameObject::SetRigidBody(btRigidBody* rBody)

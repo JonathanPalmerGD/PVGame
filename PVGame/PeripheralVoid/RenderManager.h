@@ -182,10 +182,9 @@ class RenderManager
 			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
 			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
 			//Set the resources for the shader resource view
-			mfxDiffuseMapVar->SetResource(mDiffuseMapSRV);
+			
 			TexTransform->SetMatrix(reinterpret_cast<const float*>(&mTexTransform));
-			DiffuseMap->SetResource(mDiffuseMapSRV);
-
+			
 			D3DX11_TECHNIQUE_DESC techDesc;
 			mTech->GetDesc( &techDesc );
 
@@ -214,6 +213,9 @@ class RenderManager
 						vertexSize = buffDesc.ByteWidth / sizeof(Vertex);
 						prevKey = currentKey;
 					}
+					
+					// Get the material via the GameObject's key. We then set surface material, diffuse map, etc, by using the keys in the map.
+					GameMaterial aMaterial = GAME_MATERIALS[gameObjects[i]->GetMaterialKey()];
 
 					/*D3D11_BUFFER_DESC buffDesc;
 					bufferPairs[currentKey].vertexBuffer->GetDesc(&buffDesc);
@@ -232,7 +234,11 @@ class RenderManager
 					mfxWorld->SetMatrix(reinterpret_cast<float*>(&world));
 					mfxWorldInvTranspose->SetMatrix(reinterpret_cast<float*>(&worldInvTranspose));
 					mfxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&worldViewProj));
-					mfxMaterial->SetRawValue(&gameObjects[i]->GetSurfaceMaterial(), 0, sizeof(gameObjects[i]->GetSurfaceMaterial()));
+					
+					mfxDiffuseMapVar->SetResource(diffuseMaps[aMaterial.DiffuseKey]);
+
+					SurfaceMaterial aSurfaceMaterial = SURFACE_MATERIALS[aMaterial.SurfaceKey];
+					mfxMaterial->SetRawValue(&aSurfaceMaterial, 0, sizeof(aSurfaceMaterial));
 
 					mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
 					md3dImmediateContext->DrawIndexed(indexSize, 0, 0);
@@ -284,11 +290,21 @@ class RenderManager
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
 		void LoadContent()
 		{
-			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/WoodCrate01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/WoodCrate01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
 			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/Wall01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
 			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,L"defaultspec.dds", 0, 0, &mSpecMapRV, 0 ));
 		}
 		
+		void LoadTexture(const string& aKey, const string& aFileName, const string& aType)
+		{
+			// Create the resource and save in a map with the provided key. Later, we can use the type to store in different maps (bump mapping, normal mapping, etc).
+			ID3D11ShaderResourceView* aShaderResourceView;
+
+			// Filenames need to be LPCWSTR, so a special function is needed to do the conversion.
+			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, s2ws(aFileName).c_str(), 0, 0, &aShaderResourceView, 0 ));
+			diffuseMaps[aKey] = aShaderResourceView;
+		}
+
 		void BuildFX()
 		{
 			std::ifstream fin("fx/Basic.fxo", std::ios::binary);
@@ -321,7 +337,6 @@ class RenderManager
 			mfxMaterial          = mFX->GetVariableByName("gMaterial");
 			mfxDiffuseMapVar	 = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 			mfxSpecMapVar		 = mFX->GetVariableByName("gSpecMap")->AsShaderResource();
-			DiffuseMap			 = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 			TexTransform		 = mFX->GetVariableByName("gTexTransform")->AsMatrix();
 		}
 
@@ -489,8 +504,6 @@ class RenderManager
 			mfxPointLights = nullptr;
 			mfxSpotLight = nullptr;
 			mfxMaterial = nullptr;
-			mSpecMapRV = nullptr;
-			mDiffuseMapSRV = nullptr;
 
 			mInputLayout = nullptr;
 			md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
@@ -569,7 +582,6 @@ class RenderManager
 			ReleaseCOM(mDepthStencilBuffer);
 			ReleaseCOM(mFX);
 			ReleaseCOM(mInputLayout);
-			ReleaseCOM(mDiffuseMapSRV);
 
 			// Restore all default settings.
 			if( md3dImmediateContext )

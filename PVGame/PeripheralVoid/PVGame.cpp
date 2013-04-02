@@ -75,10 +75,23 @@ bool PVGame::LoadXML()
 	for (XMLElement* material = doc.FirstChildElement("MaterialsList")->FirstChildElement("Material"); 
 				material != NULL; material = material->NextSiblingElement("Material"))
 	{
+		// Loop through all the materials, setting appropriate attributes.
 		GameMaterial aMaterial;
 		aMaterial.Name = material->Attribute("name");
 		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
-		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->Value();
+		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
+		GAME_MATERIALS[aMaterial.Name] = aMaterial;
+	}
+	#pragma endregion
+
+	#pragma region Textures
+	doc.LoadFile(TEXTURES_FILE);
+	for (XMLElement* texture = doc.FirstChildElement("TextureList")->FirstChildElement("Texture"); 
+				texture != NULL; texture = texture->NextSiblingElement("Texture"))
+	{
+		// Tells renderman to load the texture and save it in a map.
+		renderMan->LoadTexture(texture->Attribute("name"), texture->FirstChildElement("Filename")->FirstChild()->Value(),
+			texture->FirstChildElement("Type")->FirstChild()->Value());
 	}
 	#pragma endregion
 
@@ -87,6 +100,7 @@ bool PVGame::LoadXML()
 	for (XMLElement* surfaceMaterial = doc.FirstChildElement("SurfaceMaterialsList")->FirstChildElement("SurfaceMaterial"); 
 				surfaceMaterial != NULL; surfaceMaterial = surfaceMaterial->NextSiblingElement("SurfaceMaterial"))
 	{
+		// Gets values for surface material from xml.
 		XMLElement* ambient = surfaceMaterial->FirstChildElement("Ambient");
 		XMLElement* diffuse = surfaceMaterial->FirstChildElement("Diffuse");
 		XMLElement* specular = surfaceMaterial->FirstChildElement("Specular");
@@ -200,7 +214,7 @@ bool PVGame::LoadXML()
 		{
 			XMMATRIX matrix = XMMatrixIdentity();
 
-			GameObject* wallObj = new GameObject("Cube", SURFACE_MATERIALS["TestRed"], physicsMan->createRigidBody("Cube", wallRowCol[i][j].centerX, 1.5f, wallRowCol[i][j].centerZ), physicsMan);
+			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j].centerX, 1.5f, wallRowCol[i][j].centerZ), physicsMan);
 			//wallObj->translate((float)atof(col), 1.5f, (float)atof(row));
 			wallObj->scale(wallRowCol[i][j].xLength,3.0,wallRowCol[i][j].zLength);
 			gameObjects.push_back(wallObj);
@@ -294,7 +308,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			float speed = 5;
 
-			GameObject* testSphere = new GameObject("Sphere", SURFACE_MATERIALS["TestProjectile"], physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(testSphere);
 			is1Up = false;
@@ -308,7 +322,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			float speed = 5;
 
-			GameObject* testSphere = new GameObject("Cube", SURFACE_MATERIALS["TestProjectile"], physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(testSphere);
 
@@ -366,7 +380,7 @@ void PVGame::BuildGeometryBuffers()
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	GameObject* aGameObject = new GameObject("Plane", SURFACE_MATERIALS["TestProjectile"], &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
+	GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
 	aGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
 	aGameObject->scale(20.0, 1.0, 20.0);
 	gameObjects.push_back(aGameObject);
