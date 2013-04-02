@@ -591,12 +591,19 @@ class RenderManager
 			ReleaseCOM(md3dDevice);
 
 			// Release all the buffers by going through the map.
-			map<string, BufferPair>::iterator itr = bufferPairs.begin();
-			while (itr != bufferPairs.end())
+			map<string, BufferPair>::iterator bufferItr = bufferPairs.begin();
+			while (bufferItr != bufferPairs.end())
 			{
-				ReleaseCOM(itr->second.vertexBuffer);
-				ReleaseCOM(itr->second.indexBuffer);
-				itr++;
+				ReleaseCOM(bufferItr->second.vertexBuffer);
+				ReleaseCOM(bufferItr->second.indexBuffer);
+				bufferItr++;
+			}
+
+			map<string, ID3D11ShaderResourceView*>::iterator diffuseItr = diffuseMaps.begin();
+			while (diffuseItr != diffuseMaps.end())
+			{
+				ReleaseCOM(diffuseItr->second);
+				diffuseItr++;
 			}
 		}
 
