@@ -166,5 +166,5 @@ GameObject::~GameObject(void)
 	if (rigidBody)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
 	delete audioSource;
-	//delete rigidBody;
+	delete rigidBody;
 }

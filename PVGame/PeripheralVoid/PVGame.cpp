@@ -306,10 +306,10 @@ void PVGame::UpdateScene(float dt)
 		
 		for(int i = 0; i < 1; i++)
 		{
-			btVector3* playerV3 = new btVector3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
+			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
-			btVector3* targetV3 = &lightPos;
-			if(physicsMan->broadPhase(player->GetCamera(), targetV3))
+			//btVector3 targetV3 = &lightPos;
+			if(physicsMan->broadPhase(player->GetCamera(), &lightPos))
 			{
 				renderMan->ToggleLight(i);
 			}
