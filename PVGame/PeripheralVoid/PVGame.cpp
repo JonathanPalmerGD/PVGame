@@ -333,14 +333,15 @@ void PVGame::UpdateScene(float dt)
 
 		if(input->isKeyDown('1') && is1Up)
 		{
-			XMFLOAT4 pos = player->getPosition();
+			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
 
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			testSphere->playAudio();
+			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			is1Up = false;
 		}
@@ -349,14 +350,15 @@ void PVGame::UpdateScene(float dt)
 
 		if(input->isKeyDown('2') && is2Up)
 		{
-			XMFLOAT4 pos = player->getPosition();
+			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
 
 			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			testSphere->playAudio();
+			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 
 			is2Up = false;
@@ -415,7 +417,7 @@ void PVGame::BuildGeometryBuffers()
 
 	GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
 	aGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
-	aGameObject->scale(20.0, 1.0, 20.0);
+	aGameObject->scale(40.0, 1.0, 40.0);
 	gameObjects.push_back(aGameObject);
 
 	/*GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14f) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);

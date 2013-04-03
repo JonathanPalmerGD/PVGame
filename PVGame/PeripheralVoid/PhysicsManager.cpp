@@ -234,7 +234,17 @@ void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
  */
 bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
 {
-	//btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
+	XMMATRIX matrix = XMMatrixIdentity() * XMMatrixTranslation(targetV3->getX(), targetV3->getY(), targetV3->getZ()) * playCamera->ViewProj();
+	XMVECTOR result = XMVector3Transform(XMVectorSet(targetV3->getX(), targetV3->getY(), targetV3->getZ(), 1.0f), matrix);
+	XMFLOAT3 resultFloat;
+	XMStoreFloat3(&resultFloat, result);
+
+	//DBOUT(resultFloat.x);
+	//DBOUT(resultFloat.y);
+	//DBOUT(resultFloat.z);
+	//DBOUT("\n");
+	return true;
+	/*btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
 	btVector3* playerV3 = new btVector3(playCamera->GetLook().x, playCamera->GetLook().y, playCamera->GetLook().z);
 	btVector3 targetRelPosV3 = *targetV3 - *playerV3;
 	btScalar pDT= playerV3->dot(targetRelPosV3);
@@ -246,7 +256,7 @@ bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
 	if(angle < 120 && angle > 30  )
 		return true;
 	else
- 		return false;
+ 		return false;*/
 }
 
 btKinematicCharacterController* PhysicsManager::createCharacterController(float radius, float height, float stepHeight)
