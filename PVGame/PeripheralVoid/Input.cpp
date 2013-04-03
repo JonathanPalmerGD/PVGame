@@ -572,3 +572,8 @@ bool Input::isMenuSelectPressed() const
 {
 	return (wasKeyPressed(VK_RETURN) || wasGamepadButtonPressed(ButtonA));
 }
+
+bool Input::isJumpKeyPressed() const
+{
+	return (wasKeyPressed(VK_SPACE) || wasGamepadButtonPressed(ButtonA));
+}

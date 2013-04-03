@@ -487,6 +487,7 @@ public:
 	bool isMenuSelectPressed() const;
 
 	
+	bool isJumpKeyPressed() const;
 };
 
 #endif

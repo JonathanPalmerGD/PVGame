@@ -96,8 +96,9 @@ void Player::HandleInput(Input* input)
 		direction += r;
 	if(input->isPlayerLeftKeyDown())
 		direction -= r;
-	if(input->wasKeyPressed(VK_SPACE))
+		if(input->isJumpKeyPressed())
 		controller->jump();
+
 
 	controller->setWalkDirection(direction * playerSpeed);
 	
