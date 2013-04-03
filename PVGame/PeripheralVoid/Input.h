@@ -486,7 +486,6 @@ public:
 	// True if return or A button on gamepad is pressed.
 	bool isMenuSelectPressed() const;
 
-	
 	bool isJumpKeyPressed() const;
 };
 

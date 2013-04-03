@@ -304,15 +304,20 @@ void PVGame::UpdateScene(float dt)
 		//if(input->wasKeyPressed('0'))
 		//{
 		
-		for(int i = 0; i < 1; i++)
+		for(int i = 0; i < renderMan->getNumLights(); i++)
 		{
 			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
 			//btVector3 targetV3 = &lightPos;
 			if(physicsMan->broadPhase(player->GetCamera(), &lightPos))
 			{
-				renderMan->ToggleLight(i);
+				renderMan->EnableLight(i);
 			}
+			else
+			{
+				renderMan->DisableLight(i);
+			}
+
 		}
 		if(input->wasKeyPressed('9'))
 		{
@@ -331,16 +336,18 @@ void PVGame::UpdateScene(float dt)
 			renderMan->ToggleLight(3);
 		}
 
-			if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
+		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
-			XMFLOAT4 pos = player->getPosition();
+			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
-			float speed = 5;
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+			float speed = 15;
 
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			testSphere->playAudio();
+			renderMan->CreateLight(pos.x, pos.y, pos.z);
+			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			is1Up = false;
 		}
@@ -349,14 +356,15 @@ void PVGame::UpdateScene(float dt)
 
 		if((input->isKeyDown('2') || input->getGamepadRightTrigger(0))  && is2Up)
 		{
-			XMFLOAT4 pos = player->getPosition();
+			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
-			float speed = 5;
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+			float speed = 15;
 
 			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			testSphere->playAudio();
+			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 
 			is2Up = false;

@@ -235,14 +235,22 @@ void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
 bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
 {
 	XMMATRIX matrix = XMMatrixIdentity() * XMMatrixTranslation(targetV3->getX(), targetV3->getY(), targetV3->getZ()) * playCamera->ViewProj();
-	XMVECTOR result = XMVector3Transform(XMVectorSet(targetV3->getX(), targetV3->getY(), targetV3->getZ(), 1.0f), matrix);
-	XMFLOAT3 resultFloat;
-	XMStoreFloat3(&resultFloat, result);
+	XMVECTOR result = XMVector4Transform(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), matrix);
+	XMFLOAT4 resultFloat;
+	XMStoreFloat4(&resultFloat, result);
 
-	//DBOUT(resultFloat.x);
-	//DBOUT(resultFloat.y);
-	//DBOUT(resultFloat.z);
-	//DBOUT("\n");
+	/*DBOUT(resultFloat.x / resultFloat.w);
+	DBOUT(resultFloat.y / resultFloat.w);
+	DBOUT(resultFloat.z / resultFloat.w);
+	DBOUT("\n");
+*/
+	if (resultFloat.z / resultFloat.w < 0.0f)
+		return false;
+	if (abs(resultFloat.x / resultFloat.w) > 1.0f)
+		return false;
+	if (abs(resultFloat.y / resultFloat.w) > 1.0f)
+		return false;
+
 	return true;
 	/*btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
 	btVector3* playerV3 = new btVector3(playCamera->GetLook().x, playCamera->GetLook().y, playCamera->GetLook().z);
