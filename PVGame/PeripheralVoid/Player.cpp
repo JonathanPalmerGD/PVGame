@@ -21,11 +21,11 @@ Player::Player(PhysicsManager* pm)
 	playerCamera->UpdateViewMatrix();
 
 	physicsMan = pm;
-	controller = physicsMan->createCharacterController( 1, .5, .1);
-	controller->setGravity(9.81);
-	controller->setJumpSpeed(10);
-	controller->setMaxJumpHeight(10);
-	controller->setMaxSlope(3 * 3.1415);
+	controller = physicsMan->createCharacterController( 1.0f, .5f, .1f);
+	controller->setGravity(9.81f);
+	controller->setJumpSpeed(10.0f);
+	controller->setMaxJumpHeight(10.0f);
+	controller->setMaxSlope(3.0f * 3.1415f);
 
 	listener = new AudioListener();
 }
@@ -97,10 +97,11 @@ void Player::HandleInput(Input* input)
 	if(input->isPlayerLeftKeyDown())
 		direction -= r;
 	if(input->isJumpKeyPressed())
-		controller->jump();
-
-	controller->setWalkDirection(direction * playerSpeed);
+ 		controller->jump();
 	
+	DBOUT(controller->canJump());
+	controller->setWalkDirection(direction * playerSpeed);
+
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
 	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1, pos.getZ());
 	playerCamera->SetPosition(cPos);

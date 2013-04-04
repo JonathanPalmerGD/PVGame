@@ -5,7 +5,8 @@ PhysicsManager::PhysicsManager(void)
 	collisionConfig = new btDefaultCollisionConfiguration();
     dispatcher      = new btCollisionDispatcher(collisionConfig);
     broadphase      = new btDbvtBroadphase();
-	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+	ghostPair		= new btGhostPairCallback();
+	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPair);
     solver          = new btSequentialImpulseConstraintSolver();
     world           = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
     world->setGravity(btVector3(0.0f,-9.81f,0.0f));
@@ -16,11 +17,19 @@ PhysicsManager::PhysicsManager(void)
 
 PhysicsManager::~PhysicsManager()
 {
-	delete dispatcher;
-	delete collisionConfig;
-	delete solver;
-	delete broadphase;
 	delete world;
+    delete solver;
+    delete collisionConfig;
+    delete dispatcher;
+	delete ghostPair;
+    delete broadphase;
+
+	std::map<string, btTriangleMesh*>::iterator itr = TRIANGLE_MESHES.begin();
+	while (itr != TRIANGLE_MESHES.end())
+	{
+		delete itr->second;
+		itr++;
+	}
 }
 
 /* update()
@@ -132,6 +141,7 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, triMeshShape, inertia);
 		btRigidBody* rigidBody = new btRigidBody(rbInfo);
+		//rigidBody->setCollisionFlags(btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE); // Commented out because boxes (but not spheres?) would fall through walls.
 		return rigidBody;
 	}
 	return NULL;
@@ -224,7 +234,12 @@ void PhysicsManager::addRigidBodyToWorld(btRigidBody* rigidBody)
 void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
 {
 	if(rigidBody!= NULL)
+	{
 		world->removeRigidBody(rigidBody);
+		delete rigidBody->getCollisionShape();
+		delete rigidBody->getMotionState();
+		delete rigidBody;
+	}
 }
 
 /* broadPhase()
@@ -288,4 +303,7 @@ void PhysicsManager::removeCharacterController(btKinematicCharacterController* c
 {
 	world->removeCollisionObject(cc->getGhostObject());
 	world->removeCharacter(cc);
+	delete cc->getGhostObject()->getCollisionShape();
+	delete cc->getGhostObject();
+	delete cc;
 }

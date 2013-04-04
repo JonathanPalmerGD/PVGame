@@ -149,10 +149,10 @@
     <ClInclude Include="FileLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsManager.h">
+    <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
+    <ClInclude Include="PhysicsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

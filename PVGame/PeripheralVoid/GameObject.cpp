@@ -84,7 +84,9 @@ btRigidBody* GameObject::getRigidBody() const { return rigidBody; }
 void GameObject::SetRigidBody(btRigidBody* rBody)
 {
 	if(rigidBody != NULL)
+	{
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
+	}
 	rigidBody = rBody;
 	physicsMan->addRigidBodyToWorld(rigidBody);
 }
@@ -116,7 +118,7 @@ XMFLOAT4X4 GameObject::GetWorldMatrix()
 
 void GameObject::initAudio(string file)
 {
-	audioSource->initialize(file.c_str(), AudioSource::FILE_TYPE::WAV);
+	audioSource->initialize(file.c_str(), AudioSource::WAV);
 }
 
 void GameObject::playAudio()
@@ -166,5 +168,4 @@ GameObject::~GameObject(void)
 	if (rigidBody)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
 	delete audioSource;
-	delete rigidBody;
 }

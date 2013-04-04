@@ -171,17 +171,17 @@ bool PVGame::LoadXML()
 		const char* row = wall->Attribute("row");
 		const char* col = wall->Attribute("col");
 
-		tempWall.row = atof(row);
-		tempWall.col = atof(col);
+		tempWall.row = (float)atof(row);
+		tempWall.col = (float)atof(col);
 		tempWall.centerX = tempWall.col + tempWall.xLength / 2;
 		tempWall.centerZ = tempWall.row + tempWall.zLength / 2;
 	
-		wallRowCol[atof(row)].push_back(tempWall);
+		wallRowCol[(unsigned int)atof(row)].push_back(tempWall);
 	}
 
-	for (int i = 0; i < wallRowCol.size(); i++)
+	for (unsigned int i = 0; i < wallRowCol.size(); i++)
 	{
-		for (int j = 0; j < wallRowCol[i].size() - 1; j++)
+		for (unsigned int j = 0; j < wallRowCol[i].size() - 1; j++)
 		{
 			if ((wallRowCol[i][j].col + wallRowCol[i][j].xLength) == wallRowCol[i][j + 1].col)
 			{
@@ -196,11 +196,11 @@ bool PVGame::LoadXML()
 		}
 	}
 
-	for (int i = 0; i < wallRowCol.size() - 1; i++)
+	for (unsigned int i = 0; i < wallRowCol.size() - 1; i++)
 	{
-		for (int j = 0; j < wallRowCol[i].size(); j++)
+		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			for (int k = 0; k < wallRowCol[i].size(); k++)
+			for (unsigned int k = 0; k < wallRowCol[i].size(); k++)
 			{
 				if ((wallRowCol[i + 1].size() > j) && ((wallRowCol[i][k].row + wallRowCol[i][k].zLength) == wallRowCol[i + 1][j].row) && 
 					(wallRowCol[i][k].xLength == 1) && (wallRowCol[i + 1][j].xLength == 1))
@@ -224,9 +224,9 @@ bool PVGame::LoadXML()
 		}
 	}
 
-	for (int i = 0; i < wallRowCol.size(); i++)
+	for (unsigned int i = 0; i < wallRowCol.size(); i++)
 	{
-		for (int j = 0; j < wallRowCol[i].size(); j++)
+		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
 			XMMATRIX matrix = XMMatrixIdentity();
 
@@ -343,7 +343,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3, 0.3, 0.3, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			renderMan->CreateLight(pos.x, pos.y, pos.z);

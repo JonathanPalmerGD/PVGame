@@ -206,7 +206,7 @@ class RenderManager
 			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
 			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
 
-			float numLights = mPointLights.size();
+			float numLights = (float)mPointLights.size();
 			mfxNumLights->SetRawValue(&numLights, 0, sizeof(float));
 			//Set the resources for the shader resource view
 			
@@ -386,7 +386,7 @@ class RenderManager
 
 		void ToggleLight(int index)
 		{
-			mPointLights[index].On.x = (mPointLights[index].On.x == 0) ? 1 : 0;
+			mPointLights[index].On.x = (mPointLights[index].On.x == 0.0f) ? 1.0f : 0.0f;
 		}
 
 		void EnableLight(int index)

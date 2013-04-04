@@ -21,7 +21,7 @@ private:
 	btCollisionConfiguration* collisionConfig; //Collision Handling
 	btBroadphaseInterface* broadphase;         //Handles the Broad Phase of Collision Detections, aka determine pairs of objects that could possibly be colliding
 	btConstraintSolver* solver;                //Solves Constraints
-	
+	btGhostPairCallback* ghostPair;				// Needs to be separate so it can be deallocated.
 	float pStepSize;
 	float pAccumulator;
 
