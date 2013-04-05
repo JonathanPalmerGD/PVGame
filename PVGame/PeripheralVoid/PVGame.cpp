@@ -48,7 +48,7 @@ bool PVGame::Init()
         
 
 	physicsMan = new PhysicsManager();
-	player = new Player(physicsMan);
+	player = new Player(physicsMan, renderMan);
 
 	renderMan->BuildBuffers();
 

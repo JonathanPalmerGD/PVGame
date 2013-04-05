@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(PhysicsManager* pm) 
+Player::Player(PhysicsManager* pm, RenderManager* rm) 
 	: PIXELS_PER_SEC(100.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
@@ -27,6 +27,8 @@ Player::Player(PhysicsManager* pm)
 	controller->setMaxJumpHeight(10.0f);
 	controller->setMaxSlope(3.0f * 3.1415f);
 
+	renderMan = rm;
+
 	listener = new AudioListener();
 }
 
@@ -39,6 +41,41 @@ void Player::Update(float dt, Input* input)
 
 void Player::HandleInput(Input* input)
 {
+	// Basic mouse camera controls
+	if (input->getMouseY() < renderMan->GetClientHeight() * .2)
+	{
+		playerCamera->Pitch(-camLookSpeed / 2);
+	}
+
+	if (input->getMouseY() >= renderMan->GetClientHeight() * .8)
+	{
+		playerCamera->Pitch(camLookSpeed / 2);
+	}
+
+	if (input->getMouseX() < renderMan->GetClientWidth() * .2)
+	{
+		float angle = -camLookSpeed / 2;
+		playerCamera->RotateY(angle);
+		XMMATRIX R = XMMatrixRotationY(angle);
+
+		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+	}
+
+	if (input->getMouseX() >= renderMan->GetClientWidth() * .8)
+	{
+		float angle = camLookSpeed / 2;
+		playerCamera->RotateY(angle);
+		XMMATRIX R = XMMatrixRotationY(angle);
+
+		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+	}
+
 	// Now check for camera input.
 	if (input->isCameraUpKeyDown())
 	{

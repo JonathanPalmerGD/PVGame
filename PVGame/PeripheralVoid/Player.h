@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PhysicsManager.h"
+#include "RenderManager.h"
 #include "Common\Camera.h"
 #include "Common\xnacollision.h"
 #include "Input.h"
@@ -14,7 +15,7 @@ using namespace XNA;
 class Player
 {
 	public:
-		Player(PhysicsManager* pm);
+		Player(PhysicsManager* pm, RenderManager* rm);
 		virtual ~Player(void);
 		void OnResize(float aspectRatio);
 		void Update(float dt, Input* aInput);
@@ -36,6 +37,7 @@ class Player
 		void HandleInput(Input* input);
 
 		PhysicsManager* physicsMan;
+		RenderManager* renderMan;
 		btKinematicCharacterController* controller;
 
 		AudioListener* listener;

@@ -10,7 +10,7 @@ Camera::Camera()
 	  mUp(0.0f, 1.0f, 0.0f),
 	  mLook(0.0f, 0.0f, 1.0f)
 {
-	SetLens(0.25f*MathHelper::Pi, 1.0f, 0.1f, 1000.0f);
+	SetLens(0.25f*MathHelper::Pi, 1.0f, 0.01f, 1000.0f);
 }
 
 Camera::~Camera()
