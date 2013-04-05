@@ -32,6 +32,11 @@ PhysicsManager::~PhysicsManager()
 	}
 }
 
+float PhysicsManager::getStepSize()
+{
+	return pStepSize;
+}
+
 /* update()
  *
  * steps the simulation at a rate of 60 fps
