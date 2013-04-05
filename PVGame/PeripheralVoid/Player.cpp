@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(PhysicsManager* pm) 
-	: PIXELS_PER_SEC(100.0f), LOOK_SPEED(3.5f)
+	: PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
@@ -32,7 +32,7 @@ Player::Player(PhysicsManager* pm)
 
 void Player::Update(float dt, Input* input)
 {
-	playerSpeed = dt * PIXELS_PER_SEC;
+	playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
 }

@@ -24,11 +24,11 @@ private:
 	btGhostPairCallback* ghostPair;				// Needs to be separate so it can be deallocated.
 	float pStepSize;
 	float pAccumulator;
-
 public:
 	map<string, btTriangleMesh*> TRIANGLE_MESHES;
 	PhysicsManager(void);
 	~PhysicsManager(void);
+	float getStepSize();
 	void update(float dt);
 	btRigidBody* createPlane(float x, float y, float z);
 	btRigidBody* createRigidBody(string handle, float mass = 0.0);
