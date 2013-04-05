@@ -7,3 +7,6 @@
 *.log
 *.pdb
 *.idb
+*.bak
+*.orig
+PVGame/Debug/*
