@@ -5,6 +5,7 @@
 #include "Common\d3dx11effect.h"
 #include "Common\MathHelper.h"
 #include "Player.h"
+#include "Crest.h"
 #include "tinyxml2.h"
 #include "FileLoader.h"
 #include "GameObject.h"
@@ -44,6 +45,7 @@ public:
 		unsigned int gameState;
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjects;
+		vector<Crest*> crestObjects;
 
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;

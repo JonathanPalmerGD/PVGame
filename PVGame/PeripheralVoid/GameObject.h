@@ -8,8 +8,8 @@ class GameObject
 {
 	public:
 		GameObject(void);
-		GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan);
-		GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass = 0.0);
+		GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, bool visionAff = false);
+		GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass = 0.0, bool visionAff = false);
 
 		void translate(float x, float y, float z);
 		void scale(float x, float y, float z);
@@ -21,6 +21,7 @@ class GameObject
 		void SetWorldMatrix(XMMATRIX* aMatrix);
 		void SetRigidBody(btRigidBody* rBody);
 
+		bool GetVisionAffected();
 		string GetMeshKey() const;
 		string GetMaterialKey() const;
 		XMFLOAT4X4 GetWorldMatrix();
@@ -41,7 +42,8 @@ class GameObject
 		void restartAudio();
 		void restartAndPlayAudio();
 
-	private:
+	protected:
+		bool visionAffected;
 		string meshKey;
 		string materialKey;
 		btRigidBody* rigidBody;

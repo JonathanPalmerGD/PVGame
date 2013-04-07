@@ -35,6 +35,26 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 
 void Player::Update(float dt, Input* input)
 {
+	if(leapStatus)
+	{
+		controller->setJumpSpeed(40.0f);
+		controller->setMaxJumpHeight(40.0f);
+	}
+	else
+	{
+		controller->setJumpSpeed(10.0f);
+		controller->setMaxJumpHeight(10.0f);
+	}
+	if(medusaStatus)
+		controller->setMaxJumpHeight(40.0f);
+	else
+		controller->setMaxJumpHeight(10.0f);
+
+	//if(mobilityStatus)
+		//controller->setMaxJumpHeight(40.0f);
+	//else
+		//controller->setMaxJumpHeight(10.0f);
+
 	playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
@@ -183,6 +203,14 @@ Camera* Player::GetCamera()
 {
 	return playerCamera;
 }
+
+void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
+void Player::setMedusaStatus(bool newStatus) { medusaStatus = newStatus; }
+void Player::setLeapStatus(bool newStatus) { leapStatus = newStatus; }
+
+bool Player::getMobilityStatus() { return mobilityStatus; }
+bool Player::getMedusaStatus() { return medusaStatus; }
+bool Player::getLeapStatus() { return leapStatus; }
 
 XMFLOAT4 Player::getPosition()
 {

@@ -99,6 +99,7 @@
     <ClCompile Include="Common\TextureMgr.cpp" />
     <ClCompile Include="Common\Waves.cpp" />
     <ClCompile Include="Common\xnacollision.cpp" />
+    <ClCompile Include="Crest.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="Common\Waves.h" />
     <ClInclude Include="Common\xnacollision.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Crest.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Input.h" />

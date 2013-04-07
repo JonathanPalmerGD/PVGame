@@ -399,6 +399,12 @@ class RenderManager
 			mPointLights[index].On.x = 0;
 		}
 		
+		void SetLightPosition(int index, btVector3* targetV3)
+		{
+			mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
+
+		}
+
 		btVector3 getLightPosition(int index)
 		{
 			return btVector3(mPointLights[index].Position.x, mPointLights[index].Position.y, mPointLights[index].Position.z); 

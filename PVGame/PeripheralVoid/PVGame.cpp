@@ -246,6 +246,10 @@ bool PVGame::LoadXML()
 		// gameObjects.push_back(spawnObj);
 	}
 
+	GameObject* crestObj = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", -8.0f, 0.0f, -8.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, LEAP, 1.0f);
+	crestObj->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+	gameObjects.push_back(crestObj);
+
 	//tinyxml2::XMLElement* titleElement = doc.FirstChildElement( 
 
 
@@ -306,12 +310,10 @@ void PVGame::UpdateScene(float dt)
 		
 		for(int i = 0; i < renderMan->getNumLights(); i++)
 		{
-			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
-			//btVector3 targetV3 = &lightPos;
 			if(physicsMan->broadPhase(player->GetCamera(), &lightPos))
 			{
-				renderMan->EnableLight(i);
+				//renderMan->EnableLight(i);
 			}
 			else
 			{
@@ -319,6 +321,39 @@ void PVGame::UpdateScene(float dt)
 			}
 
 		}
+
+		for(int i = 0; i < gameObjects.size(); i++)
+		{
+			if(gameObjects[i]->GetVisionAffected())
+			{	
+				btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
+				renderMan->SetLightPosition(0, &crestPos);
+				if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+				{	
+					renderMan->EnableLight(0);
+					//Do a check to see what type of crest? if((Crest)gameObjects[i]).GetCrestType())
+						//Do different things based on crest type.
+					player->setLeapStatus(true);
+					
+					//(Crest)gameObjects[i])->Update();
+				}
+				else
+				{
+					player->setLeapStatus(false);
+				}
+			}
+			//
+			//{
+				//if(physicsMan->broadPhase(player->GetCamera(), (Crest)gameObjects[i]).getRigidBody()->getCenterOfMassPosition())
+				//{
+				//	
+				//
+				//}
+
+			//}
+			//btVector3 crestPos = 
+		}
+
 		if(input->wasKeyPressed('9'))
 		{
 			renderMan->ToggleLight(0);

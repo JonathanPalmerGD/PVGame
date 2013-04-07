@@ -20,11 +20,21 @@ class Player
 		void OnResize(float aspectRatio);
 		void Update(float dt, Input* aInput);
 		XMMATRIX ViewProj() const;
-		Camera* GetCamera();
+		
+		void setMobilityStatus(bool newStatus);
+		void setMedusaStatus(bool newStatus);
+		void setLeapStatus(bool newStatus);
 
+		Camera* GetCamera();
+		bool getMobilityStatus();
+		bool getMedusaStatus();
+		bool getLeapStatus();
 		XMFLOAT4 getPosition();
 		btVector3 getCameraPosition();
 	private:
+		bool leapStatus;
+		bool mobilityStatus;
+		bool medusaStatus;
 		float playerSpeed;
 		float camLookSpeed;
 		const float PIXELS_PER_SEC;

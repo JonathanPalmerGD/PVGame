@@ -19,6 +19,7 @@ using std::string;
 
 #define MAX_LIGHTS 10
 const enum GAME_STATE { MENU, OPTION, PLAYING, END };
+const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK};
 
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds
 

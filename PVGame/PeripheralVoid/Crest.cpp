@@ -49,6 +49,7 @@ void Crest::Update()
 			//Increment the player's movement speed.
 			break;
 		case LEAP:
+			
 			//Increase the player's jump variable.
 			//player.setJumpHeight(bigger number)
 			break;

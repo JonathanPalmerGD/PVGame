@@ -6,10 +6,12 @@ GameObject::GameObject(void)
 	meshKey = "None";
 	rigidBody = NULL;
 	audioSource = new AudioSource();
+	visionAffected = false;
 }
 
-GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan)
+GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, bool visionAff)
 {
+	visionAffected = visionAff;
 	meshKey = aMeshKey;
 	materialKey = aMaterialKey;
 	XMStoreFloat4x4(&worldMatrix, *aWorldMatrix);
@@ -20,8 +22,9 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMat
 	audioSource = new AudioSource();
 }
 
-GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass)
+GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass, bool visionAff)
 {
+	visionAffected = visionAff;
 	meshKey = aMeshKey;
 	materialKey = aMaterialKey;
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
@@ -77,6 +80,7 @@ void GameObject::SetMeshKey(string aKey) { meshKey = aKey; }
 void GameObject::SetMaterialKey(string aKey) { materialKey = aKey; }
 void GameObject::SetWorldMatrix(XMMATRIX* aMatrix) { XMStoreFloat4x4(&worldMatrix, *aMatrix); }
 
+bool GameObject::GetVisionAffected() { return visionAffected; }
 string GameObject::GetMeshKey() const { return meshKey; }
 string GameObject::GetMaterialKey() const { return materialKey; }
 btRigidBody* GameObject::getRigidBody() const { return rigidBody; }
