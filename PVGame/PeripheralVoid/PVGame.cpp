@@ -247,8 +247,13 @@ bool PVGame::LoadXML()
 	}
 
 	GameObject* crestObj = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", -8.0f, 0.0f, -8.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, LEAP, 1.0f);
-	crestObj->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 	gameObjects.push_back(crestObj);
+
+	GameObject* crestObj2 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 4.0f, 10.0f, 4.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MEDUSA, 1.0f);
+	gameObjects.push_back(crestObj2);
+
+	GameObject* crestObj3 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 6.0f, 10.0f, -7.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MOBILITY, 1.0f);
+	gameObjects.push_back(crestObj3);
 
 	//tinyxml2::XMLElement* titleElement = doc.FirstChildElement( 
 
@@ -319,29 +324,72 @@ void PVGame::UpdateScene(float dt)
 			{
 				renderMan->DisableLight(i);
 			}
-
 		}
+		
+		#pragma region Player Statuses and Crest Checking
+		player->resetStatuses();
 
 		for(int i = 0; i < gameObjects.size(); i++)
 		{
 			if(gameObjects[i]->GetVisionAffected())
 			{	
-				btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
-				renderMan->SetLightPosition(0, &crestPos);
-				if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
-				{	
-					renderMan->EnableLight(0);
-					//Do a check to see what type of crest? if((Crest)gameObjects[i]).GetCrestType())
-						//Do different things based on crest type.
-					player->setLeapStatus(true);
-					
-					//(Crest)gameObjects[i])->Update();
-				}
-				else
+				//If it is a crest
+					//And if it is colliding
+				if(Crest* currentCrest = dynamic_cast<Crest*>(gameObjects[i]))
 				{
-					player->setLeapStatus(false);
+					btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
+					#pragma region Switch for Crest Types
+					switch(currentCrest->GetCrestType())
+					{
+						#pragma region Medusa Crest
+						case MEDUSA: //GREEN
+							//Increment the player's movement speed.
+							renderMan->SetLightPosition(1, &crestPos);
+
+							if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+							{	
+								renderMan->EnableLight(1);
+								player->setMedusaStatus(true);
+								player->increaseMedusaPercent();
+							}
+							break;
+						#pragma endregion
+						#pragma region Leap Crest
+						case LEAP:	//RED
+							//Increase the player's jump variable.
+							renderMan->SetLightPosition(0, &crestPos);
+
+							if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+							{	
+								renderMan->EnableLight(0);
+								player->setLeapStatus(true);
+							}
+							break;
+						#pragma endregion
+						#pragma region Mobility Crest
+						case MOBILITY:	//BLUE
+							//Increase the player's movement speed.
+							renderMan->SetLightPosition(2, &crestPos);
+							if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+							{	
+								renderMan->EnableLight(2);
+								player->setMobilityStatus(true);
+							}
+							break;
+						#pragma endregion
+						#pragma region Unlock Crest
+						case UNLOCK:
+							renderMan->SetLightPosition(3, &crestPos);
+							//Change the unlocking object to the unlocked state.
+							break;
+						#pragma endregion
+					}
+					#pragma endregion
+					
 				}
 			}
+		}
+		#pragma endregion
 			//
 			//{
 				//if(physicsMan->broadPhase(player->GetCamera(), (Crest)gameObjects[i]).getRigidBody()->getCenterOfMassPosition())
@@ -352,7 +400,7 @@ void PVGame::UpdateScene(float dt)
 
 			//}
 			//btVector3 crestPos = 
-		}
+		
 
 		if(input->wasKeyPressed('9'))
 		{

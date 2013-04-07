@@ -21,6 +21,9 @@ class Player
 		void Update(float dt, Input* aInput);
 		XMMATRIX ViewProj() const;
 		
+		void resetStatuses();
+		void increaseMedusaPercent();
+
 		void setMobilityStatus(bool newStatus);
 		void setMedusaStatus(bool newStatus);
 		void setLeapStatus(bool newStatus);
@@ -35,6 +38,7 @@ class Player
 		bool leapStatus;
 		bool mobilityStatus;
 		bool medusaStatus;
+		float medusaPercent;
 		float playerSpeed;
 		float camLookSpeed;
 		const float PIXELS_PER_SEC;

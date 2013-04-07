@@ -6,15 +6,15 @@ Crest::Crest(void)
 	inVision = false;
 }
 
-Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, unsigned int crestType) : GameObject(aMeshKey, aMaterialKey, aWorldMatrix, physicsMan, true)
+Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, CREST_TYPE aCrestType) : GameObject(aMeshKey, aMaterialKey, aWorldMatrix, physicsMan, true)
 {
-	crestType = crestType;
+	crestType = aCrestType;
 	inVision = false;
 }
 
-Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, unsigned int crestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, mass, true)
+Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, mass, true)
 {
-	crestType = crestType;
+	crestType = aCrestType;
 	inVision = false;
 }
 
@@ -23,7 +23,7 @@ Crest::~Crest(void)
 }
 
 //Accessor to see if the crest is currently being viewed
-bool Crest::GetCrestType()
+CREST_TYPE Crest::GetCrestType()
 {
 	return crestType;
 }

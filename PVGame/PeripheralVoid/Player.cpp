@@ -28,6 +28,11 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	controller->setMaxJumpHeight(10.0f);
 	controller->setMaxSlope(3.0f * 3.1415f);
 
+	medusaStatus = false;
+	leapStatus = false;
+	mobilityStatus = false;
+	medusaPercent = 0.0f;
+
 	renderMan = rm;
 
 	listener = new AudioListener();
@@ -45,15 +50,6 @@ void Player::Update(float dt, Input* input)
 		controller->setJumpSpeed(10.0f);
 		controller->setMaxJumpHeight(10.0f);
 	}
-	if(medusaStatus)
-		controller->setMaxJumpHeight(40.0f);
-	else
-		controller->setMaxJumpHeight(10.0f);
-
-	//if(mobilityStatus)
-		//controller->setMaxJumpHeight(40.0f);
-	//else
-		//controller->setMaxJumpHeight(10.0f);
 
 	playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	camLookSpeed = dt * LOOK_SPEED;
@@ -62,6 +58,8 @@ void Player::Update(float dt, Input* input)
 
 void Player::HandleInput(Input* input)
 {
+
+	#pragma region Camera Input
 	// Basic mouse camera controls
 	if (input->getMouseY() < renderMan->GetClientHeight() * .2)
 	{
@@ -129,6 +127,7 @@ void Player::HandleInput(Input* input)
 		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
 		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
 	}
+	#pragma endregion
 
 	//XMVECTOR tempPosition = XMLoadFloat4(&position);
 
@@ -146,19 +145,20 @@ void Player::HandleInput(Input* input)
 	btVector3 forward(fwd.x, fwd.y, fwd.z);
 	btVector3 r(right.x, right.y, right.z);
 
-	if(input->isPlayerUpKeyDown())
+	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
 		direction += forward;
-	if(input->isPlayerDownKeyDown())
+	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
 		direction -= forward;
-	if(input->isPlayerRightKeyDown())
+	if(input->isPlayerRightKeyDown()) //if(input->isPlayerRightKeyDown() && !medusaStatus)
 		direction += r;
-	if(input->isPlayerLeftKeyDown())
+	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
-	if(input->isJumpKeyPressed())
+	if(input->isJumpKeyPressed() && !medusaStatus)
  		controller->jump();
 	
-	DBOUT(controller->canJump());
-	controller->setWalkDirection(direction * playerSpeed);
+	//DBOUT(controller->canJump());
+	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (1.5f * mobilityStatus))) * (1.0f - medusaPercent);
+	controller->setWalkDirection(direction * currentPlayerSpeed);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
 	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1, pos.getZ());
@@ -202,6 +202,25 @@ XMMATRIX Player::ViewProj() const
 Camera* Player::GetCamera()
 {
 	return playerCamera;
+}
+
+void Player::resetStatuses() 
+{	
+	if(!medusaStatus)
+	{
+		medusaPercent = 0;
+	}
+	medusaStatus = false;
+	mobilityStatus = false;
+	leapStatus = false; 
+}
+
+void Player::increaseMedusaPercent()
+{
+	if(medusaStatus && medusaPercent < 1.0f)
+	{
+		medusaPercent = .9f;
+	}
 }
 
 void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }

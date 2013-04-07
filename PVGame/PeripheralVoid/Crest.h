@@ -5,17 +5,17 @@ class Crest :
 {
 public:
 	Crest(void);
-	Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, unsigned int crestType);
-	Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, unsigned int crestType, float mass = 0.0);
+	Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, CREST_TYPE aCrestType);
+	Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass = 0.0);
 	~Crest(void);
 
 	bool InView();
 	void ChangeView(bool newVisionBool);
-	bool GetCrestType();
+	CREST_TYPE GetCrestType();
 	void Update();
 
 protected:
-	unsigned int crestType;
+	CREST_TYPE crestType;
 	bool inVision;
 };
 
