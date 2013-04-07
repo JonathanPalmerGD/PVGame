@@ -165,7 +165,7 @@ class RenderManager
 
 		int GetClientWidth() { return mClientWidth; }
 		int GetClientHeight() { return mClientHeight; }
-		
+
 		void DrawMenu()
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
@@ -179,25 +179,28 @@ class RenderManager
 			md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-			/*
-			ID3D11RasterizerState* pRSwireFrame; 
-			D3D11_RASTERIZER_DESC RSWireFrameDesc; 
-			RSWireFrameDesc.FillMode = D3D11_FILL_WIREFRAME; 
-			RSWireFrameDesc.CullMode = D3D11_CULL_NONE;
- 
-			md3dDevice->CreateRasterizerState ( &RSWireFrameDesc , &pRSwireFrame );  
-			// Assumes that "pDevice" is valid (ID3D11Device*) 
- 
-			md3dImmediateContext->RSSetState ( pRSwireFrame ); 
-			*/
+			XMFLOAT3 startPos(0.0f, 0.0f, 0.0f);
+			XMFLOAT3 endPos(0.0f, 0.0f, 0.0f);
+
+
+
+			// Update each instance's world matrix with the corresponding GameObect's world matrix.
+			map<std::string, unsigned int> counts;
+			for (unsigned int i = 0; i < gameObjects.size(); i++)
+			{
+				GameObject* aGameObject = gameObjects[i];
+				string bufferKey = aGameObject->GetMeshKey();
+				mInstancedDataMap[bufferKey][counts[bufferKey]++].World = aGameObject->GetWorldMatrix();
+			}
 
 			// Sets input layout which describes the vertices we're about to send.
 			md3dImmediateContext->IASetInputLayout(mInputLayout);
 			// Triangle list = every 3 vertices is a SEPERATE triangle.
 			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			UINT stride = sizeof(Vertex);
-			UINT offset = 0;
+			UINT stride[2] = { sizeof(Vertex), sizeof(InstancedData) };
+			UINT offset[2] = { 0, 0 };
+
 			mEyePosW = aCamera->GetPosition();
 
 			// Set per frame constants.
@@ -211,70 +214,66 @@ class RenderManager
 			//Set the resources for the shader resource view
 			
 			TexTransform->SetMatrix(reinterpret_cast<const float*>(&mTexTransform));
-			
+
+			// This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
+			mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&aCamera->ViewProj()));
+
 			D3DX11_TECHNIQUE_DESC techDesc;
+
 			mTech->GetDesc( &techDesc );
 
-			// Optimization strategy. We use the same buffer a lot, so we can save the info we need per buffer and only change it each time we use a new buffer.
-			string prevKey = "";
-			D3D11_BUFFER_DESC buffDesc;
-			D3D11_BUFFER_DESC indexDesc;
+			// This will be each mesh's vertex and instance buffer.
+			ID3D11Buffer* vbs[2] = {nullptr, nullptr};
 
-			// How many indices / vertices there are.
-			int indexSize = 0;
-			int vertexSize = 0;
-
-			for (UINT i = 0; i < gameObjects.size(); i++)
+			// Loop through all the buffers, drawing each instance.
+			map<string, BufferPair>::iterator itr = bufferPairs.begin();
+			while (itr != bufferPairs.end())
 			{
-				for(UINT p = 0; p < techDesc.Passes; ++p)
+				// Only draw if there is data to draw!
+				if(mInstancedDataMap[itr->first].size() >= 1)
 				{
-					string currentKey = gameObjects[i]->GetMeshKey();
-					// If this is a new buffer key, set all of the relevant info based on that buffer.
-					if (prevKey.compare(currentKey) != 0)
+					// Get the data from the GPU, put correct data inside a container and only draw that.
+					D3D11_MAPPED_SUBRESOURCE mappedData; 
+					md3dImmediateContext->Map(itr->second.instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+
+					InstancedData* dataView = reinterpret_cast<InstancedData*>(mappedData.pData);
+					UINT mVisibleObjectCount = 0;
+
+					// This actually sets the instance data to draw by filling up dataView.
+					for(UINT i = 0; i < mInstancedDataMap[itr->first].size(); ++i)
 					{
-						md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs[currentKey].vertexBuffer, &stride, &offset);
-						md3dImmediateContext->IASetIndexBuffer(bufferPairs[currentKey].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-						bufferPairs[currentKey].vertexBuffer->GetDesc(&buffDesc);
-						bufferPairs[currentKey].indexBuffer->GetDesc(&indexDesc);
-						indexSize = indexDesc.ByteWidth / sizeof(UINT);
-						vertexSize = buffDesc.ByteWidth / sizeof(Vertex);
-						prevKey = currentKey;
+						// If check goes here - only add in if we can see it / at least is inside frustum.
+						dataView[mVisibleObjectCount++] = mInstancedDataMap[itr->first][i];
 					}
+
+					md3dImmediateContext->Unmap(itr->second.instanceBuffer, 0);
+
+					vbs[0] = itr->second.vertexBuffer;
+					vbs[1] = itr->second.instanceBuffer;
+
+					for(UINT p = 0; p < techDesc.Passes; ++p)
+					{
+						md3dImmediateContext->IASetVertexBuffers(0, 2, vbs, stride, offset);
+						md3dImmediateContext->IASetIndexBuffer(itr->second.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 					
-					// Get the material via the GameObject's key. We then set surface material, diffuse map, etc, by using the keys in the map.
-					GameMaterial aMaterial = GAME_MATERIALS[gameObjects[i]->GetMaterialKey()];
+						D3D11_BUFFER_DESC indexDesc;
+						itr->second.indexBuffer->GetDesc(&indexDesc);
+						int indexSize = indexDesc.ByteWidth / sizeof(UINT);
 
-					/*D3D11_BUFFER_DESC buffDesc;
-					bufferPairs[currentKey].vertexBuffer->GetDesc(&buffDesc);
-					D3D11_BUFFER_DESC indexDesc;
-					bufferPairs[currentKey].indexBuffer->GetDesc(&indexDesc);
+						mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+						//md3dImmediateContext->DrawIndexed(indexSize, 0, 0);
 
-					int indexSize = indexDesc.ByteWidth / sizeof(UINT);
-					int vertexSize = buffDesc.ByteWidth / sizeof(Vertex);*/
-
-					// Set constants
-					XMMATRIX world = XMLoadFloat4x4(&gameObjects[i]->GetWorldMatrix());
-					XMMATRIX worldInvTranspose = MathHelper::InverseTranspose(world); // For transforming normals.
-					XMMATRIX worldViewProj = world * aCamera->ViewProj();
-
-					// The shader variables per-object.
-					mfxWorld->SetMatrix(reinterpret_cast<float*>(&world));
-					mfxWorldInvTranspose->SetMatrix(reinterpret_cast<float*>(&worldInvTranspose));
-					mfxWorldViewProj->SetMatrix(reinterpret_cast<float*>(&worldViewProj));
-					
-					mfxDiffuseMapVar->SetResource(diffuseMaps[aMaterial.DiffuseKey]);
-
-					SurfaceMaterial aSurfaceMaterial = SURFACE_MATERIALS[aMaterial.SurfaceKey];
-					mfxMaterial->SetRawValue(&aSurfaceMaterial, 0, sizeof(aSurfaceMaterial));
-
-					mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
-					md3dImmediateContext->DrawIndexed(indexSize, 0, 0);
+						// Draw mVisibleObjetCount number of instances, each having indexSize vertices.
+						md3dImmediateContext->DrawIndexedInstanced(indexSize, mVisibleObjectCount, 0, 0, 0);
+					}
 				}
+				itr++;
 			}
+			
 			HR(mSwapChain->Present(0, 0));
 		}
 		
-		// Build a buffer for each mesh.
+		// Build a vertex and index buffer for each mesh.
 		void BuildBuffers()
 		{
 			map<string, MeshData>::const_iterator itr = MeshMaps::MESH_MAPS.begin();
@@ -314,6 +313,50 @@ class RenderManager
 			}
 		}
 
+		// Build an instance buffer based on a set of gameObjects.
+		void BuildInstancedBuffer(vector<GameObject*> gameObjects)
+		{
+			// Clear the map of the vector of instance data.
+			mInstancedDataMap.clear();
+			// Loop through all game objects, setting the world matrix appropriately for each instance.
+			for (unsigned int i = 0; i < gameObjects.size(); i++)
+			{
+				GameMaterial aGameMaterial = GAME_MATERIALS[gameObjects[i]->GetMaterialKey()];
+				string bufferKey = gameObjects[i]->GetMeshKey();
+				
+				// Fill up the fields of the InstancedData and then push it into a vector of instacedData of the appropriate kind.
+				InstancedData theData;
+				theData.World = gameObjects[i]->GetWorldMatrix();
+				theData.SurfMaterial = SURFACE_MATERIALS[aGameMaterial.SurfaceKey];
+				theData.AtlasC = diffuseAtlasCoords[aGameMaterial.DiffuseKey];
+				mInstancedDataMap[bufferKey].push_back(theData);
+			}
+				
+			// Go through and create each buffer.
+			std::map<string, BufferPair>::iterator itr = bufferPairs.begin();
+			while (itr != bufferPairs.end())
+			{
+				// Only create instance buffer if there is data to draw!
+				if(mInstancedDataMap[itr->first].size() >= 1)
+				{
+					D3D11_BUFFER_DESC vbd;
+					vbd.Usage = D3D11_USAGE_DYNAMIC;
+					vbd.ByteWidth = sizeof(InstancedData) * mInstancedDataMap[itr->first].size();
+					vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+					vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+					vbd.MiscFlags = 0;
+					vbd.StructureByteStride = 0;
+					
+					// Release previous Instance buffer if needed.
+					if (itr->second.instanceBuffer)
+						ReleaseCOM(itr->second.instanceBuffer);
+
+					HR(md3dDevice->CreateBuffer(&vbd, 0, &itr->second.instanceBuffer));
+				}
+				itr++;
+			}
+		}
+
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
 		void LoadContent()
 		{
@@ -329,12 +372,21 @@ class RenderManager
 
 			// Filenames need to be LPCWSTR, so a special function is needed to do the conversion.
 			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, s2ws(aFileName).c_str(), 0, 0, &aShaderResourceView, 0 ));
-			diffuseMaps[aKey] = aShaderResourceView;
+			diffuseAtlasMaps[aKey] = aShaderResourceView;
+
+			// Set texture atlas once for now.
+			mfxDiffuseMapVar->SetResource(diffuseAtlasMaps["BasicAtlas"]);
+		}
+
+		// Each texture has a uv offset in an atlas. So, we store that offset to send it to the shader so it can corretly sample from the larger texture while still retaining a [0,1] uv coordinate.
+		void LoadTextureAtlasCoord(const string& aKey, XMFLOAT2 aCoord)
+		{
+			diffuseAtlasCoords[aKey] = aCoord;
 		}
 
 		void BuildFX()
 		{
-			std::ifstream fin("fx/Basic.fxo", std::ios::binary);
+			std::ifstream fin("fx/HardwareInstancing.fxo", std::ios::binary);
 
 			fin.seekg(0, std::ios_base::end);
 			int size = (int)fin.tellg();
@@ -354,7 +406,7 @@ class RenderManager
 				mTech                = mFX->GetTechniqueByName("TestLightsDX10");
 
 			// Creates association between shader variables and program variables.
-			mfxWorldViewProj     = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+			mfxViewProj     = mFX->GetVariableByName("gViewProj")->AsMatrix();
 			mfxWorld             = mFX->GetVariableByName("gWorld")->AsMatrix();
 			mfxWorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 			mfxEyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
@@ -373,15 +425,32 @@ class RenderManager
 			// Create the vertex input layout.
 			D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 			{
+				// FORMAT:
+				// { Semantic name for shader, semantic index if semantic name is already used (world is 4x4 matrix or 4 4-element matrices, so it goes 0-3,
+				//	 Format of data - Everything is floats and number of letters is how many elements it is, Input slot, byte offset between previous element, 
+				//   whether the element is per vertex or per instance, and how many instances to draw with that data.
+
+				// Basic Vertex elements.
 				{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-				{"NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-				{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
+				{"NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				// These are instanced elements - note the 'per instance data' part. 
+				{ "WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "WORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "MATERIAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "MATERIAL", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 80, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "MATERIAL", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 96, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "MATERIAL", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 112, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+				{ "ATLASCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 128, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+
 			};
 
 			// Create the input layout
 			D3DX11_PASS_DESC passDesc;
 			mTech->GetPassByIndex(0)->GetDesc(&passDesc);
-			HR(md3dDevice->CreateInputLayout(vertexDesc, 3, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
+			HR(md3dDevice->CreateInputLayout(vertexDesc, 12, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
 		}
 
 		void ToggleLight(int index)
@@ -402,7 +471,6 @@ class RenderManager
 		void SetLightPosition(int index, btVector3* targetV3)
 		{
 			mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
-
 		}
 
 		btVector3 getLightPosition(int index)
@@ -494,7 +562,7 @@ class RenderManager
 		ID3DX11Effect* mFX;
 		ID3DX11EffectTechnique* mTech;
 		ID3DX11EffectMatrixVariable* mfxWorld;
-		ID3DX11EffectMatrixVariable* mfxWorldViewProj;
+		ID3DX11EffectMatrixVariable* mfxViewProj;
 		ID3DX11EffectMatrixVariable* mfxWorldInvTranspose;
 		//Texture stuff
 		ID3DX11EffectMatrixVariable* TexTransform;
@@ -505,7 +573,9 @@ class RenderManager
 		ID3DX11EffectVariable* mfxMaterial;
 		ID3DX11EffectVariable* mfxNumLights;
 
-		map<string, ID3D11ShaderResourceView*> diffuseMaps;
+		// 
+		map<string, XMFLOAT2> diffuseAtlasCoords;
+		map<string, ID3D11ShaderResourceView*> diffuseAtlasMaps;
 		
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
@@ -529,13 +599,16 @@ class RenderManager
 		bool usingDX11; // If false, we're using DX10 for now.
 		UINT m4xMsaaQuality;
 
-		// Holds all the (vertex, index) buffers. Separate map due to meshes being constant.
+		// Holds all the (vertex, index, instanceData) buffers. Separate map due to meshes being constant.
 		map<string, BufferPair> bufferPairs;
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;
 		vector<PointLight> mPointLights;
 		SpotLight mSpotLight;
+
+		// Keep a system memory copy of the world matrices for culling.
+		map<string, std::vector<InstancedData>> mInstancedDataMap;
 
 		RenderManager() 
 		{ 
@@ -548,7 +621,7 @@ class RenderManager
 			mFX = nullptr;
 			mTech = nullptr;
 			mfxWorld = nullptr;
-			mfxWorldViewProj = nullptr;
+			mfxViewProj = nullptr;
 			mfxWorldInvTranspose = nullptr;
 			mfxEyePosW = nullptr;
 			mfxPointLights = nullptr;
@@ -647,11 +720,12 @@ class RenderManager
 			{
 				ReleaseCOM(bufferItr->second.vertexBuffer);
 				ReleaseCOM(bufferItr->second.indexBuffer);
+				ReleaseCOM(bufferItr->second.instanceBuffer);
 				bufferItr++;
 			}
 
-			map<string, ID3D11ShaderResourceView*>::iterator diffuseItr = diffuseMaps.begin();
-			while (diffuseItr != diffuseMaps.end())
+			map<string, ID3D11ShaderResourceView*>::iterator diffuseItr = diffuseAtlasMaps.begin();
+			while (diffuseItr != diffuseAtlasMaps.end())
 			{
 				ReleaseCOM(diffuseItr->second);
 				diffuseItr++;

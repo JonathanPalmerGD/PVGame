@@ -72,6 +72,8 @@ bool PVGame::Init()
 
 	SortGameObjects();
 
+	renderMan->BuildInstancedBuffer(gameObjects);
+
 	return true;
 }
 
@@ -102,12 +104,20 @@ bool PVGame::LoadXML()
 
 	#pragma region Textures
 	doc.LoadFile(TEXTURES_FILE);
-	for (XMLElement* texture = doc.FirstChildElement("TextureList")->FirstChildElement("Texture"); 
-				texture != NULL; texture = texture->NextSiblingElement("Texture"))
+	for (XMLElement* atlas = doc.FirstChildElement("TextureList")->FirstChildElement("Atlas"); 
+				atlas != NULL; atlas = atlas->NextSiblingElement("Atlas"))
 	{
 		// Tells renderman to load the texture and save it in a map.
-		renderMan->LoadTexture(texture->Attribute("name"), texture->FirstChildElement("Filename")->FirstChild()->Value(),
-			texture->FirstChildElement("Type")->FirstChild()->Value());
+		renderMan->LoadTexture(atlas->Attribute("name"), atlas->Attribute("filename"),
+			atlas->Attribute("type"));
+
+		for (XMLElement* texture = atlas->FirstChildElement("Texture"); 
+			texture != NULL; texture = texture->NextSiblingElement("Texture"))
+		{
+			XMFLOAT2 aCoord((float)atof(texture->FirstChildElement("OffsetU")->FirstChild()->Value()), 
+							(float)atof(texture->FirstChildElement("OffsetV")->FirstChild()->Value()));
+			renderMan->LoadTextureAtlasCoord(texture->Attribute("name"), aCoord);
+		}
 	}
 	#pragma endregion
 
@@ -307,6 +317,9 @@ void PVGame::UpdateScene(float dt)
 			gameState = PLAYING;
 		break;
 	case PLAYING:
+		if (input->isQuitPressed())
+			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+
 		player->Update(dt, input);
 		physicsMan->update(dt);
 
@@ -315,7 +328,9 @@ void PVGame::UpdateScene(float dt)
 		
 		for(int i = 0; i < renderMan->getNumLights(); i++)
 		{
+			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
+			//btVector3 targetV3 = &lightPos;
 			if(physicsMan->broadPhase(player->GetCamera(), &lightPos))
 			{
 				//renderMan->EnableLight(i);
@@ -390,17 +405,6 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		#pragma endregion
-			//
-			//{
-				//if(physicsMan->broadPhase(player->GetCamera(), (Crest)gameObjects[i]).getRigidBody()->getCenterOfMassPosition())
-				//{
-				//	
-				//
-				//}
-
-			//}
-			//btVector3 crestPos = 
-		
 
 		if(input->wasKeyPressed('9'))
 		{
@@ -432,6 +436,8 @@ void PVGame::UpdateScene(float dt)
 			renderMan->CreateLight(pos.x, pos.y, pos.z);
 			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
+			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 			is1Up = false;
 		}
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
@@ -449,7 +455,8 @@ void PVGame::UpdateScene(float dt)
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
-
+			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 			is2Up = false;
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))

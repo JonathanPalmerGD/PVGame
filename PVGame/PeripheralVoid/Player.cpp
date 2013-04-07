@@ -22,7 +22,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	playerCamera->UpdateViewMatrix();
 
 	physicsMan = pm;
-	controller = physicsMan->createCharacterController( 1.0f, .5f, .1f);
+	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
 	controller->setGravity(9.81f);
 	controller->setJumpSpeed(10.0f);
 	controller->setMaxJumpHeight(10.0f);

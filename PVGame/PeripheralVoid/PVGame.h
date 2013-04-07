@@ -45,7 +45,6 @@ public:
 		unsigned int gameState;
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjects;
-		vector<Crest*> crestObjects;
 
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;

@@ -44,6 +44,7 @@ struct BufferPair
 {
 	ID3D11Buffer* indexBuffer;
 	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* instanceBuffer;
 };
 
 struct MeshMaps
@@ -202,6 +203,14 @@ struct GameMaterial
 
 static std::map<string, GameMaterial> GAME_MATERIALS;
 static std::map<string, SurfaceMaterial> SURFACE_MATERIALS;
+
+// For hardware instancing.
+struct InstancedData
+{
+	XMFLOAT4X4 World;
+	SurfaceMaterial SurfMaterial;
+	XMFLOAT2 AtlasC;
+};
 
 //List our levels:
 const char MAP_LEVEL_1[] = "Assets/level1.xml";
