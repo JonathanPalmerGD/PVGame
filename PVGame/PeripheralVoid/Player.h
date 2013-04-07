@@ -27,6 +27,7 @@ class Player
 		void setMobilityStatus(bool newStatus);
 		void setMedusaStatus(bool newStatus);
 		void setLeapStatus(bool newStatus);
+		void setPosition(float setX, float setY, float setZ);
 
 		Camera* GetCamera();
 		bool getMobilityStatus();

@@ -9,6 +9,7 @@
 #include "tinyxml2.h"
 #include "FileLoader.h"
 #include "GameObject.h"
+#include "Room.h"
 #include "Audio/AL/al.h"
 #include "Audio/AL/alc.h"
 #include <vector>
@@ -36,6 +37,7 @@ public:
 		void SortGameObjects();
 
 		Player*	player;
+		Room* currentRoom;
 
 		float mTheta;
 		float mPhi;

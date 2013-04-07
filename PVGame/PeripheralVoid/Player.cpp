@@ -237,6 +237,13 @@ XMFLOAT4 Player::getPosition()
 	return  XMFLOAT4(pos.getX(), pos.getY(), pos.getZ(), 1);
 }
 
+void Player::setPosition(float setX, float setY, float setZ)
+{
+	btVector3 playerPos(setX, setY, setZ);
+
+	controller->getGhostObject()->getWorldTransform().setOrigin(playerPos);
+}
+
 btVector3 Player::getCameraPosition()
 {
 	XMFLOAT3 pos = playerCamera->GetPosition();

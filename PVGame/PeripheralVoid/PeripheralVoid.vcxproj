@@ -107,6 +107,7 @@
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PVGame.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +133,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PVGame.h" />
     <ClInclude Include="RenderManager.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>

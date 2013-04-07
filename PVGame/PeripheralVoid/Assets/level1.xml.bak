@@ -1,23 +1,42 @@
 <level>
 	<walls>
+		<wall row="9" col="0"/>
+		<wall row="9" col="1"/>
+		<wall row="9" col="2"/>
+		<wall row="9" col="3"/>
+		<wall row="9" col="4"/>
+		<wall row="9" col="5"/>
+		<wall row="9" col="6"/>
+		<wall row="9" col="7"/>
+		<wall row="9" col="8"/>
+		<wall row="9" col="9"/>
+		<wall row="8" col="0"/>
+		<wall row="8" col="9"/>
+		<wall row="7" col="0"/>
+		<wall row="7" col="9"/>
+		<wall row="6" col="0"/>
+		<wall row="6" col="9"/>
+		<wall row="5" col="0"/>
+		<wall row="5" col="9"/>
 		<wall row="4" col="0"/>
-		<wall row="4" col="1"/>
-		<wall row="4" col="2"/>
-		<wall row="4" col="3"/>
-		<wall row="4" col="4"/>
-		<wall row="4" col="5"/>
-		<wall row="4" col="6"/>
-		<wall row="4" col="7"/>
-		<wall row="4" col="8"/>
 		<wall row="4" col="9"/>
-		<wall row="5" col="4"/>
-		<wall row="5" col="7"/>
-		<wall row="6" col="4"/>
-		<wall row="6" col="5"/>
-		<wall row="6" col="6"/>
-		<wall row="6" col="7"/>
+		<wall row="3" col="0"/>
+		<wall row="3" col="9"/>
+		<wall row="2" col="0"/>
+		<wall row="2" col="9"/>
+		<wall row="1" col="0"/>
+		<wall row="1" col="9"/>
+		<wall row="0" col="0"/>
+		<wall row="0" col="1"/>
+		<wall row="0" col="2"/>
+		<wall row="0" col="3"/>
+		<wall row="0" col="4"/>
+		<wall row="0" col="5"/>
+		<wall row="0" col="6"/>
+		<wall row="0" col="7"/>
+		<wall row="0" col="8"/>
+		<wall row="0" col="9"/>
 	</walls>
 	<spawns>
-		<spawn row="5" col="6"/>
 	</spawns>
 </level>

@@ -164,6 +164,8 @@ struct Wall
 	float centerX;
 	float centerY;
 	float centerZ;
+	const char* direction;
+	const char* file;
 };
 
 //These structs were gathered from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader

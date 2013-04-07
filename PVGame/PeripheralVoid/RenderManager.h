@@ -269,7 +269,6 @@ class RenderManager
 				}
 				itr++;
 			}
-			
 			HR(mSwapChain->Present(0, 0));
 		}
 		

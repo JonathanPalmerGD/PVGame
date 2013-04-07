@@ -62,8 +62,6 @@ bool PVGame::Init()
 	
 	LoadContent();
 	BuildGeometryBuffers();
-	
-	
 
 	mPhi = 1.5f*MathHelper::Pi;
 	mTheta = 0.25f*MathHelper::Pi;
@@ -86,6 +84,9 @@ bool PVGame::LoadContent()
 
 bool PVGame::LoadXML()
 {
+	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan);
+	currentRoom = startRoom;
+
 	tinyxml2::XMLDocument doc;
 
 	#pragma region Materials
@@ -148,115 +149,10 @@ bool PVGame::LoadXML()
 	#pragma region Map Loading
 	//Get the filename from constants, hand it into tinyxml
 
+	gameObjects = startRoom->getGameObjs();
+	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-	doc.LoadFile(MAP_LEVEL_1);
-	/*static const char* xml = 	
-		"<level>"
-		"	<walls>"
-		"		<wall />"
-		"	</walls>"
-		"	<spawns>"
-		"		<spawn />"
-		"	</spawns>"
-		"</level>";
-
-	doc.Parse( xml );*/
-
-	XMLElement* walls = doc.FirstChildElement( "level" )->FirstChildElement( "walls" );
-	XMLElement* spawns = doc.FirstChildElement( "level" )->FirstChildElement( "spawns" );
-
-	SurfaceMaterial aMaterial;
-	aMaterial.Ambient = XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
-	aMaterial.Diffuse = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	aMaterial.Specular = XMFLOAT4(0.6f, 0.6f, 0.6f, 16.0f);
-
-	Wall tempWall = {0.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f};
-	vector<vector<Wall>> wallRowCol;
-	vector<Wall> wallVector;
-
-	wallRowCol.assign(10, wallVector);
-
-	for (XMLElement* wall = walls->FirstChildElement("wall"); wall != NULL; wall = wall->NextSiblingElement("wall"))
-	{
-		const char* row = wall->Attribute("row");
-		const char* col = wall->Attribute("col");
-
-		tempWall.row = (float)atof(row);
-		tempWall.col = (float)atof(col);
-		tempWall.centerX = tempWall.col + tempWall.xLength / 2;
-		tempWall.centerZ = tempWall.row + tempWall.zLength / 2;
-	
-		wallRowCol[(unsigned int)atof(row)].push_back(tempWall);
-	}
-
-	for (unsigned int i = 0; i < wallRowCol.size(); i++)
-	{
-		for (unsigned int j = 0; j < wallRowCol[i].size() - 1; j++)
-		{
-			if ((wallRowCol[i][j].col + wallRowCol[i][j].xLength) == wallRowCol[i][j + 1].col)
-			{
-				wallRowCol[i].erase(wallRowCol[i].begin() + (j + 1), wallRowCol[i].begin() + (j + 2));
-
-				wallRowCol[i][j].xLength++;
-				wallRowCol[i][j].centerX = wallRowCol[i][j].col + wallRowCol[i][j].xLength / 2;
-				wallRowCol[i][j].centerZ = wallRowCol[i][j].row + wallRowCol[i][j].zLength / 2;
-
-				j--;
-			}
-		}
-	}
-
-	for (unsigned int i = 0; i < wallRowCol.size() - 1; i++)
-	{
-		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
-		{
-			for (unsigned int k = 0; k < wallRowCol[i].size(); k++)
-			{
-				if ((wallRowCol[i + 1].size() > j) && ((wallRowCol[i][k].row + wallRowCol[i][k].zLength) == wallRowCol[i + 1][j].row) && 
-					(wallRowCol[i][k].xLength == 1) && (wallRowCol[i + 1][j].xLength == 1))
-				{
-					wallRowCol[i + 1].erase(wallRowCol[i + 1].begin() + j, wallRowCol[i + 1].begin() + (j + 1));
-
-					if (wallRowCol[i + 1].size() == 0)
-						wallRowCol.erase(wallRowCol.begin() + (i + 1), wallRowCol.begin() + (i + 2));
-
-					wallRowCol[i][k].zLength++;
-					wallRowCol[i][k].centerX = wallRowCol[i][k].col + wallRowCol[i][k].xLength / 2;
-					wallRowCol[i][k].centerZ = wallRowCol[i][k].row + wallRowCol[i][k].zLength / 2;
-
-					if (i > 0)
-						i--;
-
-					j--;
-					k--;
-				}
-			}	
-		}
-	}
-
-	for (unsigned int i = 0; i < wallRowCol.size(); i++)
-	{
-		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
-		{
-			XMMATRIX matrix = XMMatrixIdentity();
-
-			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j].centerX, 1.5f, wallRowCol[i][j].centerZ), physicsMan);
-			//wallObj->translate((float)atof(col), 1.5f, (float)atof(row));
-			wallObj->scale(wallRowCol[i][j].xLength,3.0,wallRowCol[i][j].zLength);
-			gameObjects.push_back(wallObj);
-		}
-	}
-
-	for (XMLElement* spawn = spawns->FirstChildElement("spawn"); spawn != NULL; spawn = spawn->NextSiblingElement("spawn"))
-	{
-		const char* row = spawn->Attribute("row");
-		const char* col = spawn->Attribute("col");
-
-		// GameObject* spawnObj = new GameObject("Spawn", aMaterial, &XMMatrixIdentity());
-		// gameObjects.push_back(spawnObj);
-	}
-
-	GameObject* crestObj = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", -8.0f, 0.0f, -8.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, LEAP, 1.0f);
+	GameObject* crestObj = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", -8.0f, 10.0f, -8.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, LEAP, 1.0f);
 	gameObjects.push_back(crestObj);
 
 	GameObject* crestObj2 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 4.0f, 10.0f, 4.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MEDUSA, 1.0f);
@@ -265,31 +161,7 @@ bool PVGame::LoadXML()
 	GameObject* crestObj3 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 6.0f, 10.0f, -7.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MOBILITY, 1.0f);
 	gameObjects.push_back(crestObj3);
 
-	//tinyxml2::XMLElement* titleElement = doc.FirstChildElement( 
-
-
-//#ifdef NUM_LEVELS == 1		
-//	doc.LoadFile( MAP_LEVEL );
-//#else
-//	//Loop through all the levels
-//	for( int i = 0; i < NUM_LEVELS; i++)
-//	{
-//		//Open the file
-//		doc.LoadFile( MAP_LEVELS[i] );
-//
-//		//Parse through the files
-//		
-//		/*static const char* xml = "<element/>";
-//		XMLDocument doc;
-//		doc.Parse( xml );
-//		*/
-//
-//		//Create a new 'Level' or 'Room'
-//
-//		//Close the file
-//
-//	}
-//#endif
+	int a = 0;
 
 	#pragma endregion
 
@@ -325,8 +197,12 @@ void PVGame::UpdateScene(float dt)
 
 		//if(input->wasKeyPressed('0'))
 		//{
-		
+
+		if (player->getPosition().y < -20)
+			player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
+
 		for(int i = 0; i < renderMan->getNumLights(); i++)
+		
 		{
 			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
@@ -511,9 +387,9 @@ void PVGame::BuildGeometryBuffers()
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
+	GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(80.0f, 1.0f, 80.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
 	aGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
-	aGameObject->scale(40.0, 1.0, 40.0);
+	aGameObject->scale(80.0, 1.0, 80.0);
 	gameObjects.push_back(aGameObject);
 
 	/*GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14f) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);
