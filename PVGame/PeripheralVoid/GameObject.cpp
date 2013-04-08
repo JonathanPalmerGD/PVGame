@@ -34,6 +34,7 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, Ph
 	physicsMan->addRigidBodyToWorld(rigidBody);
 	this->mass = mass;
 	audioSource = new AudioSource();
+	CalculateWorldMatrix();
 }
 
 void GameObject::translate(float x, float y, float z)
@@ -42,6 +43,7 @@ void GameObject::translate(float x, float y, float z)
 	{
 		rigidBody->translate(btVector3(x, y, z));
 		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		CalculateWorldMatrix();
 	}
 }
 
@@ -57,6 +59,7 @@ void GameObject::scale(float x, float y, float z)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
 		rigidBody = physicsMan->createRigidBody(meshKey, position.getX(), position.getY(), position.getZ(), x, y, z, mass);
 		physicsMan->addRigidBodyToWorld(rigidBody);
+		CalculateWorldMatrix();
 	}
 }
 
@@ -68,6 +71,7 @@ void GameObject::rotate(float x, float y, float z, float w)
 		t.setRotation(btQuaternion(x, y , z, w));
 		rigidBody->setWorldTransform(t);
 		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		CalculateWorldMatrix();
 	}
 }
 
@@ -93,6 +97,32 @@ void GameObject::SetRigidBody(btRigidBody* rBody)
 	}
 	rigidBody = rBody;
 	physicsMan->addRigidBodyToWorld(rigidBody);
+
+	CalculateWorldMatrix();
+}
+
+void GameObject::Update()
+{
+	if(rigidBody != NULL && (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) != btCollisionObject::CF_STATIC_OBJECT)
+	{
+		CalculateWorldMatrix();
+	}
+}
+
+void GameObject::CalculateWorldMatrix()
+{
+	btTransform t;
+	rigidBody->getMotionState()->getWorldTransform(t);
+	btScalar* mat = new btScalar[16];
+	t.getOpenGLMatrix(mat);
+		
+	worldMatrix = XMFLOAT4X4(mat[0 ] * localScale.x, mat[1 ]                , mat[2 ]               , mat[3 ], //NOT Transposed Matrix  
+								mat[4 ]               , mat[5 ] * localScale.y , mat[6 ]               , mat[7 ], //DO NOT TRANSPOSE MATRIX
+							    mat[8 ]               , mat[9 ]                , mat[10] * localScale.z, mat[11], //ITS IN THE CORRECT ROW-COLUMN ORDER
+							    mat[12]               , mat[13]                , mat[14]               , mat[15]);
+
+	audioSource->setPosition(t.getOrigin().getX(),t.getOrigin().getY(), t.getOrigin().getZ()); //THIS IS AWEFULL 
+	delete[] mat;
 }
 
 /* GetWorldMatrix()
@@ -100,23 +130,8 @@ void GameObject::SetRigidBody(btRigidBody* rBody)
  * returns the transformation matrix from the rigid body if it has one.
  *         if it does not have a rigid body, it uses the default XMMatrix it was constructed with
  */
-XMFLOAT4X4 GameObject::GetWorldMatrix() 
+XMFLOAT4X4 GameObject::GetWorldMatrix() const
 { 
-	if(rigidBody != NULL)
-	{
-		btTransform t;
-		rigidBody->getMotionState()->getWorldTransform(t);
-		btScalar* mat = new btScalar[16];
-		t.getOpenGLMatrix(mat);
-		
-		worldMatrix = XMFLOAT4X4(mat[0 ] * localScale.x, mat[1 ]                , mat[2 ]               , mat[3 ], //NOT Transposed Matrix  
-								 mat[4 ]               , mat[5 ] * localScale.y , mat[6 ]               , mat[7 ], //DO NOT TRANSPOSE MATRIX
-							     mat[8 ]               , mat[9 ]                , mat[10] * localScale.z, mat[11], //ITS IN THE CORRECT ROW-COLUMN ORDER
-							     mat[12]               , mat[13]                , mat[14]               , mat[15]);
-
-		audioSource->setPosition(t.getOrigin().getX(),t.getOrigin().getY(), t.getOrigin().getZ()); //THIS IS AWEFULL 
-		delete[] mat;
-	}
 	return worldMatrix; 
 }
 

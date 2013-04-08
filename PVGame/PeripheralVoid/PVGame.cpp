@@ -194,7 +194,13 @@ void PVGame::UpdateScene(float dt)
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
 		player->Update(dt, input);
-		physicsMan->update(dt);
+
+		// If physics updated, tell the game objects to update their world matrix.
+		if (physicsMan->update(dt))
+		{
+			for (unsigned int i = 0; i < gameObjects.size(); ++i)
+				gameObjects[i]->Update();
+		}
 
 		//if(input->wasKeyPressed('0'))
 		//{
@@ -202,7 +208,7 @@ void PVGame::UpdateScene(float dt)
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-		for(int i = 0; i < renderMan->getNumLights(); i++)
+		for(int i = 0; i < renderMan->getNumLights(); ++i)
 		
 		{
 			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);

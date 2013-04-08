@@ -30,7 +30,7 @@ public:
 	PhysicsManager(void);
 	~PhysicsManager(void);
 	float getStepSize();
-	void update(float dt);
+	bool update(float dt);
 	btRigidBody* createPlane(float x, float y, float z);
 	btRigidBody* createRigidBody(string handle, float mass = 0.0);
 	btRigidBody* createRigidBody(string handle, float xPos, float yPos, float zPos, float mass = 0.0);

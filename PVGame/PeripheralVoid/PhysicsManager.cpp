@@ -43,7 +43,7 @@ float PhysicsManager::getStepSize()
  *
  * param: the time passed in the game in milliseconds
  */
-void PhysicsManager::update(float dt)
+bool PhysicsManager::update(float dt)
 {
 	 pAccumulator += dt;
 
@@ -51,7 +51,10 @@ void PhysicsManager::update(float dt)
 	 {
 		 world->stepSimulation(pStepSize);
 		 pAccumulator-= pStepSize;
+		 return true;
 	 }
+
+	 return false;
 }
 
 /* createPlane()

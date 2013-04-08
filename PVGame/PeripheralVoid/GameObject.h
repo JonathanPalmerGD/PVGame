@@ -20,11 +20,15 @@ class GameObject
 		void SetMaterialKey(string aKey);
 		void SetWorldMatrix(XMMATRIX* aMatrix);
 		void SetRigidBody(btRigidBody* rBody);
+		void Update();
 
 		bool GetVisionAffected();
 		string GetMeshKey() const;
 		string GetMaterialKey() const;
-		XMFLOAT4X4 GetWorldMatrix();
+
+		void CalculateWorldMatrix();
+		XMFLOAT4X4 GetWorldMatrix() const;
+
 		btRigidBody* getRigidBody() const;
 
 		virtual ~GameObject(void);
