@@ -264,7 +264,7 @@ bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
 	DBOUT(resultFloat.z / resultFloat.w);
 	DBOUT("\n");
 */
-	if (resultFloat.z / resultFloat.w < 0.0f)
+	if (resultFloat.z < 0.0f)
 		return false;
 	if (abs(resultFloat.x / resultFloat.w) > 1.0f)
 		return false;

@@ -23,6 +23,7 @@ PVGame::~PVGame(void)
 	
 	delete player;
 	delete physicsMan;
+	delete currentRoom;
 	alcDestroyContext(audioContext);
     alcCloseDevice(audioDevice);
 }

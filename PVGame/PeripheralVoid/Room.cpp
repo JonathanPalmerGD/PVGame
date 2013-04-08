@@ -18,10 +18,10 @@ Room::Room(const char* xmlFile, PhysicsManager* pm)
 		const char* col = exit->Attribute("col");
 		const char* file = exit->Attribute("file");
 
-		tempWall.row = atof(row);
-		tempWall.col = atof(col);
-		tempWall.centerX = tempWall.col + tempWall.xLength / 2;
-		tempWall.centerZ = tempWall.row + tempWall.zLength / 2;
+		tempWall.row = (float)atof(row);
+		tempWall.col = (float)atof(col);
+		tempWall.centerX = (float) (tempWall.col + tempWall.xLength / 2);
+		tempWall.centerZ = (float) (tempWall.row + tempWall.zLength / 2);
 		tempWall.file = file;
 	
 		exitVector.push_back(tempWall);
@@ -32,7 +32,7 @@ Room::Room(const char* xmlFile, PhysicsManager* pm)
 
 Room::~Room(void)
 {
-	delete this;
+
 }
 
 void Room::loadRoom(const char* xmlFile)
@@ -60,15 +60,15 @@ void Room::loadRoom(const char* xmlFile)
 		const char* centerY = wall->Attribute("centerY");
 		const char* centerZ = wall->Attribute("centerZ");
 
-		tempWall.row = atof(row);
-		tempWall.col = atof(col);
-		tempWall.xLength = atof(xLength);
-		tempWall.zLength = atof(zLength);
-		tempWall.centerX = atof(centerX);
-		tempWall.centerY = atof(centerY);
-		tempWall.centerZ = atof(centerZ);
+		tempWall.row = (float)atof(row);
+		tempWall.col = (float)atof(col);
+		tempWall.xLength = (float)atof(xLength);
+		tempWall.zLength = (float)atof(zLength);
+		tempWall.centerX = (float)atof(centerX);
+		tempWall.centerY = (float)atof(centerY);
+		tempWall.centerZ = (float)atof(centerZ);
 	
-		wallRowCol[atof(row)].push_back(tempWall);
+		wallRowCol[(unsigned int)atof(row)].push_back(tempWall);
 	}
 
 	for (XMLElement* spawn = spawns->FirstChildElement("spawn"); spawn != NULL; spawn = spawn->NextSiblingElement("spawn"))
@@ -82,21 +82,21 @@ void Room::loadRoom(const char* xmlFile)
 		const char* centerY = spawn->Attribute("centerY");
 		const char* centerZ = spawn->Attribute("centerZ");
 
-		tempWall.row = atof(row);
-		tempWall.col = atof(col);
-		tempWall.xLength = atof(xLength);
-		tempWall.zLength = atof(zLength);
-		tempWall.centerX = atof(centerX);
-		tempWall.centerY = atof(centerY);
-		tempWall.centerZ = atof(centerZ);
+		tempWall.row = (float)atof(row);
+		tempWall.col = (float)atof(col);
+		tempWall.xLength = (float)atof(xLength);
+		tempWall.zLength = (float)atof(zLength);
+		tempWall.centerX = (float)atof(centerX);
+		tempWall.centerY = (float)atof(centerY);
+		tempWall.centerZ = (float)atof(centerZ);
 		tempWall.direction = dir;
 	
 		spawnVector.push_back(tempWall);
 	}
 	
-	for (int i = 0; i < wallRowCol.size(); i++)
+	for (unsigned int i = 0; i < wallRowCol.size(); i++)
 	{
-		for (int j = 0; j < wallRowCol[i].size(); j++)
+		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
 			XMMATRIX matrix = XMMatrixIdentity();
 
