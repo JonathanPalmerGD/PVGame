@@ -61,7 +61,7 @@ void Player::HandleInput(Input* input)
 
 	#pragma region Camera Input
 	// Basic mouse camera controls
-	if (input->getMouseY() < renderMan->GetClientHeight() * .2)
+	/*if (input->getMouseY() < renderMan->GetClientHeight() * .2)
 	{
 		playerCamera->Pitch(-camLookSpeed / 2);
 	}
@@ -69,31 +69,31 @@ void Player::HandleInput(Input* input)
 	if (input->getMouseY() >= renderMan->GetClientHeight() * .8)
 	{
 		playerCamera->Pitch(camLookSpeed / 2);
-	}
+	}*/
 
-	if (input->getMouseX() < renderMan->GetClientWidth() * .2)
-	{
-		float angle = -camLookSpeed / 2;
-		playerCamera->RotateY(angle);
-		XMMATRIX R = XMMatrixRotationY(angle);
+	//if (input->getMouseX() < renderMan->GetClientWidth() * .2)
+	//{
+	//	float angle = -camLookSpeed / 2;
+	//	playerCamera->RotateY(angle);
+	//	XMMATRIX R = XMMatrixRotationY(angle);
 
-		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
-	}
+	//	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	//	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	//	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+	//	//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+	//}
 
-	if (input->getMouseX() >= renderMan->GetClientWidth() * .8)
-	{
-		float angle = camLookSpeed / 2;
-		playerCamera->RotateY(angle);
-		XMMATRIX R = XMMatrixRotationY(angle);
+	//if (input->getMouseX() >= renderMan->GetClientWidth() * .8)
+	//{
+	//	float angle = camLookSpeed / 2;
+	//	playerCamera->RotateY(angle);
+	//	XMMATRIX R = XMMatrixRotationY(angle);
 
-		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
-	}
+	//	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	//	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	//	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+	//	//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+	//}
 
 	// Now check for camera input.
 	if (input->isCameraUpKeyDown())

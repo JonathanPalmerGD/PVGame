@@ -1,7 +1,9 @@
 #pragma once
 #include "Constants.h"
-#include "PhysicsManager.h"
 #include "Audio\AudioSource.h"
+#include "PhysicsManager.h"
+
+class PhysicsManager;
 
 //Only GameObjects that need to be affected by physics, aka the player not walking through them need a rigid body
 class GameObject

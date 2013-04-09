@@ -244,7 +244,7 @@ void PVGame::UpdateScene(float dt)
 							//Increment the player's movement speed.
 							renderMan->SetLightPosition(1, &crestPos);
 
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 							{	
 								renderMan->EnableLight(1);
 								player->setMedusaStatus(true);
@@ -257,7 +257,7 @@ void PVGame::UpdateScene(float dt)
 							//Increase the player's jump variable.
 							renderMan->SetLightPosition(0, &crestPos);
 
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 							{	
 								renderMan->EnableLight(0);
 								player->setLeapStatus(true);
@@ -268,7 +268,7 @@ void PVGame::UpdateScene(float dt)
 						case MOBILITY:	//BLUE
 							//Increase the player's movement speed.
 							renderMan->SetLightPosition(2, &crestPos);
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos))
+							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 							{	
 								renderMan->EnableLight(2);
 								player->setMobilityStatus(true);

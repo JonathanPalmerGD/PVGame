@@ -250,46 +250,6 @@ void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
 	}
 }
 
-/* broadPhase()
- *
- * Takes the player's view info and the object to check.
- * Returns true if the dot product of the player's view and the objects position is positive.
- */
-bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
-{
-	XMMATRIX matrix = XMMatrixIdentity() * XMMatrixTranslation(targetV3->getX(), targetV3->getY(), targetV3->getZ()) * playCamera->ViewProj();
-	XMVECTOR result = XMVector4Transform(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), matrix);
-	XMFLOAT4 resultFloat;
-	XMStoreFloat4(&resultFloat, result);
-
-	/*DBOUT(resultFloat.x / resultFloat.w);
-	DBOUT(resultFloat.y / resultFloat.w);
-	DBOUT(resultFloat.z / resultFloat.w);
-	DBOUT("\n");
-*/
-	if (resultFloat.z < 0.0f)
-		return false;
-	if (abs(resultFloat.x / resultFloat.w) > 1.0f)
-		return false;
-	if (abs(resultFloat.y / resultFloat.w) > 1.0f)
-		return false;
-
-	return true;
-	/*btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
-	btVector3* playerV3 = new btVector3(playCamera->GetLook().x, playCamera->GetLook().y, playCamera->GetLook().z);
-	btVector3 targetRelPosV3 = *targetV3 - *playerV3;
-	btScalar pDT= playerV3->dot(targetRelPosV3);
-	float angle = acos( pDT / (playerV3->length() * targetRelPosV3.length()));
-	playCamera->GetLook();
-	angle = angle * 180 / 3.14;
-	DBOUT(angle);
-
-	if(angle < 120 && angle > 30  )
-		return true;
-	else
- 		return false;*/
-}
-
 btKinematicCharacterController* PhysicsManager::createCharacterController(float radius, float height, float stepHeight)
 {
 	btTransform t;
@@ -314,4 +274,63 @@ void PhysicsManager::removeCharacterController(btKinematicCharacterController* c
 	delete cc->getGhostObject()->getCollisionShape();
 	delete cc->getGhostObject();
 	delete cc;
+}
+
+/* broadPhase()
+*
+* Takes the player's view info and the object to check.
+* Returns true if the dot product of the player's view and the objects position is positive.
+*/
+bool PhysicsManager::broadPhase(Camera* playCamera, btVector3* targetV3)
+{
+	XMMATRIX matrix = XMMatrixIdentity() * XMMatrixTranslation(targetV3->getX(), targetV3->getY(), targetV3->getZ()) * playCamera->ViewProj();
+	XMVECTOR result = XMVector4Transform(XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), matrix);
+	XMFLOAT4 resultFloat;
+	XMStoreFloat4(&resultFloat, result);
+
+	/*DBOUT(resultFloat.x / resultFloat.w);
+	DBOUT(resultFloat.y / resultFloat.w);
+	DBOUT(resultFloat.z / resultFloat.w);
+	DBOUT("\n");
+	*/
+	if (resultFloat.z < 0.0f)
+	return false;
+	if (abs(resultFloat.x / resultFloat.w) > 1.0f)
+	return false;
+	if (abs(resultFloat.y / resultFloat.w) > 1.0f)
+	return false;
+
+	return true;
+	/*btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
+	btVector3* playerV3 = new btVector3(playCamera->GetLook().x, playCamera->GetLook().y, playCamera->GetLook().z);
+	btVector3 targetRelPosV3 = *targetV3 - *playerV3;
+	btScalar pDT= playerV3->dot(targetRelPosV3);
+	float angle = acos( pDT / (playerV3->length() * targetRelPosV3.length()));
+	playCamera->GetLook();
+	angle = angle * 180 / 3.14;
+	DBOUT(angle);
+
+	if(angle < 120 && angle > 30 )
+	return true;
+	else
+	return false;*/
+}
+
+/* narrowPhase()
+ *
+ * Takes the player's view info and the object to check.
+ * Returns true if the first thing a raycast from the center of the camera to the center
+ * of the object hits is the GameObject
+ */
+bool PhysicsManager::narrowPhase(Camera* playCamera, GameObject* target)
+{
+	btVector3 rayFrom(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
+	btVector3 rayTo(target->getRigidBody()->getWorldTransform().getOrigin());
+
+	btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
+	world->rayTest(rayFrom, rayTo, callback);
+
+	if(callback.hasHit() && callback.m_collisionObject->getCollisionShape() == target->getRigidBody()->getCollisionShape())
+		return true;
+	return false;
 }
