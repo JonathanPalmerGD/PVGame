@@ -160,8 +160,8 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
  * Creates a rigid body from saved Triangle Mesh Data at position (xPos,yPos,zPos) with scale (xScale, yScale, zScale)
  *
  * params: handle   - the string that will be used to access the the mesh data
- *         Pos      - the position the rigid body will start at
- *         Scale    - the scaling of the rigid body
+ *         Pos      - the position the rigid body will start atd
+ *         Scale    - the scaling of the rigid bodys
  *         mass     - the mass of the rigid body. 0 mass means that the rigid body is static
  */
 btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yPos, float zPos, float xScale, float yScale, float zScale, float mass)
@@ -177,11 +177,10 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 		if(handle.compare("Cube") == 0)
 			triMeshShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
 		else if(handle.compare("Sphere") == 0)
-			triMeshShape = new btSphereShape(3);
+			triMeshShape = new btSphereShape(3.14);
 		else
 			triMeshShape = new btConvexTriangleMeshShape(ptr->second);
 
-		triMeshShape->setLocalScaling(btVector3(1,1,1));
 		triMeshShape->setLocalScaling(btVector3(xScale, yScale, zScale));
 
 		btDefaultMotionState* motionState = new btDefaultMotionState(t);
@@ -330,7 +329,28 @@ bool PhysicsManager::narrowPhase(Camera* playCamera, GameObject* target)
 	btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
 	world->rayTest(rayFrom, rayTo, callback);
 
-	if(callback.hasHit() && callback.m_collisionObject->getCollisionShape() == target->getRigidBody()->getCollisionShape())
-		return true;
+	if(callback.hasHit())
+	{
+		if(callback.m_collisionObject->getCollisionShape() == target->getRigidBody()->getCollisionShape())
+			return true;
+		//else // Loop through vertices
+		//{
+		//	vector<Vertex> verticies = MeshMaps::MESH_MAPS.find(target->GetMeshKey())->second.vertices;
+		//	for(int i = 0; i < verticies.size(); i++)
+		//	{ 
+		//		//Translate from object space to world space
+		//		XMVECTOR result = XMVector4Transform(XMVectorSet(verticies[i].Pos.x,verticies[i].Pos.y, verticies[i].Pos.z, 1.0f), XMLoadFloat4x4(&target->GetWorldMatrix()));
+		//		XMFLOAT4 worldVertex;
+		//		XMStoreFloat4(&worldVertex, result);
+
+		//		//Raycast to vertex
+		//		rayTo = btVector3(worldVertex.x, worldVertex.y, worldVertex.z);
+		//		callback = btCollisionWorld::ClosestRayResultCallback(rayFrom, rayTo);
+		//		world->rayTest(rayFrom, rayTo, callback);
+		//		if(callback.hasHit() && callback.m_collisionObject->getCollisionShape() == target->getRigidBody()->getCollisionShape())
+		//			return true;
+		//	}
+		//}
+	}
 	return false;
 }
