@@ -12,7 +12,7 @@ using std::string;
 
 #define NUM_LEVELS 1
 
-#define USINGVLD 1
+#define USINGVLD 0
 #if USINGVLD 
 #include <vld.h>
 #endif

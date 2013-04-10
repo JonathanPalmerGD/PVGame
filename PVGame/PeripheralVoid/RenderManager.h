@@ -327,7 +327,7 @@ class RenderManager
 				InstancedData theData;
 				theData.World = gameObjects[i]->GetWorldMatrix();
 				theData.SurfMaterial = SURFACE_MATERIALS[aGameMaterial.SurfaceKey];
-				theData.AtlasC = diffuseAtlasCoords[aGameMaterial.DiffuseKey];
+				theData.AtlasC = diffuseAtlasCoordsMap[aGameMaterial.DiffuseKey];
 				mInstancedDataMap[bufferKey].push_back(theData);
 			}
 				
@@ -371,16 +371,16 @@ class RenderManager
 
 			// Filenames need to be LPCWSTR, so a special function is needed to do the conversion.
 			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, s2ws(aFileName).c_str(), 0, 0, &aShaderResourceView, 0 ));
-			diffuseAtlasMaps[aKey] = aShaderResourceView;
+			diffuseAtlasMap[aKey] = aShaderResourceView;
 
 			// Set texture atlas once for now.
-			mfxDiffuseMapVar->SetResource(diffuseAtlasMaps["BasicAtlas"]);
+			mfxDiffuseMapVar->SetResource(diffuseAtlasMap["BasicAtlas"]);
 		}
 
 		// Each texture has a uv offset in an atlas. So, we store that offset to send it to the shader so it can corretly sample from the larger texture while still retaining a [0,1] uv coordinate.
 		void LoadTextureAtlasCoord(const string& aKey, XMFLOAT2 aCoord)
 		{
-			diffuseAtlasCoords[aKey] = aCoord;
+			diffuseAtlasCoordsMap[aKey] = aCoord;
 		}
 
 		void BuildFX()
@@ -488,8 +488,13 @@ class RenderManager
 
 			ReleaseCOM(mRenderTargetView);
 			ReleaseCOM(mDepthStencilView);
-			ReleaseCOM(mDepthStencilBuffer);
 
+			map<string, ID3D11Texture2D*>::iterator depthItr = depthStencilBufferMap.begin();
+			while (depthItr != depthStencilBufferMap.end())
+			{
+				ReleaseCOM(depthItr->second);
+				depthItr++;
+			}
 
 			// Resize the swap chain and recreate the render target view.
 
@@ -527,8 +532,8 @@ class RenderManager
 			depthStencilDesc.CPUAccessFlags = 0; 
 			depthStencilDesc.MiscFlags      = 0;
 
-			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &mDepthStencilBuffer));
-			HR(md3dDevice->CreateDepthStencilView(mDepthStencilBuffer, 0, &mDepthStencilView));
+			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &depthStencilBufferMap["Default"]));
+			HR(md3dDevice->CreateDepthStencilView(depthStencilBufferMap["Default"], 0, &mDepthStencilView));
 
 
 			// Bind the render target view and depth/stencil view to the pipeline.
@@ -554,7 +559,7 @@ class RenderManager
 		ID3D11Device* md3dDevice;
 		ID3D11DeviceContext* md3dImmediateContext;
 		IDXGISwapChain* mSwapChain;
-		ID3D11Texture2D* mDepthStencilBuffer;
+
 		ID3D11RenderTargetView* mRenderTargetView;
 		ID3D11DepthStencilView* mDepthStencilView;
 
@@ -572,10 +577,11 @@ class RenderManager
 		ID3DX11EffectVariable* mfxMaterial;
 		ID3DX11EffectVariable* mfxNumLights;
 
-		// 
-		map<string, XMFLOAT2> diffuseAtlasCoords;
-		map<string, ID3D11ShaderResourceView*> diffuseAtlasMaps;
-		
+		// Maps to various rendering compnents.
+		map<string, XMFLOAT2> diffuseAtlasCoordsMap;
+		map<string, ID3D11ShaderResourceView*> diffuseAtlasMap;
+		map<string, ID3D11Texture2D*> depthStencilBufferMap;
+
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
 		ID3DX11EffectShaderResourceVariable* DiffuseMap;
@@ -615,7 +621,6 @@ class RenderManager
 			md3dImmediateContext = nullptr;
 			mSwapChain = nullptr;
 			mSwapChain = nullptr;
-			mDepthStencilBuffer = nullptr;
 			mRenderTargetView = nullptr;
 			mFX = nullptr;
 			mTech = nullptr;
@@ -702,7 +707,6 @@ class RenderManager
 			ReleaseCOM(mRenderTargetView);
 			ReleaseCOM(mDepthStencilView);
 			ReleaseCOM(mSwapChain);
-			ReleaseCOM(mDepthStencilBuffer);
 			ReleaseCOM(mFX);
 			ReleaseCOM(mInputLayout);
 
@@ -723,11 +727,18 @@ class RenderManager
 				bufferItr++;
 			}
 
-			map<string, ID3D11ShaderResourceView*>::iterator diffuseItr = diffuseAtlasMaps.begin();
-			while (diffuseItr != diffuseAtlasMaps.end())
+			map<string, ID3D11ShaderResourceView*>::iterator diffuseItr = diffuseAtlasMap.begin();
+			while (diffuseItr != diffuseAtlasMap.end())
 			{
 				ReleaseCOM(diffuseItr->second);
 				diffuseItr++;
+			}
+
+			map<string, ID3D11Texture2D*>::iterator depthItr = depthStencilBufferMap.begin();
+			while (depthItr != depthStencilBufferMap.end())
+			{
+				ReleaseCOM(depthItr->second);
+				depthItr++;
 			}
 		}
 

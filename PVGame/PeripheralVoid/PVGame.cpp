@@ -227,7 +227,7 @@ void PVGame::UpdateScene(float dt)
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
 
-		for(int i = 0; i < gameObjects.size(); i++)
+		for(unsigned int i = 0; i < gameObjects.size(); i++)
 		{
 			if(gameObjects[i]->GetVisionAffected())
 			{	
