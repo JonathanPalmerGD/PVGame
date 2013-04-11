@@ -161,9 +161,6 @@ bool PVGame::LoadXML()
 
 	GameObject* crestObj3 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.0f, 10.0f, -7.0f, 1.0f), physicsMan, MOBILITY, 1.0f);
 	gameObjects.push_back(crestObj3);
-
-	int a = 0;
-
 	#pragma endregion
 
 	return true;
@@ -201,9 +198,6 @@ void PVGame::UpdateScene(float dt)
 			for (unsigned int i = 0; i < gameObjects.size(); ++i)
 				gameObjects[i]->Update();
 		}
-
-		//if(input->wasKeyPressed('0'))
-		//{
 
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);

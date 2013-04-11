@@ -23,9 +23,9 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 
 	physicsMan = pm;
 	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
-	controller->setGravity(9.81f);
-	controller->setJumpSpeed(10.0f);
-	controller->setMaxJumpHeight(10.0f);
+	controller->setGravity(30.0f);
+	controller->setJumpSpeed(15.0f);
+	controller->setMaxJumpHeight(50.0f);
 	controller->setMaxSlope(3.0f * 3.1415f);
 
 	medusaStatus = false;
@@ -42,15 +42,18 @@ void Player::Update(float dt, Input* input)
 {
 	if(leapStatus)
 	{
-		controller->setJumpSpeed(40.0f);
-		controller->setMaxJumpHeight(40.0f);
+		controller->setMaxJumpHeight(60.0f);
+		controller->setJumpSpeed(22.0f);
 	}
 	else
 	{
-		controller->setJumpSpeed(10.0f);
-		controller->setMaxJumpHeight(10.0f);
+		if(controller->onGround())
+		{
+			controller->setJumpSpeed(15.0f);
+			controller->setMaxJumpHeight(30.0f);
+		}
 	}
-
+	
 	playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
@@ -157,7 +160,7 @@ void Player::HandleInput(Input* input)
  		controller->jump();
 	
 	//DBOUT(controller->canJump());
-	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (1.5f * mobilityStatus))) * (1.0f - medusaPercent);
+	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (1.0f * mobilityStatus))) * (1.0f - medusaPercent);
 	controller->setWalkDirection(direction * currentPlayerSpeed);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
