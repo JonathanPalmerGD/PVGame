@@ -175,6 +175,12 @@ class RenderManager
 
 		void DrawScene(Camera* aCamera, vector<GameObject*> gameObjects)
 		{
+			// Set texture atlas once for now.
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
+
+			// Bind the render target view and depth/stencil view to the pipeline.
+			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+
 			// Pretty self-explanatory. Clears the screen, essentially.
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -182,11 +188,9 @@ class RenderManager
 			XMFLOAT3 startPos(0.0f, 0.0f, 0.0f);
 			XMFLOAT3 endPos(0.0f, 0.0f, 0.0f);
 
-
-
 			// Update each instance's world matrix with the corresponding GameObect's world matrix.
 			map<std::string, unsigned int> counts;
-			for (unsigned int i = 0; i < gameObjects.size(); i++)
+			for (unsigned int i = 0; i < gameObjects.size(); ++i)
 			{
 				GameObject* aGameObject = gameObjects[i];
 				string bufferKey = aGameObject->GetMeshKey();
@@ -226,38 +230,38 @@ class RenderManager
 			ID3D11Buffer* vbs[2] = {nullptr, nullptr};
 
 			// Loop through all the buffers, drawing each instance.
-			map<string, BufferPair>::iterator itr = bufferPairs.begin();
-			while (itr != bufferPairs.end())
+			map<string, BufferPair>::iterator bufferItr = bufferPairs.begin();
+			while (bufferItr != bufferPairs.end())
 			{
 				// Only draw if there is data to draw!
-				if(mInstancedDataMap[itr->first].size() >= 1)
+				if(mInstancedDataMap[bufferItr->first].size() >= 1)
 				{
 					// Get the data from the GPU, put correct data inside a container and only draw that.
 					D3D11_MAPPED_SUBRESOURCE mappedData; 
-					md3dImmediateContext->Map(itr->second.instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+					md3dImmediateContext->Map(bufferItr->second.instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
 
 					InstancedData* dataView = reinterpret_cast<InstancedData*>(mappedData.pData);
 					UINT mVisibleObjectCount = 0;
 
 					// This actually sets the instance data to draw by filling up dataView.
-					for(UINT i = 0; i < mInstancedDataMap[itr->first].size(); ++i)
+					for(UINT i = 0; i < mInstancedDataMap[bufferItr->first].size(); ++i)
 					{
 						// If check goes here - only add in if we can see it / at least is inside frustum.
-						dataView[mVisibleObjectCount++] = mInstancedDataMap[itr->first][i];
+						dataView[mVisibleObjectCount++] = mInstancedDataMap[bufferItr->first][i];
 					}
 
-					md3dImmediateContext->Unmap(itr->second.instanceBuffer, 0);
+					md3dImmediateContext->Unmap(bufferItr->second.instanceBuffer, 0);
 
-					vbs[0] = itr->second.vertexBuffer;
-					vbs[1] = itr->second.instanceBuffer;
+					vbs[0] = bufferItr->second.vertexBuffer;
+					vbs[1] = bufferItr->second.instanceBuffer;
 
 					for(UINT p = 0; p < techDesc.Passes; ++p)
 					{
 						md3dImmediateContext->IASetVertexBuffers(0, 2, vbs, stride, offset);
-						md3dImmediateContext->IASetIndexBuffer(itr->second.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+						md3dImmediateContext->IASetIndexBuffer(bufferItr->second.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 					
 						D3D11_BUFFER_DESC indexDesc;
-						itr->second.indexBuffer->GetDesc(&indexDesc);
+						bufferItr->second.indexBuffer->GetDesc(&indexDesc);
 						int indexSize = indexDesc.ByteWidth / sizeof(UINT);
 
 						mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
@@ -267,8 +271,64 @@ class RenderManager
 						md3dImmediateContext->DrawIndexedInstanced(indexSize, mVisibleObjectCount, 0, 0, 0);
 					}
 				}
-				itr++;
+				bufferItr++;
 			}
+
+			// Bind the render target view and depth/stencil view to the pipeline.
+			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default"], depthStencilViewsMap["Default"]);
+		
+			// Pretty self-explanatory. Clears the screen, essentially.
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+			// Set texture atlas once for now.
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+
+			// Loop through all the buffers, drawing each instance.
+			bufferItr = bufferPairs.begin();
+			while (bufferItr != bufferPairs.end())
+			{
+				// Only draw if there is data to draw!
+				if(mInstancedDataMap[bufferItr->first].size() >= 1)
+				{
+					// Get the data from the GPU, put correct data inside a container and only draw that.
+					D3D11_MAPPED_SUBRESOURCE mappedData; 
+					md3dImmediateContext->Map(bufferItr->second.instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+
+					InstancedData* dataView = reinterpret_cast<InstancedData*>(mappedData.pData);
+					UINT mVisibleObjectCount = 0;
+
+					// This actually sets the instance data to draw by filling up dataView.
+					for(UINT i = 0; i < mInstancedDataMap[bufferItr->first].size(); ++i)
+					{
+						// If check goes here - only add in if we can see it / at least is inside frustum.
+						dataView[mVisibleObjectCount++] = mInstancedDataMap[bufferItr->first][i];
+					}
+
+					md3dImmediateContext->Unmap(bufferItr->second.instanceBuffer, 0);
+
+					vbs[0] = bufferItr->second.vertexBuffer;
+					vbs[1] = bufferItr->second.instanceBuffer;
+
+					for(UINT p = 0; p < techDesc.Passes; ++p)
+					{
+						md3dImmediateContext->IASetVertexBuffers(0, 2, vbs, stride, offset);
+						md3dImmediateContext->IASetIndexBuffer(bufferItr->second.indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+					
+						D3D11_BUFFER_DESC indexDesc;
+						bufferItr->second.indexBuffer->GetDesc(&indexDesc);
+						int indexSize = indexDesc.ByteWidth / sizeof(UINT);
+
+						mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+						//md3dImmediateContext->DrawIndexed(indexSize, 0, 0);
+
+						// Draw mVisibleObjetCount number of instances, each having indexSize vertices.
+						md3dImmediateContext->DrawIndexedInstanced(indexSize, mVisibleObjectCount, 0, 0, 0);
+					}
+				}
+				bufferItr++;
+			}
+
 			HR(mSwapChain->Present(0, 0));
 		}
 		
@@ -371,10 +431,7 @@ class RenderManager
 
 			// Filenames need to be LPCWSTR, so a special function is needed to do the conversion.
 			HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, s2ws(aFileName).c_str(), 0, 0, &aShaderResourceView, 0 ));
-			diffuseAtlasMap[aKey] = aShaderResourceView;
-
-			// Set texture atlas once for now.
-			mfxDiffuseMapVar->SetResource(diffuseAtlasMap["BasicAtlas"]);
+			shaderResourceViewsMap[aKey] = aShaderResourceView;
 		}
 
 		// Each texture has a uv offset in an atlas. So, we store that offset to send it to the shader so it can corretly sample from the larger texture while still retaining a [0,1] uv coordinate.
@@ -500,11 +557,11 @@ class RenderManager
 				renderViewItr++;
 			}
 
-			map<string, ID3D11Texture2D*>::iterator depthItr = depthStencilBufferMap.begin();
-			while (depthItr != depthStencilBufferMap.end())
+			map<string, ID3D11Texture2D*>::iterator textureItr = texture2DMap.begin();
+			while (textureItr != texture2DMap.end())
 			{
-				ReleaseCOM(depthItr->second);
-				depthItr++;
+				ReleaseCOM(textureItr->second);
+				textureItr++;
 			}
 
 			// Resize the swap chain and recreate the render target view.
@@ -543,14 +600,52 @@ class RenderManager
 			depthStencilDesc.CPUAccessFlags = 0; 
 			depthStencilDesc.MiscFlags      = 0;
 
-			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &depthStencilBufferMap["Default"]));
-			HR(md3dDevice->CreateDepthStencilView(depthStencilBufferMap["Default"], 0, &depthStencilViewsMap["Default"]));
+			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &texture2DMap["Default Depth Stencil Buffer Texture"]));
+			HR(md3dDevice->CreateDepthStencilView(texture2DMap["Default Depth Stencil Buffer Texture"], 0, &depthStencilViewsMap["Default"]));
 
 
 			// Bind the render target view and depth/stencil view to the pipeline.
-
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default"], depthStencilViewsMap["Default"]);
 	
+			// Create a Texture2D we can render to.
+			// Create the depth/stencil buffer and view.
+
+			D3D11_TEXTURE2D_DESC renderTextureDesc;
+			D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+
+			renderTextureDesc.Width     = mClientWidth;
+			renderTextureDesc.Height    = mClientHeight;
+			renderTextureDesc.MipLevels = 1;
+			renderTextureDesc.ArraySize = 1;
+			renderTextureDesc.Format    = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+			// Use 4X MSAA? --must match swap chain MSAA values.
+			if( mEnable4xMsaa )
+			{
+				renderTextureDesc.SampleDesc.Count   = 4;
+				renderTextureDesc.SampleDesc.Quality = m4xMsaaQuality-1;
+			}
+			// No MSAA
+			else
+			{
+				renderTextureDesc.SampleDesc.Count   = 1;
+				renderTextureDesc.SampleDesc.Quality = 0;
+			}
+
+			renderTextureDesc.Usage          = D3D11_USAGE_DEFAULT;
+			renderTextureDesc.BindFlags      = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+			renderTextureDesc.CPUAccessFlags = 0; 
+			renderTextureDesc.MiscFlags      = 0;
+
+			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Default Render Texture"]));
+			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Default Render Texture"], 0, &renderTargetViewsMap["Default Render Texture"]));
+
+			// Setup the description of the shader resource view.
+			shaderResourceViewDesc.Format = renderTextureDesc.Format;
+			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+			shaderResourceViewDesc.Texture2D.MipLevels = 1;
+			md3dDevice->CreateShaderResourceView(texture2DMap["Default Render Texture"], &shaderResourceViewDesc, &shaderResourceViewsMap["Default Render Texture"]);
 
 			// Set the viewport transform.
 
@@ -571,9 +666,6 @@ class RenderManager
 		ID3D11DeviceContext* md3dImmediateContext;
 		IDXGISwapChain* mSwapChain;
 
-		map<string, ID3D11RenderTargetView*> renderTargetViewsMap;
-		map<string, ID3D11DepthStencilView*> depthStencilViewsMap;
-
 		ID3DX11Effect* mFX;
 		ID3DX11EffectTechnique* mTech;
 		ID3DX11EffectMatrixVariable* mfxWorld;
@@ -590,8 +682,10 @@ class RenderManager
 
 		// Maps to various rendering compnents.
 		map<string, XMFLOAT2> diffuseAtlasCoordsMap;
-		map<string, ID3D11ShaderResourceView*> diffuseAtlasMap;
-		map<string, ID3D11Texture2D*> depthStencilBufferMap;
+		map<string, ID3D11ShaderResourceView*> shaderResourceViewsMap;
+		map<string, ID3D11Texture2D*> texture2DMap;
+		map<string, ID3D11RenderTargetView*> renderTargetViewsMap;
+		map<string, ID3D11DepthStencilView*> depthStencilViewsMap;
 
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
@@ -735,18 +829,18 @@ class RenderManager
 				bufferItr++;
 			}
 
-			map<string, ID3D11ShaderResourceView*>::iterator diffuseItr = diffuseAtlasMap.begin();
-			while (diffuseItr != diffuseAtlasMap.end())
+			map<string, ID3D11ShaderResourceView*>::iterator srvItr = shaderResourceViewsMap.begin();
+			while (srvItr != shaderResourceViewsMap.end())
 			{
-				ReleaseCOM(diffuseItr->second);
-				diffuseItr++;
+				ReleaseCOM(srvItr->second);
+				srvItr++;
 			}
 
-			map<string, ID3D11Texture2D*>::iterator depthItr = depthStencilBufferMap.begin();
-			while (depthItr != depthStencilBufferMap.end())
+			map<string, ID3D11Texture2D*>::iterator textureItr = texture2DMap.begin();
+			while (textureItr != texture2DMap.end())
 			{
-				ReleaseCOM(depthItr->second);
-				depthItr++;
+				ReleaseCOM(textureItr->second);
+				textureItr++;
 			}
 
 			map<string, ID3D11DepthStencilView*>::iterator depthViewItr = depthStencilViewsMap.begin();
