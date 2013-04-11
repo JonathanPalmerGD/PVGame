@@ -294,7 +294,8 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		if(input->wasKeyPressed('9'))
+		#pragma region Outdated Light Code
+		/*if(input->wasKeyPressed('9'))
 		{
 			renderMan->ToggleLight(0);
 		}
@@ -309,7 +310,8 @@ void PVGame::UpdateScene(float dt)
 		if(input->wasKeyPressed('6'))
 		{
 			renderMan->ToggleLight(3);
-		}
+		}*/
+		#pragma endregion
 
 		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{

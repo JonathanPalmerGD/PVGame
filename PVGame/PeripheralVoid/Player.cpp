@@ -40,14 +40,14 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 
 void Player::Update(float dt, Input* input)
 {
-	if(leapStatus)
+	if(controller->onGround())
 	{
-		controller->setMaxJumpHeight(60.0f);
-		controller->setJumpSpeed(22.0f);
-	}
-	else
-	{
-		if(controller->onGround())
+		if(leapStatus)
+		{
+			controller->setMaxJumpHeight(60.0f);
+			controller->setJumpSpeed(22.0f);
+		}
+		else
 		{
 			controller->setJumpSpeed(15.0f);
 			controller->setMaxJumpHeight(30.0f);
@@ -148,6 +148,7 @@ void Player::HandleInput(Input* input)
 	btVector3 forward(fwd.x, fwd.y, fwd.z);
 	btVector3 r(right.x, right.y, right.z);
 
+	#pragma region Player Controls
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
 		direction += forward;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
@@ -158,9 +159,10 @@ void Player::HandleInput(Input* input)
 		direction -= r;
 	if(input->isJumpKeyPressed() && !medusaStatus)
  		controller->jump();
-	
+	#pragma endregion
+
 	//DBOUT(controller->canJump());
-	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (1.0f * mobilityStatus))) * (1.0f - medusaPercent);
+	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (0.5f * mobilityStatus))) * (1.0f - medusaPercent);
 	controller->setWalkDirection(direction * currentPlayerSpeed);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
