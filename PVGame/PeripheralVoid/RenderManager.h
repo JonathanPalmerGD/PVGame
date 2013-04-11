@@ -169,15 +169,15 @@ class RenderManager
 		void DrawMenu()
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
-			md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, reinterpret_cast<const float*>(&Colors::Silver));
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default"], reinterpret_cast<const float*>(&Colors::Silver));
 			HR(mSwapChain->Present(0, 0));
 		}
 
 		void DrawScene(Camera* aCamera, vector<GameObject*> gameObjects)
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
-			md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-			md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 			XMFLOAT3 startPos(0.0f, 0.0f, 0.0f);
 			XMFLOAT3 endPos(0.0f, 0.0f, 0.0f);
@@ -486,8 +486,19 @@ class RenderManager
 			// Release the old views, as they hold references to the buffers we
 			// will be destroying.  Also release the old depth/stencil buffer.
 
-			ReleaseCOM(mRenderTargetView);
-			ReleaseCOM(mDepthStencilView);
+			map<string, ID3D11DepthStencilView*>::iterator depthViewItr = depthStencilViewsMap.begin();
+			while (depthViewItr != depthStencilViewsMap.end())
+			{
+				ReleaseCOM(depthViewItr->second);
+				depthViewItr++;
+			}
+
+			map<string, ID3D11RenderTargetView*>::iterator renderViewItr = renderTargetViewsMap.begin();
+			while (renderViewItr != renderTargetViewsMap.end())
+			{
+				ReleaseCOM(renderViewItr->second);
+				renderViewItr++;
+			}
 
 			map<string, ID3D11Texture2D*>::iterator depthItr = depthStencilBufferMap.begin();
 			while (depthItr != depthStencilBufferMap.end())
@@ -501,7 +512,7 @@ class RenderManager
 			HR(mSwapChain->ResizeBuffers(1, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 			ID3D11Texture2D* backBuffer;
 			HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
-			HR(md3dDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
+			HR(md3dDevice->CreateRenderTargetView(backBuffer, 0, &renderTargetViewsMap["Default"]));
 			ReleaseCOM(backBuffer);
 
 			// Create the depth/stencil buffer and view.
@@ -533,12 +544,12 @@ class RenderManager
 			depthStencilDesc.MiscFlags      = 0;
 
 			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &depthStencilBufferMap["Default"]));
-			HR(md3dDevice->CreateDepthStencilView(depthStencilBufferMap["Default"], 0, &mDepthStencilView));
+			HR(md3dDevice->CreateDepthStencilView(depthStencilBufferMap["Default"], 0, &depthStencilViewsMap["Default"]));
 
 
 			// Bind the render target view and depth/stencil view to the pipeline.
 
-			md3dImmediateContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
+			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default"], depthStencilViewsMap["Default"]);
 	
 
 			// Set the viewport transform.
@@ -560,8 +571,8 @@ class RenderManager
 		ID3D11DeviceContext* md3dImmediateContext;
 		IDXGISwapChain* mSwapChain;
 
-		ID3D11RenderTargetView* mRenderTargetView;
-		ID3D11DepthStencilView* mDepthStencilView;
+		map<string, ID3D11RenderTargetView*> renderTargetViewsMap;
+		map<string, ID3D11DepthStencilView*> depthStencilViewsMap;
 
 		ID3DX11Effect* mFX;
 		ID3DX11EffectTechnique* mTech;
@@ -621,7 +632,6 @@ class RenderManager
 			md3dImmediateContext = nullptr;
 			mSwapChain = nullptr;
 			mSwapChain = nullptr;
-			mRenderTargetView = nullptr;
 			mFX = nullptr;
 			mTech = nullptr;
 			mfxWorld = nullptr;
@@ -704,8 +714,6 @@ class RenderManager
 
 		~RenderManager()
 		{
-			ReleaseCOM(mRenderTargetView);
-			ReleaseCOM(mDepthStencilView);
 			ReleaseCOM(mSwapChain);
 			ReleaseCOM(mFX);
 			ReleaseCOM(mInputLayout);
@@ -739,6 +747,20 @@ class RenderManager
 			{
 				ReleaseCOM(depthItr->second);
 				depthItr++;
+			}
+
+			map<string, ID3D11DepthStencilView*>::iterator depthViewItr = depthStencilViewsMap.begin();
+			while (depthViewItr != depthStencilViewsMap.end())
+			{
+				ReleaseCOM(depthViewItr->second);
+				depthViewItr++;
+			}
+
+			map<string, ID3D11RenderTargetView*>::iterator renderViewItr = renderTargetViewsMap.begin();
+			while (renderViewItr != renderTargetViewsMap.end())
+			{
+				ReleaseCOM(renderViewItr->second);
+				renderViewItr++;
 			}
 		}
 
