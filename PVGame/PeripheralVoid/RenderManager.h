@@ -35,18 +35,18 @@ class RenderManager
 			return static_cast<float>(mClientWidth) / mClientHeight;
 		}
 
-		void CreateLight(float xPos, float yPos, float zPos)
+		void CreateLight(XMFLOAT4 ambientLight, XMFLOAT4 diffuseLight, XMFLOAT4 specularLight, float range, XMFLOAT3 pos, XMFLOAT3 attenuation)
 		{
 			//Check if we are at max lights. Add if we aren't
 			if(mPointLights.size() < MAX_LIGHTS)
-			{			
+			{
 				PointLight aPointLight;
-				aPointLight.Ambient = XMFLOAT4(0.6f, 0.3f, 0.6f, 1.0f);
-				aPointLight.Diffuse = XMFLOAT4(4.0f, 1.0f, 1.0f, 1.0f);
-				aPointLight.Specular = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f);
-				aPointLight.Range = 3.0f;
-				aPointLight.Position = XMFLOAT3(xPos, yPos, zPos);
-				aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+				aPointLight.Ambient = ambientLight;
+				aPointLight.Diffuse = diffuseLight;
+				aPointLight.Specular = specularLight;
+				aPointLight.Range = range;
+				aPointLight.Position = pos;
+				aPointLight.Att = attenuation;
 				aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 				mPointLights.push_back(PointLight(aPointLight));
 			}
@@ -472,6 +472,12 @@ class RenderManager
 			mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
 		}
 
+		/* //Tried to overload this. It wouldn't take.
+		void SetLightPosition(int index, XMFLOAT4* targetV4)
+		{
+			mPointLights[index].Position = XMFLOAT3(targetV4->x, targetV4->y, targetV4->z);
+		}*/
+
 		btVector3 getLightPosition(int index)
 		{
 			return btVector3(mPointLights[index].Position.x, mPointLights[index].Position.y, mPointLights[index].Position.z); 
@@ -644,8 +650,8 @@ class RenderManager
 			// Set up lighting. Will need to make more general but first we want basic lighting.
 			// Directional light.
 			mDirLights.push_back(DirectionalLight());
-			mDirLights[0].Ambient  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-			mDirLights[0].Diffuse  = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+			mDirLights[0].Ambient  = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+			mDirLights[0].Diffuse  = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 			mDirLights[0].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.707f, 0.0f);
  
@@ -655,46 +661,42 @@ class RenderManager
 			//mDirLights[1].Direction = XMFLOAT3(-0.707f, 0.0f, 0.707f);
 
 			// Add 4 lights to the scene. First is red.
-			PointLight aPointLight;
-			aPointLight.Ambient = XMFLOAT4(0.6f, 0.0f, 0.0f, 1.0f);
-			aPointLight.Diffuse = XMFLOAT4(10.0f, 0.0f, 0.0f, 1.0f);
-			aPointLight.Specular = XMFLOAT4(2.0f, 0.0f, 0.0f, 1.0f);
-			aPointLight.Range = 5.0f;
-			aPointLight.Position = XMFLOAT3(-7.5f, 0.5f, -7.5f);
-			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			mPointLights.push_back(PointLight(aPointLight));
+			CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
+			CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
+			CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(0.0f, 0.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
+			//CreateLight(XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f), XMFLOAT4(30.0f, 30.0f, 30.0f, 1.0f), XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f), 15.0f, XMFLOAT3(0.0f, 0.0f, -0.0f));
+			//PointLight aPointLight;
+			//
+			//// Second is green.
+			//aPointLight.Ambient = XMFLOAT4(0.0f, 0.6f, 0.0f, 1.0f);
+			//aPointLight.Diffuse = XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f);
+			//aPointLight.Specular = XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f);
+			//aPointLight.Range = 5.0f;
+			//aPointLight.Position = XMFLOAT3(-0.0f, 0.5f, -7.5f);
+			//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+			//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+			//mPointLights.push_back(PointLight(aPointLight));
 
-			// Second is green.
-			aPointLight.Ambient = XMFLOAT4(0.0f, 0.6f, 0.0f, 1.0f);
-			aPointLight.Diffuse = XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f);
-			aPointLight.Specular = XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f);
-			aPointLight.Range = 5.0f;
-			aPointLight.Position = XMFLOAT3(-0.0f, 0.5f, -7.5f);
-			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			mPointLights.push_back(PointLight(aPointLight));
+			//// Third is blue.
+			//PointLight bPointLight;
+			//bPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 0.6f, 1.0f);
+			//bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 3.0f, 1.0f);
+			//bPointLight.Specular = XMFLOAT4(0.0f, 0.0f,2.0f, 1.0f);
+			//bPointLight.Range = 5.0f;
+			//bPointLight.Position = XMFLOAT3(-7.5f, 0.5f, -0.0f);
+			//bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+			//bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+			//mPointLights.push_back(PointLight(bPointLight));
 
-			// Third is blue.
-			PointLight bPointLight;
-			bPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 0.6f, 1.0f);
-			bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 3.0f, 1.0f);
-			bPointLight.Specular = XMFLOAT4(0.0f, 0.0f,2.0f, 1.0f);
-			bPointLight.Range = 5.0f;
-			bPointLight.Position = XMFLOAT3(-7.5f, 0.5f, -0.0f);
-			bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			mPointLights.push_back(PointLight(bPointLight));
-
-			// Fourth is White 
-			aPointLight.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-			aPointLight.Diffuse = XMFLOAT4(3.0f, 0.0f, 3.0f, 1.0f);
-			aPointLight.Specular = XMFLOAT4(2.0f, 0.0f, 2.0f, 1.0f);
-			aPointLight.Range = 5.0f;
-			aPointLight.Position = XMFLOAT3(-4.5f, 3.5f, -4.5f);
-			aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			mPointLights.push_back(PointLight(aPointLight));
+			//// Fourth is White 
+			//aPointLight.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+			//aPointLight.Diffuse = XMFLOAT4(3.0f, 0.0f, 3.0f, 1.0f);
+			//aPointLight.Specular = XMFLOAT4(2.0f, 0.0f, 2.0f, 1.0f);
+			//aPointLight.Range = 5.0f;
+			//aPointLight.Position = XMFLOAT3(-4.5f, 3.5f, -4.5f);
+			//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+			//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+			//mPointLights.push_back(PointLight(aPointLight));
 		}
 
 		~RenderManager()

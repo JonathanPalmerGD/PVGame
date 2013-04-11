@@ -153,13 +153,13 @@ bool PVGame::LoadXML()
 	gameObjects = startRoom->getGameObjs();
 	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", -8.0f, 10.0f, -8.0f, 1.0f), physicsMan, LEAP, 1.0f);
+	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 8.0f, 10.0f, 8.0f, 1.0f), physicsMan, LEAP, 1.0f);
 	gameObjects.push_back(crestObj);
 	
-	GameObject* crestObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 27.0f, 10.0f, 27.0f, 1.0f), physicsMan, MEDUSA, 1.0f);
+	GameObject* crestObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 21.0f, 4.0f, 21.0f, 1.0f), physicsMan, MEDUSA, 1.0f);
 	gameObjects.push_back(crestObj2);
 
-	GameObject* crestObj3 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.0f, 10.0f, -7.0f, 1.0f), physicsMan, MOBILITY, 1.0f);
+	GameObject* crestObj3 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", -16.0f, 10.0f, -16.0f, 1.0f), physicsMan, MOBILITY, 1.0f);
 	gameObjects.push_back(crestObj3);
 	#pragma endregion
 
@@ -313,17 +313,36 @@ void PVGame::UpdateScene(float dt)
 		}*/
 		#pragma endregion
 
-		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
+		if(renderMan->getNumLights() > 3)
 		{
+			renderMan->SetLightPosition(3, &player->getCameraPosition());
+		}
+		if(input->wasKeyPressed('Q'))
+		{
+			if(renderMan->getNumLights() < 4)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				renderMan->CreateLight(XMFLOAT4(0.00f, 0.00f, 0.00f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 25.0f, pos, XMFLOAT3(0.0f, 0.0f, 0.2f));
+			}
+			else
+			{
+				renderMan->ToggleLight(3);
+			}
+		}
+
+		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
+		{			
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-
+			
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			renderMan->CreateLight(pos.x, pos.y, pos.z);
+			
 			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			SortGameObjects();

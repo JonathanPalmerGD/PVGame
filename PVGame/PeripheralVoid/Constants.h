@@ -180,10 +180,10 @@ struct SurfaceMaterial
 
 	
     // Texture ID's to look up texture in SRV array
-    /*int DiffuseTextureID;
-    int AmbientTextureID;
-    int SpecularTextureID;
-    int AlphaTextureID;
+	/*int DiffuseTextureID;
+	int AmbientTextureID;
+	int SpecularTextureID;
+	int AlphaTextureID;
     int NormMapTextureID;
 
 	std::wstring MatName;   // So we can match the subset with it's material
@@ -244,6 +244,7 @@ static std::wstring s2ws(const std::string& s)
 
 
 // Model Structure
+
 struct ObjModel
 {
     int Subsets;                        // Number of subsets in obj model
