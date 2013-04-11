@@ -1,6 +1,6 @@
 #pragma once
 
-/*
+
 #include <Windows.h>
 #include <vector>
 #include <fstream>
@@ -17,7 +17,7 @@ class FileLoader
 {
 	
 //These structs were gathered from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader
-struct Vertex
+/*struct Vertex
 {
 	XMFLOAT3 pos;
 	XMFLOAT2 texCoord;
@@ -26,6 +26,7 @@ struct Vertex
 	XMFLOAT3 tangent;
 	XMFLOAT3 biTangent;  //BUMP MAPPING!
 };
+*/
 
 public:
 	FileLoader(void);
@@ -38,7 +39,5 @@ public:
     TextureManager& TexMgr,
     bool IsRHCoordSys,
     bool ComputeNormals,
-    bool flipFaces);
+	bool flipFaces);
 };
-
-*/

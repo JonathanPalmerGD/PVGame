@@ -153,13 +153,13 @@ bool PVGame::LoadXML()
 	gameObjects = startRoom->getGameObjs();
 	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-	GameObject* crestObj = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", -8.0f, 10.0f, -8.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, LEAP, 1.0f);
+	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", -8.0f, 10.0f, -8.0f, 1.0f), physicsMan, LEAP, 1.0f);
 	gameObjects.push_back(crestObj);
-
-	GameObject* crestObj2 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 4.0f, 10.0f, 4.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MEDUSA, 1.0f);
+	
+	GameObject* crestObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 27.0f, 10.0f, 27.0f, 1.0f), physicsMan, MEDUSA, 1.0f);
 	gameObjects.push_back(crestObj2);
 
-	GameObject* crestObj3 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 6.0f, 10.0f, -7.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MOBILITY, 1.0f);
+	GameObject* crestObj3 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.0f, 10.0f, -7.0f, 1.0f), physicsMan, MOBILITY, 1.0f);
 	gameObjects.push_back(crestObj3);
 
 	int a = 0;
@@ -208,8 +208,7 @@ void PVGame::UpdateScene(float dt)
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-		for(int i = 0; i < renderMan->getNumLights(); ++i)
-		
+		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
 		{
 			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
@@ -220,9 +219,9 @@ void PVGame::UpdateScene(float dt)
 			}
 			else
 			{
-				renderMan->DisableLight(i);
+				//renderMan->DisableLight(i);
 			}
-		}
+		}*/
 		
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
@@ -250,6 +249,10 @@ void PVGame::UpdateScene(float dt)
 								player->setMedusaStatus(true);
 								player->increaseMedusaPercent();
 							}
+							else
+							{
+								renderMan->DisableLight(1);
+							}
 							break;
 						#pragma endregion
 						#pragma region Leap Crest
@@ -262,6 +265,10 @@ void PVGame::UpdateScene(float dt)
 								renderMan->EnableLight(0);
 								player->setLeapStatus(true);
 							}
+							else
+							{
+								renderMan->DisableLight(0);
+							}
 							break;
 						#pragma endregion
 						#pragma region Mobility Crest
@@ -272,6 +279,10 @@ void PVGame::UpdateScene(float dt)
 							{	
 								renderMan->EnableLight(2);
 								player->setMobilityStatus(true);
+							}
+							else
+							{
+								renderMan->DisableLight(2);
 							}
 							break;
 						#pragma endregion
