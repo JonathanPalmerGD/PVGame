@@ -174,10 +174,10 @@ class RenderManager
 		}
 
 		// Loop through all the buffers, drawing each instance for the game objects.
-		void DrawGameObjects()
+		void DrawGameObjects(string aTechniqueKey)
 		{
 			D3DX11_TECHNIQUE_DESC techDesc;
-			mTech->GetDesc( &techDesc );
+			techniqueMap[aTechniqueKey]->GetDesc( &techDesc );
 
 			UINT stride[2] = { sizeof(Vertex), sizeof(InstancedData) };
 			UINT offset[2] = { 0, 0 };
@@ -219,7 +219,7 @@ class RenderManager
 						bufferItr->second.indexBuffer->GetDesc(&indexDesc);
 						int indexSize = indexDesc.ByteWidth / sizeof(UINT);
 
-						mTech->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+						techniqueMap[aTechniqueKey]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
 
 						// Draw mVisibleObjetCount number of instances, each having indexSize vertices.
 						md3dImmediateContext->DrawIndexedInstanced(indexSize, mVisibleObjectCount, 0, 0, 0);
@@ -274,7 +274,7 @@ class RenderManager
 			// This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
 			mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&aCamera->ViewProj()));
 
-			DrawGameObjects();
+			DrawGameObjects("LightsWithAtlas");
 
 			// Bind the render target view to the back buffer.
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
@@ -286,13 +286,13 @@ class RenderManager
 			// Set texture atlas once for now.
 			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
 
-			DrawGameObjects();
+			DrawGameObjects("LightsWithoutAtlas");
 
-			HR(mSwapChain->Present(0, 0));
+			HR(mSwapChain->Present(1, 0));
 			
 			// Set shader view to null to prevent warnings.
 			mfxDiffuseMapVar->SetResource(NULL);
-			mTech->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
+			techniqueMap["LightsWithoutAtlas"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
 		}
 		
 		// Build a vertex and index buffer for each mesh.
@@ -487,9 +487,15 @@ class RenderManager
 
 			// Quick fix to support DX10, assuming we don't care about lower levels.
 			if (usingDX11)
-				mTech                = mFX->GetTechniqueByName("TestLights");
+			{
+				techniqueMap["LightsWithAtlas"]              = mFX->GetTechniqueByName("LightsWithAtlas");
+				techniqueMap["LightsWithoutAtlas"]              = mFX->GetTechniqueByName("LightsWithoutAtlas");
+			}
 			else
-				mTech                = mFX->GetTechniqueByName("TestLightsDX10");
+			{
+				techniqueMap["LightsWithAtlas"]                = mFX->GetTechniqueByName("LightsWithAtlasDX10");
+				techniqueMap["LightsWithoutAtlas"]              = mFX->GetTechniqueByName("LightsWithoutAtlasDX10");
+			}
 
 			// Creates association between shader variables and program variables.
 			mfxViewProj     = mFX->GetVariableByName("gViewProj")->AsMatrix();
@@ -535,8 +541,14 @@ class RenderManager
 
 			// Create the input layout
 			D3DX11_PASS_DESC passDesc;
-			mTech->GetPassByIndex(0)->GetDesc(&passDesc);
-			HR(md3dDevice->CreateInputLayout(vertexDesc, 12, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
+			map<string, ID3DX11EffectTechnique*>::iterator techItr = techniqueMap.begin();
+			while (techItr != techniqueMap.end())
+			{
+				techItr->second->GetPassByIndex(0)->GetDesc(&passDesc);
+				HR(md3dDevice->CreateInputLayout(vertexDesc, 12, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
+			
+				techItr++;
+			}
 		}
 
 		void ToggleLight(int index)
@@ -697,7 +709,6 @@ class RenderManager
 		IDXGISwapChain* mSwapChain;
 
 		ID3DX11Effect* mFX;
-		ID3DX11EffectTechnique* mTech;
 		ID3DX11EffectMatrixVariable* mfxWorld;
 		ID3DX11EffectMatrixVariable* mfxViewProj;
 		ID3DX11EffectMatrixVariable* mfxWorldInvTranspose;
@@ -716,6 +727,7 @@ class RenderManager
 		map<string, ID3D11Texture2D*> texture2DMap;
 		map<string, ID3D11RenderTargetView*> renderTargetViewsMap;
 		map<string, ID3D11DepthStencilView*> depthStencilViewsMap;
+		map<string, ID3DX11EffectTechnique*> techniqueMap;
 
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
@@ -757,7 +769,6 @@ class RenderManager
 			mSwapChain = nullptr;
 			mSwapChain = nullptr;
 			mFX = nullptr;
-			mTech = nullptr;
 			mfxWorld = nullptr;
 			mfxViewProj = nullptr;
 			mfxWorldInvTranspose = nullptr;
