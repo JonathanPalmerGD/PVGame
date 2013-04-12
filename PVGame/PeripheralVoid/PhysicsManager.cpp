@@ -177,7 +177,7 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 		if(handle.compare("Cube") == 0)
 			triMeshShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
 		else if(handle.compare("Sphere") == 0)
-			triMeshShape = new btSphereShape(3.14);
+			triMeshShape = new btSphereShape(3.14f);
 		else
 			triMeshShape = new btConvexTriangleMeshShape(ptr->second);
 

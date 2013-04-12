@@ -220,7 +220,7 @@ void PVGame::UpdateScene(float dt)
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
 
-		for(int i = 0; i < gameObjects.size(); i++)
+		for(unsigned int i = 0; i < gameObjects.size(); i++)
 		{
 			if(gameObjects[i]->GetVisionAffected())
 			{	
@@ -333,12 +333,12 @@ void PVGame::UpdateScene(float dt)
 		}
 
 		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
-		{			
+		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			
+
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");

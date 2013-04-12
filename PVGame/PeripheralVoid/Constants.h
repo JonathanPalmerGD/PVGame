@@ -242,7 +242,6 @@ static std::wstring s2ws(const std::string& s)
 	OutputDebugString(os.str().c_str());\
 }
 
-
 // Model Structure
 
 struct ObjModel
