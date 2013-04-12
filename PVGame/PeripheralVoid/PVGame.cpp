@@ -85,7 +85,9 @@ bool PVGame::LoadContent()
 
 bool PVGame::LoadXML()
 {
-	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan);
+	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan, 0, 0);
+	startRoom->loadRoom();
+	startRoom->loadNeighbors();
 	currentRoom = startRoom;
 
 	tinyxml2::XMLDocument doc;
@@ -151,6 +153,17 @@ bool PVGame::LoadXML()
 	//Get the filename from constants, hand it into tinyxml
 
 	gameObjects = startRoom->getGameObjs();
+
+	for (int i = 0; i < startRoom->getNeighbors().size(); i++)
+	{
+		startRoom->getNeighbors()[i].loadNeighbors();
+
+		for (int j = 0; j < startRoom->getNeighbors()[i].getGameObjs().size(); j++)
+		{
+			gameObjects.push_back(startRoom->getNeighbors()[i].getGameObjs()[j]);
+		}
+	}
+
 	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
 	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 8.4f, 10.0f, 8.4f, 1.0f), physicsMan, LEAP, 1.0f);
@@ -420,10 +433,10 @@ void PVGame::BuildGeometryBuffers()
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(80.0f, 1.0f, 80.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
-	aGameObject->SetRigidBody(physicsMan->createPlane(0,0,0));
-	aGameObject->scale(80.0, 1.0, 80.0);
-	gameObjects.push_back(aGameObject);
+	/*GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(80.0f, 1.0f, 80.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
+	aGameObject->SetRigidBody(physicsMan->createPlane(0.0f, 0.0f, 0.0f));
+	aGameObject->scale(8000.0, 1.0, 8000.0);
+	gameObjects.push_back(aGameObject);*/
 
 	/*GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14f) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);
 	bGameObject->SetRigidBody(physicsMan->createPlane(0.0f,0.0f,0.0f));

@@ -125,7 +125,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 64 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 64 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -274,7 +274,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 82 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 82 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -370,7 +370,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -460,7 +460,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -546,7 +546,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -632,7 +632,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -686,7 +686,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 128 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -797,7 +797,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 64 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 64 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -941,7 +941,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 82 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 82 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -1037,7 +1037,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1127,7 +1127,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1213,7 +1213,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1299,7 +1299,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1353,7 +1353,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 128 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1464,7 +1464,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 64 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 64 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -1612,7 +1612,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 82 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 82 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -1708,7 +1708,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1798,7 +1798,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1884,7 +1884,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1970,7 +1970,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2024,7 +2024,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 128 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2134,7 +2134,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 64 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 64 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -2277,7 +2277,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 82 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 82 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -2373,7 +2373,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2463,7 +2463,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2549,7 +2549,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2635,7 +2635,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 119 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 119 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2689,7 +2689,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128 "C:\Users\Owner\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 128 "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\pvgame new new\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>

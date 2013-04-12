@@ -1,0 +1,21 @@
+<level>
+<walls>
+<wall row="0" col="5" xLength="6" zLength="1" centerX="8" centerY="0" centerZ="0.5"/>
+<wall row="0" col="14" xLength="6" zLength="1" centerX="17" centerY="0" centerZ="0.5"/>
+<wall row="1" col="5" xLength="1" zLength="7" centerX="5.5" centerY="0" centerZ="4.5"/>
+<wall row="1" col="19" xLength="1" zLength="7" centerX="19.5" centerY="0" centerZ="4.5"/>
+<wall row="8" col="6" xLength="2" zLength="1" centerX="7" centerY="0" centerZ="8.5"/>
+<wall row="8" col="17" xLength="2" zLength="1" centerX="18" centerY="0" centerZ="8.5"/>
+<wall row="9" col="8" xLength="2" zLength="1" centerX="9" centerY="0" centerZ="9.5"/>
+<wall row="9" col="15" xLength="2" zLength="1" centerX="16" centerY="0" centerZ="9.5"/>
+<wall row="10" col="10" xLength="1" zLength="1" centerX="10.5" centerY="0" centerZ="10.5"/>
+<wall row="10" col="14" xLength="1" zLength="1" centerX="14.5" centerY="0" centerZ="10.5"/>
+</walls>
+<spawns>
+<spawn row="1" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="1.5" dir="up"/>
+</spawns>
+<exits>
+<exit row="0" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" file="level1.xml"/>
+<exit row="10" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="10.5" file="level6.xml"/>
+</exits>
+</level>

@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 #include "Common\d3dUtil.h"
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
@@ -164,8 +165,8 @@ struct Wall
 	float centerX;
 	float centerY;
 	float centerZ;
-	const char* direction;
-	const char* file;
+	string direction;
+	string file;
 };
 
 //These structs were gathered from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader
