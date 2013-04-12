@@ -23,9 +23,9 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 
 	physicsMan = pm;
 	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
-	controller->setGravity(9.81f);
-	controller->setJumpSpeed(10.0f);
-	controller->setMaxJumpHeight(10.0f);
+	controller->setGravity(30.0f);
+	controller->setJumpSpeed(15.0f);
+	controller->setMaxJumpHeight(50.0f);
 	controller->setMaxSlope(3.0f * 3.1415f);
 
 	medusaStatus = false;
@@ -40,17 +40,20 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 
 void Player::Update(float dt, Input* input)
 {
-	if(leapStatus)
+	if(controller->onGround())
 	{
-		controller->setJumpSpeed(40.0f);
-		controller->setMaxJumpHeight(40.0f);
+		if(leapStatus)
+		{
+			controller->setMaxJumpHeight(60.0f);
+			controller->setJumpSpeed(22.0f);
+		}
+		else
+		{
+			controller->setJumpSpeed(15.0f);
+			controller->setMaxJumpHeight(30.0f);
+		}
 	}
-	else
-	{
-		controller->setJumpSpeed(10.0f);
-		controller->setMaxJumpHeight(10.0f);
-	}
-
+	
 	playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
@@ -145,6 +148,7 @@ void Player::HandleInput(Input* input)
 	btVector3 forward(fwd.x, fwd.y, fwd.z);
 	btVector3 r(right.x, right.y, right.z);
 
+	#pragma region Player Controls
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
 		direction += forward;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
@@ -155,9 +159,10 @@ void Player::HandleInput(Input* input)
 		direction -= r;
 	if(input->isJumpKeyPressed() && !medusaStatus)
  		controller->jump();
-	
+	#pragma endregion
+
 	//DBOUT(controller->canJump());
-	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (1.5f * mobilityStatus))) * (1.0f - medusaPercent);
+	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (0.5f * mobilityStatus))) * (1.0f - medusaPercent);
 	controller->setWalkDirection(direction * currentPlayerSpeed);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();

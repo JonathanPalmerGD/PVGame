@@ -1,15 +1,13 @@
 #include "FileLoader.h"
-/*
+
 
 FileLoader::FileLoader(void)
 {
 }
 
-
 FileLoader::~FileLoader(void)
 {
 }
-
 
 bool FileLoader::loadFile( ID3D11Device* device,
     std::wstring Filename, 
@@ -21,7 +19,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
     bool flipFaces)
 {
 	HRESULT hr = 0;
-
+	
     std::wifstream fileIn (Filename.c_str());   // Open file
     std::wstring meshMatLib;                    // String to hold our obj material library filename (model.mtl)
 
@@ -54,7 +52,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
     int totalVerts = 0;
     int meshTriangles = 0;
     bool ang = false;
-
+	/*
     //Check to see if the file was opened
     if (fileIn)
     {
@@ -63,14 +61,16 @@ bool FileLoader::loadFile( ID3D11Device* device,
             checkChar = fileIn.get();   //Get next char
 
             switch (checkChar)
-            {       
-                // A comment. Skip rest of the line
+            {   
+			#pragma region '#' Case - Comments
+				// A comment. Skip rest of the line
             case '#':
                 checkChar = fileIn.get();
                 while(checkChar != '\n')
                     checkChar = fileIn.get();
                 break;
-
+			#pragma endregion
+			#pragma region 'v' Case - Vertex Descriptions
                     // Get Vertex Descriptions;
             case 'v':
                 checkChar = fileIn.get();
@@ -109,7 +109,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     hasNorm = true;                 // We know the model defines normals
                 }
                 break;
-
+			#pragma endregion
+			#pragma region 'g' Case - New Group (Subsets!)
                 // New group (Subset)
             case 'g': // g - defines a group
                 checkChar = fileIn.get();
@@ -120,7 +121,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     Model.Subsets++;
                 }
                 break;
-
+			#pragma endregion
+			#pragma region 'f' Case - Face Index
                 // Get Face Index
             case 'f': // f - defines the faces
                 checkChar = fileIn.get();
@@ -372,7 +374,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     }
                 }
                 break;
-
+			#pragma endregion
+			#pragma region 'm' Case - Material Library Filename
             case 'm': // mtllib - material library filename
                 checkChar = fileIn.get();
                 if(checkChar == 't')
@@ -402,7 +405,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                 }
 
                 break;
-
+			#pragma endregion
+			#pragma region 'u' Case - Which Material?
             case 'u': // usemtl - which material to use
                 checkChar = fileIn.get();
                 if(checkChar == 's')
@@ -440,7 +444,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     }
                 }
                 break;
-
+			#pragma endregion
             default:                
                 break;
             }
@@ -449,7 +453,6 @@ bool FileLoader::loadFile( ID3D11Device* device,
     else    // If we could not open the file
     {
 
-		
 		//This is a commented out line because of an undeclared identifier. I don't think it's a big problem anyway.
 		
 		
@@ -497,14 +500,16 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
             switch (checkChar)
             {
-                // Check for comment
+            #pragma region '#' Case - Comments
+				// Check for comment
             case '#':
-                checkChar = fileIn.get();
+				checkChar = fileIn.get();
                 while(checkChar != '\n')
                     checkChar = fileIn.get();
                 break;
-
-                // Set the colors
+			#pragma endregion
+			#pragma region 'K' Case - Colors
+			// Set the colors
             case 'K':
                 checkChar = fileIn.get();
                 if(checkChar == 'd')  // Diffuse Color
@@ -534,8 +539,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     fileIn >> material[matCount-1].Specular.z;
                 }
                 break;
-                
-            case 'N':
+			#pragma endregion
+			#pragma region 'N' Case - Specular!
+			case 'N':
                 checkChar = fileIn.get();
 
                 if(checkChar == 's')  // Specular Power (Coefficient)
@@ -546,8 +552,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                 }
 
                 break;
-
-                // Check for transparency
+			#pragma endregion
+			#pragma region 'T' Case - Transparency
+				// Check for transparency
             case 'T':
                 checkChar = fileIn.get();
                 if(checkChar == 'r')
@@ -561,10 +568,10 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     if(Transparency > 0.0f)
                         material[matCount-1].IsTransparent = true;
                 }
-                break;
-
-                // Some obj files specify d for transparency
-            case 'd':
+                break; 
+			#pragma endregion
+			#pragma region 'd' Case - Transparency 2 (Some files use 'd' for transparency)
+			case 'd':	// Some obj files specify d for transparency
                 checkChar = fileIn.get();
                 if(checkChar == ' ')
                 {
@@ -579,9 +586,10 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     if(Transparency > 0.0f)
                         material[matCount-1].IsTransparent = true;                  
                 }
-                break;
-
-                // Get the diffuse map (texture)
+				break;
+			#pragma endregion
+			#pragma region 'm' Case - Diffuse Map
+			// Get the diffuse map (texture)
             case 'm':
                 checkChar = fileIn.get();
                 if(checkChar == 'a')
@@ -882,7 +890,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     }
                 }
                 break;
-
+			#pragma endregion
+			#pragma region 'n' Case - New Material
             case 'n': // newmtl - Declare new material
                 checkChar = fileIn.get();
                 if(checkChar == 'e')
@@ -918,7 +927,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                         material[matCount].SpecularTextureID = 0;
                                         material[matCount].AmbientTextureID = 0;
                                         material[matCount].Specular = XMFLOAT4(0,0,0,0);
-                                        material[matCount].Ambient = XMFLOAT3(0,0,0);
+                                        material[matCount].Ambient = XMFLOAT4(0,0,0,0);
                                         material[matCount].Diffuse = XMFLOAT4(0,0,0,0);
                                         matCount++;
                                     }
@@ -928,7 +937,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     }
                 }
                 break;
-
+			#pragma endregion
             default:
                 break;
             }
@@ -973,14 +982,15 @@ bool FileLoader::loadFile( ID3D11Device* device,
     // from the file and store them in a vector
     for(int j = 0 ; j < totalVerts; ++j)
     {
-        tempVert.pos = vertPos[vertPosIndex[j]];
-        tempVert.normal = vertNorm[vertNormIndex[j]];
-        tempVert.texCoord = vertTexCoord[vertTCIndex[j]];
+        tempVert.Pos = vertPos[vertPosIndex[j]];
+        tempVert.Normal = vertNorm[vertNormIndex[j]];
+        tempVert.TexC = vertTexCoord[vertTCIndex[j]];
 
         vertices.push_back(tempVert);
-        Model.Vertices.push_back(tempVert.pos);
+        Model.Vertices.push_back(tempVert.Pos);
     }
 
+	#pragma region Compute Normals
     //If computeNormals was set to true then we will create our own
     //normals, if it was set to false we will use the obj files normals
     if(ComputeNormals)
@@ -1007,15 +1017,15 @@ bool FileLoader::loadFile( ID3D11Device* device,
         for(int i = 0; i < meshTriangles; ++i)
         {
             //Get the vector describing one edge of our triangle (edge 0,2)
-            vecX = vertices[Model.Indices[(i*3)]].pos.x - vertices[Model.Indices[(i*3)+2]].pos.x;
-            vecY = vertices[Model.Indices[(i*3)]].pos.y - vertices[Model.Indices[(i*3)+2]].pos.y;
-            vecZ = vertices[Model.Indices[(i*3)]].pos.z - vertices[Model.Indices[(i*3)+2]].pos.z;       
+            vecX = vertices[Model.Indices[(i*3)]].Pos.x - vertices[Model.Indices[(i*3)+2]].Pos.x;
+            vecY = vertices[Model.Indices[(i*3)]].Pos.y - vertices[Model.Indices[(i*3)+2]].Pos.y;
+            vecZ = vertices[Model.Indices[(i*3)]].Pos.z - vertices[Model.Indices[(i*3)+2]].Pos.z;       
             edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our first edge
 
             //Get the vector describing another edge of our triangle (edge 2,1)
-            vecX = vertices[Model.Indices[(i*3)+2]].pos.x - vertices[Model.Indices[(i*3)+1]].pos.x;
-            vecY = vertices[Model.Indices[(i*3)+2]].pos.y - vertices[Model.Indices[(i*3)+1]].pos.y;
-            vecZ = vertices[Model.Indices[(i*3)+2]].pos.z - vertices[Model.Indices[(i*3)+1]].pos.z;     
+            vecX = vertices[Model.Indices[(i*3)+2]].Pos.x - vertices[Model.Indices[(i*3)+1]].Pos.x;
+            vecY = vertices[Model.Indices[(i*3)+2]].Pos.y - vertices[Model.Indices[(i*3)+1]].Pos.y;
+            vecZ = vertices[Model.Indices[(i*3)+2]].Pos.z - vertices[Model.Indices[(i*3)+1]].Pos.z;     
             edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our second edge
 
             //Cross multiply the two edge vectors to get the un-normalized face normal
@@ -1024,12 +1034,12 @@ bool FileLoader::loadFile( ID3D11Device* device,
             tempNormal.push_back(unnormalized);
 
             //Find first texture coordinate edge 2d vector
-            tcU1 = vertices[Model.Indices[(i*3)]].texCoord.x - vertices[Model.Indices[(i*3)+2]].texCoord.x;
-            tcV1 = vertices[Model.Indices[(i*3)]].texCoord.y - vertices[Model.Indices[(i*3)+2]].texCoord.y;
+            tcU1 = vertices[Model.Indices[(i*3)]].TexC.x - vertices[Model.Indices[(i*3)+2]].TexC.x;
+            tcV1 = vertices[Model.Indices[(i*3)]].TexC.y - vertices[Model.Indices[(i*3)+2]].TexC.y;
 
             //Find second texture coordinate edge 2d vector
-            tcU2 = vertices[Model.Indices[(i*3)+2]].texCoord.x - vertices[Model.Indices[(i*3)+1]].texCoord.x;
-            tcV2 = vertices[Model.Indices[(i*3)+2]].texCoord.y - vertices[Model.Indices[(i*3)+1]].texCoord.y;
+            tcU2 = vertices[Model.Indices[(i*3)+2]].TexC.x - vertices[Model.Indices[(i*3)+1]].TexC.x;
+            tcV2 = vertices[Model.Indices[(i*3)+2]].TexC.y - vertices[Model.Indices[(i*3)+1]].TexC.y;
 
             //Find tangent using both tex coord edges and position edges
             tangent.x = (tcV1 * XMVectorGetX(edge1) - tcV2 * XMVectorGetX(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
@@ -1081,13 +1091,13 @@ bool FileLoader::loadFile( ID3D11Device* device,
             tangentSum =  XMVector3Normalize(tangentSum);
 
             //Store the normal and tangent in our current vertex
-            vertices[i].normal.x = XMVectorGetX(normalSum);
-            vertices[i].normal.y = XMVectorGetY(normalSum);
-            vertices[i].normal.z = XMVectorGetZ(normalSum);
+            vertices[i].Normal.x = XMVectorGetX(normalSum);
+            vertices[i].Normal.y = XMVectorGetY(normalSum);
+            vertices[i].Normal.z = XMVectorGetZ(normalSum);
 
-            vertices[i].tangent.x = XMVectorGetX(tangentSum);
-            vertices[i].tangent.y = XMVectorGetY(tangentSum);
-            vertices[i].tangent.z = XMVectorGetZ(tangentSum);
+            vertices[i].Tangent.x = XMVectorGetX(tangentSum);
+            vertices[i].Tangent.y = XMVectorGetY(tangentSum);
+            vertices[i].Tangent.z = XMVectorGetZ(tangentSum);
 
             //Clear normalSum, tangentSum and facesUsing for next vertex
             normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -1096,6 +1106,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
         }
     }
+	#pragma endregion
 
     // Create Axis-Aligned Bounding Box (AABB)
     XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
@@ -1154,7 +1165,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
         }
     }
 
-    //Create index buffer
+	//Create index buffer
     D3D11_BUFFER_DESC indexBufferDesc;
     ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
 
@@ -1184,9 +1195,6 @@ bool FileLoader::loadFile( ID3D11Device* device,
     ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
     vertexBufferData.pSysMem = &vertices[0];
     hr = device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &Model.VertBuff);
-	
-	//*/
-	/*
+	*/
     return true;
 }
-*/

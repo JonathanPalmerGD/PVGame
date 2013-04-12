@@ -2,7 +2,7 @@
 
 Crest::Crest(void)
 {
-	crestType = MEDUSA;
+	crestType = LEAP;
 	inVision = false;
 }
 

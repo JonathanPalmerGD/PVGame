@@ -153,17 +153,14 @@ bool PVGame::LoadXML()
 	gameObjects = startRoom->getGameObjs();
 	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-	GameObject* crestObj = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", -8.0f, 10.0f, -8.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, LEAP, 1.0f);
+	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 8.4f, 10.0f, 8.4f, 1.0f), physicsMan, LEAP, 1.0f);
 	gameObjects.push_back(crestObj);
-
-	GameObject* crestObj2 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 4.0f, 10.0f, 4.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MEDUSA, 1.0f);
+	
+	GameObject* crestObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 20.7f, 4.0f, 20.7f, 1.0f), physicsMan, MEDUSA, 1.0f);
 	gameObjects.push_back(crestObj2);
 
-	GameObject* crestObj3 = new Crest("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", 6.0f, 10.0f, -7.0f, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, MOBILITY, 1.0f);
+	GameObject* crestObj3 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", -16.0f, 10.0f, -16.0f, 1.0f), physicsMan, MOBILITY, 1.0f);
 	gameObjects.push_back(crestObj3);
-
-	int a = 0;
-
 	#pragma endregion
 
 	return true;
@@ -202,14 +199,10 @@ void PVGame::UpdateScene(float dt)
 				gameObjects[i]->Update();
 		}
 
-		//if(input->wasKeyPressed('0'))
-		//{
-
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-		for(int i = 0; i < renderMan->getNumLights(); ++i)
-		
+		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
 		{
 			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
 			btVector3 lightPos = renderMan->getLightPosition(i);
@@ -220,9 +213,9 @@ void PVGame::UpdateScene(float dt)
 			}
 			else
 			{
-				renderMan->DisableLight(i);
+				//renderMan->DisableLight(i);
 			}
-		}
+		}*/
 		
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
@@ -250,6 +243,10 @@ void PVGame::UpdateScene(float dt)
 								player->setMedusaStatus(true);
 								player->increaseMedusaPercent();
 							}
+							else
+							{
+								renderMan->DisableLight(1);
+							}
 							break;
 						#pragma endregion
 						#pragma region Leap Crest
@@ -262,6 +259,10 @@ void PVGame::UpdateScene(float dt)
 								renderMan->EnableLight(0);
 								player->setLeapStatus(true);
 							}
+							else
+							{
+								renderMan->DisableLight(0);
+							}
 							break;
 						#pragma endregion
 						#pragma region Mobility Crest
@@ -272,6 +273,10 @@ void PVGame::UpdateScene(float dt)
 							{	
 								renderMan->EnableLight(2);
 								player->setMobilityStatus(true);
+							}
+							else
+							{
+								renderMan->DisableLight(2);
 							}
 							break;
 						#pragma endregion
@@ -289,7 +294,8 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		if(input->wasKeyPressed('9'))
+		#pragma region Outdated Light Code
+		/*if(input->wasKeyPressed('9'))
 		{
 			renderMan->ToggleLight(0);
 		}
@@ -304,6 +310,26 @@ void PVGame::UpdateScene(float dt)
 		if(input->wasKeyPressed('6'))
 		{
 			renderMan->ToggleLight(3);
+		}*/
+		#pragma endregion
+
+		if(renderMan->getNumLights() > 3)
+		{
+			renderMan->SetLightPosition(3, &player->getCameraPosition());
+		}
+		if(input->wasKeyPressed('Q'))
+		{
+			if(renderMan->getNumLights() < 4)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				renderMan->CreateLight(XMFLOAT4(0.00f, 0.00f, 0.00f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 25.0f, pos, XMFLOAT3(0.0f, 0.0f, 0.2f));
+			}
+			else
+			{
+				renderMan->ToggleLight(3);
+			}
 		}
 
 		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
@@ -316,7 +342,7 @@ void PVGame::UpdateScene(float dt)
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, .3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			renderMan->CreateLight(pos.x, pos.y, pos.z);
+			
 			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			SortGameObjects();

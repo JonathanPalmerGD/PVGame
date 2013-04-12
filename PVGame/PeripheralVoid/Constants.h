@@ -178,13 +178,15 @@ struct SurfaceMaterial
     XMFLOAT4 Specular;      // Specular power stored in 4th component
 	XMFLOAT4 Reflect;
 
-	/*
+	
     // Texture ID's to look up texture in SRV array
-    int DiffuseTextureID;
-    int AmbientTextureID;
-    int SpecularTextureID;
-    int AlphaTextureID;
+	/*int DiffuseTextureID;
+	int AmbientTextureID;
+	int SpecularTextureID;
+	int AlphaTextureID;
     int NormMapTextureID;
+
+	std::wstring MatName;   // So we can match the subset with it's material
 
     // Booleans so we don't implement techniques we don't need
     bool HasDiffTexture;
@@ -239,9 +241,9 @@ static std::wstring s2ws(const std::string& s)
 	os << s << endl;				\
 	OutputDebugString(os.str().c_str());\
 }
-/*
 
 // Model Structure
+
 struct ObjModel
 {
     int Subsets;                        // Number of subsets in obj model
@@ -265,5 +267,3 @@ struct TextureManager
     std::vector<ID3D11ShaderResourceView*> TextureList;
     std::vector<std::wstring> TextureNameArray;     // So we don't load in the same texture twice
 };
-
-*/
