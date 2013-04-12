@@ -153,10 +153,10 @@ bool PVGame::LoadXML()
 	gameObjects = startRoom->getGameObjs();
 	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
 
-	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 8.0f, 10.0f, 8.0f, 1.0f), physicsMan, LEAP, 1.0f);
+	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 8.4f, 10.0f, 8.4f, 1.0f), physicsMan, LEAP, 1.0f);
 	gameObjects.push_back(crestObj);
 	
-	GameObject* crestObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 21.0f, 4.0f, 21.0f, 1.0f), physicsMan, MEDUSA, 1.0f);
+	GameObject* crestObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 20.7f, 4.0f, 20.7f, 1.0f), physicsMan, MEDUSA, 1.0f);
 	gameObjects.push_back(crestObj2);
 
 	GameObject* crestObj3 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", -16.0f, 10.0f, -16.0f, 1.0f), physicsMan, MOBILITY, 1.0f);

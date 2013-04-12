@@ -269,7 +269,7 @@ class RenderManager
 				}
 				itr++;
 			}
-			HR(mSwapChain->Present(0, 0));
+			HR(mSwapChain->Present(1, 0));
 		}
 		
 		// Build a vertex and index buffer for each mesh.

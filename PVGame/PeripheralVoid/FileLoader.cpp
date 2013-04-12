@@ -19,7 +19,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
     bool flipFaces)
 {
 	HRESULT hr = 0;
-	/*
+	
     std::wifstream fileIn (Filename.c_str());   // Open file
     std::wstring meshMatLib;                    // String to hold our obj material library filename (model.mtl)
 
@@ -52,7 +52,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
     int totalVerts = 0;
     int meshTriangles = 0;
     bool ang = false;
-
+	/*
     //Check to see if the file was opened
     if (fileIn)
     {
