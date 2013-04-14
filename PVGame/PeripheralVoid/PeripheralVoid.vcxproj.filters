@@ -206,6 +206,8 @@
     <CustomBuild Include="FX\Lighting.fx">
       <Filter>FX</Filter>
     </CustomBuild>
-    <CustomBuild Include="FX\HardwareInstancing.fx" />
+    <CustomBuild Include="FX\HardwareInstancing.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

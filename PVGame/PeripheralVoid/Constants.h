@@ -7,6 +7,7 @@
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
 
+
 using std::vector;
 using std::map;
 using std::string;
@@ -18,7 +19,7 @@ using std::string;
 #include <vld.h>
 #endif
 
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 20
 const enum GAME_STATE { MENU, OPTION, PLAYING, END };
 const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK};
 

@@ -1,6 +1,5 @@
 #include "GameObject.h"
 
-
 GameObject::GameObject(void)
 {
 	meshKey = "None";
@@ -42,6 +41,18 @@ void GameObject::translate(float x, float y, float z)
 	if(rigidBody != NULL)
 	{
 		rigidBody->translate(btVector3(x, y, z));
+		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		CalculateWorldMatrix();
+	}
+}
+
+void GameObject::setPosition(float x, float y, float z)
+{
+	if(rigidBody != NULL)
+	{
+		btTransform t = rigidBody->getWorldTransform();
+		t.setOrigin(btVector3(x,y,z));
+		rigidBody->setWorldTransform(t);
 		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
 		CalculateWorldMatrix();
 	}

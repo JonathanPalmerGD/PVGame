@@ -35,7 +35,8 @@ class RenderManager
 			return static_cast<float>(mClientWidth) / mClientHeight;
 		}
 
-		void CreateLight(XMFLOAT4 ambientLight, XMFLOAT4 diffuseLight, XMFLOAT4 specularLight, float range, XMFLOAT3 pos, XMFLOAT3 attenuation)
+		//Returns the index of the newly created light for crests to manage.
+		int CreateLight(XMFLOAT4 ambientLight, XMFLOAT4 diffuseLight, XMFLOAT4 specularLight, float range, XMFLOAT3 pos, XMFLOAT3 attenuation)
 		{
 			//Check if we are at max lights. Add if we aren't
 			if(mPointLights.size() < MAX_LIGHTS)
@@ -52,6 +53,8 @@ class RenderManager
 			}
 			//Else
 				//You can't always get what you want
+			//Pass back the index of the new light
+			return (mPointLights.size() - 1);
 		}
 
 		bool InitDirect3D(HWND aWindow)
@@ -261,7 +264,10 @@ class RenderManager
 
 			// Set per frame constants.
 			mfxDirLights->SetRawValue(&mDirLights[0], 0, sizeof(DirectionalLight) * mDirLights.size());
-			mfxPointLights->SetRawValue(&mPointLights[0], 0, 4 * sizeof(PointLight));
+			if(mPointLights.size() > 0)
+			{
+				mfxPointLights->SetRawValue(&mPointLights[0], 0, (mPointLights.size()) * sizeof(PointLight));
+			}
 			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
 			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
 
@@ -812,9 +818,9 @@ class RenderManager
 			//mDirLights[1].Direction = XMFLOAT3(-0.707f, 0.0f, 0.707f);
 
 			// Add 4 lights to the scene. First is red.
-			CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
+			/*CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
 			CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
-			CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(0.0f, 0.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
+			CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(0.0f, 0.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));*/
 			//CreateLight(XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f), XMFLOAT4(30.0f, 30.0f, 30.0f, 1.0f), XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f), 15.0f, XMFLOAT3(0.0f, 0.0f, -0.0f));
 			//PointLight aPointLight;
 			//

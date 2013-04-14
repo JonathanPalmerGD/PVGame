@@ -6,10 +6,12 @@
 
 #include "LightHelper.fx"
  
+#define MAX_LIGHTS 20
+
 cbuffer cbPerFrame
 {
 	DirectionalLight gDirLights[3];
-	PointLight testLights[4];
+	PointLight testLights[MAX_LIGHTS];
 	PointLight gPointLight;
 	float3 gEyePosW;
 
@@ -111,7 +113,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	
 	// Sum the light contribution from each light source.  
 	[unroll]
-	for(int i = 0; i < 4; ++i)
+	for(int i = 0; i < MAX_LIGHTS; ++i)
 	{
 		if (testLights[i].On.x == 1)
 		{

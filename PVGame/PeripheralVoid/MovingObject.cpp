@@ -3,18 +3,55 @@
 
 void MovingObject::Update()
 {
-	//if(rigidBody->getWorldTransform().getOrigin() == positions[targetPosition])
+	GameObject::Update();
+	btVector3 movingObjPos = getRigidBody()->getCenterOfMassPosition();
+	
+	
+	if(movingObjPos.getX() == positions[targetPosition].x && movingObjPos.getY() == positions[targetPosition].y && movingObjPos.getZ() == positions[targetPosition].z)
+	{
+		
+	}
+	else
+	{
+		StepPosition();
+	}
+	//if(CompareBtV3AndXM3(movingObjPos, positions[targetPosition]))
 	//{
 
 	//}
 
-	GameObject::Update();
+	
+}
+
+void MovingObject::StepPosition()
+{
+	btVector3 movingObjPos = getRigidBody()->getCenterOfMassPosition();
+	btVector3 newPosition = btVector3(movingObjPos.getX() + (positions[targetPosition].x / 100), movingObjPos.getY() + (positions[targetPosition].y / 100), movingObjPos.getZ() + (positions[targetPosition].z / 100));
+	//btVector3 newPosition = btVector3(positions[targetPosition].x, positions[targetPosition].y, positions[targetPosition].z);
+	setPosition(positions[targetPosition].x , positions[targetPosition].y, positions[targetPosition].z);
+	//translate(positions[targetPosition].x , positions[targetPosition].y, positions[targetPosition].z);
+	//getRigidBody()->translate(positions[targetPosition]));
 }
 
 static XMFLOAT3 Interpolate(XMFLOAT3 startPos, XMFLOAT3 targPos)
 {
 
 }
+
+/*static bool CompareBtV3AndXM3(btVector3 btV3, XMFLOAT3 xmV3)
+{
+	if(btV3.getX() == xmV3.x)
+	{
+		if(btV3.getY() == xmV3.y)
+		{
+			if(btV3.getZ() == xmV3.z)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}*/
 
 bool MovingObject::InView() { return inVision; }
 int MovingObject::GetTargetPosition() { return targetPosition; }
@@ -49,23 +86,27 @@ void MovingObject::ChangePositionAtIndex(int index, XMFLOAT3 newPosition)
 }
 void MovingObject::AddPosition(XMFLOAT3 newPosition) { positions.push_back(newPosition); }
 
-
-
 MovingObject::MovingObject(void)
 {
 	inVision = false;
+	targetPosition = 0;
+	renderMan = &RenderManager::getInstance();
 }
 
 MovingObject::MovingObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan) : GameObject(aMeshKey, aMaterialKey, aWorldMatrix, physicsMan, true)
 {
 	//crestType = aCrestType;
 	inVision = false;
+	targetPosition = 0;
+	renderMan = &RenderManager::getInstance();
 }
 
-MovingObject::MovingObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, mass, true)
+MovingObject::MovingObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, 0.0f, true)
 {
 	//crestType = aCrestType;
 	inVision = false;
+	targetPosition = 0;
+	renderMan = &RenderManager::getInstance();
 }
 
 MovingObject::~MovingObject(void)
