@@ -1,0 +1,21 @@
+<TextureList>
+  <Atlas name="BasicAtlas" filename="Textures/TextureAtlas01.dds" type="Diffuse">
+	  <Texture name="Wall01">
+      <OffsetU>0</OffsetU>
+      <OffsetV>0</OffsetV>
+      <Type>Diffuse</Type>
+	  </Texture>
+    <Texture name="Wall02">
+      <OffsetU>0</OffsetU>
+      <OffsetV>1</OffsetV>
+    </Texture>
+    <Texture name="WoodCrate01">
+      <OffsetU>1</OffsetU>
+      <OffsetV>0</OffsetV>
+    </Texture>
+    <Texture name="MetalCrate01">
+      <OffsetU>1</OffsetU>
+      <OffsetV>1</OffsetV>
+    </Texture>
+  </Atlas>
+</TextureList>

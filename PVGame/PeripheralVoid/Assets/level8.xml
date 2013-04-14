@@ -1,0 +1,18 @@
+﻿<level>
+<walls>
+<wall row="5" col="0" xLength="16" zLength="1" centerX="8" centerY="0" centerZ="5.5"/>
+<wall row="6" col="15" xLength="1" zLength="3" centerX="15.5" centerY="0" centerZ="7.5"/>
+<wall row="9" col="0" xLength="1" zLength="1" centerX="0.5" centerY="0" centerZ="9.5"/>
+<wall row="9" col="15" xLength="1" zLength="10" centerX="15.5" centerY="0" centerZ="14"/>
+<wall row="10" col="0" xLength="9" zLength="1" centerX="4.5" centerY="0" centerZ="10.5"/>
+<wall row="11" col="8" xLength="1" zLength="5" centerX="8.5" centerY="0" centerZ="13.5"/>
+<wall row="19" col="8" xLength="8" zLength="1" centerX="12" centerY="0" centerZ="19.5"/>
+</walls>
+<spawns>
+<spawn row="6" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="7.5" dir="right"/>
+</spawns>
+<exits>
+<exit row="6" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="7.5" file="level7.xml"/>
+<exit row="16" col="8" xLength="1" zLength="3" centerX="8.5" centerY="0" centerZ="17.5" file="level9.xml"/>
+</exits>
+</level>
