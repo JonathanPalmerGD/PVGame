@@ -10,12 +10,10 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 	tinyxml2::XMLDocument doc;
 
 	doc.LoadFile(xmlFile);
-
-	
 	
 	// Set initial room dimensions
-	width = 1.0f;
-	depth = 1.0f;
+	width = -100.0f;
+	depth = -100.0f;
 
 	mapOffsetX = 0.0f;
 	mapOffsetZ = 0.0f;
@@ -34,22 +32,29 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 		const char* xLength = wall->Attribute("xLength");
 		const char* zLength = wall->Attribute("zLength");
 
-		//if (isFirst)
-		//{
-		//	mapOffsetX -= atof(col);
-		//	mapOffsetZ -= atof(row);
+		if (isFirst)
+		{
+			mapOffsetX = -atof(col);
+			mapOffsetZ = -atof(row);
 
-		////	width -= mapOffsetX;
-		////	depth -= mapOffsetZ;
+		//	width -= mapOffsetX;
+		//	depth -= mapOffsetZ;
 
-		//	isFirst = false;
-		//}
+			isFirst = false;
+		}
+
+		else
+		{
+			if (atof(col) < -mapOffsetX)
+				mapOffsetX = -atof(col);
+		}
+
 
 		// increase room dimensions if necessary
-		if (atof(col) + 1 > width)
-			width = atof(col) + 1;
-		if (atof(row) + 1 > depth)
-			depth = atof(row) + 1;
+		if (atof(col) + atof(xLength) + 1 + mapOffsetX > width)
+			width = atof(col) + atof(xLength) + mapOffsetX;
+		if (atof(row) + atof(zLength) + 1 + mapOffsetZ > depth)
+			depth = atof(row) + atof(zLength) + mapOffsetZ;
 
 
 		/*if ((atof(col) + atof(xLength)) + mapOffsetX > width)
@@ -71,18 +76,22 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 		const char* file = exit->Attribute("file");
 		const char* xLength = exit->Attribute("xLength");
 		const char* zLength = exit->Attribute("zLength");
+		const char* centerX = exit->Attribute("centerX");
+		const char* centerY = exit->Attribute("centerY");
+		const char* centerZ = exit->Attribute("centerZ");
 
 		// Get full filename of xml file
 		char folder[80] = "Assets/";
 		const char* fullFile = strcat(folder, file);
 		
 		// Store exit information in Wall object
-		tempWall->row = (float)atof(row);
-		tempWall->col = (float)atof(col);
+		tempWall->row = (float)atof(row) + mapOffsetZ;
+		tempWall->col = (float)atof(col) + mapOffsetX;
 		tempWall->xLength = (float)atof(xLength);
 		tempWall->zLength = (float)atof(zLength);
-		tempWall->centerX = (float)(tempWall->col + tempWall->xLength / 2);
-		tempWall->centerZ = (float)(tempWall->row + tempWall->zLength / 2);
+		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
+		tempWall->centerY = (float)atof(centerY);
+		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->file = fullFile;
 		tempWall->direction = "";
 
@@ -129,17 +138,17 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerY = wall->Attribute("centerY");
 		const char* centerZ = wall->Attribute("centerZ");
 
-		tempWall->row = (float)atof(row);
-		tempWall->col = (float)atof(col);
+		tempWall->row = (float)atof(row) + mapOffsetZ;
+		tempWall->col = (float)atof(col) + mapOffsetX;
 		tempWall->xLength = (float)atof(xLength);
 		tempWall->zLength = (float)atof(zLength);
-		tempWall->centerX = (float)atof(centerX);
+		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
 		tempWall->centerY = (float)atof(centerY);
-		tempWall->centerZ = (float)atof(centerZ);
+		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->direction = "";
 		tempWall->file = "";
 	
-		wallRowCol[(unsigned int)atof(row)].push_back(tempWall);
+		wallRowCol[(unsigned int)atof(row) + mapOffsetZ].push_back(tempWall);
 	}
 
 	for (XMLElement* spawn = spawns->FirstChildElement("spawn"); spawn != NULL; spawn = spawn->NextSiblingElement("spawn"))
@@ -155,13 +164,13 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerY = spawn->Attribute("centerY");
 		const char* centerZ = spawn->Attribute("centerZ");
 
-		tempWall->row = (float)atof(row);
-		tempWall->col = (float)atof(col);
+		tempWall->row = (float)atof(row) + mapOffsetZ;
+		tempWall->col = (float)atof(col) + mapOffsetX;
 		tempWall->xLength = (float)atof(xLength);
 		tempWall->zLength = (float)atof(zLength);
-		tempWall->centerX = (float)atof(centerX);
+		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
 		tempWall->centerY = (float)atof(centerY);
-		tempWall->centerZ = (float)atof(centerZ);
+		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->direction = dir;
 		tempWall->file = "";
 	
@@ -181,7 +190,7 @@ void Room::loadRoom(float xPos, float zPos)
 		}
 	}
 
-	GameObject* wallObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", x + (width / 2), -0.5f, z + (depth / 2)), physicsMan);
+	GameObject* wallObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan);
 	wallObj->scale(width, 1.0f, depth);
 	gameObjs.push_back(wallObj);
 
@@ -207,19 +216,19 @@ void Room::loadNeighbors(void)
 				roomEntrance = tmpRoom->getExits()[j];
 		}
 
-		if (exitVector[i]->row == 0)
+		if (exitVector[i]->row  == 0)
 		{
 			offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
 			offsetZ -= tmpRoom->depth;
 		}
 
-		if (exitVector[i]->row == depth - 1)
+		if (exitVector[i]->row  == depth - 1)
 		{
 			offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
 			offsetZ += depth;
 		}
 
-		if (exitVector[i]->col == 0)
+		if (exitVector[i]->col  == 0)
 		{
 			offsetX -= tmpRoom->width;
 			offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);

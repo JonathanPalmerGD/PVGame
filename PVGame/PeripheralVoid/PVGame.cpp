@@ -155,11 +155,6 @@ bool PVGame::LoadXML()
 
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 
-	GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -10.0f, 0.0f), physicsMan);
-			wallObj->scale(250.0f ,3.0f ,250.0f);
-			gameObjects.push_back(wallObj);
-
-
 	GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 8.4f, 10.0f, 8.4f, 1.0f), physicsMan, LEAP, 1.0f);
 	gameObjects.push_back(crestObj);
 	
