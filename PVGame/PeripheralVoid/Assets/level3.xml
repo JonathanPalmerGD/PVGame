@@ -1,1 +1,21 @@
-<level><walls><wall row="5" col="0" xLength="8" zLength="1" centerX="4" centerY="0" centerZ="5.5"/><wall row="6" col="0" xLength="1" zLength="5" centerX="0.5" centerY="0" centerZ="8.5"/><wall row="6" col="8" xLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="7"/><wall row="8" col="9" xLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="9"/><wall row="10" col="10" xLength="1" zLength="4" centerX="10.5" centerY="0" centerZ="12"/><wall row="14" col="0" xLength="1" zLength="5" centerX="0.5" centerY="0" centerZ="16.5"/><wall row="14" col="10" xLength="1" zLength="1" centerX="10.5" centerY="0" centerZ="14.5"/><wall row="15" col="9" xLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="16"/><wall row="17" col="8" xLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="18"/><wall row="19" col="0" xLength="8" zLength="1" centerX="4" centerY="0" centerZ="19.5"/></walls><spawns><spawn row="11" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="12.5" dir="right"/></spawns><exits><exit row="11" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="12.5" file="level1.xml"/></exits></level>
+<level>
+<walls>
+<wall row="5" col="0" xLength="8" zLength="1" centerX="4" centerY="0" centerZ="5.5"/>
+<wall row="6" col="0" xLength="1" zLength="5" centerX="0.5" centerY="0" centerZ="8.5"/>
+<wall row="6" col="8" xLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="7"/>
+<wall row="8" col="9" xLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="9"/>
+<wall row="10" col="10" xLength="1" zLength="1" centerX="10.5" centerY="0" centerZ="10.5"/>
+<wall row="14" col="0" xLength="1" zLength="5" centerX="0.5" centerY="0" centerZ="16.5"/>
+<wall row="14" col="10" xLength="1" zLength="1" centerX="10.5" centerY="0" centerZ="14.5"/>
+<wall row="15" col="9" xLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="16"/>
+<wall row="17" col="8" xLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="18"/>
+<wall row="19" col="0" xLength="8" zLength="1" centerX="4" centerY="0" centerZ="19.5"/>
+</walls>
+<spawns>
+<spawn row="11" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="12.5" dir="right"/>
+</spawns>
+<exits>
+<exit row="11" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="12.5" file="level1.xml"/>
+<exit row="11" col="10" xLength="1" zLength="3" centerX="10.5" centerY="0" centerZ="12.5" file="level7.xml"/>
+</exits>
+</level>

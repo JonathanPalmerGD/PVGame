@@ -7,7 +7,6 @@
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
 
-
 using std::vector;
 using std::map;
 using std::string;

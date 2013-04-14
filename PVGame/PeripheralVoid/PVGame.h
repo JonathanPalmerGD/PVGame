@@ -34,6 +34,7 @@ public:
 		void BuildGeometryBuffers();
 		void BuildFX();
 		void BuildVertexLayout();
+		void BuildRooms(Room* startRoom);
 		void SortGameObjects();
 
 		Player*	player;
@@ -47,6 +48,7 @@ public:
 		unsigned int gameState;
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjects;
+		vector<Room*> loadedRooms;
 
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;

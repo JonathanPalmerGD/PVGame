@@ -1,6 +1,5 @@
 #include "Player.h"
 
-
 Player::Player(PhysicsManager* pm, RenderManager* rm) 
 	: PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 //Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
@@ -170,7 +169,6 @@ void Player::HandleInput(Input* input)
 			audioSource->play();
 		}
 		controller->jump();
-		
 	}
 	#pragma endregion
 

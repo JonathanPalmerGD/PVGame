@@ -87,7 +87,6 @@ bool PVGame::LoadXML()
 {
 	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan, 0, 0);
 	startRoom->loadRoom();
-	startRoom->loadNeighbors();
 	currentRoom = startRoom;
 
 	tinyxml2::XMLDocument doc;
@@ -152,20 +151,14 @@ bool PVGame::LoadXML()
 	#pragma region Map Loading
 	//Get the filename from constants, hand it into tinyxml
 
-	gameObjects = startRoom->getGameObjs();
+	BuildRooms(currentRoom);
 
-	for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)
-	{
-		startRoom->getNeighbors()[i].loadNeighbors();
+	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 
-		for (unsigned int j = 0; j < startRoom->getNeighbors()[i].getGameObjs().size(); j++)
-		{
-			gameObjects.push_back(startRoom->getNeighbors()[i].getGameObjs()[j]);
-		}
-	}
+	GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -10.0f, 0.0f), physicsMan);
+			wallObj->scale(250.0f ,3.0f ,250.0f);
+			gameObjects.push_back(wallObj);
 
-	player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
-	
 	#pragma endregion
 
 	#pragma region Create Moving Objects and Unlocking Crests
@@ -240,7 +233,7 @@ void PVGame::UpdateScene(float dt)
 		}
 
 		if (player->getPosition().y < -20)
-			player->setPosition(currentRoom->getSpawn().col, 2.0f, currentRoom->getSpawn().row);
+			player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 
 		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
 		{
@@ -540,6 +533,33 @@ void PVGame::BuildFX()
 void PVGame::BuildVertexLayout()
 {
 	renderMan->BuildVertexLayout();
+}
+
+void PVGame::BuildRooms(Room* startRoom)
+{
+	bool isLoaded = false;
+
+	for (int i = 0; i < loadedRooms.size(); i++)
+	{
+		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
+			isLoaded = true;
+	}
+
+	if (!isLoaded)
+	{
+		for (int i = 0; i < startRoom->getGameObjs().size(); i++)
+		{
+			gameObjects.push_back(startRoom->getGameObjs()[i]);
+		}
+
+		startRoom->loadNeighbors();
+		loadedRooms.push_back(startRoom);
+
+		for (int i = 0; i < startRoom->getNeighbors().size(); i++)
+		{
+			BuildRooms(startRoom->getNeighbors()[i]);
+		}
+	}
 }
 
 // Sorts game objects based on mesh key. Should only be called after a batch of GameObjects are added.
