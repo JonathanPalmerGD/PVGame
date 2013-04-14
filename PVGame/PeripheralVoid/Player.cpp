@@ -1,5 +1,6 @@
 #include "Player.h"
 
+
 Player::Player(PhysicsManager* pm, RenderManager* rm) 
 	: PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 //Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
@@ -36,6 +37,8 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	renderMan = rm;
 
 	listener = new AudioListener();
+	audioSource = new AudioSource();
+	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
 }
 
 void Player::Update(float dt, Input* input)
@@ -158,7 +161,17 @@ void Player::HandleInput(Input* input)
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
 	if(input->isJumpKeyPressed() && !medusaStatus)
- 		controller->jump();
+	{
+		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
+		{
+			audioSource->setPosition(controller->getGhostObject()->getWorldTransform().getOrigin().getX(),
+				controller->getGhostObject()->getWorldTransform().getOrigin().getY(),
+				controller->getGhostObject()->getWorldTransform().getOrigin().getZ());
+			audioSource->play();
+		}
+		controller->jump();
+		
+	}
 	#pragma endregion
 
 	//DBOUT(controller->canJump());

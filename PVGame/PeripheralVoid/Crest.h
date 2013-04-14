@@ -13,6 +13,7 @@ public:
 	Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass = 0.0);
 	~Crest(void);
 
+	void SetupAudio();
 	bool InView();
 	void SetLightIndex(int newLightIndex);
 	void ChangeView(bool newVisionBool);

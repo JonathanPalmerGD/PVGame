@@ -6,7 +6,6 @@ void MovingObject::Update()
 	GameObject::Update();
 	btVector3 movingObjPos = getRigidBody()->getCenterOfMassPosition();
 	
-	
 	if(movingObjPos.getX() == positions[targetPosition].x && movingObjPos.getY() == positions[targetPosition].y && movingObjPos.getZ() == positions[targetPosition].z)
 	{
 		
@@ -25,10 +24,15 @@ void MovingObject::Update()
 
 void MovingObject::StepPosition()
 {
+	if(rateOfChange < 1.0f)
+		rateOfChange += .01f;
 	btVector3 movingObjPos = getRigidBody()->getCenterOfMassPosition();
-	btVector3 newPosition = btVector3(movingObjPos.getX() + (positions[targetPosition].x / 100), movingObjPos.getY() + (positions[targetPosition].y / 100), movingObjPos.getZ() + (positions[targetPosition].z / 100));
+	btVector3 newPosition = btVector3(
+		(1.0f - rateOfChange) * movingObjPos.getX() + (positions[targetPosition].x * rateOfChange),
+		(1.0f - rateOfChange) * movingObjPos.getY() + (positions[targetPosition].y * rateOfChange),
+		(1.0f - rateOfChange) * movingObjPos.getZ() + (positions[targetPosition].z * rateOfChange));
 	//btVector3 newPosition = btVector3(positions[targetPosition].x, positions[targetPosition].y, positions[targetPosition].z);
-	setPosition(positions[targetPosition].x , positions[targetPosition].y, positions[targetPosition].z);
+	setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
 	//translate(positions[targetPosition].x , positions[targetPosition].y, positions[targetPosition].z);
 	//getRigidBody()->translate(positions[targetPosition]));
 }
@@ -73,7 +77,11 @@ void MovingObject::SetTargetPosition(int newIndex)
 { 
 	if(newIndex < positions.size())
 	{
-		targetPosition = newIndex; 
+		if(newIndex != targetPosition)
+		{	
+			rateOfChange = 0.0f;
+			targetPosition = newIndex; 
+		}
 	}
 }
 void MovingObject::SetRateOfChange(float newRateOfChange) { rateOfChange = newRateOfChange; }
@@ -90,6 +98,7 @@ MovingObject::MovingObject(void)
 {
 	inVision = false;
 	targetPosition = 0;
+	rateOfChange = 0.0f;
 	renderMan = &RenderManager::getInstance();
 }
 
@@ -98,6 +107,7 @@ MovingObject::MovingObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorl
 	//crestType = aCrestType;
 	inVision = false;
 	targetPosition = 0;
+	rateOfChange = 0.0f;
 	renderMan = &RenderManager::getInstance();
 }
 
@@ -106,6 +116,7 @@ MovingObject::MovingObject(string aMeshKey, string aMaterialKey, btRigidBody* rB
 	//crestType = aCrestType;
 	inVision = false;
 	targetPosition = 0;
+	rateOfChange = 0.0f;
 	renderMan = &RenderManager::getInstance();
 }
 

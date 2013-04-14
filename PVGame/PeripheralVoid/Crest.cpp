@@ -5,7 +5,7 @@ Crest::Crest(void)
 	crestType = LEAP;
 	inVision = false;
 	renderMan = &RenderManager::getInstance();
-	
+	SetupAudio();
 	CreateLightAndIndex();
 }
 
@@ -14,7 +14,7 @@ Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, Physi
 	crestType = aCrestType;
 	inVision = false;
 	renderMan = &RenderManager::getInstance();
-
+	SetupAudio();
 	CreateLightAndIndex();
 }
 
@@ -23,7 +23,7 @@ Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManag
 	crestType = aCrestType;
 	inVision = false;
 	renderMan = &RenderManager::getInstance();
-
+	SetupAudio();
 	CreateLightAndIndex();
 }
 
@@ -38,6 +38,22 @@ void Crest::SetLightIndex(int newLightIndex)
 
 void Crest::ChangeView(bool newVisionBool)
 {
+	if(newVisionBool && !inVision)
+	{
+		renderMan->EnableLight(lightIndex);
+		if(!audioSource->isPlaying())
+		{
+			audioSource->play();
+		}
+	}
+	if(!newVisionBool)
+	{
+		if(audioSource->isPlaying())
+		{
+			audioSource->stop();
+		}
+		renderMan->DisableLight(lightIndex);
+	}
 	inVision = newVisionBool;
 }
 
@@ -66,6 +82,28 @@ bool Crest::InView()
 	return inVision;
 }
 
+void Crest::SetupAudio()
+{
+	switch(crestType)
+	{
+	case MEDUSA:
+		initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+		break;
+	case LEAP:
+		initAudio("Audio\\RedOn.wav");
+		//initAudio("Audio\\RedOff.wav");
+		break;
+	case MOBILITY:
+		initAudio("Audio\\MobilityOn.wav");
+		//initAudio("Audio\\MobilityOff.wav");
+		break;
+	case UNLOCK:
+		initAudio("Audio\\YellowOn.wav");
+		//initAudio("Audio\\YellowOff.wav");
+		break;
+	}
+}
+
 void Crest::CreateLightAndIndex()
 {
 	switch(crestType)
@@ -92,7 +130,6 @@ void Crest::Update(Player* player)
 
 	if(inVision)
 	{
-		renderMan->EnableLight(lightIndex);
 		switch(crestType)
 		{
 		case MEDUSA:
@@ -127,7 +164,7 @@ void Crest::Update(Player* player)
 				targetObject->SetTargetPosition(0);
 			}
 		}
-		renderMan->DisableLight(lightIndex);
+		//renderMan->DisableLight(lightIndex);
 	}
 
 }
