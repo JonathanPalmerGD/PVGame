@@ -6,7 +6,7 @@
 
 #include "LightHelper.fx"
  
-#define MAX_LIGHTS 20
+ #define MAX_LIGHTS 10
 
 cbuffer cbPerFrame
 {
@@ -15,15 +15,31 @@ cbuffer cbPerFrame
 	PointLight gPointLight;
 	float3 gEyePosW;
 
-	float  gFogStart;
-	float  gFogRange;
-	float4 gFogColor;
+	float gTexelWidth;
+	float gTexelHeight;
+};
+
+cbuffer cbSettings
+{
+	float gWeights[11] = 
+	{
+		0.05f, 0.05f, 0.1f, 0.1f, 0.1f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f
+	};
+};
+
+cbuffer cbFixed
+{
+	static const int gBlurRadius = 5;
 };
 
 cbuffer cbPerObject
 {
+	float4x4 gWorld;
+	Material gMaterial;
 	float4x4 gViewProj;
 	float4x4 gTexTransform;
+	float4x4 gWorldViewProj;
+	float4x4 gWorldInvTranspose;
 }; 
 
 // Nonnumeric values cannot be added to a cbuffer.
@@ -38,24 +54,38 @@ SamplerState samAnisotropic
 	AddressV = WRAP;
 };
 
+SamplerState samInputImage
+{
+	Filter = MIN_MAG_LINEAR_MIP_POINT;
+
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+};
+
 struct VertexIn
 {
-	float3 PosL    : POSITION;
-	float3 NormalL : NORMAL;
-	float2 Tex     : TEXCOORD;
-	row_major float4x4 World  : WORLD;
-	Material Material : MATERIAL;
-	uint InstanceId : SV_InstanceID;
-	float2 AtlasCoord : ATLASCOORD;
+	float3 PosL					: POSITION;
+	float3 NormalL				: NORMAL;
+	float2 Tex					: TEXCOORD;
+	row_major float4x4 World	: WORLD;
+	Material Material			: MATERIAL;
+	uint InstanceId				: SV_InstanceID;
+	float2 AtlasCoord			: ATLASCOORD;
 };
 
 struct VertexOut
 {
-	float4 PosH    : SV_POSITION;
-    float3 PosW    : POSITION;
-    float3 NormalW : NORMAL;
-	float2 Tex     : TEXCOORD;
-	Material Material : MATERIAL;
+	float4 PosH			: SV_POSITION;
+    float3 PosW			: POSITION;
+    float3 NormalW		: NORMAL;
+	float2 Tex			: TEXCOORD;
+	Material Material	: MATERIAL;
+};
+
+struct BlurVertexOut
+{
+	float4 PosH : SV_POSITION;
+	float2 Tex	: TEXCOORD;
 };
 
 VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
@@ -75,6 +105,38 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex   = mul(float4(texCoord, 0.0f, 1.0f), gTexTransform).xy;
 	vout.Material = vin.Material;
+	return vout;
+}
+
+VertexOut TextureVS(VertexIn vin)
+{
+	VertexOut vout;
+	
+	// Transform to world space space.
+	vout.PosW    = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
+	vout.NormalW = mul(vin.NormalL, (float3x3)gWorldInvTranspose);
+		
+	// Transform to homogeneous clip space.
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorld);
+	
+	// Output vertex attributes for interpolation across triangle.
+	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+
+	vout.Material = vin.Material;
+
+	return vout;
+}
+
+BlurVertexOut BlurVS(VertexIn vin)
+{
+	BlurVertexOut vout;
+
+	// Already in normalized device space.
+	vout.PosH = float4(vin.PosL, 1.0f);
+
+	// Pass onto pixel shader.
+	vout.Tex = vin.Tex;
+
 	return vout;
 }
 
@@ -143,6 +205,75 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     return litColor;
 }
 
+float4 TexturePS(VertexOut pin) : SV_Target
+{
+	// Interpolating normal can unnormalize it, so normalize it.
+    pin.NormalW = normalize(pin.NormalW);
+
+	// The toEye vector is used in lighting.
+	float3 toEye = gEyePosW - pin.PosW;
+
+	// Cache the distance to the eye from this surface point.
+	float distToEye = length(toEye);
+
+	// Normalize.
+	toEye /= distToEye;
+	
+    // Default to multiplicative identity.
+    float4 texColor = float4(1, 1, 1, 1);
+
+	// Sample texture.
+	texColor = gDiffuseMap.Sample( samAnisotropic, pin.Tex );
+	 
+	float4 litColor = texColor;
+
+	// Common to take alpha from diffuse material and texture.
+	litColor.a = 0.5f * texColor.a;
+
+    return litColor;
+}
+
+float4 BlurPS(BlurVertexOut pin, uniform bool gHorizontalBlur) : SV_TARGET
+{
+	float2 texOffset;
+	if(gHorizontalBlur)
+	{
+		texOffset = float2(gTexelWidth, 0.0f);
+	}
+	else
+	{
+		texOffset = float2(0.0f, gTexelHeight);
+	}
+
+	// The center value always contributes to the sum.
+	float4 color = gWeights[5] * gDiffuseMap.SampleLevel(samInputImage, pin.Tex, 0.0f);
+	float totalWeight = gWeights[5];
+
+	float2 texAboutOrigin = float2(pin.Tex.x - 0.5f, pin.Tex.y - 0.5f);
+
+	if ( texAboutOrigin.x * texAboutOrigin.x + texAboutOrigin.y * texAboutOrigin.y > 0.1f )
+	{
+		for (float i = -gBlurRadius; i <= gBlurRadius; ++i)
+		{
+			// We aklready added in the center weight.
+			if (i == 0)
+				continue;
+
+			float2 tex = pin.Tex + i * texOffset;
+
+			float weight = gWeights[i + gBlurRadius];
+
+			// Add neighbor pixel to blur.
+			color += weight * gDiffuseMap.SampleLevel(samInputImage, tex, 0.0f);
+
+			totalWeight += weight;
+		}
+	}
+
+	// Compensate for discarded samples by making total weights sum to 1.
+	return color / totalWeight;
+}
+
 #pragma region DX11 Techniques
 technique11 LightsWithAtlas
 {
@@ -163,6 +294,54 @@ technique11 LightsWithoutAtlas
         SetPixelShader( CompileShader( ps_5_0, PS(true) ) );
     }
 }
+
+technique11 TexturePassThrough
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, TextureVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, TexturePS() ) );
+	}
+}
+
+technique11 HorzBlur
+{
+    pass P0
+    {
+		SetVertexShader( CompileShader( vs_5_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, BlurPS(true) ) );
+    }
+}
+
+technique11 VertBlur
+{
+    pass P0
+    {
+		SetVertexShader( CompileShader( vs_5_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, BlurPS(false) ) );
+    }
+}
+
+technique11 Blur
+{
+    pass P0
+    {
+		SetVertexShader( CompileShader( vs_5_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, BlurPS(false) ) );
+    }
+
+	pass P1
+    {
+		SetVertexShader( CompileShader( vs_5_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, BlurPS(true) ) );
+    }
+}
+
 #pragma endregion
 
 #pragma region DX10 Techniques
@@ -185,4 +364,52 @@ technique11 LightsWithoutAtlasDX10
         SetPixelShader( CompileShader( ps_4_0, PS(true) ) );
     }
 }
+
+technique11 TexturePassThroughDX10
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_4_0, TextureVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, TexturePS() ) );
+	}
+}
+
+technique11 HorzBlurDX10
+{
+    pass P0
+    {
+		SetVertexShader( CompileShader( vs_4_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, BlurPS(true) ) );
+    }
+}
+
+technique11 VertBlurDX10
+{
+    pass P0
+    {
+		SetVertexShader( CompileShader( vs_4_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, BlurPS(false) ) );
+    }
+}
+ 
+technique11 BlurDX10
+{
+    pass P0
+    {
+		SetVertexShader( CompileShader( vs_4_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, BlurPS(false) ) );
+    }
+
+	pass P1
+    {
+		SetVertexShader( CompileShader( vs_4_0, BlurVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, BlurPS(true) ) );
+    }
+}
+
 #pragma endregion

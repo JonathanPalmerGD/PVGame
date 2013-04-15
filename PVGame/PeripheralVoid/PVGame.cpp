@@ -229,6 +229,21 @@ void PVGame::UpdateScene(float dt)
 
 		player->Update(dt, input);
 
+		if (input->wasKeyPressed('R'))
+			renderMan->AddPostProcessingEffect(WireframeEffect);
+		if (input->wasKeyPressed('N'))
+			renderMan->RemovePostProcessingEffect(WireframeEffect);
+
+		if (input->wasKeyPressed('B'))
+			renderMan->AddPostProcessingEffect(BlurEffect);
+		if (input->wasKeyPressed('V'))
+			renderMan->RemovePostProcessingEffect(BlurEffect);
+
+		if (input->wasKeyPressed(VK_OEM_6))
+			renderMan->ChangeBlurCount(1);
+		if (input->wasKeyPressed(VK_OEM_4))
+			renderMan->ChangeBlurCount(-1);
+		
 		// If physics updated, tell the game objects to update their world matrix.
 		if (physicsMan->update(dt))
 		{
@@ -377,6 +392,7 @@ void PVGame::UpdateScene(float dt)
 			gameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
 		}
+		/*
 		if(input->wasKeyPressed('5'))
 		{
 			XMFLOAT4 p = player->getPosition();
@@ -387,7 +403,7 @@ void PVGame::UpdateScene(float dt)
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
-		}
+		}*/
 		if(input->wasKeyPressed('9'))
 		{
 			XMFLOAT4 p = player->getPosition();

@@ -12,7 +12,7 @@ using std::map;
 using std::string;
 
 #define NUM_LEVELS 1
-#define USE_FRUSTUM_CULLING 1
+#define USE_FRUSTUM_CULLING 0
 #define DRAW_FRUSTUM 0
 
 #define USINGVLD 0
@@ -21,6 +21,8 @@ using std::string;
 #endif
 
 #define MAX_LIGHTS 20
+#define MAX_BLURS 20
+
 const enum GAME_STATE { MENU, OPTION, PLAYING, END };
 const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK};
 
@@ -58,6 +60,23 @@ struct MeshMaps
 		// Create cube.
 		
 		GeometryGenerator aGeometryGenerator;
+
+		GeometryGenerator::MeshData quadMeshData;
+		aGeometryGenerator.CreateFullscreenQuad(quadMeshData);
+
+		m["Quad"].bufferKey = "Quad";
+		m["Quad"].normalizeVertices = false;
+		m["Quad"].indices = quadMeshData.Indices;
+
+		for(UINT i = 0; i < quadMeshData.Vertices.size(); ++i)
+		{
+			Vertex aVertex;
+			aVertex.Pos    = quadMeshData.Vertices[i].Position;
+			aVertex.Normal = quadMeshData.Vertices[i].Normal;
+			aVertex.TexC    = quadMeshData.Vertices[i].TexC;
+			m["Quad"].vertices.push_back(aVertex);
+		}
+
 		GeometryGenerator::MeshData cubeMeshData;
 		aGeometryGenerator.CreateBox(1.0f, 1.0f, 1.0f, cubeMeshData);
 		m["Cube"].bufferKey = "Cube";
@@ -96,7 +115,7 @@ struct MeshMaps
 
 		
 		GeometryGenerator::MeshData sphereMeshData;
-		aGeometryGenerator.CreateSphere(1.0f, 20, 20, sphereMeshData);
+		aGeometryGenerator.CreateSphere(1.0f, 14, 14, sphereMeshData);
 		m["Sphere"].bufferKey = "Sphere";
 		m["Sphere"].normalizeVertices = true;
 		m["Sphere"].indices = sphereMeshData.Indices;
@@ -225,6 +244,12 @@ const char MAP_LEVEL_1[] = "Assets/level1.xml";
 const char TEXTURES_FILE[] = "Assets/Textures.xml";
 const char SURFACE_MATERIALS_FILE[] = "Assets/SurfaceMaterials.xml";
 const char MATERIALS_FILE[] = "Assets/Materials.xml";
+
+const enum PostProcessingEffects
+{
+	BlurEffect = 0x01,
+	WireframeEffect = 0x02
+};
 
 // http://stackoverflow.com/questions/27220/how-to-convert-stdstring-to-lpcwstr-in-c-unicode
 static std::wstring s2ws(const std::string& s)
