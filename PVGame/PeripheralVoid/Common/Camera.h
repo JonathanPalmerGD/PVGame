@@ -12,11 +12,17 @@
 #define CAMERA_H
 
 #include "d3dUtil.h"
+#include "../PhysicsManager.h"
+#include "../GameObject.h"
+#include "../Constants.h"
+
+class PhysicsManager;
+class GameObject;
 
 class Camera
 {
 public:
-	Camera();
+	Camera(PhysicsManager* pm);
 	~Camera();
 
 	// Get/Set world camera position.
@@ -69,7 +75,15 @@ public:
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 
+	void frustumCull();
+	btPairCachingGhostObject* getBody();
+	
+	GameObject* frustumBody;
 private:
+	PhysicsManager* physicsMan;
+	btPairCachingGhostObject* body;
+	
+	void transformBody();
 
 	// Camera coordinate system with coordinates relative to world space.
 	XMFLOAT3 mPosition;

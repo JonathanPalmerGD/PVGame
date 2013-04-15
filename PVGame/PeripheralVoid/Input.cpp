@@ -78,8 +78,9 @@ void Input::initialize(HWND hwnd, bool capture)
         RegisterRawInputDevices(Rid, 1, sizeof(Rid[0]));
 
         if(mouseCaptured)
+		{
             SetCapture(hwnd);           // capture mouse
-
+		}
         // Clear controllers state
         ZeroMemory( controllers, sizeof(ControllerState) * MAX_CONTROLLERS );
 

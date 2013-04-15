@@ -58,5 +58,9 @@ class Player
 
 		AudioListener* listener;
 		AudioSource* audioSource;
+		//Camera movement variables
+		float mTheta;
+		float mPhi;
+		POINT mLastMousePos;
 };
 

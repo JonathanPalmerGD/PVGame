@@ -16,12 +16,11 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	XMStoreFloat3(&right, aRight);
 
 	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f);
-
-	playerCamera = new Camera();
+	physicsMan = pm;
+	playerCamera = new Camera(physicsMan);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
-
-	physicsMan = pm;
+	
 	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(15.0f);
@@ -99,6 +98,28 @@ void Player::HandleInput(Input* input)
 	//	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
 	//	//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
 	//}
+
+		// Make each pixel correspond to a quarter of a degree.
+	//float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
+	//float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
+
+	//// Update angles based on input to orbit camera around box.
+	//mTheta += dx;
+	//mPhi   += dy;
+	//playerCamera->Pitch(dy/2); // Rotate the camera  up/down.
+
+	//playerCamera->RotateY(dx / 2); // Rotate ABOUT the y-axis. So really turning left/right.
+	//XMMATRIX R = XMMatrixRotationY(dx/2);
+
+	//XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	//XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	//XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+	//mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
+
+	playerCamera->UpdateViewMatrix();
+
+	mLastMousePos.x = input->getMouseX();
+	mLastMousePos.y = input->getMouseY();
 
 	// Now check for camera input.
 	if (input->isCameraUpKeyDown())
@@ -206,7 +227,7 @@ void Player::HandleInput(Input* input)
 
 void Player::OnResize(float aspectRatio)
 {
-	playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 1.0f, 1000.0f);
+	playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
 	playerCamera->UpdateViewMatrix();
 }
 

@@ -12,6 +12,8 @@ using std::map;
 using std::string;
 
 #define NUM_LEVELS 1
+#define USE_FRUSTUM_CULLING 1
+#define DRAW_FRUSTUM 0
 
 #define USINGVLD 0
 #if USINGVLD 
@@ -153,7 +155,7 @@ struct MeshMaps
 		#endif
 		return m;
     }
-    static const map<string, MeshData> MESH_MAPS;
+    static map<string, MeshData> MESH_MAPS;
 };
 
 struct Wall
@@ -215,6 +217,7 @@ struct InstancedData
 	XMFLOAT4X4 World;
 	SurfaceMaterial SurfMaterial;
 	XMFLOAT2 AtlasC;
+	bool isRendered;
 };
 
 //List our levels:

@@ -1,6 +1,6 @@
 #include "PVGame.h"
 
-const map<string, MeshData>MeshMaps::MESH_MAPS = MeshMaps::create_map();
+map<string, MeshData>MeshMaps::MESH_MAPS = MeshMaps::create_map();
 
 PVGame::PVGame(HINSTANCE hInstance)
 	: D3DApp(hInstance)
@@ -63,6 +63,10 @@ bool PVGame::Init()
 	
 	LoadContent();
 	BuildGeometryBuffers();
+
+#if DRAW_FRUSTUM
+		gameObjects.push_back(player->GetCamera()->frustumBody);
+#endif
 
 	mPhi = 1.5f*MathHelper::Pi;
 	mTheta = 0.25f*MathHelper::Pi;
@@ -232,6 +236,7 @@ void PVGame::UpdateScene(float dt)
 				gameObjects[i]->Update();
 		}
 
+		//If the player falls of the edge of the world, spawn at the initial sapwn
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 
@@ -454,7 +459,10 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
-
+		
+#if USE_FRUSTUM_CULLING
+		player->GetCamera()->frustumCull();
+#endif
 		break;
 	default:
 		break;
@@ -473,9 +481,9 @@ void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
 
 	mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
 	
-	//camera->Pitch(mPhi); // Rotate the camera  up/down.
-	//camera->RotateY(dx / 2); // Rotate ABOUT the y-axis. So really turning left/right.
-	//camera->UpdateViewMatrix();
+	//player->GetCamera()->Pitch(mPhi); // Rotate the camera  up/down.
+	//player->GetCamera()->RotateY(dx / 2); // Rotate ABOUT the y-axis. So really turning left/right.
+	//player->GetCamera()->UpdateViewMatrix();
 
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;

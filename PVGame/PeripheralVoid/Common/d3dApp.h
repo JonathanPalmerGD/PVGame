@@ -63,6 +63,9 @@ protected:
 	bool      mMaximized;
 	bool      mResizing;
 
+	unsigned long state;
+	unsigned long mState; 
+
 	GameTimer mTimer;
 
 	std::wstring mMainWndCaption;

@@ -205,7 +205,8 @@ class RenderManager
 					for(UINT i = 0; i < mInstancedDataMap[bufferItr->first].size(); ++i)
 					{
 						// If check goes here - only add in if we can see it / at least is inside frustum.
-						dataView[mVisibleObjectCount++] = mInstancedDataMap[bufferItr->first][i];
+						if(mInstancedDataMap[bufferItr->first][i].isRendered)
+							dataView[mVisibleObjectCount++] = mInstancedDataMap[bufferItr->first][i];
 					}
 
 					md3dImmediateContext->Unmap(bufferItr->second.instanceBuffer, 0);
@@ -252,6 +253,7 @@ class RenderManager
 			{
 				GameObject* aGameObject = gameObjects[i];
 				string bufferKey = aGameObject->GetMeshKey();
+				mInstancedDataMap[bufferKey][counts[bufferKey]].isRendered = aGameObject->isSeen();
 				mInstancedDataMap[bufferKey][counts[bufferKey]++].World = aGameObject->GetWorldMatrix();
 			}
 
@@ -807,7 +809,7 @@ class RenderManager
 			// Set up lighting. Will need to make more general but first we want basic lighting.
 			// Directional light.
 			mDirLights.push_back(DirectionalLight());
-			mDirLights[0].Ambient  = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+			mDirLights[0].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 			mDirLights[0].Diffuse  = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 			mDirLights[0].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.707f, 0.0f);

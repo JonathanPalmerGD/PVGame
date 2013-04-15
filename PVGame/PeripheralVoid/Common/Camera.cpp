@@ -4,17 +4,26 @@
 
 #include "Camera.h"
 
-Camera::Camera()
+Camera::Camera(PhysicsManager* pM)
 	: mPosition(0.0f, 0.0f, 0.0f), 
 	  mRight(1.0f, 0.0f, 0.0f),
 	  mUp(0.0f, 1.0f, 0.0f),
 	  mLook(0.0f, 0.0f, 1.0f)
 {
-	SetLens(0.25f*MathHelper::Pi, 1.0f, 0.001f, 1000.0f);
+	physicsMan = pM;
+	SetLens(0.25f*MathHelper::Pi, 1.0f, 0.01f, 1000.0f);
 }
 
 Camera::~Camera()
 {
+#if USE_FRUSTUM_CULLING
+		physicsMan->removeGhostObjectFromWorld(body);
+#endif
+}
+
+btPairCachingGhostObject* Camera::getBody()
+{
+	return body;
 }
 
 XMVECTOR Camera::GetPositionXM()const
@@ -30,6 +39,8 @@ XMFLOAT3 Camera::GetPosition()const
 void Camera::SetPosition(float x, float y, float z)
 {
 	mPosition = XMFLOAT3(x, y, z);
+	if(USE_FRUSTUM_CULLING)
+		transformBody();
 }
 
 void Camera::SetPosition(const XMFLOAT3& v)
@@ -124,6 +135,170 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	mNearWindowHeight = 2.0f * mNearZ * tanf( 0.5f*mFovY );
 	mFarWindowHeight  = 2.0f * mFarZ * tanf( 0.5f*mFovY );
 
+#if USE_FRUSTUM_CULLING
+		float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect );
+		float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect );
+
+		//btScalar* points = new btScalar[24];
+		
+		//Near Plane
+		btVector3 nTR(  mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
+		btVector3 nTL( -mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
+		btVector3 nBR(  mNearWindowWidth/2, -mNearWindowHeight/2, mNearZ);
+		btVector3 nBL( -mNearWindowWidth/2, -mNearWindowHeight/2, mNearZ);
+
+		//Far Plane
+		btVector3 fTR(  mFarWindowWidth/2,  mFarWindowHeight/2, mFarZ);
+		btVector3 fTL( -mFarWindowWidth/2,  mFarWindowHeight/2, mFarZ);
+		btVector3 fBR(  mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
+		btVector3 fBL( -mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
+
+		Vertex frustumVertices[] =
+		{
+			// Normals derived by hand - will want to be more efficient later.
+			{ XMFLOAT3(nTR.getX(), nTR.getY(), nTR.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f,  1.0f)	},	//nTR
+			{ XMFLOAT3(nTL.getX(), nTL.getY(), nTL.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f,  0.0f)	},	//nTL
+			{ XMFLOAT3(nBL.getX(), nBL.getY(), nBL.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, -1.0f)	},	//nBL
+			{ XMFLOAT3(nBR.getX(), nBR.getY(), nBR.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(-1.0f,  0.0f)	},	//nBR
+
+			{ XMFLOAT3(fTR.getX(), fTR.getY(), fTR.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f,  1.0f)	},	//fTR
+			{ XMFLOAT3(fTL.getX(), fTL.getY(), fTL.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2( 1.0f,  0.0f)	},	//fTL
+			{ XMFLOAT3(fBL.getX(), fBL.getY(), fBL.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2( 0.0f, -1.0f)	},	//fBL
+			{ XMFLOAT3(fBR.getX(), fBR.getY(), fBR.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(-1.0f,  0.0f)	},	//fBR
+		
+		};
+		MeshMaps::MESH_MAPS["Frustum"].vertices.assign(frustumVertices, frustumVertices + 8);
+
+		btTriangleMesh* tMesh = new btTriangleMesh();
+	
+		//Near
+		tMesh->addTriangle(nTR, nTL, nBL);
+		tMesh->addTriangle(nTR, nBR, nBL);
+
+		//Top
+		tMesh->addTriangle(nTL, fTL, fTR);
+		tMesh->addTriangle(nTL, nTR, fTR);
+
+		//Left
+		tMesh->addTriangle(nTL, fTL, fBL);
+		tMesh->addTriangle(nTL, nBL, fBL);
+
+		//Bottom
+		tMesh->addTriangle(nBR, nBL, fBL);
+		tMesh->addTriangle(nBR, fBR, fBL);
+
+		//Right
+		tMesh->addTriangle(nBR, nTR, fTR);
+		tMesh->addTriangle(nBR, fBR, fTR);
+	
+		//Far
+		tMesh->addTriangle(fTR, fTL, fBL);
+		tMesh->addTriangle(fTR, fBR, fBL);
+
+
+		// Create the index buffer
+		UINT planeIndices[] = 
+		{
+			//Near
+			0, 1, 2,
+			0, 3, 2,
+
+			//Top
+			1, 5, 4,
+			1, 0, 4,
+
+			//Left
+			1, 5, 6,
+			1, 2, 6,
+
+			//Bottom
+			3, 2, 6,
+			3, 7, 6,
+
+			//Right
+			3, 0, 4,
+			3, 7, 4,
+	
+			//Far
+			4, 5, 6,
+			4, 7, 6
+		};
+		MeshMaps::MESH_MAPS["Frustum"].indices.assign(planeIndices, planeIndices + 36);
+		MeshMaps::MESH_MAPS["Frustum"].bufferKey = "Frustum";
+		MeshMaps::MESH_MAPS["Frustum"].normalizeVertices = false;
+
+		physicsMan->addTriangleMesh("Frustum", MeshMaps::MESH_MAPS["Frustum"]);
+
+		//points[0 ] = mNearWindowWidth/2;
+		//points[1 ] = mNearWindowHeight/2;
+		//points[2 ] = mNearZ;
+		//points[3 ] = -mNearWindowWidth/2;
+		//points[4 ] = mNearWindowHeight/2;
+		//points[5 ] = mNearZ;
+		//points[6 ] = mNearWindowWidth/2;
+		//points[7 ] = -mNearWindowHeight/2;
+		//points[8 ] = mNearZ;
+		//points[9 ] = -mNearWindowWidth/2;
+		//points[10] = -mNearWindowHeight/2;
+		//points[11] = mNearZ;
+
+		////Far Plane
+		//points[12] = mFarWindowWidth/2;
+		//points[13] = mFarWindowHeight/2;
+		//points[14] = mFarZ;
+		//points[15] = -mFarWindowWidth/2;
+		//points[16] = mFarWindowHeight/2;
+		//points[17] = mFarZ;
+		//points[18] = mFarWindowWidth/2;
+		//points[19] = -mFarWindowHeight/2;
+		//points[20] = mFarZ;
+		//points[21] = -mFarWindowWidth/2;
+		//points[22] = -mFarWindowHeight/2;
+		//points[23] = mFarZ;
+
+		//Near Plane
+		//points[0 ] = 1000;
+		//points[1 ] = 1000;
+		//points[2 ] = -1000;
+
+		//points[3 ] = -1000;
+		//points[4 ] = 1000;
+		//points[5 ] = -1000;
+
+		//points[6 ] = -1000;
+		//points[7 ] = -1000;
+		//points[8 ] = -1000;
+
+		//points[9 ] = 1000;
+		//points[10] = -1000;
+		//points[11] = -1000;
+
+		////Far Plane
+		//points[12] = 1000;
+		//points[13] = 1000;
+		//points[14] = 1000;
+
+		//points[15] = -1000;
+		//points[16] = 1000;
+		//points[17] = 1000;
+
+		//points[18] = -1000;
+		//points[19] = -1000;
+		//points[20] = 1000;
+
+		//points[21] = 1000;
+		//points[22] = -1000;
+		//points[23] = 1000;
+
+		body = physicsMan->makeCameraFrustumObject(tMesh,24);
+		physicsMan->addGhostObjectToWorld(body);
+
+#if DRAW_FRUSTUM
+			frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan);
+			frustumBody->addCollisionFlags(btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE);
+			frustumBody->CalculateWorldMatrix();
+#endif
+#endif
 	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
 	XMStoreFloat4x4(&mProj, P);
 }
@@ -138,6 +313,9 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMStoreFloat3(&mLook, L);
 	XMStoreFloat3(&mRight, R);
 	XMStoreFloat3(&mUp, U);
+#if USE_FRUSTUM_CULLING
+		transformBody();
+#endif
 }
 
 void Camera::LookAt(const XMFLOAT3& pos, const XMFLOAT3& target, const XMFLOAT3& up)
@@ -171,6 +349,9 @@ void Camera::Strafe(float d)
 	XMVECTOR r = XMLoadFloat3(&mRight);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
+#if USE_FRUSTUM_CULLING
+		transformBody();
+#endif
 }
 
 void Camera::Walk(float d)
@@ -180,6 +361,8 @@ void Camera::Walk(float d)
 	XMVECTOR l = XMLoadFloat3(&mLook);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
+	if(USE_FRUSTUM_CULLING)
+		transformBody();
 }
 
 void Camera::Pitch(float angle)
@@ -190,6 +373,9 @@ void Camera::Pitch(float angle)
 
 	XMStoreFloat3(&mUp,   XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
+#if USE_FRUSTUM_CULLING
+		transformBody();
+#endif
 }
 
 void Camera::RotateY(float angle)
@@ -201,6 +387,8 @@ void Camera::RotateY(float angle)
 	XMStoreFloat3(&mRight,   XMVector3TransformNormal(XMLoadFloat3(&mRight), R));
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
+	if(USE_FRUSTUM_CULLING)
+		transformBody();
 }
 
 void Camera::UpdateViewMatrix()
@@ -245,6 +433,44 @@ void Camera::UpdateViewMatrix()
 	mView(1,3) = 0.0f;
 	mView(2,3) = 0.0f;
 	mView(3,3) = 1.0f;
+	
+#if USE_FRUSTUM_CULLING
+		transformBody();
+#endif
 }
 
+void Camera::transformBody()
+{
+	btTransform t = body->getWorldTransform();
+	t.setOrigin(btVector3(mPosition.x, mPosition.y, mPosition.z));
 
+	XMVECTOR quat = XMQuaternionRotationMatrix(View());
+	XMFLOAT4 fQuat;
+	XMStoreFloat4(&fQuat, quat);
+	btQuaternion ret(fQuat.x, fQuat.y, fQuat.z, -fQuat.w);
+	t.setRotation(ret);
+
+	body->setWorldTransform(t);
+
+#if DRAW_FRUSTUM
+		btTransform t2 = frustumBody->getRigidBody()->getWorldTransform();
+	
+		XMFLOAT3 cPos(mPosition.x + (mLook.x *2),mPosition.y + (mLook.y * 2), mPosition.z + (mLook.z * 2));
+		t2.setOrigin(btVector3(cPos.x, cPos.y, cPos.z));
+
+		XMVECTOR quat2 = XMQuaternionRotationMatrix(View());
+		XMFLOAT4 fQuat2;
+		XMStoreFloat4(&fQuat2, quat2);
+		btQuaternion ret2(fQuat2.x, fQuat2.y, fQuat2.z, -fQuat2.w);
+		t2.setRotation(ret2);
+	
+		frustumBody->getRigidBody()->setWorldTransform(t2);
+		frustumBody->getRigidBody()->getMotionState()->setWorldTransform(t2);
+		frustumBody->CalculateWorldMatrix();
+#endif
+}
+
+void Camera::frustumCull()
+{
+	physicsMan->frustumCulling(body);
+}
