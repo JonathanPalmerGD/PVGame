@@ -15,7 +15,7 @@ using std::string;
 #define USE_FRUSTUM_CULLING 0
 #define DRAW_FRUSTUM 0
 
-#define USINGVLD 0
+#define USINGVLD 1
 #if USINGVLD 
 #include <vld.h>
 #endif

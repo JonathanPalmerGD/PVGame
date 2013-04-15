@@ -104,7 +104,19 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 
 Room::~Room(void)
 {
+	for (unsigned int i = 0; i < exitVector.size(); ++i)
+		delete exitVector[i];
 
+	for (unsigned int i = 0; i < spawnVector.size(); ++i)
+		delete spawnVector[i];
+
+	for (unsigned int i = 0; i < neighbors.size(); ++i)
+		delete neighbors[i];
+
+	exitVector.clear();
+	spawnVector.clear();
+	neighbors.clear();
+	gameObjs.clear();
 }
 
 void Room::loadRoom(void)
@@ -194,16 +206,23 @@ void Room::loadRoom(float xPos, float zPos)
 	wallObj->scale(width, 1.0f, depth);
 	gameObjs.push_back(wallObj);
 
+	for (unsigned int i = 0; i < wallRowCol.size(); ++i)
+		for (unsigned int j = 0; j < wallRowCol[i].size(); ++j)
+			delete wallRowCol[i][j];
+
 	#pragma endregion
 }
 
 void Room::loadNeighbors(void)
 {
 	// Clear neighbors
+	for (unsigned int i = 0; i < neighbors.size(); ++i)
+		delete neighbors[i];
+	
 	neighbors.clear();
 
 	// Check exits
-	for (int i = 0; i < exitVector.size(); i++)
+	for (unsigned int i = 0; i < exitVector.size(); i++)
 	{
 		float offsetX = x, offsetZ = z;
 

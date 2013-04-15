@@ -232,7 +232,9 @@ void GameObject::restartAndPlayAudio()
 
 GameObject::~GameObject(void)
 {
-	if (rigidBody)
+	if (rigidBody && physicsMan)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
-	delete audioSource;
+	
+	if (audioSource)
+		delete audioSource;
 }
