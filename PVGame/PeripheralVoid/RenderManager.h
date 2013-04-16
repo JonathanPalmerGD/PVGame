@@ -51,8 +51,8 @@ class RenderManager
 				aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 				mPointLights.push_back(PointLight(aPointLight));
 			}
-			//Else
-				//You can't always get what you want
+			else
+				return -1;
 			//Pass back the index of the new light
 			return (mPointLights.size() - 1);
 		}
@@ -573,22 +573,26 @@ class RenderManager
 
 		void ToggleLight(int index)
 		{
-			mPointLights[index].On.x = (mPointLights[index].On.x == 0.0f) ? 1.0f : 0.0f;
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].On.x = (mPointLights[index].On.x == 0.0f) ? 1.0f : 0.0f;
 		}
 
 		void EnableLight(int index)
 		{
-			mPointLights[index].On.x = 1;
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].On.x = 1;
 		}
 
 		void DisableLight(int index)
 		{
-			mPointLights[index].On.x = 0;
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].On.x = 0;
 		}
 		
 		void SetLightPosition(int index, btVector3* targetV3)
 		{
-			mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
 		}
 
 		void ChangeBlurCount(int aValue)
