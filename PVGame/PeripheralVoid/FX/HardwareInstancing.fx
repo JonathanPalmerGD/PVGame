@@ -80,6 +80,7 @@ struct VertexOut
     float3 NormalW		: NORMAL;
 	float2 Tex			: TEXCOORD;
 	Material Material	: MATERIAL;
+	float2 AtlasCoord			: ATLASCOORD;
 };
 
 struct BlurVertexOut
@@ -103,8 +104,9 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 							: vin.Tex;
 
 	// Output vertex attributes for interpolation across triangle.
-	vout.Tex   = mul(float4(texCoord, 0.0f, 1.0f), gTexTransform).xy;
+	vout.Tex   = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 	vout.Material = vin.Material;
+	vout.AtlasCoord = vin.AtlasCoord;
 	return vout;
 }
 
@@ -123,6 +125,7 @@ VertexOut TextureVS(VertexIn vin)
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	vout.Material = vin.Material;
+	vout.AtlasCoord = vin.AtlasCoord;
 
 	return vout;
 }
@@ -156,10 +159,11 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	
     // Default to multiplicative identity.
     float4 texColor = float4(1, 1, 1, 1);
+	//fixed4 tex = tex2D(_MainTex, (frac(IN.uv_MainTex) * 0.25f) + offset);
     if(gUseTexure)
 	{
 		// Sample texture.
-		texColor = gDiffuseMap.Sample( samAnisotropic, pin.Tex );
+		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.5f) + (pin.AtlasCoord * 0.5f));
 	}
 	 
 	//

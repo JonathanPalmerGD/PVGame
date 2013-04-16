@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include "Common\d3dUtil.h"
@@ -15,7 +16,7 @@ using std::string;
 #define USE_FRUSTUM_CULLING 0
 #define DRAW_FRUSTUM 0
 
-#define USINGVLD 1
+#define USINGVLD 0
 #if USINGVLD 
 #include <vld.h>
 #endif
