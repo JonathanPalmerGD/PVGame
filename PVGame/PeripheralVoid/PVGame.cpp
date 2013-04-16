@@ -13,19 +13,21 @@ PVGame::PVGame(HINSTANCE hInstance)
 
 PVGame::~PVGame(void)
 {
-	// Taken from http://stackoverflow.com/questions/307082/cleaning-up-an-stl-list-vector-of-pointers
-	// Thought it was automatically cleaned up but I guess not.
-	while (!gameObjects.empty())
-	{
-		delete gameObjects.back();
-		gameObjects.pop_back();
-	}
-	
 	delete player;
-	delete physicsMan;
-	delete currentRoom;
+	
+	for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+	{
+		delete proceduralGameObjects[i];
+	}
+
+	gameObjects.clear();
+	proceduralGameObjects.clear();
+	
+	delete currentRoom;	
+
 	alcDestroyContext(audioContext);
     alcCloseDevice(audioDevice);
+	delete physicsMan;
 }
 
 bool PVGame::Init()
@@ -66,6 +68,7 @@ bool PVGame::Init()
 
 #if DRAW_FRUSTUM
 		gameObjects.push_back(player->GetCamera()->frustumBody);
+		proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
 #endif
 
 	mPhi = 1.5f*MathHelper::Pi;
@@ -160,8 +163,9 @@ bool PVGame::LoadXML()
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 
 	GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -10.0f, 0.0f), physicsMan);
-			wallObj->scale(250.0f ,3.0f ,250.0f);
-			gameObjects.push_back(wallObj);
+	wallObj->scale(250.0f ,3.0f ,250.0f);
+	gameObjects.push_back(wallObj);
+	proceduralGameObjects.push_back(wallObj);
 
 	#pragma endregion
 
@@ -181,7 +185,8 @@ bool PVGame::LoadXML()
 	}
 	gameObjects.push_back(movingGObj);
 	gameObjects.push_back(crestGObj);	
-
+	proceduralGameObjects.push_back(movingGObj);
+	proceduralGameObjects.push_back(crestGObj);
 
 	GameObject* crestGObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
@@ -198,6 +203,8 @@ bool PVGame::LoadXML()
 	}
 	gameObjects.push_back(movingGObj2);
 	gameObjects.push_back(crestGObj2);	
+	proceduralGameObjects.push_back(movingGObj2);
+	proceduralGameObjects.push_back(crestGObj2);
 	#pragma endregion
 
 	return true;
@@ -379,6 +386,7 @@ void PVGame::UpdateScene(float dt)
 			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
+			proceduralGameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		if(input->wasKeyPressed('4'))
@@ -390,6 +398,7 @@ void PVGame::UpdateScene(float dt)
 			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
+			proceduralGameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		/*
@@ -413,6 +422,7 @@ void PVGame::UpdateScene(float dt)
 			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
+			proceduralGameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		#pragma endregion
@@ -450,6 +460,7 @@ void PVGame::UpdateScene(float dt)
 			
 			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
+			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
 			is1Up = false;
@@ -469,6 +480,7 @@ void PVGame::UpdateScene(float dt)
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
 			gameObjects.push_back(testSphere);
+			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
 			is2Up = false;
@@ -563,7 +575,7 @@ void PVGame::BuildRooms(Room* startRoom)
 {
 	bool isLoaded = false;
 
-	for (int i = 0; i < loadedRooms.size(); i++)
+	for (unsigned int i = 0; i < loadedRooms.size(); i++)
 	{
 		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
 			isLoaded = true;
@@ -571,7 +583,7 @@ void PVGame::BuildRooms(Room* startRoom)
 
 	if (!isLoaded)
 	{
-		for (int i = 0; i < startRoom->getGameObjs().size(); i++)
+		for (unsigned int i = 0; i < startRoom->getGameObjs().size(); i++)
 		{
 			gameObjects.push_back(startRoom->getGameObjs()[i]);
 		}
@@ -579,7 +591,7 @@ void PVGame::BuildRooms(Room* startRoom)
 		startRoom->loadNeighbors();
 		loadedRooms.push_back(startRoom);
 
-		for (int i = 0; i < startRoom->getNeighbors().size(); i++)
+		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)
 		{
 			BuildRooms(startRoom->getNeighbors()[i]);
 		}

@@ -38,7 +38,7 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, Ph
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
 	rigidBody = rB;
 	btVector3 s = rigidBody->getCollisionShape()->getLocalScaling();
-	localScale = XMFLOAT3(s.getX(),s.getY(),s.getZ());
+	localScale = XMFLOAT3(1.0,1.0,1.0);
 	this->physicsMan = physicsMan;
 	physicsMan->addRigidBodyToWorld(rigidBody);
 	rigidBody->setUserPointer(this);

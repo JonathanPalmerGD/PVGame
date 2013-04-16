@@ -62,7 +62,7 @@ int MovingObject::GetTargetPosition() { return targetPosition; }
 float MovingObject::GetRateOfChange() { return rateOfChange; }
 XMFLOAT3 MovingObject::GetPosition(int index) 
 { 
-	if(index < positions.size())
+	if(index < (int)positions.size())
 	{
 		return positions[index]; 
 	}
@@ -75,7 +75,7 @@ XMFLOAT3 MovingObject::GetPosition(int index)
 void MovingObject::ChangeView(bool newVisionBool) { inVision = newVisionBool; }
 void MovingObject::SetTargetPosition(int newIndex) 
 { 
-	if(newIndex < positions.size())
+	if(newIndex < (int)positions.size())
 	{
 		if(newIndex != targetPosition)
 		{	
@@ -87,7 +87,7 @@ void MovingObject::SetTargetPosition(int newIndex)
 void MovingObject::SetRateOfChange(float newRateOfChange) { rateOfChange = newRateOfChange; }
 void MovingObject::ChangePositionAtIndex(int index, XMFLOAT3 newPosition) 
 {
-	if(index < positions.size()) 
+	if(index < (int)positions.size()) 
 	{ 
 		positions[index] = newPosition; 
 	}

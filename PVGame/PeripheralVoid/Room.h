@@ -15,7 +15,7 @@ class Room
 	public:
 		Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos);
 		~Room(void);
-		vector<GameObject*> getGameObjs(void) {return gameObjs;};
+		vector<GameObject*> getGameObjs(void) { return gameObjs; }
 		void loadRoom(void);
 		void loadNeighbors(void);
 		Wall* getSpawn(void){return spawnVector[0];};

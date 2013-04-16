@@ -34,8 +34,8 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 
 		if (isFirst)
 		{
-			mapOffsetX = -atof(col);
-			mapOffsetZ = -atof(row);
+			mapOffsetX = (float)-atof(col);
+			mapOffsetZ = (float)-atof(row);
 
 		//	width -= mapOffsetX;
 		//	depth -= mapOffsetZ;
@@ -46,15 +46,15 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 		else
 		{
 			if (atof(col) < -mapOffsetX)
-				mapOffsetX = -atof(col);
+				mapOffsetX = (float)-atof(col);
 		}
 
 
 		// increase room dimensions if necessary
 		if (atof(col) + atof(xLength) + 1 + mapOffsetX > width)
-			width = atof(col) + atof(xLength) + mapOffsetX;
+			width = (float)atof(col) + (float)atof(xLength) + (float)mapOffsetX;
 		if (atof(row) + atof(zLength) + 1 + mapOffsetZ > depth)
-			depth = atof(row) + atof(zLength) + mapOffsetZ;
+			depth = (float)atof(row) + (float)atof(zLength) + (float)mapOffsetZ;
 
 
 		/*if ((atof(col) + atof(xLength)) + mapOffsetX > width)
@@ -116,6 +116,10 @@ Room::~Room(void)
 	exitVector.clear();
 	spawnVector.clear();
 	neighbors.clear();
+
+	for (unsigned int i = 0; i < gameObjs.size(); ++i)
+		delete gameObjs[i];
+
 	gameObjs.clear();
 }
 
@@ -160,7 +164,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->direction = "";
 		tempWall->file = "";
 	
-		wallRowCol[(unsigned int)atof(row) + mapOffsetZ].push_back(tempWall);
+		wallRowCol[(unsigned int)atof(row) + (unsigned int)mapOffsetZ].push_back(tempWall);
 	}
 
 	for (XMLElement* spawn = spawns->FirstChildElement("spawn"); spawn != NULL; spawn = spawn->NextSiblingElement("spawn"))
@@ -216,9 +220,6 @@ void Room::loadRoom(float xPos, float zPos)
 void Room::loadNeighbors(void)
 {
 	// Clear neighbors
-	for (unsigned int i = 0; i < neighbors.size(); ++i)
-		delete neighbors[i];
-	
 	neighbors.clear();
 
 	// Check exits
@@ -229,7 +230,7 @@ void Room::loadNeighbors(void)
 		Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
 		Wall* roomEntrance;
 
-		for (int j = 0; j < tmpRoom->getExits().size(); j++)
+		for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
 		{
 			if (tmpRoom->getExits()[j]->file == mapFile)
 				roomEntrance = tmpRoom->getExits()[j];

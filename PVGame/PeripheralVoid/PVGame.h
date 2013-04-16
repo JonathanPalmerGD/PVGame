@@ -48,6 +48,7 @@ public:
 		unsigned int gameState;
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjects;
+		vector<GameObject*> proceduralGameObjects;
 		vector<Room*> loadedRooms;
 
 		ALCdevice* audioDevice;
