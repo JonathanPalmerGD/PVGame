@@ -81,7 +81,7 @@ void MovingObject::SetTargetPosition(int newIndex)
 		{
 			//Call the 'Activate touched objects' thing for bullet
 			rateOfChange = 0.0f;
-			targetPosition = newIndex; 
+			targetPosition = newIndex;
 		}
 	}
 }

@@ -324,8 +324,8 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	ghost->setWorldTransform(t);
 	
 	btKinematicCharacterController* cc = new btKinematicCharacterController(ghost, capsule, stepHeight);
-	//world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
-	world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
+	world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
+	//world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
 	world->addCharacter(cc);
 	return cc;
 }
