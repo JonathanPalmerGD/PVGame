@@ -391,6 +391,7 @@ class RenderManager
 			mfxDiffuseMapVar->SetResource(NULL);
 			techniqueMap["Blur"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
 			instanceCounts.clear();
+			mfxBlurColor->SetRawValue(&XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 0, sizeof(XMFLOAT4));
 		}
 		
 		// Build a vertex and index buffer for each mesh.
@@ -539,20 +540,21 @@ class RenderManager
 			}
 
 			// Creates association between shader variables and program variables.
-			mfxViewProj     = mFX->GetVariableByName("gViewProj")->AsMatrix();
-			mfxWorld             = mFX->GetVariableByName("gWorld")->AsMatrix();
-			mfxWorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
-			mfxEyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
-			mfxDirLights          = mFX->GetVariableByName("gDirLights");
-			mfxPointLights        = mFX->GetVariableByName("testLights");
-			mfxSpotLight         = mFX->GetVariableByName("gSpotLight");
-			mfxMaterial          = mFX->GetVariableByName("gMaterial");
-			mfxDiffuseMapVar	 = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-			mfxSpecMapVar		 = mFX->GetVariableByName("gSpecMap")->AsShaderResource();
-			mfxNumLights		 = mFX->GetVariableByName("numLights");
-			TexTransform		 = mFX->GetVariableByName("gTexTransform")->AsMatrix();
-			texelWidth			= mFX->GetVariableByName("gTexelWidth")->AsScalar();
-			texelHeight			= mFX->GetVariableByName("gTexelHeight")->AsScalar();
+			mfxViewProj				= mFX->GetVariableByName("gViewProj")->AsMatrix();
+			mfxWorld				= mFX->GetVariableByName("gWorld")->AsMatrix();
+			mfxWorldInvTranspose	= mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+			mfxEyePosW				= mFX->GetVariableByName("gEyePosW")->AsVector();
+			mfxDirLights			= mFX->GetVariableByName("gDirLights");
+			mfxPointLights			= mFX->GetVariableByName("testLights");
+			mfxSpotLight			= mFX->GetVariableByName("gSpotLight");
+			mfxMaterial				= mFX->GetVariableByName("gMaterial");
+			mfxDiffuseMapVar		= mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+			mfxSpecMapVar			= mFX->GetVariableByName("gSpecMap")->AsShaderResource();
+			mfxNumLights			= mFX->GetVariableByName("numLights");
+			mfxBlurColor			= mFX->GetVariableByName("gBlurColor")->AsVector();
+			TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
+			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
+			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 		}
 
 		void BuildVertexLayout()
@@ -769,6 +771,11 @@ class RenderManager
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
 		}
 
+		void SetBlurColor(XMFLOAT4 aFloat)
+		{
+			mfxBlurColor->SetRawValue(&aFloat, 0, sizeof(aFloat));
+		}
+
 		ID3D11Device* GetDevice() { return md3dDevice; }
 
 	private:
@@ -783,6 +790,8 @@ class RenderManager
 		//Texture stuff
 		ID3DX11EffectMatrixVariable* TexTransform;
 		ID3DX11EffectVectorVariable* mfxEyePosW;
+		ID3DX11EffectVectorVariable* mfxBlurColor;
+
 		ID3DX11EffectVariable* mfxDirLights;
 		ID3DX11EffectVariable* mfxPointLights;
 		ID3DX11EffectVariable* mfxSpotLight;
@@ -851,6 +860,7 @@ class RenderManager
 			mfxSpotLight = nullptr;
 			mfxMaterial = nullptr;
 			mfxNumLights = nullptr;
+			mfxBlurColor = nullptr;
 			texelWidth = nullptr;
 			texelHeight = nullptr;
 			mInputLayout = nullptr;
@@ -859,7 +869,7 @@ class RenderManager
 			ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
 			m4xMsaaQuality = 0;
 			mEnable4xMsaa = 0;
-			blurCount = 0;
+			blurCount = 1; // Set default to 1 blur when blurring.
 
 			// Set world-view-projection matrix pieces to the identity matrix.
 			XMMATRIX I = XMMatrixIdentity();

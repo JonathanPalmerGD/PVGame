@@ -300,10 +300,23 @@ void PVGame::UpdateScene(float dt)
 					if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 					{
 						currentCrest->ChangeView(true);
+
+						// For now, only Medusa causes blur effect.
+						if (currentCrest->GetCrestType() == MEDUSA)
+						{
+							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.45f, 0.0f, 1.0f));
+							renderMan->AddPostProcessingEffect(BlurEffect);
+						}
 					}
 					else
 					{
 						currentCrest->ChangeView(false);
+
+						// If Medusa is out of sight, remove blur. Overrides manual blur add - comment out to require manual toggle on/off.
+						if (currentCrest->GetCrestType() == MEDUSA)
+						{
+							renderMan->RemovePostProcessingEffect(BlurEffect);
+						}
 					}
 					currentCrest->Update(player);
 

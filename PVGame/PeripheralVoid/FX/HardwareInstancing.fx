@@ -14,6 +14,7 @@ cbuffer cbPerFrame
 	PointLight testLights[MAX_LIGHTS];
 	PointLight gPointLight;
 	float3 gEyePosW;
+	float4 gBlurColor;
 
 	float gTexelWidth;
 	float gTexelHeight;
@@ -21,15 +22,15 @@ cbuffer cbPerFrame
 
 cbuffer cbSettings
 {
-	float gWeights[11] = 
+	float gWeights[21] = 
 	{
-		0.05f, 0.05f, 0.1f, 0.1f, 0.1f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f
+		 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.75f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f
 	};
 };
 
 cbuffer cbFixed
 {
-	static const int gBlurRadius = 5;
+	static const int gBlurRadius = 10;
 };
 
 cbuffer cbPerObject
@@ -250,12 +251,12 @@ float4 BlurPS(BlurVertexOut pin, uniform bool gHorizontalBlur) : SV_TARGET
 	}
 
 	// The center value always contributes to the sum.
-	float4 color = gWeights[5] * gDiffuseMap.SampleLevel(samInputImage, pin.Tex, 0.0f);
-	float totalWeight = gWeights[5];
+	float4 color = gWeights[10] * gDiffuseMap.SampleLevel(samInputImage, pin.Tex, 0.0f);
+	float totalWeight = gWeights[10];
 
 	float2 texAboutOrigin = float2(pin.Tex.x - 0.5f, pin.Tex.y - 0.5f);
 
-	if ( texAboutOrigin.x * texAboutOrigin.x + texAboutOrigin.y * texAboutOrigin.y > 0.1f )
+	if ( texAboutOrigin.x * texAboutOrigin.x + texAboutOrigin.y * texAboutOrigin.y > 0.05f )
 	{
 		for (float i = -gBlurRadius; i <= gBlurRadius; ++i)
 		{
@@ -272,8 +273,11 @@ float4 BlurPS(BlurVertexOut pin, uniform bool gHorizontalBlur) : SV_TARGET
 
 			totalWeight += weight;
 		}
+
+		color += gBlurColor;
 	}
 
+	
 	// Compensate for discarded samples by making total weights sum to 1.
 	return color / totalWeight;
 }
