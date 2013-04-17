@@ -32,8 +32,8 @@ void MovingObject::StepPosition()
 		(1.0f - rateOfChange) * movingObjPos.getY() + (positions[targetPosition].y * rateOfChange),
 		(1.0f - rateOfChange) * movingObjPos.getZ() + (positions[targetPosition].z * rateOfChange));
 	//btVector3 newPosition = btVector3(positions[targetPosition].x, positions[targetPosition].y, positions[targetPosition].z);
-	setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
-	//translate(positions[targetPosition].x , positions[targetPosition].y, positions[targetPosition].z);
+	//setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
+	translate(newPosition.getX() - movingObjPos.getX(), newPosition.getY() - movingObjPos.getY(), newPosition.getZ() - movingObjPos.getZ());
 	//getRigidBody()->translate(positions[targetPosition]));
 }
 
@@ -78,7 +78,8 @@ void MovingObject::SetTargetPosition(int newIndex)
 	if(newIndex < (int)positions.size())
 	{
 		if(newIndex != targetPosition)
-		{	
+		{
+			//Call the 'Activate touched objects' thing for bullet
 			rateOfChange = 0.0f;
 			targetPosition = newIndex; 
 		}
