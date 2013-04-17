@@ -203,12 +203,15 @@ class RenderManager
 					InstancedData* dataView = reinterpret_cast<InstancedData*>(mappedData.pData);
 					UINT mVisibleObjectCount = 0;
 
+					vector<InstancedData> instanceVector = mInstancedDataMap[bufferItr->first];
+					const UINT instanceSize = instanceVector.size();
+
 					// This actually sets the instance data to draw by filling up dataView.
-					for(UINT i = 0; i < mInstancedDataMap[bufferItr->first].size(); ++i)
+					for(UINT i = 0; i < instanceSize; ++i)
 					{
 						// If check goes here - only add in if we can see it / at least is inside frustum.
-						if(mInstancedDataMap[bufferItr->first][i].isRendered)
-							dataView[mVisibleObjectCount++] = mInstancedDataMap[bufferItr->first][i];
+						if(instanceVector[i].isRendered)
+							dataView[mVisibleObjectCount++] = instanceVector[i];
 					}
 
 					md3dImmediateContext->Unmap(bufferItr->second.instanceBuffer, 0);
@@ -247,14 +250,28 @@ class RenderManager
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-			// Update each instance's world matrix with the corresponding GameObect's world matrix.
+			// Performance increasers - Try to limit calls to size, map accessors, etc.
 			const unsigned int totalGameobjs = gameObjects.size();
+			vector<InstancedData>* instanceVector;
+			string currentKey = "";
+
+			// Update each instance's world matrix with the corresponding GameObect's world matrix.
 			for (unsigned int i = 0; i < totalGameobjs; ++i)
 			{
 				GameObject* aGameObject = gameObjects[i];
 				string bufferKey = aGameObject->GetMeshKey();
-				mInstancedDataMap[bufferKey][instanceCounts[bufferKey]].isRendered = aGameObject->isSeen();
-				mInstancedDataMap[bufferKey][instanceCounts[bufferKey]++].World = aGameObject->GetWorldMatrix();
+
+				// Switch the instance we're updating.
+				if (currentKey != bufferKey)
+				{
+					instanceVector = &mInstancedDataMap[bufferKey];
+					currentKey = bufferKey;
+				}
+
+				unsigned int instanceCount = instanceCounts[bufferKey]++; 
+
+				(*instanceVector)[instanceCount].isRendered = aGameObject->isSeen();
+				(*instanceVector)[instanceCount].World = aGameObject->GetWorldMatrix();
 			}
 
 			// Sets input layout which describes the vertices we're about to send.

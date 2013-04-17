@@ -207,6 +207,8 @@ bool PVGame::LoadXML()
 	proceduralGameObjects.push_back(crestGObj2);
 	#pragma endregion
 
+	SortGameObjects();
+
 	return true;
 }
 
@@ -388,6 +390,7 @@ void PVGame::UpdateScene(float dt)
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
 		}
 		if(input->wasKeyPressed('4'))
 		{
@@ -400,6 +403,7 @@ void PVGame::UpdateScene(float dt)
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
 		}
 		/*
 		if(input->wasKeyPressed('5'))
@@ -424,6 +428,7 @@ void PVGame::UpdateScene(float dt)
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
 		}
 		#pragma endregion
 
@@ -463,6 +468,7 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
 			is1Up = false;
 		}
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
@@ -483,6 +489,7 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
 			is2Up = false;
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
