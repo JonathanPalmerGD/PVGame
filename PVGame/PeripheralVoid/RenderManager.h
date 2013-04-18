@@ -9,6 +9,7 @@
 #include <memory>
 #include "Common\Camera.h"
 #include "GameObject.h"
+#include "FileLoader.h"
 
 class RenderManager
 {
@@ -478,6 +479,15 @@ class RenderManager
 				}
 				itr++;
 			}
+		}
+
+		void LoadFile(wstring fileName)
+		{
+			FileLoader loader = FileLoader();
+			ObjModel objModel;
+			vector<GameMaterial> gameMats;
+			TextureManager textureMan;
+			loader.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, true, false);
 		}
 
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.

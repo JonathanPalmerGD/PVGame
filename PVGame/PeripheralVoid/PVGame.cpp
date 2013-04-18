@@ -207,6 +207,8 @@ bool PVGame::LoadXML()
 	proceduralGameObjects.push_back(crestGObj2);
 	#pragma endregion
 
+	//renderMan->LoadFile(L"File Name");
+
 	SortGameObjects();
 
 	return true;

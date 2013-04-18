@@ -35,7 +35,7 @@ struct Vertex
 	XMFLOAT3 Pos;
 	XMFLOAT3 Normal;
 	XMFLOAT2 TexC;
-	//XMFLOAT3 Tangent;
+	XMFLOAT3 Tangent;
 	//XMFLOAT3 biTangent;  //BUMP MAPPING!
 };
 
@@ -204,21 +204,7 @@ struct SurfaceMaterial
 
 	
     // Texture ID's to look up texture in SRV array
-	/*int DiffuseTextureID;
-	int AmbientTextureID;
-	int SpecularTextureID;
-	int AlphaTextureID;
-    int NormMapTextureID;
-
-	std::wstring MatName;   // So we can match the subset with it's material
-
-    // Booleans so we don't implement techniques we don't need
-    bool HasDiffTexture;
-    bool HasAmbientTexture;
-    bool HasSpecularTexture;
-    bool HasAlphaTexture;
-    bool HasNormMap;
-    bool IsTransparent;
+	/*
 	*/
 };
 
@@ -227,6 +213,25 @@ struct GameMaterial
 	string Name;
 	string SurfaceKey;
 	string DiffuseKey;
+	XMFLOAT4 Ambient;
+	XMFLOAT4 Diffuse;      
+	XMFLOAT4 Specular;
+	XMFLOAT4 Reflect;
+	int DiffuseTextureID;
+	int AmbientTextureID;
+	int SpecularTextureID;
+	int AlphaTextureID;
+	int NormMapTextureID;
+
+	std::wstring MatName;   // So we can match the subset with it's material
+
+	// Booleans so we don't implement techniques we don't need
+	bool HasDiffTexture;
+	bool HasAmbientTexture;
+	bool HasSpecularTexture;
+	bool HasAlphaTexture;
+	bool HasNormMap;
+	bool IsTransparent;
 };
 
 static std::map<string, GameMaterial> GAME_MATERIALS;

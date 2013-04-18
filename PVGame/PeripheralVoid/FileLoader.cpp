@@ -9,15 +9,16 @@ FileLoader::~FileLoader(void)
 {
 }
 
-bool FileLoader::loadFile( ID3D11Device* device,
+bool FileLoader::LoadFile( ID3D11Device* device,
     std::wstring Filename, 
     ObjModel& Model,
-    std::vector<SurfaceMaterial>& material, 
+    std::vector<GameMaterial>& material, 
     TextureManager& TexMgr,
     bool IsRHCoordSys,
     bool ComputeNormals,
     bool flipFaces)
 {
+	#pragma region Base Variable creation and assignments
 	HRESULT hr = 0;
 	
     std::wifstream fileIn (Filename.c_str());   // Open file
@@ -52,8 +53,10 @@ bool FileLoader::loadFile( ID3D11Device* device,
     int totalVerts = 0;
     int meshTriangles = 0;
     bool ang = false;
-	/*
-    //Check to see if the file was opened
+	#pragma endregion
+    
+	#pragma region OBJ File Contents
+	//Check to see if the file was opened
     if (fileIn)
     {
         while(fileIn)
@@ -162,7 +165,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                             int whichPart = 0;      // (vPos, vTexCoord, or vNorm)
 
                             // Parse this string
-                            for(int j = 0; j < VertDef.length(); ++j)
+                            for(unsigned int j = 0; j < VertDef.length(); ++j)
                             {
                                 if(VertDef[j] != '/') // If there is no divider "/", add a char to our vertPart
                                     vertPart += VertDef[j];
@@ -293,7 +296,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                             int whichPart = 0;
 
                             // Parse this string (same as above)
-                            for(int j = 0; j < VertDef.length(); ++j)
+                            for(unsigned int j = 0; j < VertDef.length(); ++j)
                             {
                                 if(VertDef[j] != '/')
                                     vertPart += VertDef[j];
@@ -484,10 +487,13 @@ bool FileLoader::loadFile( ID3D11Device* device,
         vertNorm.push_back(XMFLOAT3(0.0f, 0.0f, 0.0f));
     if(!hasTexCoord)
         vertTexCoord.push_back(XMFLOAT2(0.0f, 0.0f));
-
-    // Close the obj file, and open the mtl file
+	
+	// Close the obj file
     fileIn.close();
-    fileIn.open(meshMatLib.c_str());
+	#pragma endregion
+	#pragma region MTL File Contents
+	// Open the mtl file
+	fileIn.open(meshMatLib.c_str());
 
     std::wstring lastStringRead;
     int matCount = material.size(); // Total materials
@@ -632,7 +638,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     //check if this texture has already been loaded
                                     bool alreadyLoaded = false;
-                                    for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                    for(unsigned int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
                                     {
                                         if(fileNamePath == TexMgr.TextureNameArray[i])
                                         {
@@ -686,7 +692,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     //check if this texture has already been loaded
                                     bool alreadyLoaded = false;
-                                    for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                    for(unsigned int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
                                     {
                                         if(fileNamePath == TexMgr.TextureNameArray[i])
                                         {
@@ -740,7 +746,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     //check if this texture has already been loaded
                                     bool alreadyLoaded = false;
-                                    for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                    for(unsigned int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
                                     {
                                         if(fileNamePath == TexMgr.TextureNameArray[i])
                                         {
@@ -786,7 +792,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     if(checkChar == '.')
                                     {
-                                        for(int i = 0; i < 3; ++i)
+                                        for(unsigned int i = 0; i < 3; ++i)
                                             fileNamePath += fileIn.get();
 
                                         texFilePathEnd = true;
@@ -795,7 +801,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                 //check if this texture has already been loaded
                                 bool alreadyLoaded = false;
-                                for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                for(unsigned int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
                                 {
                                     if(fileNamePath == TexMgr.TextureNameArray[i])
                                     {
@@ -858,7 +864,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                             //check if this texture has already been loaded
                                             bool alreadyLoaded = false;
-                                            for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                            for(unsigned int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
                                             {
                                                 if(fileNamePath == TexMgr.TextureNameArray[i])
                                                 {
@@ -912,7 +918,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                     if(checkChar == ' ')
                                     {
                                         // New material, set its defaults
-                                        SurfaceMaterial tempMat;
+                                        GameMaterial tempMat;
                                         material.push_back(tempMat);
                                         fileIn >> material[matCount].MatName;
                                         material[matCount].IsTransparent = false;
@@ -957,13 +963,15 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
         return false;
     }
+	#pragma endregion
 
+	#pragma region Subsets and Vertices
     // Set the subsets material to the index value
     // of the its material in our material array
     for(int i = 0; i < Model.Subsets; ++i)
     {
         bool hasMat = false;
-        for(int j = 0; j < material.size(); ++j)
+        for(unsigned int j = 0; j < material.size(); ++j)
         {
             if(meshMaterials[i] == material[j].MatName)
             {
@@ -989,6 +997,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
         vertices.push_back(tempVert);
         Model.Vertices.push_back(tempVert.Pos);
     }
+	#pragma endregion
 
 	#pragma region Compute Normals
     //If computeNormals was set to true then we will create our own
@@ -1083,8 +1092,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
             }
 
             //Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
-            normalSum = normalSum / facesUsing;
-            tangentSum = tangentSum / facesUsing;
+            normalSum = normalSum / (float)facesUsing;
+            tangentSum = tangentSum / (float)facesUsing;
 
             //Normalize the normalSum vector and tangent
             normalSum = XMVector3Normalize(normalSum);
@@ -1113,6 +1122,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
     XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     Model.BoundingSphere = 0;
     
+	#pragma region Min and Max Vertexes (used for AABB?)
     for(UINT i = 0; i < Model.Vertices.size(); i++)
     {       
         // The minVertex and maxVertex will most likely not be actual vertices in the model, but vertices
@@ -1128,7 +1138,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
         maxVertex.x = max(maxVertex.x, Model.Vertices[i].x);    // Find largest x value in model
         maxVertex.y = max(maxVertex.y, Model.Vertices[i].y);    // Find largest y value in model
         maxVertex.z = max(maxVertex.z, Model.Vertices[i].z);    // Find largest z value in model
-    }   
+    }
+	#pragma endregion
     
     // Our AABB [0] is the min vertex and [1] is the max
     //Model.AABB.push_back(minVertex);
@@ -1139,7 +1150,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
     Model.Center.y = maxVertex.y - minVertex.y / 2.0f;
     Model.Center.z = maxVertex.z - minVertex.z / 2.0f;
 
-    // Now that we have the center, get the bounding sphere 
+	#pragma region Bounding Sphere
+	// Now that we have the center, get the bounding sphere 
     for(UINT i = 0; i < Model.Vertices.size(); i++)
     {       
         float x = (Model.Center.x - Model.Vertices[i].x) * (Model.Center.x - Model.Vertices[i].x);
@@ -1149,6 +1161,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
         // Get models bounding sphere
         Model.BoundingSphere = max(Model.BoundingSphere, (x+y+z));
     }
+	#pragma endregion
 
     // We didn't use the square root when finding the largest distance since it slows things down.
     // We can square root the answer from above to get the actual bounding sphere now
@@ -1157,7 +1170,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
     // flip faces
     if(flipFaces)
     {
-        for(int i = 0; i < Model.Indices.size(); i+=3)
+        for(unsigned int i = 0; i < Model.Indices.size(); i+=3)
         {
             DWORD ti0 = Model.Indices[i];
             Model.Indices[i] = Model.Indices[i+2];
@@ -1165,6 +1178,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
         }
     }
 
+	#pragma region Index and Vertex Buffer Setting and assignment
 	//Create index buffer
     D3D11_BUFFER_DESC indexBufferDesc;
     ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
@@ -1195,6 +1209,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
     ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
     vertexBufferData.pSysMem = &vertices[0];
     hr = device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &Model.VertBuff);
-	*/
-    return true;
+	#pragma endregion
+	
+	//FLEE THE DEATH METHOD
+	return true;
 }
