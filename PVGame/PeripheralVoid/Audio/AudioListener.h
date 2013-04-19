@@ -35,5 +35,6 @@ public:
 
 	void mute();
 	void unmute();
+	bool isMuted();
 };
 

@@ -206,9 +206,12 @@ void Player::HandleInput(Input* input)
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
 
 	if(input->wasKeyPressed('M'))
-		listener->mute();
-	if(input->wasKeyPressed('K'))
-		listener->unmute();
+	{
+		if(listener->isMuted())
+			listener->unmute();
+		else
+			listener->mute();
+	}
 	#pragma endregion
 	//XMFLOAT4 unit(0.0f, 0.0f, 0.0f, 1.0f);
 	
