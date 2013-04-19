@@ -15,7 +15,6 @@ function init()
 	var gridToggle = document.getElementById("gridToggle");
 	gridToggle.addEventListener("click", toggleGrid);
 	
-	
 	var container = document.getElementById("container");
 	var grid = document.getElementById("grid");
 
@@ -105,6 +104,10 @@ function onTileClick(evt)
 			this.setAttribute("style", "background-color: #FFFF00; color: #000000;");
 			this.appendChild(document.createTextNode("level" + document.getElementById("exitNum").value + ".xml"));
 			break;
+		case "crest":
+			this.setAttribute("style", "background-color: #862125; color: #FFFFFF;");
+			this.appendChild(document.createTextNode("Crest: " + document.getElementById("crestName").value));
+			break;
 		default:
 			this.setAttribute("style", "background-color: #FFFFFF; color: #000000;");
 			break;
@@ -117,6 +120,7 @@ function createXML()
 	var walls = new Array();
 	var spawns = new Array();
 	var exits = new Array();
+	var crests = new Array();
 	
 	for (var i = 0; i < ROWS; i++)
 	{
@@ -132,6 +136,9 @@ function createXML()
 				
 				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue[0] == "l")
 					exits.push({row: ((ROWS - i) - 1), col: j, file: grid.childNodes[i].childNodes[j].firstChild.nodeValue});
+					
+				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue[0] == "C")
+					crests.push({row: ((ROWS - i) - 1), col: j, effect: grid.childNodes[i].childNodes[j].firstChild.nodeValue.substr(7)});
 			}
 		}
 	}
@@ -139,8 +146,9 @@ function createXML()
 	walls = combineElements(walls);
 	spawns = combineElements(spawns);
 	exits = combineElements(exits);
+	crests = combineElements(crests);
 	
-	writeXML(walls, spawns, exits);
+	writeXML(walls, spawns, exits, crests);
 }
 
 function combineElements (elementArray)
@@ -157,17 +165,21 @@ function combineElements (elementArray)
 	
 	for (var i = 0; i < elementArray.length; i++)
 	{		
-		var tempWall = {row: 0.0, col: -1.0, xLength: 1.0, zLength: 1.0, centerX: 0.0, centerY: 0.0, centerZ: 0.0, dir: undefined, file: undefined};
+		var tempWall = {row: 0.0, col: -1.0, xLength: 1.0, zLength: 1.0, centerX: 0.0, centerY: 0.0, centerZ: 0.0, dir: undefined, file: undefined, effect: undefined};
 
 		tempWall.row = elementArray[i].row;
 		tempWall.col = elementArray[i].col;
 		tempWall.dir = elementArray[i].dir;
 		tempWall.file = elementArray[i].file;
+		tempWall.effect = elementArray[i].effect;
 		tempWall.centerX = tempWall.col + tempWall.xLength / 2;
 		tempWall.centerZ = tempWall.row + tempWall.zLength / 2;
 	
 		wallRowCol[elementArray[i].row].push(tempWall);
 	}
+	
+	if (elementArray[0].effect != undefined)
+		return wallRowCol;
 	
 	// Combine rows
 	for (var i = 0; i < wallRowCol.length; i++)
@@ -241,7 +253,7 @@ function combineElements (elementArray)
 	return wallRowCol;
 }
 
-function writeXML(walls, spawns, exits)
+function writeXML(walls, spawns, exits, crests)
 {
 	var output = document.getElementById("output");
 	
@@ -281,8 +293,20 @@ function writeXML(walls, spawns, exits)
 		}
 	}
 	
-	xmlString += "</exits></level>";
 	
+	xmlString += "</exits><crests>";
+	
+	for (var i = 0; i < crests.length; i++)
+	{	
+		for (var j = 0; j < crests[i].length; j++)
+		{
+			xmlString += "<crest row=\"" + crests[i][j].row + "\" col=\"" + crests[i][j].col + "\" xLength=\"" + crests[i][j].xLength +
+				     "\" zLength=\"" + crests[i][j].zLength + "\" centerX=\"" + crests[i][j].centerX + "\" centerY=\"" + crests[i][j].centerY +
+				     "\" centerZ=\"" + crests[i][j].centerZ + "\" effect=\"" + crests[i][j].effect + "\"/>";
+		}
+	}
+	
+	xmlString += "</crests><level>";	
 	
 	while (output.childNodes.length > 0)
 	{	
@@ -340,6 +364,25 @@ function writeXML(walls, spawns, exits)
 	}
 	
 	output.appendChild(document.createTextNode("</exits>"));
+	output.appendChild(document.createElement("br"));
+	
+	
+	
+	output.appendChild(document.createTextNode("<crests>"));
+	output.appendChild(document.createElement("br"));
+	
+	for (var i = 0; i < crests.length; i++)
+	{
+		for (var j = 0; j < crests[i].length; j++)
+		{
+			output.appendChild(document.createTextNode("<crest row=\"" + crests[i][j].row + "\" col=\"" + crests[i][j].col + "\" xLength=\"" + crests[i][j].xLength +
+								   "\" zLength=\"" + crests[i][j].zLength + "\" centerX=\"" + crests[i][j].centerX + "\" centerY=\"" + crests[i][j].centerY +
+								   "\" centerZ=\"" + crests[i][j].centerZ + "\" effect=\"" + crests[i][j].effect + "\"/>"));
+			output.appendChild(document.createElement("br"));
+		}
+	}
+	
+	output.appendChild(document.createTextNode("</crests>"));
 	output.appendChild(document.createElement("br"));
 	
 	output.appendChild(document.createTextNode("</level>"));

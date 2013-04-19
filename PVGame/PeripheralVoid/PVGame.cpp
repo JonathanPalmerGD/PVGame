@@ -23,7 +23,7 @@ PVGame::~PVGame(void)
 	gameObjects.clear();
 	proceduralGameObjects.clear();
 	
-	delete currentRoom;	
+	ClearRooms();	
 
 	alcDestroyContext(audioContext);
     alcCloseDevice(audioDevice);
@@ -614,13 +614,26 @@ void PVGame::BuildRooms(Room* startRoom)
 			gameObjects.push_back(startRoom->getGameObjs()[i]);
 		}
 
-		startRoom->loadNeighbors();
+		startRoom->loadNeighbors(loadedRooms);
 		loadedRooms.push_back(startRoom);
 
 		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)
 		{
 			BuildRooms(startRoom->getNeighbors()[i]);
 		}
+	}
+}
+
+void PVGame::ClearRooms()
+{
+	for (unsigned int i = 0; i < loadedRooms.size(); i++)
+	{
+		for (unsigned int j = 0; j < loadedRooms[i]->getNeighbors().size(); j++)
+		{
+			loadedRooms[i]->getNeighbors()[j] = NULL;
+		}
+
+		delete loadedRooms[i];
 	}
 }
 

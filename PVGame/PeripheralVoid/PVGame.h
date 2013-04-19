@@ -35,6 +35,7 @@ public:
 		void BuildFX();
 		void BuildVertexLayout();
 		void BuildRooms(Room* startRoom);
+		void ClearRooms();
 		void SortGameObjects();
 
 		Player*	player;

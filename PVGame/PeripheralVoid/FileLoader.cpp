@@ -1003,10 +1003,6 @@ bool FileLoader::LoadFile( ID3D11Device* device,
         objModel.Vertices.push_back(tempVert.Pos);
     }
 
-	
-
-	
-
 	#pragma endregion
 
 	#pragma region Compute Normals

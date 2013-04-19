@@ -1,4 +1,5 @@
 #include "Room.h"
+#include "Crest.h"
 
 Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 {
@@ -37,9 +38,6 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 			mapOffsetX = (float)-atof(col);
 			mapOffsetZ = (float)-atof(row);
 
-		//	width -= mapOffsetX;
-		//	depth -= mapOffsetZ;
-
 			isFirst = false;
 		}
 
@@ -49,18 +47,11 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 				mapOffsetX = (float)-atof(col);
 		}
 
-
 		// increase room dimensions if necessary
 		if (atof(col) + atof(xLength) + 1 + mapOffsetX > width)
 			width = (float)atof(col) + (float)atof(xLength) + (float)mapOffsetX;
 		if (atof(row) + atof(zLength) + 1 + mapOffsetZ > depth)
 			depth = (float)atof(row) + (float)atof(zLength) + (float)mapOffsetZ;
-
-
-		/*if ((atof(col) + atof(xLength)) + mapOffsetX > width)
-			width += atof(xLength);
-		if ((atof(row) + atof(zLength)) + mapOffsetZ > depth)
-			depth += atof(zLength);*/
 	}
 
 	XMLElement* exits = doc.FirstChildElement( "level" )->FirstChildElement( "exits" );
@@ -98,29 +89,46 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 		// Add to exit vector
 		exitVector.push_back(tempWall);
 	}
-
-	int a = 0;
 }
+
 
 Room::~Room(void)
 {
 	for (unsigned int i = 0; i < exitVector.size(); ++i)
-		delete exitVector[i];
+	{
+		Wall* temp = exitVector[exitVector.size() - 1];
+		exitVector.pop_back();
+		delete temp;
+		--i;
+	}
+	//exitVector.clear();
 
 	for (unsigned int i = 0; i < spawnVector.size(); ++i)
-		delete spawnVector[i];
+	{
+		Wall* temp = spawnVector[spawnVector.size() - 1];
+		spawnVector.pop_back();
+		delete temp;
+		--i;
+	}
+	//spawnVector.clear();
 
-	for (unsigned int i = 0; i < neighbors.size(); ++i)
-		delete neighbors[i];
-
-	exitVector.clear();
-	spawnVector.clear();
-	neighbors.clear();
+	for (unsigned int i = 0; i < crestVector.size(); ++i)
+	{
+		Wall* temp = crestVector[crestVector.size() - 1];
+		crestVector.pop_back();
+		delete temp;
+		--i;
+	}
+	//crestVector.clear();
 
 	for (unsigned int i = 0; i < gameObjs.size(); ++i)
-		delete gameObjs[i];
-
-	gameObjs.clear();
+	{
+		GameObject* temp = gameObjs[gameObjs.size() - 1];
+		gameObjs.pop_back();
+		delete temp;
+		--i;
+	}
+	//gameObjs.clear();
 }
 
 void Room::loadRoom(void)
@@ -136,6 +144,7 @@ void Room::loadRoom(float xPos, float zPos)
 
 	XMLElement* walls = doc.FirstChildElement( "level" )->FirstChildElement( "walls" );
 	XMLElement* spawns = doc.FirstChildElement( "level" )->FirstChildElement( "spawns" );
+	XMLElement* crests = doc.FirstChildElement( "level" )->FirstChildElement( "crests" );
 
 	vector<vector<Wall*>> wallRowCol;
 	vector<Wall*> wallVector;
@@ -192,19 +201,50 @@ void Room::loadRoom(float xPos, float zPos)
 	
 		spawnVector.push_back(tempWall);
 	}
+
+	for (XMLElement* crest = crests->FirstChildElement("crest"); crest != NULL; crest = crest->NextSiblingElement("crest"))
+	{
+		Wall* tempWall = new Wall();
+
+		const char* row = crest->Attribute("row");
+		const char* col = crest->Attribute("col");
+		const char* effect = crest->Attribute("effect");
+		const char* xLength = crest->Attribute("xLength");
+		const char* zLength = crest->Attribute("zLength");
+		const char* centerX = crest->Attribute("centerX");
+		const char* centerY = crest->Attribute("centerY");
+		const char* centerZ = crest->Attribute("centerZ");
+
+		tempWall->row = (float)atof(row) + mapOffsetZ;
+		tempWall->col = (float)atof(col) + mapOffsetX;
+		tempWall->xLength = (float)atof(xLength);
+		tempWall->zLength = (float)atof(zLength);
+		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
+		tempWall->centerY = (float)atof(centerY);
+		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
+		tempWall->direction = "";
+		tempWall->file = "";
+		tempWall->effect = static_cast<CREST_TYPE>(atoi(effect));
+	
+		crestVector.push_back(tempWall);
+	}
 	
 	// Create walls and add to GameObject vector
 	for (unsigned int i = 0; i < wallRowCol.size(); i++)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			XMMATRIX matrix = XMMatrixIdentity();
-
-			//Change wallObj's height to match it's higher wall height
 			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, 1.5f, wallRowCol[i][j]->centerZ + zPos), physicsMan);
-			wallObj->scale(wallRowCol[i][j]->xLength,12.0,wallRowCol[i][j]->zLength);
+			wallObj->scale(wallRowCol[i][j]->xLength,3.0,wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
 		}
+	}
+
+	for (unsigned int i = 0; i < crestVector.size(); i++)
+	{
+		GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 1.0f), physicsMan, crestVector[i]->effect, 1.0f);
+		crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
+		gameObjs.push_back(crestObj);
 	}
 
 	GameObject* wallObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan);
@@ -218,54 +258,73 @@ void Room::loadRoom(float xPos, float zPos)
 	#pragma endregion
 }
 
-void Room::loadNeighbors(void)
+void Room::loadNeighbors(vector<Room*> loadedRooms)
 {
 	// Clear neighbors
 	neighbors.clear();
 
+	Room* loadedRoom;
+
 	// Check exits
 	for (unsigned int i = 0; i < exitVector.size(); i++)
 	{
-		float offsetX = x, offsetZ = z;
+		bool isLoaded = false;
 
-		Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
-		Wall* roomEntrance;
-
-		for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+		for (unsigned int j = 0; j < loadedRooms.size(); j++)
 		{
-			if (tmpRoom->getExits()[j]->file == mapFile)
-				roomEntrance = tmpRoom->getExits()[j];
+			if (strcmp(loadedRooms[j]->getFile(), exitVector[i]->file.c_str()) == 0)
+			{
+				isLoaded = true;
+				loadedRoom = loadedRooms[j];
+			}
 		}
 
-		if (exitVector[i]->row == 0)
+		if (!isLoaded)
 		{
-			offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-			offsetZ -= tmpRoom->depth;
+			float offsetX = x, offsetZ = z;
+
+			Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
+			Wall* roomEntrance;
+
+			for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+			{
+				if (tmpRoom->getExits()[j]->file == mapFile)
+					roomEntrance = tmpRoom->getExits()[j];
+			}
+
+			if (exitVector[i]->row == 0)
+			{
+				offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+				offsetZ -= tmpRoom->depth;
+			}
+
+			if (exitVector[i]->row == depth - 1)
+			{
+				offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+				offsetZ += depth;
+			}
+
+			if (exitVector[i]->col == 0)
+			{
+				offsetX -= tmpRoom->width;
+				offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+			}
+
+			if (exitVector[i]->col == width - 1)
+			{
+				offsetX += width;
+				offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+			}
+
+			tmpRoom->setX(offsetX);
+			tmpRoom->setZ(offsetZ);
+
+			tmpRoom->loadRoom(offsetX, offsetZ);
+
+			neighbors.push_back(tmpRoom);
 		}
 
-		if (exitVector[i]->row == depth - 1)
-		{
-			offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-			offsetZ += depth;
-		}
-
-		if (exitVector[i]->col == 0)
-		{
-			offsetX -= tmpRoom->width;
-			offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-		}
-
-		if (exitVector[i]->col == width - 1)
-		{
-			offsetX += width;
-			offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-		}
-
-		tmpRoom->setX(offsetX);
-		tmpRoom->setZ(offsetZ);
-
-		tmpRoom->loadRoom(offsetX, offsetZ);
-
-		neighbors.push_back(tmpRoom);
+		else
+			neighbors.push_back(loadedRoom);
 	}
 }

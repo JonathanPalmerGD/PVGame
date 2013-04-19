@@ -16,7 +16,7 @@ using std::string;
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define MOBILITY_MULTIPLIER 1.25f
 
-#define USINGVLD 0
+#define USINGVLD 1
 #if USINGVLD 
 #include <vld.h>
 #endif
@@ -190,6 +190,7 @@ struct Wall
 	float centerZ;
 	string direction;
 	string file;
+	CREST_TYPE effect;
 };
 
 //These structs were gathered from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader

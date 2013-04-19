@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <string>
-
 #include "Constants.h"
 #include "GameObject.h"
 #include "PhysicsManager.h"
@@ -17,7 +16,7 @@ class Room
 		~Room(void);
 		vector<GameObject*> getGameObjs(void) { return gameObjs; }
 		void loadRoom(void);
-		void loadNeighbors(void);
+		void loadNeighbors(vector<Room*> loadedRooms);
 		Wall* getSpawn(void){return spawnVector[0];};
 		float getX(void){return x;};
 		float getZ(void){return z;};
@@ -31,6 +30,7 @@ class Room
 		vector<GameObject*> gameObjs;
 		vector<Wall*> exitVector;
 		vector<Wall*> spawnVector;
+		vector<Wall*> crestVector;
 		vector<Room*> neighbors;
 		const char* mapFile;
 		float x;
