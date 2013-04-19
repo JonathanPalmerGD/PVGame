@@ -134,13 +134,31 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 
 	mNearWindowHeight = 2.0f * mNearZ * tanf( 0.5f*mFovY );
 	mFarWindowHeight  = 2.0f * mFarZ * tanf( 0.5f*mFovY );
+	
+	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
+	XMStoreFloat4x4(&mProj, P);
 
 #if USE_FRUSTUM_CULLING
 		float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect );
 		float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect );
 
-		//btScalar* points = new btScalar[24];
+		btVector3* points = new btVector3[8];
+		//NearPlane
+		points[0] = btVector3( mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
+		points[1] = btVector3(-mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
+		points[2] = btVector3( mNearWindowWidth/2, -mNearWindowHeight/2, mNearZ);
+		points[3] = btVector3(-mNearWindowWidth/2, -mNearWindowHeight/2, mNearZ);
+
+		points[4] = btVector3( mFarWindowWidth/2,  mFarWindowHeight/2, mFarZ);
+		points[5] = btVector3(-mFarWindowWidth/2,  mFarWindowHeight/2, mFarZ);
+		points[6] = btVector3( mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
+		points[7] = btVector3(-mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
+
+		body = physicsMan->makeCameraFrustumObject(points, 8);
 		
+		physicsMan->addGhostObjectToWorld(body);
+
+	#if DRAW_FRUSTUM
 		//Near Plane
 		btVector3 nTR(  mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
 		btVector3 nTL( -mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
@@ -228,79 +246,12 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 		MeshMaps::MESH_MAPS["Frustum"].normalizeVertices = false;
 
 		physicsMan->addTriangleMesh("Frustum", MeshMaps::MESH_MAPS["Frustum"]);
-
-		//points[0 ] = mNearWindowWidth/2;
-		//points[1 ] = mNearWindowHeight/2;
-		//points[2 ] = mNearZ;
-		//points[3 ] = -mNearWindowWidth/2;
-		//points[4 ] = mNearWindowHeight/2;
-		//points[5 ] = mNearZ;
-		//points[6 ] = mNearWindowWidth/2;
-		//points[7 ] = -mNearWindowHeight/2;
-		//points[8 ] = mNearZ;
-		//points[9 ] = -mNearWindowWidth/2;
-		//points[10] = -mNearWindowHeight/2;
-		//points[11] = mNearZ;
-
-		////Far Plane
-		//points[12] = mFarWindowWidth/2;
-		//points[13] = mFarWindowHeight/2;
-		//points[14] = mFarZ;
-		//points[15] = -mFarWindowWidth/2;
-		//points[16] = mFarWindowHeight/2;
-		//points[17] = mFarZ;
-		//points[18] = mFarWindowWidth/2;
-		//points[19] = -mFarWindowHeight/2;
-		//points[20] = mFarZ;
-		//points[21] = -mFarWindowWidth/2;
-		//points[22] = -mFarWindowHeight/2;
-		//points[23] = mFarZ;
-
-		//Near Plane
-		//points[0 ] = 1000;
-		//points[1 ] = 1000;
-		//points[2 ] = -1000;
-
-		//points[3 ] = -1000;
-		//points[4 ] = 1000;
-		//points[5 ] = -1000;
-
-		//points[6 ] = -1000;
-		//points[7 ] = -1000;
-		//points[8 ] = -1000;
-
-		//points[9 ] = 1000;
-		//points[10] = -1000;
-		//points[11] = -1000;
-
-		////Far Plane
-		//points[12] = 1000;
-		//points[13] = 1000;
-		//points[14] = 1000;
-
-		//points[15] = -1000;
-		//points[16] = 1000;
-		//points[17] = 1000;
-
-		//points[18] = -1000;
-		//points[19] = -1000;
-		//points[20] = 1000;
-
-		//points[21] = 1000;
-		//points[22] = -1000;
-		//points[23] = 1000;
-
-		body = physicsMan->makeCameraFrustumObject(tMesh,24);
-		physicsMan->addGhostObjectToWorld(body);
-
-#if DRAW_FRUSTUM
-			frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan);
-			frustumBody->addCollisionFlags(btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE);
-			frustumBody->CalculateWorldMatrix();
-#endif
-#endif
-	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
-	XMStoreFloat4x4(&mProj, P);
+		
+		frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan);
+		frustumBody->addCollisionFlags(btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE);
+		frustumBody->CalculateWorldMatrix();
+	#endif //DRAW_FRUSTUM
+#endif //USE_FRUSTUM_CULLING
 }
 
 void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)

@@ -39,7 +39,9 @@ public:
 	btRigidBody* createRigidBody(string handle, float xPos, float yPos, float zPos, float mass = 0.0);
 	btRigidBody* createRigidBody(string handle, float xPos, float yPos, float zPos, float xScale, float yScale, float zScale, float mass = 0.0);
 
-	btPairCachingGhostObject* makeCameraFrustumObject(btTriangleMesh* tMesh, int numPoints);
+	btPairCachingGhostObject* makeCameraFrustumObject(btTriangleMesh* tMesh);
+	btPairCachingGhostObject* makeCameraFrustumObject(btVector3* points, int numPoints);
+
 	void addGhostObjectToWorld(btPairCachingGhostObject* ghost);
 	void removeGhostObjectFromWorld(btPairCachingGhostObject* ghost);
 	void frustumCulling(btPairCachingGhostObject* ghost);

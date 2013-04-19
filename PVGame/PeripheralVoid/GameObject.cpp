@@ -141,7 +141,7 @@ void GameObject::SetRigidBody(btRigidBody* rBody)
 
 void GameObject::addCollisionFlags(int flags)
 {
-	rigidBody->setCollisionFlags(flags);
+	rigidBody->setCollisionFlags(rigidBody->getCollisionFlags()|flags);
 }
 
 void GameObject::Update()

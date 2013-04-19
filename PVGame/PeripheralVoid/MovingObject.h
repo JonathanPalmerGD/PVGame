@@ -31,4 +31,5 @@ protected:
 	vector<XMFLOAT3> positions;
 	int targetPosition;
 	RenderManager *renderMan;
+	void activateCollidingObjects();
 };

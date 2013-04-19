@@ -12,10 +12,9 @@ using std::vector;
 using std::map;
 using std::string;
 
-#define NUM_LEVELS 1
-#define USE_FRUSTUM_CULLING 0
-#define DRAW_FRUSTUM 0
-#define MOBILITY_MULTIPLIER 1.25
+#define USE_FRUSTUM_CULLING 1
+#define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
+#define MOBILITY_MULTIPLIER 1.25f
 
 #define USINGVLD 0
 #if USINGVLD 
@@ -202,11 +201,6 @@ struct SurfaceMaterial
 	XMFLOAT4 Diffuse;      
     XMFLOAT4 Specular;      // Specular power stored in 4th component
 	XMFLOAT4 Reflect;
-
-	
-    // Texture ID's to look up texture in SRV array
-	/*
-	*/
 };
 
 struct GameMaterial

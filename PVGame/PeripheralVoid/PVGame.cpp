@@ -178,6 +178,7 @@ bool PVGame::LoadXML()
 	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
 	{
+		movingGObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		XMFLOAT3 newPos = XMFLOAT3(17.7f, 1.0f, 17.7f);
 		movingObj->AddPosition(newPos);
 		newPos = XMFLOAT3(17.7f, 4.0f, 17.7f);
@@ -196,6 +197,7 @@ bool PVGame::LoadXML()
 	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj2))
 	{
+		movingGObj2->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		XMFLOAT3 newPos = XMFLOAT3(5.7f, 1.0f, 17.7f);
 		movingObj->AddPosition(newPos);
 		newPos = XMFLOAT3(8.7f, 1.0f, 17.7f);
@@ -498,7 +500,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 0;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 8.0f), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();

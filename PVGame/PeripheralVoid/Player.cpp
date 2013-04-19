@@ -201,9 +201,15 @@ void Player::HandleInput(Input* input)
 	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1, pos.getZ());
 	playerCamera->SetPosition(cPos);
 
+	#pragma region Audio
 	listener->setPosition(cPos.x, cPos.y, cPos.z);
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
 
+	if(input->wasKeyPressed('M'))
+		listener->mute();
+	if(input->wasKeyPressed('K'))
+		listener->unmute();
+	#pragma endregion
 	//XMFLOAT4 unit(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	/*XMFLOAT3 pos;

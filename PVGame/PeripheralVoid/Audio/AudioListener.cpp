@@ -8,6 +8,7 @@ AudioListener::AudioListener(void)
 {
 	position = new float[3];
 	orientation = new float[6];
+	alGetListenerf(AL_GAIN, &gain);
 }
 
 /* Destructor
@@ -184,4 +185,14 @@ void AudioListener::setOrientation(float* newOrientation)
 float* AudioListener::getOrientation()
 {
 	return orientation;
+}
+
+void AudioListener::mute()
+{
+	alListenerf(AL_GAIN, 0.0f);
+}
+
+void AudioListener::unmute()
+{
+	alListenerf(AL_GAIN, gain);
 }

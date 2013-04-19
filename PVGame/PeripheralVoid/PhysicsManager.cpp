@@ -197,11 +197,29 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 	return NULL;
 }
 
-btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btTriangleMesh* tMesh, int numPoints)
+btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btTriangleMesh* tMesh)
 {
 	btCollisionShape* ConvexShape = new btConvexTriangleMeshShape(tMesh);
 	//btBoxShape* bShape = new btBoxShape(btVector3(1,1,1));
 	//btConeShapeZ* coneShape = new btConeShapeZ(10, 100);
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(0,2,0));
+
+	btPairCachingGhostObject* frustum = new btPairCachingGhostObject();
+	frustum->setCollisionShape(ConvexShape);
+	frustum->setCollisionFlags(frustum->getCollisionFlags()|btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    frustum->setWorldTransform(t);
+
+    return frustum;
+}
+
+btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btVector3* points, int numPoints)
+{
+	btConvexHullShape* ConvexShape = new btConvexHullShape();
+	for(int i = 0; i < numPoints; i++)
+		ConvexShape->addPoint(points[i]);
+
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(0,2,0));

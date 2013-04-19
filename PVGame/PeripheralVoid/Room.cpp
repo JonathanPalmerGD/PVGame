@@ -200,6 +200,7 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 			XMMATRIX matrix = XMMatrixIdentity();
 
+			//Change wallObj's height to match it's higher wall height
 			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, 1.5f, wallRowCol[i][j]->centerZ + zPos), physicsMan);
 			wallObj->scale(wallRowCol[i][j]->xLength,12.0,wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
