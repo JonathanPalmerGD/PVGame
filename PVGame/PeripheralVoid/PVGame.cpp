@@ -52,6 +52,10 @@ bool PVGame::Init()
 
 	physicsMan = new PhysicsManager();
 	player = new Player(physicsMan, renderMan);
+	
+	
+	//Test load a cube.obj
+	renderMan->LoadFile(L"crest.obj");
 
 	renderMan->BuildBuffers();
 
@@ -162,15 +166,15 @@ bool PVGame::LoadXML()
 
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 
-	GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -10.0f, 0.0f), physicsMan);
-	wallObj->scale(250.0f ,3.0f ,250.0f);
-	gameObjects.push_back(wallObj);
-	proceduralGameObjects.push_back(wallObj);
+	//GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -20.0f, 0.0f), physicsMan);
+	//wallObj->scale(250.0f ,3.0f ,250.0f);
+	//gameObjects.push_back(wallObj);
+	//proceduralGameObjects.push_back(wallObj);
 
 	#pragma endregion
 
 	#pragma region Create Moving Objects and Unlocking Crests
-	GameObject* crestGObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
+	GameObject* crestGObj = new Crest("crest", "Test Wood", physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
 	{
@@ -207,7 +211,7 @@ bool PVGame::LoadXML()
 	proceduralGameObjects.push_back(crestGObj2);
 	#pragma endregion
 
-	renderMan->LoadFile(L"Assets//Cube.obj");
+	//renderMan->LoadFile(L"Assets//Cube.obj");
 
 	SortGameObjects();
 
@@ -306,7 +310,7 @@ void PVGame::UpdateScene(float dt)
 						// For now, only Medusa causes blur effect.
 						if (currentCrest->GetCrestType() == MEDUSA)
 						{
-							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.45f, 0.0f, 1.0f));
+							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
 							renderMan->AddPostProcessingEffect(BlurEffect);
 						}
 					}
@@ -322,8 +326,7 @@ void PVGame::UpdateScene(float dt)
 					}
 					currentCrest->Update(player);
 
-					
-					#pragma region Switch for Crest Types
+					#pragma region Commented Old Switch for Crest Types
 					/*
 					switch(currentCrest->GetCrestType())
 					{
@@ -387,7 +390,6 @@ void PVGame::UpdateScene(float dt)
 					}
 					*/
 					#pragma endregion
-					
 				}
 			}
 		}
@@ -467,12 +469,12 @@ void PVGame::UpdateScene(float dt)
 			}*/
 		}
 
-		if((input->isKeyDown('1') || input->getGamepadLeftTrigger(0)) && is1Up)
+		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
+			float speed = 8;
 
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
@@ -489,14 +491,14 @@ void PVGame::UpdateScene(float dt)
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
 			is1Up = true;
 
-		if((input->isKeyDown('2') || input->getGamepadRightTrigger(0))  && is2Up)
+		if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
+			float speed = 0;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 8.0f), physicsMan, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();

@@ -15,6 +15,7 @@ using std::string;
 #define NUM_LEVELS 1
 #define USE_FRUSTUM_CULLING 0
 #define DRAW_FRUSTUM 0
+#define MOBILITY_MULTIPLIER 1.25
 
 #define USINGVLD 0
 #if USINGVLD 
@@ -22,7 +23,7 @@ using std::string;
 #endif
 
 #define MAX_LIGHTS 10
-#define MAX_BLURS 10
+#define MAX_BLURS 2
 
 const enum GAME_STATE { MENU, OPTION, PLAYING, END };
 const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK};

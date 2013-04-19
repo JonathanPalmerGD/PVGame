@@ -10,6 +10,8 @@
 #include <d3d11.h>
 #include <d3dx11.h>
 #include "Constants.h"
+//#include "RenderManager.h"
+//#include "PVGame.h"
 //The code for this OBJLoader was taken from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader
 
 class FileLoader
@@ -20,11 +22,14 @@ public:
 	~FileLoader(void);
 
 	bool LoadFile(ID3D11Device* device, 
-	std::wstring Filename, 
-    ObjModel& Model,
+	std::wstring fileName, 
+    ObjModel& objModel,
     std::vector<GameMaterial>& material, 
-    TextureManager& TexMgr,
-    bool IsRHCoordSys,
-    bool ComputeNormals,
+    TextureManager& textureMan,
+    bool isRHCoordSys,
+    bool computeNormals,
 	bool flipFaces);
+
+private:
+	//RenderManager *renderMan;
 };

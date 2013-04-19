@@ -483,11 +483,12 @@ class RenderManager
 
 		void LoadFile(wstring fileName)
 		{
-			FileLoader loader = FileLoader();
+			FileLoader loaderMan = FileLoader();
 			ObjModel objModel;
 			vector<GameMaterial> gameMats;
 			TextureManager textureMan;
-			loader.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, true, false);
+			loaderMan.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, false, false);
+			//mObjModels.push_back(objModel);
 		}
 
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
@@ -846,6 +847,9 @@ class RenderManager
 
 		// Holds all the (vertex, index, instanceData) buffers. Separate map due to meshes being constant.
 		map<string, BufferPair> bufferPairs;
+
+		// ObjModels
+		//vector<ObjModel> mObjModels;
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;

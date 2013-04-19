@@ -30,7 +30,7 @@ cbuffer cbSettings
 
 cbuffer cbFixed
 {
-	static const int gBlurRadius = 10;
+	static const int gBlurRadius = 2;
 };
 
 cbuffer cbPerObject
