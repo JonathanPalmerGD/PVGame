@@ -396,7 +396,7 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		#pragma region Outdated Light Code
+		#pragma region Throwing Crests
 		if(input->wasKeyPressed('3'))
 		{
 			XMFLOAT4 p = player->getPosition();
@@ -450,7 +450,7 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		
+		#pragma region Outdated Light Code
 		/*if(renderMan->getNumLights() > 3)
 		{
 			renderMan->SetLightPosition(3, &player->getCameraPosition());
@@ -469,6 +469,7 @@ void PVGame::UpdateScene(float dt)
 				renderMan->ToggleLight(3);
 			}*/
 		}
+		#pragma	endregion
 
 		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
@@ -477,7 +478,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 8;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, ObjectType::WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			
@@ -499,7 +500,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 0;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();

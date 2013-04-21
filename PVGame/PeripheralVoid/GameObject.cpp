@@ -8,7 +8,7 @@ GameObject::GameObject(void)
 	visionAffected = false;
 	collisionLayer = 0;
 
-	if(collisionLayer & COL_VISION_AFFECTED)
+	if(USE_FRUSTUM_CULLING && (collisionLayer & COL_VISION_AFFECTED))
 		seen = false;
 	else
 		seen = true;
@@ -25,7 +25,7 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMat
 	this->physicsMan = physicsMan;
 	mass = 0.0;
 	audioSource = new AudioSource();
-	if(collisionLayer & COL_VISION_AFFECTED)
+	if(USE_FRUSTUM_CULLING && (collisionLayer & COL_VISION_AFFECTED))
 		seen = false;
 	else
 		seen = true;
@@ -47,7 +47,7 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, Ph
 	this->collisionLayer = collisionLayer;
 	audioSource = new AudioSource();
 	CalculateWorldMatrix();
-	if(collisionLayer & COL_VISION_AFFECTED)
+	if(USE_FRUSTUM_CULLING && (collisionLayer & COL_VISION_AFFECTED))
 		seen = false;
 	else
 		seen = true;
@@ -163,7 +163,7 @@ void GameObject::Update()
 {
 	if(rigidBody != NULL)
 	{
-		if(collisionLayer & COL_VISION_AFFECTED)
+		if(USE_FRUSTUM_CULLING && (collisionLayer & COL_VISION_AFFECTED))
 		{
 			seen = false;
 		}
