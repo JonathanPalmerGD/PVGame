@@ -234,7 +234,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, 1.5f, wallRowCol[i][j]->centerZ + zPos), physicsMan);
+			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, 1.5f, wallRowCol[i][j]->centerZ + zPos), physicsMan, ObjectType::WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength,3.0,wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
 		}
@@ -247,7 +247,7 @@ void Room::loadRoom(float xPos, float zPos)
 		gameObjs.push_back(crestObj);
 	}
 
-	GameObject* wallObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan);
+	GameObject* wallObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan, ObjectType::WORLD);
 	wallObj->scale(width, 1.0f, depth);
 	gameObjs.push_back(wallObj);
 

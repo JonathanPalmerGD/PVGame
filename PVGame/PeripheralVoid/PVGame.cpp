@@ -56,6 +56,7 @@ bool PVGame::Init()
 	
 	//Test load a cube.obj
 	renderMan->LoadFile(L"crest.obj");
+	renderMan->LoadFile(L"medusacrest.obj");
 
 	renderMan->BuildBuffers();
 
@@ -178,7 +179,6 @@ bool PVGame::LoadXML()
 	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
 	{
-		movingGObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		XMFLOAT3 newPos = XMFLOAT3(17.7f, 1.0f, 17.7f);
 		movingObj->AddPosition(newPos);
 		newPos = XMFLOAT3(17.7f, 4.0f, 17.7f);
@@ -197,7 +197,6 @@ bool PVGame::LoadXML()
 	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj2))
 	{
-		movingGObj2->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		XMFLOAT3 newPos = XMFLOAT3(5.7f, 1.0f, 17.7f);
 		movingObj->AddPosition(newPos);
 		newPos = XMFLOAT3(8.7f, 1.0f, 17.7f);

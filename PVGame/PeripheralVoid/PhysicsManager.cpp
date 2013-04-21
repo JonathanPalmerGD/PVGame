@@ -9,6 +9,10 @@ PhysicsManager::PhysicsManager(void)
     world             = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
 	ghostPairCallback = new btGhostPairCallback();
 
+	//Set up custom collision filter
+	btOverlapFilterCallback * filterCallback = new CustomFilterCallback();
+	world->getPairCache()->setOverlapFilterCallback(filterCallback);
+
 	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 	world->setGravity(btVector3(0.0f,-9.81f,0.0f));
 
@@ -235,7 +239,7 @@ btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btVector3* poi
 void PhysicsManager::addGhostObjectToWorld(btPairCachingGhostObject* ghost)
 {
 	if(ghost != NULL)
-		world->addCollisionObject(ghost, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
+		world->addCollisionObject(ghost, ObjectType::FRUSTUM, ObjectType::FRUSTUM);
 }
 
 void PhysicsManager::removeGhostObjectFromWorld(btPairCachingGhostObject* ghost)
@@ -310,10 +314,10 @@ void PhysicsManager::addTriangleMesh(string handle, MeshData meshData)
  *
  * params: rigidBody - the rigid body to be added to the world
  */
-void PhysicsManager::addRigidBodyToWorld(btRigidBody* rigidBody)
+void PhysicsManager::addRigidBodyToWorld(btRigidBody* rigidBody, short collisionLayer)
 {
 	if(rigidBody != NULL)
-		world->addRigidBody(rigidBody);
+		world->addRigidBody(rigidBody, collisionLayer, collisionLayer);
 }
 
 /* removeRigidBodyFromWorld()
@@ -342,7 +346,7 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	ghost->setWorldTransform(t);
 	
 	btKinematicCharacterController* cc = new btKinematicCharacterController(ghost, capsule, stepHeight);
-	world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
+	world->addCollisionObject(ghost, ObjectType::PLAYER, ObjectType::PLAYER);
 	//world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
 	world->addCharacter(cc);
 	return cc;
@@ -409,6 +413,8 @@ bool PhysicsManager::narrowPhase(Camera* playCamera, GameObject* target)
 	btVector3 rayTo(target->getRigidBody()->getWorldTransform().getOrigin());
 
 	btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
+	callback.m_collisionFilterGroup = COL_RAYCAST;
+	callback.m_collisionFilterMask = COL_RAYCAST;
 	world->rayTest(rayFrom, rayTo, callback);
 
 	if(callback.hasHit())

@@ -6,8 +6,9 @@ GameObject::GameObject(void)
 	rigidBody = NULL;
 	audioSource = new AudioSource();
 	visionAffected = false;
+	collisionLayer = 0;
 
-	if(USE_FRUSTUM_CULLING)
+	if(collisionLayer & COL_VISION_AFFECTED)
 		seen = false;
 	else
 		seen = true;
@@ -24,13 +25,13 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMat
 	this->physicsMan = physicsMan;
 	mass = 0.0;
 	audioSource = new AudioSource();
-		if(USE_FRUSTUM_CULLING)
+	if(collisionLayer & COL_VISION_AFFECTED)
 		seen = false;
 	else
 		seen = true;
 }
 
-GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass, bool visionAff)
+GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, short collisionLayer, float mass, bool visionAff)
 {
 	visionAffected = visionAff;
 	meshKey = aMeshKey;
@@ -40,12 +41,13 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, Ph
 	btVector3 s = rigidBody->getCollisionShape()->getLocalScaling();
 	localScale = XMFLOAT3(1.0,1.0,1.0);
 	this->physicsMan = physicsMan;
-	physicsMan->addRigidBodyToWorld(rigidBody);
+	physicsMan->addRigidBodyToWorld(rigidBody, collisionLayer);
 	rigidBody->setUserPointer(this);
 	this->mass = mass;
+	this->collisionLayer = collisionLayer;
 	audioSource = new AudioSource();
 	CalculateWorldMatrix();
-	if(USE_FRUSTUM_CULLING)
+	if(collisionLayer & COL_VISION_AFFECTED)
 		seen = false;
 	else
 		seen = true;
@@ -95,7 +97,7 @@ void GameObject::scale(float x, float y, float z)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
 		rigidBody = physicsMan->createRigidBody(meshKey, position.getX(), position.getY(), position.getZ(), x, y, z, mass);
 		rigidBody->setUserPointer(this);
-		physicsMan->addRigidBodyToWorld(rigidBody);
+		physicsMan->addRigidBodyToWorld(rigidBody, collisionLayer);
 		CalculateWorldMatrix();
 	}
 }
@@ -106,6 +108,18 @@ void GameObject::rotate(float x, float y, float z, float w)
 	{
 		btTransform t = rigidBody->getWorldTransform();
 		t.setRotation(btQuaternion(x, y , z, w));
+		rigidBody->setWorldTransform(t);
+		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		CalculateWorldMatrix();
+	}
+}
+
+void GameObject::rotate(float yaw, float pitch, float roll)
+{
+	if(rigidBody!= NULL)
+	{
+		btTransform t = rigidBody->getWorldTransform();
+		t.setRotation(btQuaternion(yaw, pitch, roll));
 		rigidBody->setWorldTransform(t);
 		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
 		CalculateWorldMatrix();
@@ -126,7 +140,7 @@ string GameObject::GetMeshKey() const { return meshKey; }
 string GameObject::GetMaterialKey() const { return materialKey; }
 btRigidBody* GameObject::getRigidBody() const { return rigidBody; }
 
-void GameObject::SetRigidBody(btRigidBody* rBody)
+void GameObject::SetRigidBody(btRigidBody* rBody, short layer)
 {
 	if(rigidBody != NULL)
 	{
@@ -134,21 +148,22 @@ void GameObject::SetRigidBody(btRigidBody* rBody)
 	}
 	rigidBody = rBody;
 	rigidBody->setUserPointer(this);
-	physicsMan->addRigidBodyToWorld(rigidBody);
+	physicsMan->addRigidBodyToWorld(rigidBody, layer);
 
 	CalculateWorldMatrix();
 }
 
-void GameObject::addCollisionFlags(int flags)
+void GameObject::changeCollisionLayer(short layer)
 {
-	rigidBody->setCollisionFlags(rigidBody->getCollisionFlags()|flags);
+	physicsMan->removeRigidBodyFromWorld(rigidBody);
+	physicsMan->addRigidBodyToWorld(rigidBody, layer);
 }
 
 void GameObject::Update()
 {
-	if(rigidBody != NULL && (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) != btCollisionObject::CF_STATIC_OBJECT)
+	if(rigidBody != NULL)
 	{
-		if(USE_FRUSTUM_CULLING)
+		if(collisionLayer & COL_VISION_AFFECTED)
 		{
 			seen = false;
 		}

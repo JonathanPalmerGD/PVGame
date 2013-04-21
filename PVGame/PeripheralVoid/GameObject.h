@@ -11,7 +11,7 @@ class GameObject
 	public:
 		GameObject(void);
 		GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, bool visionAff = false);
-		GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass = 0.0, bool visionAff = false);
+		GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, short collisionLayer, float mass = 0.0, bool visionAff = false);
 
 		void setSeen(bool);
 		bool isSeen();
@@ -20,12 +20,13 @@ class GameObject
 		void setPosition(float x, float y, float z);
 		void scale(float x, float y, float z);
 		void rotate(float x, float y, float z, float w);
+		void rotate(float yaw, float pitch, float roll);
 		void setLinearVelocity(float x, float y, float z);
 
 		void SetMeshKey(string aKey);
 		void SetMaterialKey(string aKey);
 		void SetWorldMatrix(XMMATRIX* aMatrix);
-		void SetRigidBody(btRigidBody* rBody);
+		
 		void Update();
 
 		bool GetVisionAffected();
@@ -35,8 +36,10 @@ class GameObject
 		void CalculateWorldMatrix();
 		XMFLOAT4X4 GetWorldMatrix() const;
 
+		void SetRigidBody(btRigidBody* rBody, short layer);
 		btRigidBody* getRigidBody() const;
-		void addCollisionFlags(int flags);
+		void changeCollisionLayer(short layer);
+
 
 		virtual ~GameObject(void);
 
@@ -63,6 +66,7 @@ class GameObject
 		XMFLOAT3 localScale;
 		PhysicsManager* physicsMan; //Don't use for anything but adding to and deleting the rigid body from the world.
 		float mass;
+		short collisionLayer;
 
 		AudioSource* audioSource;
 		// Figure out how to make this work: //static RenderManager *renderMan = RenderManager::getInstance();
