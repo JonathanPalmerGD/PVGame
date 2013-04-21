@@ -309,7 +309,7 @@ void PVGame::UpdateScene(float dt)
 						currentCrest->ChangeView(true);
 
 						// For now, only Medusa causes blur effect.
-						if (currentCrest->GetCrestType() == MEDUSA)
+						if (currentCrest->GetCrestType() == MEDUSA && player->getController()->onGround())
 						{
 							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
 							renderMan->AddPostProcessingEffect(BlurEffect);
