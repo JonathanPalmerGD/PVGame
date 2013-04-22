@@ -9,6 +9,7 @@
 #include <memory>
 #include "Common\Camera.h"
 #include "GameObject.h"
+#include "FileLoader.h"
 
 class RenderManager
 {
@@ -35,7 +36,8 @@ class RenderManager
 			return static_cast<float>(mClientWidth) / mClientHeight;
 		}
 
-		void CreateLight(XMFLOAT4 ambientLight, XMFLOAT4 diffuseLight, XMFLOAT4 specularLight, float range, XMFLOAT3 pos, XMFLOAT3 attenuation)
+		//Returns the index of the newly created light for crests to manage.
+		int CreateLight(XMFLOAT4 ambientLight, XMFLOAT4 diffuseLight, XMFLOAT4 specularLight, float range, XMFLOAT3 pos, XMFLOAT3 attenuation)
 		{
 			//Check if we are at max lights. Add if we aren't
 			if(mPointLights.size() < MAX_LIGHTS)
@@ -50,8 +52,10 @@ class RenderManager
 				aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 				mPointLights.push_back(PointLight(aPointLight));
 			}
-			//Else
-				//You can't always get what you want
+			else
+				return -1;
+			//Pass back the index of the new light
+			return (mPointLights.size() - 1);
 		}
 
 		bool InitDirect3D(HWND aWindow)
@@ -160,6 +164,8 @@ class RenderManager
 	
 			OnResize();
 
+			BuildRasterizerStates();  
+
 			return true;
 		}
 
@@ -198,11 +204,15 @@ class RenderManager
 					InstancedData* dataView = reinterpret_cast<InstancedData*>(mappedData.pData);
 					UINT mVisibleObjectCount = 0;
 
+					vector<InstancedData> instanceVector = mInstancedDataMap[bufferItr->first];
+					const UINT instanceSize = instanceVector.size();
+
 					// This actually sets the instance data to draw by filling up dataView.
-					for(UINT i = 0; i < mInstancedDataMap[bufferItr->first].size(); ++i)
+					for(UINT i = 0; i < instanceSize; ++i)
 					{
 						// If check goes here - only add in if we can see it / at least is inside frustum.
-						dataView[mVisibleObjectCount++] = mInstancedDataMap[bufferItr->first][i];
+						if(instanceVector[i].isRendered)
+							dataView[mVisibleObjectCount++] = instanceVector[i];
 					}
 
 					md3dImmediateContext->Unmap(bufferItr->second.instanceBuffer, 0);
@@ -228,28 +238,41 @@ class RenderManager
 				bufferItr++;
 			}
 		}
+
 		void DrawScene(Camera* aCamera, vector<GameObject*> gameObjects)
 		{
 			// Bind the render target view and depth/stencil view to the pipeline.
-			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
+			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
 
 			// Set texture atlas once for now.
 			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
 
 			// Pretty self-explanatory. Clears the screen, essentially.
-			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-			XMFLOAT3 startPos(0.0f, 0.0f, 0.0f);
-			XMFLOAT3 endPos(0.0f, 0.0f, 0.0f);
+			// Performance increasers - Try to limit calls to size, map accessors, etc.
+			const unsigned int totalGameobjs = gameObjects.size();
+			vector<InstancedData>* instanceVector;
+			string currentKey = "";
 
 			// Update each instance's world matrix with the corresponding GameObect's world matrix.
-			map<std::string, unsigned int> counts;
-			for (unsigned int i = 0; i < gameObjects.size(); ++i)
+			for (unsigned int i = 0; i < totalGameobjs; ++i)
 			{
 				GameObject* aGameObject = gameObjects[i];
 				string bufferKey = aGameObject->GetMeshKey();
-				mInstancedDataMap[bufferKey][counts[bufferKey]++].World = aGameObject->GetWorldMatrix();
+
+				// Switch the instance we're updating.
+				if (currentKey != bufferKey)
+				{
+					instanceVector = &mInstancedDataMap[bufferKey];
+					currentKey = bufferKey;
+				}
+
+				unsigned int instanceCount = instanceCounts[bufferKey]++; 
+
+				(*instanceVector)[instanceCount].isRendered = aGameObject->isSeen();
+				(*instanceVector)[instanceCount].World = aGameObject->GetWorldMatrix();
 			}
 
 			// Sets input layout which describes the vertices we're about to send.
@@ -261,7 +284,10 @@ class RenderManager
 
 			// Set per frame constants.
 			mfxDirLights->SetRawValue(&mDirLights[0], 0, sizeof(DirectionalLight) * mDirLights.size());
-			mfxPointLights->SetRawValue(&mPointLights[0], 0, 4 * sizeof(PointLight));
+			if(mPointLights.size() > 0)
+			{
+				mfxPointLights->SetRawValue(&mPointLights[0], 0, (mPointLights.size()) * sizeof(PointLight));
+			}
 			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
 			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
 
@@ -274,26 +300,99 @@ class RenderManager
 			// This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
 			mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&aCamera->ViewProj()));
 
+			if (postProcessingFlags & WireframeEffect)
+				ToggleWireframe(true);
+
 			DrawGameObjects("LightsWithAtlas");
 
-			/* Uncomment to reinduce nausea
-			// Bind the render target view to the back buffer.
+			ToggleWireframe(false);
+
+			D3DX11_TECHNIQUE_DESC techDesc;
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+
+			UINT stride = sizeof(Vertex);
+			UINT offset = 0;
+ 
+			const float* identity = reinterpret_cast<const float*>(&XMMatrixIdentity());
+ 
+			texelWidth->SetFloat(1.0f / mScreenViewport.Width);
+			texelHeight->SetFloat(1.0f / mScreenViewport.Height);
+
+			mfxWorld->SetMatrix(identity);
+			mfxWorldInvTranspose->SetMatrix(identity);
+			mfxViewProj->SetMatrix(identity);
+			TexTransform->SetMatrix(identity);
+			md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
+			md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			if (postProcessingFlags & BlurEffect)
+			{
+				for (int blurIndex = 0; blurIndex < blurCount; ++blurIndex)
+				{
+					md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Blur Output Texture"], depthStencilViewsMap["Default"]);
+					md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Blur Output Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+					md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+					mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+
+					techniqueMap["HorzBlur"]->GetDesc(&techDesc);
+					for(UINT p = 0; p < techDesc.Passes; ++p)
+					{
+						techniqueMap["HorzBlur"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+						md3dImmediateContext->DrawIndexed(6, 0, 0);
+					}
+					
+					// Unbind resource.
+					mfxDiffuseMapVar->SetResource(nullptr);
+					techniqueMap["HorzBlur"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
+
+					md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+					md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+					md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+					mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Blur Output Texture"]);
+				
+					techniqueMap["VertBlur"]->GetDesc(&techDesc);
+					for(UINT p = 0; p < techDesc.Passes; ++p)
+					{
+						techniqueMap["VertBlur"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+						md3dImmediateContext->DrawIndexed(6, 0, 0);
+					}
+
+					// Unbind resource.
+					mfxDiffuseMapVar->SetResource(nullptr);
+					techniqueMap["VertBlur"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
+				}
+			}
+
+			mfxDiffuseMapVar->SetResource(nullptr);
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
 		
 			// Pretty self-explanatory. Clears the screen, essentially.
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-			// Set texture atlas once for now.
 			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
 
-			DrawGameObjects("LightsWithoutAtlas");
-			*/
+			techniqueMap["TexturePassThrough"]->GetDesc(&techDesc);
+			for(UINT p = 0; p < techDesc.Passes; ++p)
+			{
+				md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
+				md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+				mfxWorld->SetMatrix(identity);
+				mfxWorldInvTranspose->SetMatrix(identity);
+				mfxViewProj->SetMatrix(identity);
+				TexTransform->SetMatrix(identity);
+
+				techniqueMap["TexturePassThrough"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+				md3dImmediateContext->DrawIndexed(6, 0, 0);
+			}
+
 			HR(mSwapChain->Present(1, 0));
 			
 			// Set shader view to null to prevent warnings.
 			mfxDiffuseMapVar->SetResource(NULL);
-			techniqueMap["LightsWithAtlas"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
+			techniqueMap["Blur"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
+			instanceCounts.clear();
+			mfxBlurColor->SetRawValue(&XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 0, sizeof(XMFLOAT4));
 		}
 		
 		// Build a vertex and index buffer for each mesh.
@@ -334,73 +433,6 @@ class RenderManager
 				bufferPairs[itr->first].indexBuffer = indexBuffer;
 				itr++;
 			}
-
-			// http://www.rastertek.com/dx11tut22.html
-
-			// Creating a quad mesh - It doesn't interact with game world, and has dynamic vertex changing.
-			Vertex* vertices;
-			unsigned int* indices;
-			D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-			D3D11_SUBRESOURCE_DATA vertexData, indexData;
-			int i;
-
-			// Set the number of vertices in the vertex array.
-			int vertexCount = 6;
-
-			// Set the number of indices in the index array.
-			int indexCount = vertexCount;
-
-			// Create the vertex array.
-			vertices = new Vertex[vertexCount];
-
-			// Create the index array.
-			indices = new unsigned int[indexCount];
-
-			// Initialize vertex array to zeros at first.
-			memset(vertices, 0, (sizeof(Vertex) * vertexCount));
-
-			// Load the index array with data.
-			for(i=0; i < indexCount; ++i)
-				indices[i] = i;
-
-			// Set up the description of the static vertex buffer.
-			vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-			vertexBufferDesc.ByteWidth = sizeof(Vertex) * vertexCount;
-			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			vertexBufferDesc.MiscFlags = 0;
-			vertexBufferDesc.StructureByteStride = 0;
-
-			// Give the subresource structure a pointer to the vertex data.
-			vertexData.pSysMem = vertices;
-			vertexData.SysMemPitch = 0;
-			vertexData.SysMemSlicePitch = 0;
-
-			// Now create the vertex buffer.
-			md3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &bufferPairs["Quad"].vertexBuffer);
-
-			// Set up the description of the static index buffer.
-			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			indexBufferDesc.ByteWidth = sizeof(unsigned long) * indexCount;
-			indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			indexBufferDesc.CPUAccessFlags = 0;
-			indexBufferDesc.MiscFlags = 0;
-			indexBufferDesc.StructureByteStride = 0;
-
-			// Give the subresource structure a pointer to the index data.
-			indexData.pSysMem = indices;
-			indexData.SysMemPitch = 0;
-			indexData.SysMemSlicePitch = 0;
-
-			// Create the index buffer.
-			md3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &bufferPairs["Quad"].indexBuffer);
-
-			// Release the arrays now that the vertex and index buffers have been created and loaded.
-			delete [] vertices;
-			vertices = 0;
-
-			delete [] indices;
-			indices = 0;
 		}
 
 		// Build an instance buffer based on a set of gameObjects.
@@ -442,9 +474,21 @@ class RenderManager
 						ReleaseCOM(itr->second.instanceBuffer);
 
 					HR(md3dDevice->CreateBuffer(&vbd, 0, &itr->second.instanceBuffer));
+
+					instanceCounts[itr->first] = 0;
 				}
 				itr++;
 			}
+		}
+
+		void LoadFile(wstring fileName)
+		{
+			FileLoader loaderMan = FileLoader();
+			ObjModel objModel;
+			vector<GameMaterial> gameMats;
+			TextureManager textureMan;
+			loaderMan.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, false, false);
+			//mObjModels.push_back(objModel);
 		}
 
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
@@ -489,28 +533,39 @@ class RenderManager
 			// Quick fix to support DX10, assuming we don't care about lower levels.
 			if (usingDX11)
 			{
-				techniqueMap["LightsWithAtlas"]              = mFX->GetTechniqueByName("LightsWithAtlas");
-				techniqueMap["LightsWithoutAtlas"]              = mFX->GetTechniqueByName("LightsWithoutAtlas");
+				techniqueMap["LightsWithAtlas"]					= mFX->GetTechniqueByName("LightsWithAtlas");
+				techniqueMap["LightsWithoutAtlas"]				= mFX->GetTechniqueByName("LightsWithoutAtlas");
+				techniqueMap["TexturePassThrough"]				= mFX->GetTechniqueByName("TexturePassThrough");
+				techniqueMap["HorzBlur"]						= mFX->GetTechniqueByName("HorzBlur");
+				techniqueMap["VertBlur"]						= mFX->GetTechniqueByName("VertBlur");
+				techniqueMap["Blur"]							= mFX->GetTechniqueByName("Blur");
 			}
 			else
 			{
-				techniqueMap["LightsWithAtlas"]                = mFX->GetTechniqueByName("LightsWithAtlasDX10");
+				techniqueMap["LightsWithAtlas"]					= mFX->GetTechniqueByName("LightsWithAtlasDX10");
 				techniqueMap["LightsWithoutAtlas"]              = mFX->GetTechniqueByName("LightsWithoutAtlasDX10");
+				techniqueMap["TexturePassThrough"]				= mFX->GetTechniqueByName("TexturePassThroughDX10");
+				techniqueMap["HorzBlur"]						= mFX->GetTechniqueByName("HorzBlurDX10");
+				techniqueMap["VertBlur"]						= mFX->GetTechniqueByName("VertBlurDX10");
+				techniqueMap["Blur"]							= mFX->GetTechniqueByName("BlurDX10");
 			}
 
 			// Creates association between shader variables and program variables.
-			mfxViewProj     = mFX->GetVariableByName("gViewProj")->AsMatrix();
-			mfxWorld             = mFX->GetVariableByName("gWorld")->AsMatrix();
-			mfxWorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
-			mfxEyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
-			mfxDirLights          = mFX->GetVariableByName("gDirLights");
-			mfxPointLights        = mFX->GetVariableByName("testLights");
-			mfxSpotLight         = mFX->GetVariableByName("gSpotLight");
-			mfxMaterial          = mFX->GetVariableByName("gMaterial");
-			mfxDiffuseMapVar	 = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-			mfxSpecMapVar		 = mFX->GetVariableByName("gSpecMap")->AsShaderResource();
-			mfxNumLights		 = mFX->GetVariableByName("numLights");
-			TexTransform		 = mFX->GetVariableByName("gTexTransform")->AsMatrix();
+			mfxViewProj				= mFX->GetVariableByName("gViewProj")->AsMatrix();
+			mfxWorld				= mFX->GetVariableByName("gWorld")->AsMatrix();
+			mfxWorldInvTranspose	= mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+			mfxEyePosW				= mFX->GetVariableByName("gEyePosW")->AsVector();
+			mfxDirLights			= mFX->GetVariableByName("gDirLights");
+			mfxPointLights			= mFX->GetVariableByName("testLights");
+			mfxSpotLight			= mFX->GetVariableByName("gSpotLight");
+			mfxMaterial				= mFX->GetVariableByName("gMaterial");
+			mfxDiffuseMapVar		= mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+			mfxSpecMapVar			= mFX->GetVariableByName("gSpecMap")->AsShaderResource();
+			mfxNumLights			= mFX->GetVariableByName("numLights");
+			mfxBlurColor			= mFX->GetVariableByName("gBlurColor")->AsVector();
+			TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
+			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
+			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 		}
 
 		void BuildVertexLayout()
@@ -542,34 +597,49 @@ class RenderManager
 
 			// Create the input layout
 			D3DX11_PASS_DESC passDesc;
-			map<string, ID3DX11EffectTechnique*>::iterator techItr = techniqueMap.begin();
-			while (techItr != techniqueMap.end())
-			{
-				techItr->second->GetPassByIndex(0)->GetDesc(&passDesc);
-				HR(md3dDevice->CreateInputLayout(vertexDesc, 12, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
-			
-				techItr++;
-			}
+			techniqueMap.begin()->second->GetPassByIndex(0)->GetDesc(&passDesc);
+			HR(md3dDevice->CreateInputLayout(vertexDesc, 12, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
 		}
 
 		void ToggleLight(int index)
 		{
-			mPointLights[index].On.x = (mPointLights[index].On.x == 0.0f) ? 1.0f : 0.0f;
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].On.x = (mPointLights[index].On.x == 0.0f) ? 1.0f : 0.0f;
 		}
 
 		void EnableLight(int index)
 		{
-			mPointLights[index].On.x = 1;
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].On.x = 1;
 		}
 
 		void DisableLight(int index)
 		{
-			mPointLights[index].On.x = 0;
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].On.x = 0;
 		}
 		
 		void SetLightPosition(int index, btVector3* targetV3)
 		{
-			mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
+			if (index >= 0 && index < (int)mPointLights.size())
+				mPointLights[index].Position = XMFLOAT3(targetV3->x(), targetV3->y(), targetV3->z());
+		}
+
+		void ChangeBlurCount(int aValue)
+		{
+			blurCount += aValue;
+			blurCount = max(0, blurCount);
+			blurCount = min(blurCount, MAX_BLURS);
+		}
+
+		void AddPostProcessingEffect(PostProcessingEffects anEffect)
+		{
+			postProcessingFlags |= anEffect;
+		}
+
+		void RemovePostProcessingEffect(PostProcessingEffects anEffect)
+		{
+			postProcessingFlags &= (~anEffect);
 		}
 
 		/* //Tried to overload this. It wouldn't take.
@@ -660,13 +730,12 @@ class RenderManager
 			// Create the depth/stencil buffer and view.
 
 			D3D11_TEXTURE2D_DESC renderTextureDesc;
-			D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 
 			renderTextureDesc.Width     = mClientWidth;
 			renderTextureDesc.Height    = mClientHeight;
 			renderTextureDesc.MipLevels = 1;
 			renderTextureDesc.ArraySize = 1;
-			renderTextureDesc.Format    = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			renderTextureDesc.Format    = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 			// Use 4X MSAA? --must match swap chain MSAA values.
 			if( mEnable4xMsaa )
@@ -689,12 +758,17 @@ class RenderManager
 			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Default Render Texture"]));
 			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Default Render Texture"], 0, &renderTargetViewsMap["Default Render Texture"]));
 
-			// Setup the description of the shader resource view.
-			shaderResourceViewDesc.Format = renderTextureDesc.Format;
-			shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-			shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-			shaderResourceViewDesc.Texture2D.MipLevels = 1;
-			md3dDevice->CreateShaderResourceView(texture2DMap["Default Render Texture"], &shaderResourceViewDesc, &shaderResourceViewsMap["Default Render Texture"]);
+			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Blur Output Texture"]));
+			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Blur Output Texture"], 0, &renderTargetViewsMap["Blur Output Texture"]));
+
+			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+			srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MostDetailedMip = 0;
+			srvDesc.Texture2D.MipLevels = 1;
+
+			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Default Render Texture"], &srvDesc, &shaderResourceViewsMap["Default Render Texture"]));
+			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Blur Output Texture"], &srvDesc, &shaderResourceViewsMap["Blur Output Texture"]));
 
 			// Set the viewport transform.
 
@@ -706,6 +780,11 @@ class RenderManager
 			mScreenViewport.MaxDepth = 1.0f;
 
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+		}
+
+		void SetBlurColor(XMFLOAT4 aFloat)
+		{
+			mfxBlurColor->SetRawValue(&aFloat, 0, sizeof(aFloat));
 		}
 
 		ID3D11Device* GetDevice() { return md3dDevice; }
@@ -722,11 +801,16 @@ class RenderManager
 		//Texture stuff
 		ID3DX11EffectMatrixVariable* TexTransform;
 		ID3DX11EffectVectorVariable* mfxEyePosW;
+		ID3DX11EffectVectorVariable* mfxBlurColor;
+
 		ID3DX11EffectVariable* mfxDirLights;
 		ID3DX11EffectVariable* mfxPointLights;
 		ID3DX11EffectVariable* mfxSpotLight;
 		ID3DX11EffectVariable* mfxMaterial;
 		ID3DX11EffectVariable* mfxNumLights;
+
+		ID3DX11EffectScalarVariable* texelWidth;
+		ID3DX11EffectScalarVariable* texelHeight;
 
 		// Maps to various rendering compnents.
 		map<string, XMFLOAT2> diffuseAtlasCoordsMap;
@@ -735,10 +819,11 @@ class RenderManager
 		map<string, ID3D11RenderTargetView*> renderTargetViewsMap;
 		map<string, ID3D11DepthStencilView*> depthStencilViewsMap;
 		map<string, ID3DX11EffectTechnique*> techniqueMap;
+		map<string, ID3D11RasterizerState*> rasterizerStatesMap;
+		map<std::string, unsigned int> instanceCounts;
 
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
-		ID3DX11EffectShaderResourceVariable* DiffuseMap;
 
 		ID3D11InputLayout* mInputLayout;
 
@@ -751,8 +836,10 @@ class RenderManager
 		D3D11_VIEWPORT mScreenViewport;
 		D3D_DRIVER_TYPE md3dDriverType;
 
+		unsigned char postProcessingFlags;
 		int mClientWidth;
 		int mClientHeight;
+		int blurCount;
 
 		bool mEnable4xMsaa;
 		bool usingDX11; // If false, we're using DX10 for now.
@@ -760,6 +847,9 @@ class RenderManager
 
 		// Holds all the (vertex, index, instanceData) buffers. Separate map due to meshes being constant.
 		map<string, BufferPair> bufferPairs;
+
+		// ObjModels
+		//vector<ObjModel> mObjModels;
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;
@@ -784,13 +874,16 @@ class RenderManager
 			mfxSpotLight = nullptr;
 			mfxMaterial = nullptr;
 			mfxNumLights = nullptr;
-
+			mfxBlurColor = nullptr;
+			texelWidth = nullptr;
+			texelHeight = nullptr;
 			mInputLayout = nullptr;
 			md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
 
 			ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
 			m4xMsaaQuality = 0;
 			mEnable4xMsaa = 0;
+			blurCount = 1; // Set default to 1 blur when blurring.
 
 			// Set world-view-projection matrix pieces to the identity matrix.
 			XMMATRIX I = XMMatrixIdentity();
@@ -802,52 +895,9 @@ class RenderManager
 			// Directional light.
 			mDirLights.push_back(DirectionalLight());
 			mDirLights[0].Ambient  = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-			mDirLights[0].Diffuse  = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+			mDirLights[0].Diffuse  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 			mDirLights[0].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.707f, 0.0f);
- 
-			//mDirLights[1].Ambient  = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-			//mDirLights[1].Diffuse  = XMFLOAT4(1.4f, 1.4f, 1.4f, 1.0f);
-			//mDirLights[1].Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 16.0f);
-			//mDirLights[1].Direction = XMFLOAT3(-0.707f, 0.0f, 0.707f);
-
-			// Add 4 lights to the scene. First is red.
-			CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
-			CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
-			CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(0.0f, 0.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f));
-			//CreateLight(XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f), XMFLOAT4(30.0f, 30.0f, 30.0f, 1.0f), XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f), 15.0f, XMFLOAT3(0.0f, 0.0f, -0.0f));
-			//PointLight aPointLight;
-			//
-			//// Second is green.
-			//aPointLight.Ambient = XMFLOAT4(0.0f, 0.6f, 0.0f, 1.0f);
-			//aPointLight.Diffuse = XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f);
-			//aPointLight.Specular = XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f);
-			//aPointLight.Range = 5.0f;
-			//aPointLight.Position = XMFLOAT3(-0.0f, 0.5f, -7.5f);
-			//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			//mPointLights.push_back(PointLight(aPointLight));
-
-			//// Third is blue.
-			//PointLight bPointLight;
-			//bPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 0.6f, 1.0f);
-			//bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 3.0f, 1.0f);
-			//bPointLight.Specular = XMFLOAT4(0.0f, 0.0f,2.0f, 1.0f);
-			//bPointLight.Range = 5.0f;
-			//bPointLight.Position = XMFLOAT3(-7.5f, 0.5f, -0.0f);
-			//bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			//bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			//mPointLights.push_back(PointLight(bPointLight));
-
-			//// Fourth is White 
-			//aPointLight.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-			//aPointLight.Diffuse = XMFLOAT4(3.0f, 0.0f, 3.0f, 1.0f);
-			//aPointLight.Specular = XMFLOAT4(2.0f, 0.0f, 2.0f, 1.0f);
-			//aPointLight.Range = 5.0f;
-			//aPointLight.Position = XMFLOAT3(-4.5f, 3.5f, -4.5f);
-			//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-			//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-			//mPointLights.push_back(PointLight(aPointLight));
 		}
 
 		~RenderManager()
@@ -900,6 +950,39 @@ class RenderManager
 				ReleaseCOM(renderViewItr->second);
 				renderViewItr++;
 			}
+
+			map<string, ID3D11RasterizerState*>::iterator rastItr = rasterizerStatesMap.begin();
+			while (rastItr != rasterizerStatesMap.end())
+			{
+				ReleaseCOM(rastItr->second);
+				++rastItr;
+			}
+		}
+
+		// Build any rasterizer states we'll need - right now this is just 'Default' and 'Wireframe'.
+		void BuildRasterizerStates()
+		{
+			D3D11_RASTERIZER_DESC rasterDesc; 
+			rasterDesc.AntialiasedLineEnable = false;
+			rasterDesc.CullMode = D3D11_CULL_BACK;
+			rasterDesc.DepthBias = 0;
+			rasterDesc.DepthBiasClamp = 0.0f;
+			rasterDesc.DepthClipEnable = true;
+			rasterDesc.FillMode = D3D11_FILL_SOLID;
+			rasterDesc.FrontCounterClockwise = false;
+			rasterDesc.MultisampleEnable = false;
+			rasterDesc.ScissorEnable = false;
+			rasterDesc.SlopeScaledDepthBias = 0.0f; 
+			md3dDevice->CreateRasterizerState ( &rasterDesc , &rasterizerStatesMap["Default"]);
+			
+			// For Wireframe, we just need to change fill mode.
+			rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+			md3dDevice->CreateRasterizerState ( &rasterDesc , &rasterizerStatesMap["Wireframe"]);
+		}
+
+		void ToggleWireframe(bool isEnabled)
+		{
+			md3dImmediateContext->RSSetState ( (isEnabled ? rasterizerStatesMap["Wireframe"] : rasterizerStatesMap["Default"]) ); 
 		}
 
 		RenderManager(RenderManager const&); // Don't implement.
@@ -907,3 +990,51 @@ class RenderManager
 };
 
 #endif
+
+/* Uncomment to re-induce nausea
+// Bind the render target view to the back buffer.
+md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
+		
+// Clear the render target and depth/stencil view.
+md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+// Set texture atlas once for now.
+mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+
+DrawGameObjects("LightsWithoutAtlas");
+*/
+
+//CreateLight(XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f), XMFLOAT4(30.0f, 30.0f, 30.0f, 1.0f), XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f), 15.0f, XMFLOAT3(0.0f, 0.0f, -0.0f));
+//PointLight aPointLight;
+//
+//// Second is green.
+//aPointLight.Ambient = XMFLOAT4(0.0f, 0.6f, 0.0f, 1.0f);
+//aPointLight.Diffuse = XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f);
+//aPointLight.Specular = XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f);
+//aPointLight.Range = 5.0f;
+//aPointLight.Position = XMFLOAT3(-0.0f, 0.5f, -7.5f);
+//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+//mPointLights.push_back(PointLight(aPointLight));
+
+//// Third is blue.
+//PointLight bPointLight;
+//bPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 0.6f, 1.0f);
+//bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 3.0f, 1.0f);
+//bPointLight.Specular = XMFLOAT4(0.0f, 0.0f,2.0f, 1.0f);
+//bPointLight.Range = 5.0f;
+//bPointLight.Position = XMFLOAT3(-7.5f, 0.5f, -0.0f);
+//bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+//bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+//mPointLights.push_back(PointLight(bPointLight));
+
+//// Fourth is White 
+//aPointLight.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+//aPointLight.Diffuse = XMFLOAT4(3.0f, 0.0f, 3.0f, 1.0f);
+//aPointLight.Specular = XMFLOAT4(2.0f, 0.0f, 2.0f, 1.0f);
+//aPointLight.Range = 5.0f;
+//aPointLight.Position = XMFLOAT3(-4.5f, 3.5f, -4.5f);
+//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
+//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+//mPointLights.push_back(PointLight(aPointLight));

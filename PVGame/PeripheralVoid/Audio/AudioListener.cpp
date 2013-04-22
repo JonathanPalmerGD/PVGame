@@ -8,6 +8,7 @@ AudioListener::AudioListener(void)
 {
 	position = new float[3];
 	orientation = new float[6];
+	alGetListenerf(AL_GAIN, &gain);
 }
 
 /* Destructor
@@ -184,4 +185,33 @@ void AudioListener::setOrientation(float* newOrientation)
 float* AudioListener::getOrientation()
 {
 	return orientation;
+}
+
+/* mute()
+ *
+ * sets the gain of the listener to 0, effectively making it deaf
+ */
+void AudioListener::mute()
+{
+	alListenerf(AL_GAIN, 0.0f);
+}
+
+/* unmute()
+ *
+ * resets the gain to the origional value
+ */
+void AudioListener::unmute()
+{
+	alListenerf(AL_GAIN, gain);
+}
+
+/* isMuted()
+ *
+ * returns if the listener is a deafy or a normal
+ */
+bool AudioListener::isMuted()
+{
+	float tG;
+	alGetListenerf(AL_GAIN,&tG);
+	return tG==0.0f;
 }

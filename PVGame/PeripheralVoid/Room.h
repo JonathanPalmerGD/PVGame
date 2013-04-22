@@ -1,23 +1,21 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
 #include "Constants.h"
-#include "GameObject.h"
 #include "PhysicsManager.h"
 #include "tinyxml2.h"
 
 using namespace tinyxml2;
+
+class MovingObject;
 
 class Room
 {
 	public:
 		Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos);
 		~Room(void);
-		vector<GameObject*> getGameObjs(void) {return gameObjs;};
+		vector<GameObject*> getGameObjs(void) { return gameObjs; }
 		void loadRoom(void);
-		void loadNeighbors(void);
+		void loadNeighbors(vector<Room*> loadedRooms);
 		Wall* getSpawn(void){return spawnVector[0];};
 		float getX(void){return x;};
 		float getZ(void){return z;};
@@ -31,7 +29,10 @@ class Room
 		vector<GameObject*> gameObjs;
 		vector<Wall*> exitVector;
 		vector<Wall*> spawnVector;
+		vector<Cube*> cubeVector;
+		vector<Wall*> crestVector;
 		vector<Room*> neighbors;
+		map<string, MovingObject*> cubeMap; 
 		const char* mapFile;
 		float x;
 		float z;

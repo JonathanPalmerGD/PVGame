@@ -123,8 +123,9 @@ bool D3DApp::Init()
 void D3DApp::OnResize()
 {
 	renderMan->OnResize();
+		SetFocus(mhMainWnd);
 }
- 
+
 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch( msg )
@@ -133,6 +134,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	// We pause the game when the window is deactivated and unpause it 
 	// when it becomes active.  
 	case WM_ACTIVATE:
+
 		if( LOWORD(wParam) == WA_INACTIVE )
 		{
 			mAppPaused = true;

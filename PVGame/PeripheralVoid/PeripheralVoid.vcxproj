@@ -110,6 +110,7 @@
     <ClCompile Include="PVGame.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="Turret.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioListener.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="Turret.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\Effects11.lib" />

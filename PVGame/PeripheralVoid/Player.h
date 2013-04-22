@@ -6,6 +6,7 @@
 #include "Common\xnacollision.h"
 #include "Input.h"
 #include "Audio\AudioListener.h"
+#include <string>
 
 #include <memory>
 
@@ -56,5 +57,10 @@ class Player
 		btKinematicCharacterController* controller;
 
 		AudioListener* listener;
+		AudioSource* audioSource;
+		//Camera movement variables
+		float mTheta;
+		float mPhi;
+		POINT mLastMousePos;
 };
 

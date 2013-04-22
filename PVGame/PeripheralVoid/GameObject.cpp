@@ -1,12 +1,16 @@
 #include "GameObject.h"
 
-
 GameObject::GameObject(void)
 {
 	meshKey = "None";
 	rigidBody = NULL;
 	audioSource = new AudioSource();
 	visionAffected = false;
+
+	if(USE_FRUSTUM_CULLING)
+		seen = false;
+	else
+		seen = true;
 }
 
 GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, bool visionAff)
@@ -20,6 +24,10 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMat
 	this->physicsMan = physicsMan;
 	mass = 0.0;
 	audioSource = new AudioSource();
+		if(USE_FRUSTUM_CULLING)
+		seen = false;
+	else
+		seen = true;
 }
 
 GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass, bool visionAff)
@@ -29,12 +37,40 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, Ph
 	materialKey = aMaterialKey;
 	XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
 	rigidBody = rB;
+	btVector3 s = rigidBody->getCollisionShape()->getLocalScaling();
 	localScale = XMFLOAT3(1.0,1.0,1.0);
 	this->physicsMan = physicsMan;
 	physicsMan->addRigidBodyToWorld(rigidBody);
+	rigidBody->setUserPointer(this);
 	this->mass = mass;
 	audioSource = new AudioSource();
 	CalculateWorldMatrix();
+	if(USE_FRUSTUM_CULLING)
+		seen = false;
+	else
+		seen = true;
+}
+
+void GameObject::setSeen(bool s)
+{
+	seen = s;
+}
+
+void GameObject::setPosition(float x, float y, float z)
+{
+	if(rigidBody != NULL)
+	{
+		btTransform t = rigidBody->getWorldTransform();
+		t.setOrigin(btVector3(x,y,z));
+		rigidBody->setWorldTransform(t);
+		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		CalculateWorldMatrix();
+	}
+}
+
+bool GameObject::isSeen()
+{
+	return seen;
 }
 
 void GameObject::translate(float x, float y, float z)
@@ -58,6 +94,7 @@ void GameObject::scale(float x, float y, float z)
 
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
 		rigidBody = physicsMan->createRigidBody(meshKey, position.getX(), position.getY(), position.getZ(), x, y, z, mass);
+		rigidBody->setUserPointer(this);
 		physicsMan->addRigidBodyToWorld(rigidBody);
 		CalculateWorldMatrix();
 	}
@@ -96,16 +133,27 @@ void GameObject::SetRigidBody(btRigidBody* rBody)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
 	}
 	rigidBody = rBody;
+	rigidBody->setUserPointer(this);
 	physicsMan->addRigidBodyToWorld(rigidBody);
 
 	CalculateWorldMatrix();
+}
+
+void GameObject::addCollisionFlags(int flags)
+{
+	rigidBody->setCollisionFlags(rigidBody->getCollisionFlags()|flags);
 }
 
 void GameObject::Update()
 {
 	if(rigidBody != NULL && (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) != btCollisionObject::CF_STATIC_OBJECT)
 	{
+		if(USE_FRUSTUM_CULLING)
+		{
+			seen = false;
+		}
 		CalculateWorldMatrix();
+		rigidBody->setUserPointer(this);
 	}
 }
 
@@ -116,7 +164,7 @@ void GameObject::CalculateWorldMatrix()
 	btScalar* mat = new btScalar[16];
 	t.getOpenGLMatrix(mat);
 		
-	worldMatrix = XMFLOAT4X4(mat[0 ] * localScale.x, mat[1 ]                , mat[2 ]               , mat[3 ], //NOT Transposed Matrix  
+	worldMatrix = XMFLOAT4X4(mat[0 ] * localScale.x, mat[1 ]                , mat[2 ]               , mat[3 ],    //NOT Transposed Matrix  
 								mat[4 ]               , mat[5 ] * localScale.y , mat[6 ]               , mat[7 ], //DO NOT TRANSPOSE MATRIX
 							    mat[8 ]               , mat[9 ]                , mat[10] * localScale.z, mat[11], //ITS IN THE CORRECT ROW-COLUMN ORDER
 							    mat[12]               , mat[13]                , mat[14]               , mat[15]);
@@ -184,7 +232,9 @@ void GameObject::restartAndPlayAudio()
 
 GameObject::~GameObject(void)
 {
-	if (rigidBody)
+	if (rigidBody && physicsMan)
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
-	delete audioSource;
+	
+	if (audioSource)
+		delete audioSource;
 }

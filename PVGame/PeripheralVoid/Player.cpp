@@ -16,12 +16,11 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	XMStoreFloat3(&right, aRight);
 
 	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f);
-
-	playerCamera = new Camera();
+	physicsMan = pm;
+	playerCamera = new Camera(physicsMan);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
-
-	physicsMan = pm;
+	
 	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(15.0f);
@@ -36,6 +35,8 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	renderMan = rm;
 
 	listener = new AudioListener();
+	audioSource = new AudioSource();
+	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
 }
 
 void Player::Update(float dt, Input* input)
@@ -98,6 +99,28 @@ void Player::HandleInput(Input* input)
 	//	//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
 	//}
 
+		// Make each pixel correspond to a quarter of a degree.
+	//float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
+	//float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
+
+	//// Update angles based on input to orbit camera around box.
+	//mTheta += dx;
+	//mPhi   += dy;
+	//playerCamera->Pitch(dy/2); // Rotate the camera  up/down.
+
+	//playerCamera->RotateY(dx / 2); // Rotate ABOUT the y-axis. So really turning left/right.
+	//XMMATRIX R = XMMatrixRotationY(dx/2);
+
+	//XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	//XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	//XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+	//mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
+
+	playerCamera->UpdateViewMatrix();
+
+	mLastMousePos.x = input->getMouseX();
+	mLastMousePos.y = input->getMouseY();
+
 	// Now check for camera input.
 	if (input->isCameraUpKeyDown())
 	{
@@ -158,20 +181,38 @@ void Player::HandleInput(Input* input)
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
 	if(input->isJumpKeyPressed() && !medusaStatus)
- 		controller->jump();
+	{
+		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
+		{
+			audioSource->setPosition(controller->getGhostObject()->getWorldTransform().getOrigin().getX(),
+				controller->getGhostObject()->getWorldTransform().getOrigin().getY(),
+				controller->getGhostObject()->getWorldTransform().getOrigin().getZ());
+			audioSource->play();
+		}
+		controller->jump();
+	}
 	#pragma endregion
 
 	//DBOUT(controller->canJump());
-	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (0.5f * mobilityStatus))) * (1.0f - medusaPercent);
+	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus))) * (1.0f - medusaPercent);
 	controller->setWalkDirection(direction * currentPlayerSpeed);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
 	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1, pos.getZ());
 	playerCamera->SetPosition(cPos);
 
+	#pragma region Audio
 	listener->setPosition(cPos.x, cPos.y, cPos.z);
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
 
+	if(input->wasKeyPressed('M'))
+	{
+		if(listener->isMuted())
+			listener->unmute();
+		else
+			listener->mute();
+	}
+	#pragma endregion
 	//XMFLOAT4 unit(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	/*XMFLOAT3 pos;
@@ -195,7 +236,7 @@ void Player::HandleInput(Input* input)
 
 void Player::OnResize(float aspectRatio)
 {
-	playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 1.0f, 1000.0f);
+	playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
 	playerCamera->UpdateViewMatrix();
 }
 
@@ -260,4 +301,5 @@ Player::~Player(void)
 	physicsMan->removeCharacterController(controller);
 	delete listener;
 	delete playerCamera;
+	delete audioSource;
 }

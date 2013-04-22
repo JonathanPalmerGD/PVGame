@@ -13,7 +13,11 @@ class GameObject
 		GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, bool visionAff = false);
 		GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, float mass = 0.0, bool visionAff = false);
 
+		void setSeen(bool);
+		bool isSeen();
+
 		void translate(float x, float y, float z);
+		void setPosition(float x, float y, float z);
 		void scale(float x, float y, float z);
 		void rotate(float x, float y, float z, float w);
 		void setLinearVelocity(float x, float y, float z);
@@ -32,6 +36,7 @@ class GameObject
 		XMFLOAT4X4 GetWorldMatrix() const;
 
 		btRigidBody* getRigidBody() const;
+		void addCollisionFlags(int flags);
 
 		virtual ~GameObject(void);
 
@@ -50,6 +55,7 @@ class GameObject
 
 	protected:
 		bool visionAffected;
+		bool seen;
 		string meshKey;
 		string materialKey;
 		btRigidBody* rigidBody;
@@ -59,6 +65,7 @@ class GameObject
 		float mass;
 
 		AudioSource* audioSource;
+		// Figure out how to make this work: //static RenderManager *renderMan = RenderManager::getInstance();
 };
 
 struct GameObjectComparer

@@ -96,6 +96,9 @@
     <ClCompile Include="MovingObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Turret.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h">
@@ -173,6 +176,9 @@
     <ClInclude Include="MovingObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\Effects11.lib">
@@ -206,6 +212,8 @@
     <CustomBuild Include="FX\Lighting.fx">
       <Filter>FX</Filter>
     </CustomBuild>
-    <CustomBuild Include="FX\HardwareInstancing.fx" />
+    <CustomBuild Include="FX\HardwareInstancing.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

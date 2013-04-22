@@ -7,6 +7,7 @@ class AudioListener
 private:
 	float* position; //3 element array: x, y, z
 	float* orientation;//6 element array: 0-2 are forward vectors x, y and z and 3-5 are the up vectors x, y, and z
+	ALfloat gain;
 
 public:
 	AudioListener(void);
@@ -31,5 +32,9 @@ public:
 	void setOrientation(float fX, float fY, float fZ, float uX, float uY, float uZ);
 	void setOrientation(float* newOrientation);
 	float* getOrientation();
+
+	void mute();
+	void unmute();
+	bool isMuted();
 };
 

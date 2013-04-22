@@ -1,7 +1,11 @@
 #pragma once
-#include "gameobject.h"
-class Crest :
-	public GameObject
+#include "GameObject.h"
+#include "PVGame.h"
+#include "MovingObject.h"
+
+class MovingObject;
+
+class Crest : public GameObject
 {
 public:
 	Crest(void);
@@ -9,13 +13,21 @@ public:
 	Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass = 0.0);
 	~Crest(void);
 
+	void SetupAudio();
 	bool InView();
+	void SetLightIndex(int newLightIndex);
 	void ChangeView(bool newVisionBool);
+	void SetTargetObject(MovingObject *newTargetObject);
 	CREST_TYPE GetCrestType();
-	void Update();
+	int GetLightIndex();
+	void CreateLightAndIndex();
+	void Update(Player* player);
 
 protected:
 	CREST_TYPE crestType;
+	int lightIndex;
+	MovingObject *targetObject;
 	bool inVision;
+	RenderManager *renderMan;
 };
 

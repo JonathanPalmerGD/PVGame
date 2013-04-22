@@ -3,24 +3,26 @@
 
 FileLoader::FileLoader(void)
 {
+	//renderMan = &RenderManager::getInstance();
 }
 
 FileLoader::~FileLoader(void)
 {
 }
 
-bool FileLoader::loadFile( ID3D11Device* device,
-    std::wstring Filename, 
-    ObjModel& Model,
-    std::vector<SurfaceMaterial>& material, 
-    TextureManager& TexMgr,
-    bool IsRHCoordSys,
-    bool ComputeNormals,
+bool FileLoader::LoadFile( ID3D11Device* device,
+    std::wstring fileName, 
+    ObjModel& objModel,
+    std::vector<GameMaterial>& material, 
+    TextureManager& textureMan,
+    bool isRHCoordSys,
+    bool computeNormals,
     bool flipFaces)
 {
+	#pragma region Base Variable creation and assignments
 	HRESULT hr = 0;
 	
-    std::wifstream fileIn (Filename.c_str());   // Open file
+    std::wifstream fileIn (fileName.c_str());   // Open file
     std::wstring meshMatLib;                    // String to hold our obj material library filename (model.mtl)
 
     // Arrays to store our model's information
@@ -52,9 +54,13 @@ bool FileLoader::loadFile( ID3D11Device* device,
     int totalVerts = 0;
     int meshTriangles = 0;
     bool ang = false;
-	/*
-    //Check to see if the file was opened
-    if (fileIn)
+	#pragma endregion
+    
+	#pragma region OBJ File Contents
+	//Check to see if the file was opened
+    fileIn.open((L"Assets//" + fileName).c_str());
+	
+	if (fileIn)
     {
         while(fileIn)
         {           
@@ -79,7 +85,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     float vz, vy, vx;
                     fileIn >> vx >> vy >> vz;   // Store the next three types
 
-                    if(IsRHCoordSys)            // If model is from an RH Coord System
+                    if(isRHCoordSys)            // If model is from an RH Coord System
                         vertPos.push_back(XMFLOAT3( vx, vy, vz * -1.0f));   // Invert the Z axis
                     else
                         vertPos.push_back(XMFLOAT3( vx, vy, vz));
@@ -89,7 +95,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     float vtcu, vtcv;
                     fileIn >> vtcu >> vtcv;     // Store next two types
 
-                    if(IsRHCoordSys)            // If model is from an RH Coord System
+                    if(isRHCoordSys)            // If model is from an RH Coord System
                         vertTexCoord.push_back(XMFLOAT2(vtcu, 1.0f-vtcv));  // Reverse the "v" axis
                     else
                         vertTexCoord.push_back(XMFLOAT2(vtcu, vtcv));   
@@ -101,7 +107,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                     float vnx, vny, vnz;
                     fileIn >> vnx >> vny >> vnz;    // Store next three types
 
-                    if(IsRHCoordSys)                // If model is from an RH Coord System
+                    if(isRHCoordSys)                // If model is from an RH Coord System
                         vertNorm.push_back(XMFLOAT3( vnx, vny, vnz * -1.0f ));  // Invert the Z axis
                     else
                         vertNorm.push_back(XMFLOAT3( vnx, vny, vnz ));  
@@ -117,8 +123,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                 if(checkChar == ' ')
                 {
                     ang = true;
-                    Model.SubsetIndexStart.push_back(vIndex);       // Start index for this subset
-                    Model.Subsets++;
+                    objModel.SubsetIndexStart.push_back(vIndex);       // Start index for this subset
+                    objModel.Subsets++;
                 }
                 break;
 			#pragma endregion
@@ -162,7 +168,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                             int whichPart = 0;      // (vPos, vTexCoord, or vNorm)
 
                             // Parse this string
-                            for(int j = 0; j < VertDef.length(); ++j)
+                            for(unsigned int j = 0; j < VertDef.length(); ++j)
                             {
                                 if(VertDef[j] != '/') // If there is no divider "/", add a char to our vertPart
                                     vertPart += VertDef[j];
@@ -215,10 +221,10 @@ bool FileLoader::loadFile( ID3D11Device* device,
                             }
 
                             // Check to make sure there is at least one subset
-                            if(Model.Subsets == 0)
+                            if(objModel.Subsets == 0)
                             {
-                                Model.SubsetIndexStart.push_back(vIndex);       // Start index for this subset
-                                Model.Subsets++;
+                                objModel.SubsetIndexStart.push_back(vIndex);       // Start index for this subset
+                                objModel.Subsets++;
                             }
 
                             // Avoid duplicate vertices
@@ -236,7 +242,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                     {
                                         if(vertTCIndexTemp == vertTCIndex[iCheck])
                                         {
-                                            Model.Indices.push_back(iCheck);        // Set index for this vertex
+                                            objModel.Indices.push_back(iCheck);        // Set index for this vertex
                                             vertAlreadyExists = true;       // If we've made it here, the vertex already exists
                                         }
                                     }
@@ -250,14 +256,14 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                 vertTCIndex.push_back(vertTCIndexTemp);
                                 vertNormIndex.push_back(vertNormIndexTemp);
                                 totalVerts++;   // We created a new vertex
-                                Model.Indices.push_back(totalVerts-1);  // Set index for this vertex
+                                objModel.Indices.push_back(totalVerts-1);  // Set index for this vertex
                             }                           
 
                             // If this is the very first vertex in the face, we need to
                             // make sure the rest of the triangles use this vertex
                             if(i == 0)
                             {
-                                firstVIndex = Model.Indices[vIndex];    //The first vertex index of this FACE
+                                firstVIndex = objModel.Indices[vIndex];    //The first vertex index of this FACE
 
                             }
 
@@ -265,7 +271,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                             // the next triangle uses this one (eg. tri1(1,2,3) tri2(1,3,4) tri3(1,4,5))
                             if(i == 2)
                             {                               
-                                lastVIndex = Model.Indices[vIndex]; // The last vertex index of this TRIANGLE
+                                lastVIndex = objModel.Indices[vIndex]; // The last vertex index of this TRIANGLE
                             }
                             vIndex++;   // Increment index count
                         }
@@ -279,11 +285,11 @@ bool FileLoader::loadFile( ID3D11Device* device,
                         for(int l = 0; l < triangleCount-1; ++l)    // Loop through the next vertices to create new triangles
                         {
                             // First vertex of this triangle (the very first vertex of the face too)
-                            Model.Indices.push_back(firstVIndex);           // Set index for this vertex
+                            objModel.Indices.push_back(firstVIndex);           // Set index for this vertex
                             vIndex++;
 
                             // Second Vertex of this triangle (the last vertex used in the tri before this one)
-                            Model.Indices.push_back(lastVIndex);            // Set index for this vertex
+                            objModel.Indices.push_back(lastVIndex);            // Set index for this vertex
                             vIndex++;
 
                             // Get the third vertex for this triangle
@@ -293,7 +299,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                             int whichPart = 0;
 
                             // Parse this string (same as above)
-                            for(int j = 0; j < VertDef.length(); ++j)
+                            for(unsigned int j = 0; j < VertDef.length(); ++j)
                             {
                                 if(VertDef[j] != '/')
                                     vertPart += VertDef[j];
@@ -349,7 +355,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                     {
                                         if(vertTCIndexTemp == vertTCIndex[iCheck])
                                         {
-                                            Model.Indices.push_back(iCheck);        // Set index for this vertex
+                                            objModel.Indices.push_back(iCheck);        // Set index for this vertex
                                             vertAlreadyExists = true;       // If we've made it here, the vertex already exists
                                         }
                                     }
@@ -362,11 +368,11 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                 vertTCIndex.push_back(vertTCIndexTemp);
                                 vertNormIndex.push_back(vertNormIndexTemp);
                                 totalVerts++;                       // New vertex created, add to total verts
-                                Model.Indices.push_back(totalVerts-1);  // Set index for this vertex
+                                objModel.Indices.push_back(totalVerts-1);  // Set index for this vertex
                             }
 
                             // Set the second vertex for the next triangle to the last vertex we got        
-                            lastVIndex = Model.Indices[vIndex]; // The last vertex index of this TRIANGLE
+                            lastVIndex = objModel.Indices[vIndex]; // The last vertex index of this TRIANGLE
 
                             meshTriangles++;    // New triangle defined
                             vIndex++;       
@@ -433,8 +439,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                         meshMaterials.push_back(meshMaterialsTemp);
                                         if(!ang)
                                         {
-                                            Model.SubsetIndexStart.push_back(vIndex);       // Start index for this subset
-                                            Model.Subsets++;
+                                            objModel.SubsetIndexStart.push_back(vIndex);       // Start index for this subset
+                                            objModel.Subsets++;
                                         }
                                         ang = false;
                                     }
@@ -460,7 +466,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
         // create message
         std::wstring message = L"Could not open: ";
-        message += Filename;
+        message += fileName;
 
         MessageBox(0, message.c_str(),  // Display message
             L"Error", MB_OK);
@@ -468,14 +474,14 @@ bool FileLoader::loadFile( ID3D11Device* device,
         return false;
     }
 
-    Model.SubsetIndexStart.push_back(vIndex); // There won't be another index start after our last subset, so set it here
+    objModel.SubsetIndexStart.push_back(vIndex); // There won't be another index start after our last subset, so set it here
 
     // sometimes "g" is defined at the very top of the file, then again before the first group of faces.
     // This makes sure the first subset does not conatain "0" indices.
-    if(Model.SubsetIndexStart[1] == 0)
+    if(objModel.SubsetIndexStart[1] == 0)
     {
-        Model.SubsetIndexStart.erase(Model.SubsetIndexStart.begin()+1);
-        Model.Subsets--;
+        objModel.SubsetIndexStart.erase(objModel.SubsetIndexStart.begin()+1);
+        objModel.Subsets--;
     }
 
     // Make sure we have a default for the tex coord and normal
@@ -484,10 +490,15 @@ bool FileLoader::loadFile( ID3D11Device* device,
         vertNorm.push_back(XMFLOAT3(0.0f, 0.0f, 0.0f));
     if(!hasTexCoord)
         vertTexCoord.push_back(XMFLOAT2(0.0f, 0.0f));
-
-    // Close the obj file, and open the mtl file
+	
+	// Close the obj file
     fileIn.close();
-    fileIn.open(meshMatLib.c_str());
+	#pragma endregion
+	#pragma region MTL File Contents
+	// Open the mtl file
+	
+	
+	fileIn.open((L"Assets//" + meshMatLib).c_str());
 
     std::wstring lastStringRead;
     int matCount = material.size(); // Total materials
@@ -632,9 +643,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     //check if this texture has already been loaded
                                     bool alreadyLoaded = false;
-                                    for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                    for(unsigned int i = 0; i < textureMan.TextureNameArray.size(); ++i)
                                     {
-                                        if(fileNamePath == TexMgr.TextureNameArray[i])
+                                        if(fileNamePath == textureMan.TextureNameArray[i])
                                         {
                                             alreadyLoaded = true;
                                             material[matCount-1].DiffuseTextureID = i;
@@ -650,9 +661,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                             NULL, NULL, &tempSRV, NULL );
                                         if(SUCCEEDED(hr))
                                         {
-                                            TexMgr.TextureNameArray.push_back(fileNamePath.c_str());
-                                            material[matCount-1].DiffuseTextureID = TexMgr.TextureList.size();
-                                            TexMgr.TextureList.push_back(tempSRV);
+                                            textureMan.TextureNameArray.push_back(fileNamePath.c_str());
+                                            material[matCount-1].DiffuseTextureID = textureMan.TextureList.size();
+                                            textureMan.TextureList.push_back(tempSRV);
                                             material[matCount-1].HasDiffTexture = true;
                                         }
                                     }   
@@ -686,9 +697,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     //check if this texture has already been loaded
                                     bool alreadyLoaded = false;
-                                    for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                    for(unsigned int i = 0; i < textureMan.TextureNameArray.size(); ++i)
                                     {
-                                        if(fileNamePath == TexMgr.TextureNameArray[i])
+                                        if(fileNamePath == textureMan.TextureNameArray[i])
                                         {
                                             alreadyLoaded = true;
                                             material[matCount-1].AmbientTextureID = i;
@@ -704,9 +715,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                             NULL, NULL, &tempSRV, NULL );
                                         if(SUCCEEDED(hr))
                                         {
-                                            TexMgr.TextureNameArray.push_back(fileNamePath.c_str());
-                                            material[matCount-1].AmbientTextureID = TexMgr.TextureList.size();
-                                            TexMgr.TextureList.push_back(tempSRV);
+                                            textureMan.TextureNameArray.push_back(fileNamePath.c_str());
+                                            material[matCount-1].AmbientTextureID = textureMan.TextureList.size();
+                                            textureMan.TextureList.push_back(tempSRV);
                                             material[matCount-1].HasAmbientTexture = true;
                                         }
                                     }   
@@ -740,9 +751,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     //check if this texture has already been loaded
                                     bool alreadyLoaded = false;
-                                    for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                    for(unsigned int i = 0; i < textureMan.TextureNameArray.size(); ++i)
                                     {
-                                        if(fileNamePath == TexMgr.TextureNameArray[i])
+                                        if(fileNamePath == textureMan.TextureNameArray[i])
                                         {
                                             alreadyLoaded = true;
                                             material[matCount-1].SpecularTextureID = i;
@@ -758,9 +769,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                             NULL, NULL, &tempSRV, NULL );
                                         if(SUCCEEDED(hr))
                                         {
-                                            TexMgr.TextureNameArray.push_back(fileNamePath.c_str());
-                                            material[matCount-1].SpecularTextureID = TexMgr.TextureList.size();
-                                            TexMgr.TextureList.push_back(tempSRV);
+                                            textureMan.TextureNameArray.push_back(fileNamePath.c_str());
+                                            material[matCount-1].SpecularTextureID = textureMan.TextureList.size();
+                                            textureMan.TextureList.push_back(tempSRV);
                                             material[matCount-1].HasSpecularTexture = true;
                                         }
                                     }   
@@ -786,7 +797,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                     if(checkChar == '.')
                                     {
-                                        for(int i = 0; i < 3; ++i)
+                                        for(unsigned int i = 0; i < 3; ++i)
                                             fileNamePath += fileIn.get();
 
                                         texFilePathEnd = true;
@@ -795,9 +806,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                 //check if this texture has already been loaded
                                 bool alreadyLoaded = false;
-                                for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                for(unsigned int i = 0; i < textureMan.TextureNameArray.size(); ++i)
                                 {
-                                    if(fileNamePath == TexMgr.TextureNameArray[i])
+                                    if(fileNamePath == textureMan.TextureNameArray[i])
                                     {
                                         alreadyLoaded = true;
                                         material[matCount-1].AlphaTextureID = i;
@@ -813,9 +824,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                         NULL, NULL, &tempSRV, NULL );
                                     if(SUCCEEDED(hr))
                                     {
-                                        TexMgr.TextureNameArray.push_back(fileNamePath.c_str());
-                                        material[matCount-1].AlphaTextureID = TexMgr.TextureList.size();
-                                        TexMgr.TextureList.push_back(tempSRV);
+                                        textureMan.TextureNameArray.push_back(fileNamePath.c_str());
+                                        material[matCount-1].AlphaTextureID = textureMan.TextureList.size();
+                                        textureMan.TextureList.push_back(tempSRV);
                                         material[matCount-1].IsTransparent = true;
                                     }
                                 }   
@@ -858,9 +869,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
                                             //check if this texture has already been loaded
                                             bool alreadyLoaded = false;
-                                            for(int i = 0; i < TexMgr.TextureNameArray.size(); ++i)
+                                            for(unsigned int i = 0; i < textureMan.TextureNameArray.size(); ++i)
                                             {
-                                                if(fileNamePath == TexMgr.TextureNameArray[i])
+                                                if(fileNamePath == textureMan.TextureNameArray[i])
                                                 {
                                                     alreadyLoaded = true;
                                                     material[matCount-1].NormMapTextureID = i;
@@ -876,9 +887,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                                     NULL, NULL, &tempSRV, NULL );
                                                 if(SUCCEEDED(hr))
                                                 {
-                                                    TexMgr.TextureNameArray.push_back(fileNamePath.c_str());
-                                                    material[matCount-1].NormMapTextureID = TexMgr.TextureList.size();
-                                                    TexMgr.TextureList.push_back(tempSRV);
+                                                    textureMan.TextureNameArray.push_back(fileNamePath.c_str());
+                                                    material[matCount-1].NormMapTextureID = textureMan.TextureList.size();
+                                                    textureMan.TextureList.push_back(tempSRV);
                                                     material[matCount-1].HasNormMap = true;
                                                 }
                                             }   
@@ -912,7 +923,7 @@ bool FileLoader::loadFile( ID3D11Device* device,
                                     if(checkChar == ' ')
                                     {
                                         // New material, set its defaults
-                                        SurfaceMaterial tempMat;
+                                        GameMaterial tempMat;
                                         material.push_back(tempMat);
                                         fileIn >> material[matCount].MatName;
                                         material[matCount].IsTransparent = false;
@@ -957,22 +968,24 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
         return false;
     }
+	#pragma endregion
 
+	#pragma region Subsets and Vertices
     // Set the subsets material to the index value
     // of the its material in our material array
-    for(int i = 0; i < Model.Subsets; ++i)
+    for(int i = 0; i < objModel.Subsets; ++i)
     {
         bool hasMat = false;
-        for(int j = 0; j < material.size(); ++j)
+        for(unsigned int j = 0; j < material.size(); ++j)
         {
             if(meshMaterials[i] == material[j].MatName)
             {
-                Model.SubsetMaterialID.push_back(j);
+                objModel.SubsetMaterialID.push_back(j);
                 hasMat = true;
             }
         }
         if(!hasMat)
-            Model.SubsetMaterialID.push_back(0); // Use first material in array
+            objModel.SubsetMaterialID.push_back(0); // Use first material in array
     }
 
     std::vector<Vertex> vertices;
@@ -986,14 +999,16 @@ bool FileLoader::loadFile( ID3D11Device* device,
         tempVert.Normal = vertNorm[vertNormIndex[j]];
         tempVert.TexC = vertTexCoord[vertTCIndex[j]];
 
-        vertices.push_back(tempVert);
-        Model.Vertices.push_back(tempVert.Pos);
+		vertices.push_back(tempVert);
+        objModel.Vertices.push_back(tempVert.Pos);
     }
+
+	#pragma endregion
 
 	#pragma region Compute Normals
     //If computeNormals was set to true then we will create our own
     //normals, if it was set to false we will use the obj files normals
-    if(ComputeNormals)
+    if(computeNormals)
     {
         std::vector<XMFLOAT3> tempNormal;
 
@@ -1017,15 +1032,15 @@ bool FileLoader::loadFile( ID3D11Device* device,
         for(int i = 0; i < meshTriangles; ++i)
         {
             //Get the vector describing one edge of our triangle (edge 0,2)
-            vecX = vertices[Model.Indices[(i*3)]].Pos.x - vertices[Model.Indices[(i*3)+2]].Pos.x;
-            vecY = vertices[Model.Indices[(i*3)]].Pos.y - vertices[Model.Indices[(i*3)+2]].Pos.y;
-            vecZ = vertices[Model.Indices[(i*3)]].Pos.z - vertices[Model.Indices[(i*3)+2]].Pos.z;       
+            vecX = vertices[objModel.Indices[(i*3)]].Pos.x - vertices[objModel.Indices[(i*3)+2]].Pos.x;
+            vecY = vertices[objModel.Indices[(i*3)]].Pos.y - vertices[objModel.Indices[(i*3)+2]].Pos.y;
+            vecZ = vertices[objModel.Indices[(i*3)]].Pos.z - vertices[objModel.Indices[(i*3)+2]].Pos.z;       
             edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our first edge
 
             //Get the vector describing another edge of our triangle (edge 2,1)
-            vecX = vertices[Model.Indices[(i*3)+2]].Pos.x - vertices[Model.Indices[(i*3)+1]].Pos.x;
-            vecY = vertices[Model.Indices[(i*3)+2]].Pos.y - vertices[Model.Indices[(i*3)+1]].Pos.y;
-            vecZ = vertices[Model.Indices[(i*3)+2]].Pos.z - vertices[Model.Indices[(i*3)+1]].Pos.z;     
+            vecX = vertices[objModel.Indices[(i*3)+2]].Pos.x - vertices[objModel.Indices[(i*3)+1]].Pos.x;
+            vecY = vertices[objModel.Indices[(i*3)+2]].Pos.y - vertices[objModel.Indices[(i*3)+1]].Pos.y;
+            vecZ = vertices[objModel.Indices[(i*3)+2]].Pos.z - vertices[objModel.Indices[(i*3)+1]].Pos.z;     
             edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our second edge
 
             //Cross multiply the two edge vectors to get the un-normalized face normal
@@ -1034,12 +1049,12 @@ bool FileLoader::loadFile( ID3D11Device* device,
             tempNormal.push_back(unnormalized);
 
             //Find first texture coordinate edge 2d vector
-            tcU1 = vertices[Model.Indices[(i*3)]].TexC.x - vertices[Model.Indices[(i*3)+2]].TexC.x;
-            tcV1 = vertices[Model.Indices[(i*3)]].TexC.y - vertices[Model.Indices[(i*3)+2]].TexC.y;
+            tcU1 = vertices[objModel.Indices[(i*3)]].TexC.x - vertices[objModel.Indices[(i*3)+2]].TexC.x;
+            tcV1 = vertices[objModel.Indices[(i*3)]].TexC.y - vertices[objModel.Indices[(i*3)+2]].TexC.y;
 
             //Find second texture coordinate edge 2d vector
-            tcU2 = vertices[Model.Indices[(i*3)+2]].TexC.x - vertices[Model.Indices[(i*3)+1]].TexC.x;
-            tcV2 = vertices[Model.Indices[(i*3)+2]].TexC.y - vertices[Model.Indices[(i*3)+1]].TexC.y;
+            tcU2 = vertices[objModel.Indices[(i*3)+2]].TexC.x - vertices[objModel.Indices[(i*3)+1]].TexC.x;
+            tcV2 = vertices[objModel.Indices[(i*3)+2]].TexC.y - vertices[objModel.Indices[(i*3)+1]].TexC.y;
 
             //Find tangent using both tex coord edges and position edges
             tangent.x = (tcV1 * XMVectorGetX(edge1) - tcV2 * XMVectorGetX(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
@@ -1061,9 +1076,9 @@ bool FileLoader::loadFile( ID3D11Device* device,
             //Check which triangles use this vertex
             for(int j = 0; j < meshTriangles; ++j)
             {
-                if(Model.Indices[j*3] == i ||
-                    Model.Indices[(j*3)+1] == i ||
-                    Model.Indices[(j*3)+2] == i)
+                if(objModel.Indices[j*3] == i ||
+                    objModel.Indices[(j*3)+1] == i ||
+                    objModel.Indices[(j*3)+2] == i)
                 {
                     tX = XMVectorGetX(normalSum) + tempNormal[j].x;
                     tY = XMVectorGetY(normalSum) + tempNormal[j].y;
@@ -1083,8 +1098,8 @@ bool FileLoader::loadFile( ID3D11Device* device,
             }
 
             //Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
-            normalSum = normalSum / facesUsing;
-            tangentSum = tangentSum / facesUsing;
+            normalSum = normalSum / (float)facesUsing;
+            tangentSum = tangentSum / (float)facesUsing;
 
             //Normalize the normalSum vector and tangent
             normalSum = XMVector3Normalize(normalSum);
@@ -1108,77 +1123,97 @@ bool FileLoader::loadFile( ID3D11Device* device,
     }
 	#pragma endregion
 
+	string name(fileName.begin(), fileName.end());
+	name.erase(name.end() - 4, name.end());
+
+	MeshMaps::MESH_MAPS[name].bufferKey = name;
+	MeshMaps::MESH_MAPS[name].normalizeVertices = computeNormals;
+
+	for (unsigned int indexIndex = 0; indexIndex < objModel.Indices.size(); ++indexIndex)
+		MeshMaps::MESH_MAPS[name].indices.push_back(objModel.Indices[indexIndex]);
+
+	for (unsigned int vertexIndex = 0; vertexIndex < objModel.Vertices.size(); ++vertexIndex)
+	{
+		MeshMaps::MESH_MAPS[name].vertices.push_back(vertices[vertexIndex]);
+	}
+
     // Create Axis-Aligned Bounding Box (AABB)
     XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-    Model.BoundingSphere = 0;
+    objModel.BoundingSphere = 0;
     
-    for(UINT i = 0; i < Model.Vertices.size(); i++)
+	#pragma region Min and Max Vertexes (used for AABB?)
+    for(UINT i = 0; i < objModel.Vertices.size(); i++)
     {       
         // The minVertex and maxVertex will most likely not be actual vertices in the model, but vertices
         // that use the smallest and largest x, y, and z values from the model to be sure ALL vertices are
         // covered by the bounding volume
 
         //Get the smallest vertex 
-        minVertex.x = min(minVertex.x, Model.Vertices[i].x);    // Find smallest x value in model
-        minVertex.y = min(minVertex.y, Model.Vertices[i].y);    // Find smallest y value in model
-        minVertex.z = min(minVertex.z, Model.Vertices[i].z);    // Find smallest z value in model
+        minVertex.x = min(minVertex.x, objModel.Vertices[i].x);    // Find smallest x value in model
+        minVertex.y = min(minVertex.y, objModel.Vertices[i].y);    // Find smallest y value in model
+        minVertex.z = min(minVertex.z, objModel.Vertices[i].z);    // Find smallest z value in model
 
         //Get the largest vertex 
-        maxVertex.x = max(maxVertex.x, Model.Vertices[i].x);    // Find largest x value in model
-        maxVertex.y = max(maxVertex.y, Model.Vertices[i].y);    // Find largest y value in model
-        maxVertex.z = max(maxVertex.z, Model.Vertices[i].z);    // Find largest z value in model
-    }   
+        maxVertex.x = max(maxVertex.x, objModel.Vertices[i].x);    // Find largest x value in model
+        maxVertex.y = max(maxVertex.y, objModel.Vertices[i].y);    // Find largest y value in model
+        maxVertex.z = max(maxVertex.z, objModel.Vertices[i].z);    // Find largest z value in model
+    }
+	#pragma endregion
     
     // Our AABB [0] is the min vertex and [1] is the max
     //Model.AABB.push_back(minVertex);
     //Model.AABB.push_back(maxVertex);
     
     // Get models true center
-    Model.Center.x = maxVertex.x - minVertex.x / 2.0f;
-    Model.Center.y = maxVertex.y - minVertex.y / 2.0f;
-    Model.Center.z = maxVertex.z - minVertex.z / 2.0f;
+    objModel.Center.x = maxVertex.x - minVertex.x / 2.0f;
+    objModel.Center.y = maxVertex.y - minVertex.y / 2.0f;
+    objModel.Center.z = maxVertex.z - minVertex.z / 2.0f;
 
-    // Now that we have the center, get the bounding sphere 
-    for(UINT i = 0; i < Model.Vertices.size(); i++)
+	#pragma region Bounding Sphere
+	// Now that we have the center, get the bounding sphere 
+    for(UINT i = 0; i < objModel.Vertices.size(); i++)
     {       
-        float x = (Model.Center.x - Model.Vertices[i].x) * (Model.Center.x - Model.Vertices[i].x);
-        float y = (Model.Center.y - Model.Vertices[i].y) * (Model.Center.y - Model.Vertices[i].y);
-        float z = (Model.Center.z - Model.Vertices[i].z) * (Model.Center.z - Model.Vertices[i].z);
+        float x = (objModel.Center.x - objModel.Vertices[i].x) * (objModel.Center.x - objModel.Vertices[i].x);
+        float y = (objModel.Center.y - objModel.Vertices[i].y) * (objModel.Center.y - objModel.Vertices[i].y);
+        float z = (objModel.Center.z - objModel.Vertices[i].z) * (objModel.Center.z - objModel.Vertices[i].z);
 
         // Get models bounding sphere
-        Model.BoundingSphere = max(Model.BoundingSphere, (x+y+z));
+        objModel.BoundingSphere = max(objModel.BoundingSphere, (x+y+z));
     }
+	#pragma endregion
 
     // We didn't use the square root when finding the largest distance since it slows things down.
     // We can square root the answer from above to get the actual bounding sphere now
-    Model.BoundingSphere = sqrt(Model.BoundingSphere);
+    objModel.BoundingSphere = sqrt(objModel.BoundingSphere);
 
-    // flip faces
+	#pragma region Flip Faces
     if(flipFaces)
     {
-        for(int i = 0; i < Model.Indices.size(); i+=3)
+        for(unsigned int i = 0; i < objModel.Indices.size(); i+=3)
         {
-            DWORD ti0 = Model.Indices[i];
-            Model.Indices[i] = Model.Indices[i+2];
-            Model.Indices[i+2] = ti0;
+            DWORD ti0 = objModel.Indices[i];
+            objModel.Indices[i] = objModel.Indices[i+2];
+            objModel.Indices[i+2] = ti0;
         }
     }
+	#pragma endregion
 
+	#pragma region Index and Vertex Buffer Setting and assignment
 	//Create index buffer
     D3D11_BUFFER_DESC indexBufferDesc;
     ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
 
     indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    indexBufferDesc.ByteWidth = sizeof(DWORD) * meshTriangles*3;
+    indexBufferDesc.ByteWidth = sizeof(DWORD) * meshTriangles * 3;
     indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     indexBufferDesc.CPUAccessFlags = 0;
     indexBufferDesc.MiscFlags = 0;
 
     D3D11_SUBRESOURCE_DATA iinitData;
 
-    iinitData.pSysMem = &Model.Indices[0];
-    device->CreateBuffer(&indexBufferDesc, &iinitData, &Model.IndexBuff);
+    iinitData.pSysMem = &objModel.Indices[0];
+    device->CreateBuffer(&indexBufferDesc, &iinitData, &objModel.IndexBuff);
 
     //Create Vertex Buffer
     D3D11_BUFFER_DESC vertexBufferDesc;
@@ -1194,7 +1229,11 @@ bool FileLoader::loadFile( ID3D11Device* device,
 
     ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
     vertexBufferData.pSysMem = &vertices[0];
-    hr = device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &Model.VertBuff);
-	*/
-    return true;
+    hr = device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &objModel.VertBuff);
+
+
+	#pragma endregion
+	
+	//FLEE THE DEATH METHOD
+	return true;
 }

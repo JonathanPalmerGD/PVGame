@@ -2,14 +2,15 @@
 
 PhysicsManager::PhysicsManager(void)
 {
-	collisionConfig = new btDefaultCollisionConfiguration();
-    dispatcher      = new btCollisionDispatcher(collisionConfig);
-    broadphase      = new btDbvtBroadphase();
-	ghostPair		= new btGhostPairCallback();
-	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPair);
-    solver          = new btSequentialImpulseConstraintSolver();
-    world           = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
-    world->setGravity(btVector3(0.0f,-9.81f,0.0f));
+	collisionConfig   = new btDefaultCollisionConfiguration();
+    dispatcher        = new btCollisionDispatcher(collisionConfig);
+    broadphase        = new btDbvtBroadphase();
+    solver            = new btSequentialImpulseConstraintSolver();
+    world             = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
+	ghostPairCallback = new btGhostPairCallback();
+
+	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
+	world->setGravity(btVector3(0.0f,-9.81f,0.0f));
 
 	pStepSize = 1.0f / 60.0f; //Update at 60 fps
 	pAccumulator = 0.0f;
@@ -21,7 +22,7 @@ PhysicsManager::~PhysicsManager()
     delete solver;
     delete collisionConfig;
     delete dispatcher;
-	delete ghostPair;
+	delete ghostPairCallback;
     delete broadphase;
 
 	std::map<string, btTriangleMesh*>::iterator itr = TRIANGLE_MESHES.begin();
@@ -196,6 +197,87 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 	return NULL;
 }
 
+btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btTriangleMesh* tMesh)
+{
+	btCollisionShape* ConvexShape = new btConvexTriangleMeshShape(tMesh);
+	//btBoxShape* bShape = new btBoxShape(btVector3(1,1,1));
+	//btConeShapeZ* coneShape = new btConeShapeZ(10, 100);
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(0,2,0));
+
+	btPairCachingGhostObject* frustum = new btPairCachingGhostObject();
+	frustum->setCollisionShape(ConvexShape);
+	frustum->setCollisionFlags(frustum->getCollisionFlags()|btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    frustum->setWorldTransform(t);
+
+    return frustum;
+}
+
+btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btVector3* points, int numPoints)
+{
+	btConvexHullShape* ConvexShape = new btConvexHullShape();
+	for(int i = 0; i < numPoints; i++)
+		ConvexShape->addPoint(points[i]);
+
+	btTransform t;
+	t.setIdentity();
+	t.setOrigin(btVector3(0,2,0));
+
+	btPairCachingGhostObject* frustum = new btPairCachingGhostObject();
+	frustum->setCollisionShape(ConvexShape);
+	frustum->setCollisionFlags(frustum->getCollisionFlags()|btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    frustum->setWorldTransform(t);
+
+    return frustum;
+}
+
+void PhysicsManager::addGhostObjectToWorld(btPairCachingGhostObject* ghost)
+{
+	if(ghost != NULL)
+		world->addCollisionObject(ghost, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
+}
+
+void PhysicsManager::removeGhostObjectFromWorld(btPairCachingGhostObject* ghost)
+{
+	if(ghost != NULL)
+	{
+		world->removeCollisionObject(ghost);
+		delete ghost->getCollisionShape();
+		delete ghost;
+	}
+}
+
+/* frustumCulling()
+ *
+ * checks to see which objects the camera's frustum is colliding with
+ * sets those objects to be seen
+ */
+void PhysicsManager::frustumCulling(btPairCachingGhostObject* ghost)
+{
+   world->getDispatcher()->dispatchAllCollisionPairs(ghost->getOverlappingPairCache(), world->getDispatchInfo(), world->getDispatcher());
+   btBroadphasePairArray &CollisionPairs = ghost->getOverlappingPairCache()->getOverlappingPairArray();
+   int VisibleCount = 0;
+   for(int i = 0; i < CollisionPairs.size(); ++i) {
+      const btBroadphasePair &CollisionPair = CollisionPairs[i];
+      btManifoldArray ManifoldArray;
+      CollisionPair.m_algorithm->getAllContactManifolds(ManifoldArray);
+      for(int j = 0; j < ManifoldArray.size(); ++j) {
+         btPersistentManifold *Manifold = ManifoldArray[j];
+         for(int p = 0; p < Manifold->getNumContacts(); ++p) {
+            const btManifoldPoint &Point = Manifold->getContactPoint(p);
+            if(Point.getDistance() < 0.0) {
+				//camera frustum is body0, so do body1
+				GameObject* aGO = (GameObject*)(Manifold->getBody1()->getUserPointer()); //Not sure why this is nulling out
+				if(aGO)
+					aGO->setSeen(true);
+               ++VisibleCount;
+            }
+         }
+      }
+   }
+}
+
 /* addTriangleMesh
  *
  * Cooks a btTriangleMesh from a bunch of MeshData. This
@@ -240,7 +322,7 @@ void PhysicsManager::addRigidBodyToWorld(btRigidBody* rigidBody)
  */
 void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
 {
-	if(rigidBody!= NULL)
+	if(rigidBody != nullptr)
 	{
 		world->removeRigidBody(rigidBody);
 		delete rigidBody->getCollisionShape();
@@ -261,7 +343,7 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	
 	btKinematicCharacterController* cc = new btKinematicCharacterController(ghost, capsule, stepHeight);
 	world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter|btBroadphaseProxy::KinematicFilter);
-
+	//world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
 	world->addCharacter(cc);
 	return cc;
 }
