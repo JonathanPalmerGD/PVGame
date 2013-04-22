@@ -264,9 +264,20 @@ void PVGame::UpdateScene(float dt)
 		if (physicsMan->update(dt))
 		{
 			for (unsigned int i = 0; i < gameObjects.size(); ++i)
+			{
 				gameObjects[i]->Update();
-		}
+				/* //Should delete objects below -20. Doesn't work 'well' or 'at all'
+				if(gameObjects[i]->getRigidBody()->getWorldTransform().getOrigin().getY() < -20)
+				{
+				gameObjects.erase(gameObjects.begin() += i);
 
+				SortGameObjects();
+				}*/
+			}
+		}
+#if USE_FRUSTUM_CULLING
+		player->GetCamera()->frustumCull();
+#endif
 		//If the player falls of the edge of the world, spawn at the initial sapwn
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
@@ -304,7 +315,7 @@ void PVGame::UpdateScene(float dt)
 				{
 					btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
 					
-					if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
+					if(physicsMan->broadPhase(player->GetCamera(), gameObjects[i]) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 					{
 						currentCrest->ChangeView(true);
 
@@ -326,71 +337,6 @@ void PVGame::UpdateScene(float dt)
 						}
 					}
 					currentCrest->Update(player);
-
-					#pragma region Commented Old Switch for Crest Types
-					/*
-					switch(currentCrest->GetCrestType())
-					{
-						
-						#pragma region Medusa Crest
-						case MEDUSA: //GREEN
-							//Increment the player's movement speed.
-							renderMan->SetLightPosition(1, &crestPos);
-
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
-							{	
-								currentCrest->ChangeView(true);
-								//renderMan->EnableLight(1);
-								//player->setMedusaStatus(true);
-								//player->increaseMedusaPercent();
-							}
-							else
-							{
-								currentCrest->ChangeView(false);
-								//renderMan->DisableLight(1);
-							}
-							break;
-						#pragma endregion
-						#pragma region Leap Crest
-						case LEAP:	//RED
-							//Increase the player's jump variable.
-							renderMan->SetLightPosition(0, &crestPos);
-
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
-							{	
-								renderMan->EnableLight(0);
-								player->setLeapStatus(true);
-							}
-							else
-							{
-								renderMan->DisableLight(0);
-							}
-							break;
-						#pragma endregion
-						#pragma region Mobility Crest
-						case MOBILITY:	//BLUE
-							//Increase the player's movement speed.
-							renderMan->SetLightPosition(2, &crestPos);
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
-							{	
-								renderMan->EnableLight(2);
-								player->setMobilityStatus(true);
-							}
-							else
-							{
-								renderMan->DisableLight(2);
-							}
-							break;
-						#pragma endregion
-						#pragma region Unlock Crest
-						case UNLOCK:
-							renderMan->SetLightPosition(3, &crestPos);
-							//Change the unlocking object to the unlocked state.
-							break;
-						#pragma endregion
-					}
-					*/
-					#pragma endregion
 				}
 			}
 		}
@@ -480,9 +426,9 @@ void PVGame::UpdateScene(float dt)
 
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, ObjectType::WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+			testSphere->initAudio("Audio\\shot.wav");
 			
-			//testSphere->playAudio();
+			testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
@@ -513,10 +459,6 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
-		
-#if USE_FRUSTUM_CULLING
-		player->GetCamera()->frustumCull();
-#endif
 		break;
 	default:
 		break;

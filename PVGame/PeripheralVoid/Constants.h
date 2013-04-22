@@ -14,7 +14,7 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
-#define USE_FRUSTUM_CULLING 0
+#define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define MOBILITY_MULTIPLIER 1.25f
 

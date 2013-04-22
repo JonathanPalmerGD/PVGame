@@ -80,7 +80,7 @@ public:
 	btKinematicCharacterController* createCharacterController(float height, float radius, float stepHeight);
 	void removeCharacterController(btKinematicCharacterController* cc);
 	
-	bool broadPhase(Camera* playCamera, btVector3* targetV3);
+	bool broadPhase(Camera* playCamera, GameObject* target);
 	bool narrowPhase(Camera* playCamera, GameObject* target);
 };
 
