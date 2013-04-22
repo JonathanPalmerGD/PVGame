@@ -157,6 +157,8 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 
 		body = physicsMan->makeCameraFrustumObject(points, 8);
 		
+		delete points;
+
 		physicsMan->addGhostObjectToWorld(body);
 
 	#if DRAW_FRUSTUM

@@ -19,6 +19,7 @@ public:
 	void ChangeView(bool newVisionBool);
 	void SetTargetObject(MovingObject *newTargetObject);
 	CREST_TYPE GetCrestType();
+	static string GetCrestTypeString(CREST_TYPE aType);
 	int GetLightIndex();
 	void CreateLightAndIndex();
 	void Update(Player* player);

@@ -6,7 +6,8 @@
 
 #include "LightHelper.fx"
  
- #define MAX_LIGHTS 10
+#define MAX_LIGHTS 10
+#define MAX_GLOW_RANGE 27 // How many "units" away from the eye an object must be to achieve full glow.
 
 cbuffer cbPerFrame
 {
@@ -36,7 +37,6 @@ cbuffer cbFixed
 cbuffer cbPerObject
 {
 	float4x4 gWorld;
-	Material gMaterial;
 	float4x4 gViewProj;
 	float4x4 gTexTransform;
 	float4x4 gWorldViewProj;
@@ -72,6 +72,7 @@ struct VertexIn
 	Material Material			: MATERIAL;
 	uint InstanceId				: SV_InstanceID;
 	float2 AtlasCoord			: ATLASCOORD;
+	float4 GlowColor			: GLOWCOLOR;
 };
 
 struct VertexOut
@@ -81,7 +82,8 @@ struct VertexOut
     float3 NormalW		: NORMAL;
 	float2 Tex			: TEXCOORD;
 	Material Material	: MATERIAL;
-	float2 AtlasCoord			: ATLASCOORD;
+	float2 AtlasCoord	: ATLASCOORD;
+	float4 GlowColor	: GLOWCOLOR;
 };
 
 struct BlurVertexOut
@@ -108,6 +110,7 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 	vout.Tex   = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
+	vout.GlowColor = vin.GlowColor;
 	return vout;
 }
 
@@ -153,7 +156,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	float3 toEye = gEyePosW - pin.PosW;
 
 	// Cache the distance to the eye from this surface point.
-	float distToEye = length(toEye); 
+	float distToEye = length(toEye);
 
 	// Normalize.
 	toEye /= distToEye;
@@ -177,7 +180,6 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 spec    = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	
 	// Sum the light contribution from each light source.  
 	[unroll]
 	for(int i = 0; i < MAX_LIGHTS; ++i)
@@ -204,6 +206,11 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	// Modulate with late add.
 	litColor = texColor*(ambient + diffuse) + spec;
 
+	distToEye = clamp(distToEye, 0.1f, MAX_GLOW_RANGE);
+
+	if (pin.GlowColor[3] > 0.0f)
+		litColor += (pin.GlowColor / (MAX_GLOW_RANGE / distToEye));
+	
 	// Common to take alpha from diffuse material and texture.
 	litColor.a = pin.Material.Diffuse.a * texColor.a;
 

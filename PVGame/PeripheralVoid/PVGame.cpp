@@ -113,6 +113,11 @@ bool PVGame::LoadXML()
 		aMaterial.Name = material->Attribute("name");
 		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
 		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
+
+		XMLElement* glow = material->FirstChildElement("Glow");
+		if (glow)
+			aMaterial.GlowColor = XMFLOAT4((float)atof(glow->Attribute("r")), (float)atof(glow->Attribute("g")), 
+									 (float)atof(glow->Attribute("b")), (float)atof(glow->Attribute("a")));
 		GAME_MATERIALS[aMaterial.Name] = aMaterial;
 	}
 	#pragma endregion
@@ -175,7 +180,7 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Create Moving Objects and Unlocking Crests
-	/*GameObject* crestGObj = new Crest("crest", "Test Wood", physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
+	/*GameObject* crestGObj = new Crest("crest", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
 	{
@@ -193,7 +198,7 @@ bool PVGame::LoadXML()
 	proceduralGameObjects.push_back(movingGObj);
 	proceduralGameObjects.push_back(crestGObj);
 
-	GameObject* crestGObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
+	GameObject* crestGObj2 = new Crest("Cube", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj2))
 	{
@@ -300,6 +305,9 @@ void PVGame::UpdateScene(float dt)
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
 
+		// Reset blur, we only do it if a single Medusa is in sight.
+		renderMan->RemovePostProcessingEffect(BlurEffect);
+
 		for(unsigned int i = 0; i < gameObjects.size(); i++)
 		{
 			if(gameObjects[i]->GetVisionAffected())
@@ -323,7 +331,7 @@ void PVGame::UpdateScene(float dt)
 						if (currentCrest->GetCrestType() == MEDUSA && player->getController()->onGround())
 						{
 							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
-							renderMan->AddPostProcessingEffect(BlurEffect);
+							//renderMan->AddPostProcessingEffect(BlurEffect);
 						}
 					}
 					else
@@ -349,7 +357,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
+			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
@@ -362,7 +370,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
+			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(LEAP), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
@@ -387,7 +395,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
+			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);

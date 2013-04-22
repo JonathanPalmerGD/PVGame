@@ -11,7 +11,7 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 	tinyxml2::XMLDocument doc;
 
 	doc.LoadFile(xmlFile);
-	
+
 	// Set initial room dimensions
 	width = -100.0f;
 	depth = -100.0f;
@@ -74,7 +74,7 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 		// Get full filename of xml file
 		char folder[80] = "Assets/";
 		const char* fullFile = strcat(folder, file);
-		
+
 		// Store exit information in Wall object
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
@@ -321,7 +321,7 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < crestVector.size(); i++)
 	{
-		GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 1.0f), physicsMan, crestVector[i]->effect, 1.0f);
+		GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(crestVector[i]->effect), physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 1.0f), physicsMan, crestVector[i]->effect, 1.0f);
 		crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
 
 		dynamic_cast<Crest*>(crestObj)->SetTargetObject(cubeMap[crestVector[i]->target]);
