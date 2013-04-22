@@ -193,6 +193,17 @@ struct Wall
 	string direction;
 	string file;
 	CREST_TYPE effect;
+	string target;
+};
+
+struct Cube : public Wall
+{
+	float translateX;
+	float translateY;
+	float translateZ;
+	float scaleX;
+	float scaleY;
+	float scaleZ;
 };
 
 //These structs were gathered from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader

@@ -40,7 +40,6 @@ class GameObject
 		btRigidBody* getRigidBody() const;
 		void changeCollisionLayer(short layer);
 
-
 		virtual ~GameObject(void);
 
 		void initAudio(string file);

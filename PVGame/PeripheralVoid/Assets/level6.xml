@@ -14,6 +14,8 @@
 <exits>
 <exit row="0" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" file="level2.xml"/>
 </exits>
+<cubes>
+</cubes>
 <crests>
 </crests>
 </level>

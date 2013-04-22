@@ -24,6 +24,7 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMat
 	localScale = XMFLOAT3(1.0,1.0,1.0);
 	this->physicsMan = physicsMan;
 	mass = 0.0;
+	//this->collisionLayer = ObjectType::WORLD;
 	audioSource = new AudioSource();
 	if(USE_FRUSTUM_CULLING && (collisionLayer & COL_VISION_AFFECTED))
 		seen = false;

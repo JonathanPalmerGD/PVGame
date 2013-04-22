@@ -175,7 +175,7 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Create Moving Objects and Unlocking Crests
-	GameObject* crestGObj = new Crest("crest", "Test Wood", physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
+	/*GameObject* crestGObj = new Crest("crest", "Test Wood", physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
 	{
@@ -209,7 +209,7 @@ bool PVGame::LoadXML()
 	gameObjects.push_back(movingGObj2);
 	gameObjects.push_back(crestGObj2);	
 	proceduralGameObjects.push_back(movingGObj2);
-	proceduralGameObjects.push_back(crestGObj2);
+	proceduralGameObjects.push_back(crestGObj2);*/
 	#pragma endregion
 
 	//renderMan->LoadFile(L"Assets//Cube.obj");
@@ -459,6 +459,10 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
+		
+#if USE_FRUSTUM_CULLING
+		player->GetCamera()->frustumCull();
+#endif
 		break;
 	default:
 		break;

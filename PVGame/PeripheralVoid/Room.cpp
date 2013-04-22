@@ -112,6 +112,16 @@ Room::~Room(void)
 	}
 	//spawnVector.clear();
 
+
+	for (unsigned int i = 0; i < cubeVector.size(); ++i)
+	{
+		Cube* temp = cubeVector[cubeVector.size() - 1];
+		cubeVector.pop_back();
+		delete temp;
+		--i;
+	}
+	//cubeVector.clear();
+
 	for (unsigned int i = 0; i < crestVector.size(); ++i)
 	{
 		Wall* temp = crestVector[crestVector.size() - 1];
@@ -144,6 +154,7 @@ void Room::loadRoom(float xPos, float zPos)
 
 	XMLElement* walls = doc.FirstChildElement( "level" )->FirstChildElement( "walls" );
 	XMLElement* spawns = doc.FirstChildElement( "level" )->FirstChildElement( "spawns" );
+	XMLElement* cubes = doc.FirstChildElement( "level" )->FirstChildElement( "cubes" );
 	XMLElement* crests = doc.FirstChildElement( "level" )->FirstChildElement( "crests" );
 
 	vector<vector<Wall*>> wallRowCol;
@@ -202,6 +213,43 @@ void Room::loadRoom(float xPos, float zPos)
 		spawnVector.push_back(tempWall);
 	}
 
+	for (XMLElement* cube = cubes->FirstChildElement("cube"); cube != NULL; cube = cube->NextSiblingElement("cube"))
+	{
+		Cube* tempCube = new Cube();
+
+		const char* row = cube->Attribute("row");
+		const char* col = cube->Attribute("col");
+		const char* xLength = cube->Attribute("xLength");
+		const char* zLength = cube->Attribute("zLength");
+		const char* centerX = cube->Attribute("centerX");
+		const char* centerY = cube->Attribute("centerY");
+		const char* centerZ = cube->Attribute("centerZ");
+		const char* translateX = cube->Attribute("translateX");
+		const char* translateY = cube->Attribute("translateY");
+		const char* translateZ = cube->Attribute("translateZ");
+		const char* scaleX = cube->Attribute("scaleX");
+		const char* scaleY = cube->Attribute("scaleY");
+		const char* scaleZ = cube->Attribute("scaleZ");
+
+		tempCube->row = (float)atof(row) + mapOffsetZ;
+		tempCube->col = (float)atof(col) + mapOffsetX;
+		tempCube->xLength = (float)atof(xLength);
+		tempCube->zLength = (float)atof(zLength);
+		tempCube->centerX = (float)atof(centerX) + mapOffsetX;
+		tempCube->centerY = (float)atof(centerY);
+		tempCube->centerZ = (float)atof(centerZ) + mapOffsetZ;
+		tempCube->translateX = (float)atof(translateX);
+		tempCube->translateY = (float)atof(translateY);
+		tempCube->translateZ = (float)atof(translateZ);
+		tempCube->scaleX = (float)atof(scaleX);
+		tempCube->scaleY = (float)atof(scaleY);
+		tempCube->scaleZ = (float)atof(scaleZ);
+		tempCube->direction = "";
+		tempCube->file = "";
+	
+		cubeVector.push_back(tempCube);
+	}
+
 	for (XMLElement* crest = crests->FirstChildElement("crest"); crest != NULL; crest = crest->NextSiblingElement("crest"))
 	{
 		Wall* tempWall = new Wall();
@@ -214,6 +262,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerX = crest->Attribute("centerX");
 		const char* centerY = crest->Attribute("centerY");
 		const char* centerZ = crest->Attribute("centerZ");
+		const char* target = crest->Attribute("target");
 
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
@@ -225,6 +274,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->direction = "";
 		tempWall->file = "";
 		tempWall->effect = static_cast<CREST_TYPE>(atoi(effect));
+		tempWall->target = target;
 	
 		crestVector.push_back(tempWall);
 	}
@@ -240,16 +290,48 @@ void Room::loadRoom(float xPos, float zPos)
 		}
 	}
 
+	for (unsigned int i = 0; i < cubeVector.size(); i++)
+	{
+		MovingObject* cubeObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, 1.5f, cubeVector[i]->centerZ + zPos), physicsMan);
+		cubeObj->scale(cubeVector[i]->xLength,3.0,cubeVector[i]->zLength);
+		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
+		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, 1.5f, cubeVector[i]->centerZ + zPos));
+		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, 1.5f + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
+
+		float rowId = cubeVector[i]->row - mapOffsetZ;
+		float colId = cubeVector[i]->col - mapOffsetX;
+		
+		char rowChar[30];
+		char colChar[30];
+
+		itoa(rowId, rowChar, 10); 
+		itoa(colId, colChar, 10); 
+
+		strcat(rowChar, "|");
+		strcat(rowChar, colChar);
+
+		string mapString = rowChar;
+
+		if (strcmp(mapString.c_str(), "") != 0)
+			cubeMap[mapString] = cubeObj;
+
+		gameObjs.push_back(cubeObj);
+	}
+
+
 	for (unsigned int i = 0; i < crestVector.size(); i++)
 	{
 		GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 1.0f), physicsMan, crestVector[i]->effect, 1.0f);
 		crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
+
+		dynamic_cast<Crest*>(crestObj)->SetTargetObject(cubeMap[crestVector[i]->target]);
+
 		gameObjs.push_back(crestObj);
 	}
 
-	GameObject* wallObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan, ObjectType::WORLD);
-	wallObj->scale(width, 1.0f, depth);
-	gameObjs.push_back(wallObj);
+	GameObject* floorObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan, ObjectType::WORLD);
+	floorObj->scale(width, 1.0f, depth);
+	gameObjs.push_back(floorObj);
 
 	for (unsigned int i = 0; i < wallRowCol.size(); ++i)
 		for (unsigned int j = 0; j < wallRowCol[i].size(); ++j)

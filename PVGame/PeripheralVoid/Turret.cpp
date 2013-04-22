@@ -123,7 +123,8 @@ void Turret::Update(Player* player)
 		//{
 		//	if(targetObject != NULL)
 		//	{
-		//		//Change the targetObject to the locked state.
+		//	
+	//Change the targetObject to the locked state.
 		//		targetObject->SetTargetPosition(0);
 		//	}
 		//}

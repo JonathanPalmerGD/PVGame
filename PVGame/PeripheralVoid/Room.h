@@ -1,13 +1,12 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include "Constants.h"
-#include "GameObject.h"
 #include "PhysicsManager.h"
 #include "tinyxml2.h"
 
 using namespace tinyxml2;
+
+class MovingObject;
 
 class Room
 {
@@ -30,8 +29,10 @@ class Room
 		vector<GameObject*> gameObjs;
 		vector<Wall*> exitVector;
 		vector<Wall*> spawnVector;
+		vector<Cube*> cubeVector;
 		vector<Wall*> crestVector;
 		vector<Room*> neighbors;
+		map<string, MovingObject*> cubeMap; 
 		const char* mapFile;
 		float x;
 		float z;

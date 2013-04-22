@@ -18,6 +18,8 @@
 <exit row="0" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" file="level1.xml"/>
 <exit row="10" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="10.5" file="level6.xml"/>
 </exits>
+<cubes>
+</cubes>
 <crests>
 </crests>
 </level>
