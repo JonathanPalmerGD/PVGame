@@ -2,15 +2,14 @@
 
 PhysicsManager::PhysicsManager(void)
 {
-	collisionConfig   = new btDefaultCollisionConfiguration();
-    dispatcher        = new btCollisionDispatcher(collisionConfig);
-    broadphase        = new btDbvtBroadphase();
-    solver            = new btSequentialImpulseConstraintSolver();
-    world             = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
-	ghostPairCallback = new btGhostPairCallback();
-
-	//Set up custom collision filter
-	btOverlapFilterCallback * filterCallback = new CustomFilterCallback();
+	collisionConfig		= new btDefaultCollisionConfiguration();
+    dispatcher			= new btCollisionDispatcher(collisionConfig);
+    broadphase			= new btDbvtBroadphase();
+    solver				= new btSequentialImpulseConstraintSolver();
+    world				= new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfig);
+	ghostPairCallback	= new btGhostPairCallback();
+	filterCallback		= new CustomFilterCallback(); //Set up custom collision filter
+	
 	world->getPairCache()->setOverlapFilterCallback(filterCallback);
 
 	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
@@ -27,7 +26,8 @@ PhysicsManager::~PhysicsManager()
     delete collisionConfig;
     delete dispatcher;
 	delete ghostPairCallback;
-    delete broadphase;
+    delete filterCallback;
+	delete broadphase;
 
 	std::map<string, btTriangleMesh*>::iterator itr = TRIANGLE_MESHES.begin();
 	while (itr != TRIANGLE_MESHES.end())

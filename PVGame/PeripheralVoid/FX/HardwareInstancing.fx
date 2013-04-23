@@ -8,6 +8,8 @@
  
 #define MAX_LIGHTS 10
 #define MAX_GLOW_RANGE 27 // How many "units" away from the eye an object must be to achieve full glow.
+#define GLOW_RANGE_POWER (0.333333333)
+#define GLOW_ANGLE_POWER (0.666666666)
 
 cbuffer cbPerFrame
 {
@@ -19,6 +21,7 @@ cbuffer cbPerFrame
 
 	float gTexelWidth;
 	float gTexelHeight;
+	float2 gScreenSize;
 };
 
 cbuffer cbSettings
@@ -208,8 +211,23 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 
 	distToEye = clamp(distToEye, 0.1f, MAX_GLOW_RANGE);
 
-	if (pin.GlowColor[3] > 0.0f)
-		litColor += (pin.GlowColor / (MAX_GLOW_RANGE / distToEye));
+	// Only glow if certain conditions met. Position check is to discard pixels not on screen.
+	if (pin.GlowColor[3] > 0.0f && pin.PosH.x >= 0 && pin.PosH.x <= gScreenSize.x && pin.PosH.y >= 0 && pin.PosH.y <= gScreenSize.y)
+	{
+		litColor += (pin.GlowColor * GLOW_RANGE_POWER / (MAX_GLOW_RANGE / distToEye));
+
+		float halfWidth = gScreenSize.x / 2;
+		float halfHeight = gScreenSize.y / 2;
+		float xDif = pin.PosH.x - halfWidth;
+		float yDif = pin.PosH.y - halfHeight;
+		float dist = xDif * xDif + yDif * yDif;
+		float range = halfWidth * halfWidth + halfHeight * halfHeight;
+
+		if ( dist <= range )
+		{
+			litColor += (pin.GlowColor * GLOW_ANGLE_POWER * dist / range);
+		}
+	}
 	
 	// Common to take alpha from diffuse material and texture.
 	litColor.a = pin.Material.Diffuse.a * texColor.a;

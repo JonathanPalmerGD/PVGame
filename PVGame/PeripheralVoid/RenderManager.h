@@ -569,9 +569,13 @@ class RenderManager
 			mfxSpecMapVar			= mFX->GetVariableByName("gSpecMap")->AsShaderResource();
 			mfxNumLights			= mFX->GetVariableByName("numLights");
 			mfxBlurColor			= mFX->GetVariableByName("gBlurColor")->AsVector();
+			mfxScreenSize			= mFX->GetVariableByName("gScreenSize")->AsVector();
 			TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
+
+			float clientSize[2] = {mClientWidth, mClientHeight};
+			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
 		void BuildVertexLayout()
@@ -786,6 +790,12 @@ class RenderManager
 			mScreenViewport.MaxDepth = 1.0f;
 
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+
+			if (mfxScreenSize)
+			{
+				float clientSize[2] = {mClientWidth, mClientHeight};
+				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
+			}
 		}
 
 		void SetBlurColor(XMFLOAT4 aFloat)
@@ -808,6 +818,7 @@ class RenderManager
 		ID3DX11EffectMatrixVariable* TexTransform;
 		ID3DX11EffectVectorVariable* mfxEyePosW;
 		ID3DX11EffectVectorVariable* mfxBlurColor;
+		ID3DX11EffectVectorVariable* mfxScreenSize;
 
 		ID3DX11EffectVariable* mfxDirLights;
 		ID3DX11EffectVariable* mfxPointLights;
@@ -881,6 +892,7 @@ class RenderManager
 			mfxMaterial = nullptr;
 			mfxNumLights = nullptr;
 			mfxBlurColor = nullptr;
+			mfxScreenSize = nullptr;
 			texelWidth = nullptr;
 			texelHeight = nullptr;
 			mInputLayout = nullptr;
