@@ -927,21 +927,34 @@ bool FileLoader::LoadFile( ID3D11Device* device,
 										//renderMan->PushGameMaterial(tempMat);
 										//RenderManager::getInstance().PushGameMaterial(tempMat);
                                         material.push_back(tempMat);
+
+										//XMFLOAT4 Ambient;  //Kill me
+										//XMFLOAT4 Diffuse;  //Kill me      
+										//XMFLOAT4 Specular; //Kill me
+										//XMFLOAT4 Reflect;  //Kill me
+										//int DiffuseTextureID;  //Kill me
+										//int AmbientTextureID;  //Kill me
+										//int SpecularTextureID; //Kill me
+										//int AlphaTextureID;    //Kill me
+										//int NormMapTextureID;  //Kill me
+
+										//std::wstring MatName;  //Kill me because nobody loves me. Also surfaceKey is better than me
 										fileIn >> material[matCount].MatName;
+										
 										material[matCount].IsTransparent = false;
 										material[matCount].HasDiffTexture = false;
 										material[matCount].HasAmbientTexture = false;
 										material[matCount].HasSpecularTexture = false;
 										material[matCount].HasAlphaTexture = false;
 										material[matCount].HasNormMap = false;
-										material[matCount].NormMapTextureID = 0;
+										/*material[matCount].NormMapTextureID = 0;
 										material[matCount].DiffuseTextureID = 0;
 										material[matCount].AlphaTextureID = 0;
 										material[matCount].SpecularTextureID = 0;
 										material[matCount].AmbientTextureID = 0;
 										material[matCount].Specular = XMFLOAT4(0,0,0,0);
 										material[matCount].Ambient = XMFLOAT4(0,0,0,0);
-										material[matCount].Diffuse = XMFLOAT4(0,0,0,0);
+										material[matCount].Diffuse = XMFLOAT4(0,0,0,0);*/
 										matCount++;
                                     }
                                 }

@@ -222,19 +222,20 @@ struct GameMaterial
 	string Name;
 	string SurfaceKey;
 	string DiffuseKey;
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;      
-	XMFLOAT4 Specular;
-	XMFLOAT4 Reflect;
+
 	XMFLOAT4 GlowColor;
 
-	int DiffuseTextureID;
-	int AmbientTextureID;
-	int SpecularTextureID;
-	int AlphaTextureID;
-	int NormMapTextureID;
+	XMFLOAT4 Ambient;  //Kill me
+	XMFLOAT4 Diffuse;  //Kill me      
+	XMFLOAT4 Specular; //Kill me
+	XMFLOAT4 Reflect;  //Kill me
+	int DiffuseTextureID;  //Kill me
+	int AmbientTextureID;  //Kill me
+	int SpecularTextureID; //Kill me
+	int AlphaTextureID;    //Kill me
+	int NormMapTextureID;  //Kill me
 
-	std::wstring MatName;   // So we can match the subset with it's material
+	std::wstring MatName;  //Kill me because nobody loves me. Also surfaceKey is better than me
 
 	// Booleans so we don't implement techniques we don't need
 	bool HasDiffTexture;

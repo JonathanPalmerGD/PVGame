@@ -334,7 +334,7 @@ void PVGame::UpdateScene(float dt)
 						if (currentCrest->GetCrestType() == MEDUSA && player->getController()->onGround())
 						{
 							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
-							//renderMan->AddPostProcessingEffect(BlurEffect);
+							renderMan->AddPostProcessingEffect(BlurEffect);
 						}
 					}
 					else
