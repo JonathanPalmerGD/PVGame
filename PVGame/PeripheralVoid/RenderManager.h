@@ -11,6 +11,8 @@
 #include "GameObject.h"
 #include "FileLoader.h"
 
+class FileLoader;
+
 class RenderManager
 {
 	public:
@@ -491,10 +493,14 @@ class RenderManager
 		{
 			FileLoader loaderMan = FileLoader();
 			ObjModel objModel;
-			vector<GameMaterial> gameMats;
-			TextureManager textureMan;
 			loaderMan.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, false, false);
+			
 			//mObjModels.push_back(objModel);
+		}
+
+		void PushGameMaterial(GameMaterial gameMat)
+		{
+			gameMats.push_back(gameMat);
 		}
 
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
@@ -865,8 +871,11 @@ class RenderManager
 		// Holds all the (vertex, index, instanceData) buffers. Separate map due to meshes being constant.
 		map<string, BufferPair> bufferPairs;
 
-		// ObjModels
+		// FileLoader.cpp specific things
 		//vector<ObjModel> mObjModels;
+		TextureManager textureMan;
+
+		vector<GameMaterial> gameMats;
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;

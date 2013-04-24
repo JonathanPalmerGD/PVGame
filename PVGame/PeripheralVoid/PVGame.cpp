@@ -236,6 +236,7 @@ void PVGame::OnResize()
 
 bool is1Up = true;
 bool is2Up = true;
+bool is8Up = true;
 void PVGame::UpdateScene(float dt)
 {
 	switch(gameState)
@@ -249,7 +250,7 @@ void PVGame::UpdateScene(float dt)
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
 		player->Update(dt, input);
-
+		#pragma region Player Wireframe and blur controls
 		if (input->wasKeyPressed('R'))
 			renderMan->AddPostProcessingEffect(WireframeEffect);
 		if (input->wasKeyPressed('N'))
@@ -264,7 +265,8 @@ void PVGame::UpdateScene(float dt)
 			renderMan->ChangeBlurCount(1);
 		if (input->wasKeyPressed(VK_OEM_4))
 			renderMan->ChangeBlurCount(-1);
-		
+		#pragma endregion
+		#pragma region Physics for Worlds Game Objects
 		// If physics updated, tell the game objects to update their world matrix.
 		if (physicsMan->update(dt))
 		{
@@ -280,9 +282,10 @@ void PVGame::UpdateScene(float dt)
 				}*/
 			}
 		}
-#if USE_FRUSTUM_CULLING
+		#pragma endregion
+		#if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
-#endif
+		#endif
 		//If the player falls of the edge of the world, spawn at the initial sapwn
 		if (player->getPosition().y < -20)
 			player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
@@ -430,7 +433,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 8;
+			float speed = 10;
 
 			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, ObjectType::WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
@@ -452,7 +455,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 0;
+			float speed = 10;
 
 			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
@@ -468,6 +471,27 @@ void PVGame::UpdateScene(float dt)
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
 		
+		if((input->wasKeyPressed('8') || input->getGamepadRightTrigger(0))  && is8Up)
+		{
+			XMFLOAT4 p = player->getPosition();
+			XMFLOAT3 look = player->GetCamera()->GetLook();
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+			float speed = 0;
+
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
+			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+			//testSphere->playAudio();
+			gameObjects.push_back(testSphere);
+			proceduralGameObjects.push_back(testSphere);
+			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
+			is8Up = false;
+		}
+		else if(!input->isKeyDown('8') && !input->getGamepadRightTrigger(0))
+			is8Up = true;
+
 #if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 #endif

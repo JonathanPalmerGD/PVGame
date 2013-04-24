@@ -306,7 +306,7 @@ struct ObjModel
                                         // Where AABB[0] is the min Vertex, and AABB[1] is the max vertex
     XMFLOAT3 Center;                    // True center of the model
     float BoundingSphere;               // Model's bounding sphere
-	~ObjModel() { VertBuff->Release(); IndexBuff->Release(); }
+	//~ObjModel() { VertBuff->Release(); IndexBuff->Release(); }
 };
 
 // Texture manager structure, So all the textures are nice and grouped together
