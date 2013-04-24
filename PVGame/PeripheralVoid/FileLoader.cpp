@@ -11,9 +11,10 @@ FileLoader::~FileLoader(void)
 }
 
 bool FileLoader::LoadFile( ID3D11Device* device,
-    std::wstring fileName, 
+    std::wstring fileName, std::string fileNameS,
     ObjModel& objModel,
     std::vector<GameMaterial>& material, 
+	std::vector<SurfaceMaterial>& surface,
     TextureManager& textureMan,
     bool isRHCoordSys,
     bool computeNormals,
@@ -939,14 +940,28 @@ bool FileLoader::LoadFile( ID3D11Device* device,
 										//int NormMapTextureID;  //Kill me
 
 										//std::wstring MatName;  //Kill me because nobody loves me. Also surfaceKey is better than me
-										fileIn >> material[matCount].MatName;
-										
+										//fileIn >> material[matCount].MatName;
+										material[matCount].SurfaceKey = fileNameS;
+										material[matCount].DiffuseKey = fileNameS;
+										material[matCount].Name = fileNameS;
 										material[matCount].IsTransparent = false;
 										material[matCount].HasDiffTexture = false;
 										material[matCount].HasAmbientTexture = false;
 										material[matCount].HasSpecularTexture = false;
 										material[matCount].HasAlphaTexture = false;
 										material[matCount].HasNormMap = false;
+
+										GAME_MATERIALS[material[matCount].SurfaceKey] = material[matCount];
+
+										SurfaceMaterial aMaterial;
+										aMaterial.Ambient = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+										aMaterial.Diffuse = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+										aMaterial.Specular = XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+										aMaterial.Reflect = XMFLOAT4(0,0,0,0); 
+										
+										//SURFACE_MATERIALS[fileNameS] = aMaterial;
+										//SURFACE_MATERIALS.insert(std::pair<string, SurfaceMaterial>(fileNameS, aMaterial));
+										surface.push_back(aMaterial);
 										/*material[matCount].NormMapTextureID = 0;
 										material[matCount].DiffuseTextureID = 0;
 										material[matCount].AlphaTextureID = 0;

@@ -53,10 +53,9 @@ bool PVGame::Init()
 	physicsMan = new PhysicsManager();
 	player = new Player(physicsMan, renderMan);
 	
-	
 	//Test load a cube.obj
-	renderMan->LoadFile(L"crest.obj");
-	renderMan->LoadFile(L"medusacrest.obj");
+	//renderMan->LoadFile(L"crest.obj", "crest");
+	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
 
 	renderMan->BuildBuffers();
 

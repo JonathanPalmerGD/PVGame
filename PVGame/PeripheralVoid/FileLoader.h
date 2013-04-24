@@ -24,8 +24,10 @@ public:
 
 	bool LoadFile(ID3D11Device* device, 
 	std::wstring fileName, 
-    ObjModel& objModel,
-    std::vector<GameMaterial>& material, 
+	std::string fileNameS,
+	ObjModel& objModel,
+	std::vector<GameMaterial>& material, 
+	std::vector<SurfaceMaterial>& surface, 
     TextureManager& textureMan,
     bool isRHCoordSys,
     bool computeNormals,

@@ -489,12 +489,14 @@ class RenderManager
 			}
 		}
 
-		void LoadFile(wstring fileName)
+		void LoadFile(wstring fileName, string fileNameS)
 		{
 			FileLoader loaderMan = FileLoader();
 			ObjModel objModel;
-			loaderMan.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, false, false);
-			
+			loaderMan.LoadFile(md3dDevice, fileName, fileNameS, objModel, gameMats, surfaceMats, textureMan, false, false, false);
+			GAME_MATERIALS[gameMats[gameMats.size() - 1].Name] = gameMats[gameMats.size() - 1];
+			SURFACE_MATERIALS[gameMats[gameMats.size() - 1].Name] = surfaceMats[surfaceMats.size() - 1];
+			int a = 0;
 			//mObjModels.push_back(objModel);
 		}
 
@@ -874,8 +876,8 @@ class RenderManager
 		// FileLoader.cpp specific things
 		//vector<ObjModel> mObjModels;
 		TextureManager textureMan;
-
 		vector<GameMaterial> gameMats;
+		vector<SurfaceMaterial> surfaceMats;
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;
