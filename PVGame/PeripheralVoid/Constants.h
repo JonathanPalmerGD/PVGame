@@ -12,7 +12,9 @@ using std::vector;
 using std::map;
 using std::string;
 
-#define USE_FRUSTUM_CULLING 1
+#define BIT(x) (1<<(x))
+
+#define USE_FRUSTUM_CULLING 0
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define MOBILITY_MULTIPLIER 1.25f
 
@@ -224,6 +226,8 @@ struct GameMaterial
 	XMFLOAT4 Diffuse;      
 	XMFLOAT4 Specular;
 	XMFLOAT4 Reflect;
+	XMFLOAT4 GlowColor;
+
 	int DiffuseTextureID;
 	int AmbientTextureID;
 	int SpecularTextureID;
@@ -250,6 +254,7 @@ struct InstancedData
 	XMFLOAT4X4 World;
 	SurfaceMaterial SurfMaterial;
 	XMFLOAT2 AtlasC;
+	XMFLOAT4 GlowColor;
 	bool isRendered;
 };
 
@@ -301,7 +306,7 @@ struct ObjModel
                                         // Where AABB[0] is the min Vertex, and AABB[1] is the max vertex
     XMFLOAT3 Center;                    // True center of the model
     float BoundingSphere;               // Model's bounding sphere
-	~ObjModel() { VertBuff->Release(); IndexBuff->Release(); }
+	//~ObjModel() { VertBuff->Release(); IndexBuff->Release(); }
 };
 
 // Texture manager structure, So all the textures are nice and grouped together

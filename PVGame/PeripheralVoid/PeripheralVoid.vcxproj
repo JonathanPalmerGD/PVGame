@@ -107,6 +107,7 @@
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="PVGame.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="MovingObject.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="PVGame.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Room.h" />

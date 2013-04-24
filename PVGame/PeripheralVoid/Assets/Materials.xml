@@ -8,4 +8,30 @@
     <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>Wall01</DiffuseMap>
   </Material>
+
+  <Material name="Leap Crest">
+    <SurfaceMaterial>Red</SurfaceMaterial>
+    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <Glow r="0.7" g="0.0" b="0.0" a="1.0"></Glow>
+  </Material>
+  
+  <Material name="Medusa Crest">
+    <SurfaceMaterial>Red</SurfaceMaterial>
+    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <Glow r="0.0" g="0.7" b="0.0" a="1.0"></Glow>
+  </Material>
+
+  
+  <Material name="Mobility Crest">
+    <SurfaceMaterial>Red</SurfaceMaterial>
+    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <Glow r="0.0" g="0.0" b="0.7" a="1.0"></Glow>
+  </Material>
+
+  <Material name="Unlock Crest">
+    <SurfaceMaterial>Red</SurfaceMaterial>
+    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
+  </Material>
+
 </MaterialsList>

@@ -56,6 +56,7 @@ bool PVGame::Init()
 	
 	//Test load a cube.obj
 	renderMan->LoadFile(L"crest.obj");
+	renderMan->LoadFile(L"medusacrest.obj");
 
 	renderMan->BuildBuffers();
 
@@ -112,6 +113,11 @@ bool PVGame::LoadXML()
 		aMaterial.Name = material->Attribute("name");
 		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
 		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
+
+		XMLElement* glow = material->FirstChildElement("Glow");
+		if (glow)
+			aMaterial.GlowColor = XMFLOAT4((float)atof(glow->Attribute("r")), (float)atof(glow->Attribute("g")), 
+									 (float)atof(glow->Attribute("b")), (float)atof(glow->Attribute("a")));
 		GAME_MATERIALS[aMaterial.Name] = aMaterial;
 	}
 	#pragma endregion
@@ -174,11 +180,10 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Create Moving Objects and Unlocking Crests
-	/*GameObject* crestGObj = new Crest("crest", "Test Wood", physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
+	/*GameObject* crestGObj = new Crest("crest", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
 	{
-		movingGObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		XMFLOAT3 newPos = XMFLOAT3(17.7f, 1.0f, 17.7f);
 		movingObj->AddPosition(newPos);
 		newPos = XMFLOAT3(17.7f, 4.0f, 17.7f);
@@ -193,11 +198,10 @@ bool PVGame::LoadXML()
 	proceduralGameObjects.push_back(movingGObj);
 	proceduralGameObjects.push_back(crestGObj);
 
-	GameObject* crestGObj2 = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
+	GameObject* crestGObj2 = new Crest("Cube", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
 	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
 	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj2))
 	{
-		movingGObj2->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		XMFLOAT3 newPos = XMFLOAT3(5.7f, 1.0f, 17.7f);
 		movingObj->AddPosition(newPos);
 		newPos = XMFLOAT3(8.7f, 1.0f, 17.7f);
@@ -232,6 +236,7 @@ void PVGame::OnResize()
 
 bool is1Up = true;
 bool is2Up = true;
+bool is8Up = true;
 void PVGame::UpdateScene(float dt)
 {
 	switch(gameState)
@@ -245,7 +250,7 @@ void PVGame::UpdateScene(float dt)
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
 		player->Update(dt, input);
-
+		#pragma region Player Wireframe and blur controls
 		if (input->wasKeyPressed('R'))
 			renderMan->AddPostProcessingEffect(WireframeEffect);
 		if (input->wasKeyPressed('N'))
@@ -260,17 +265,41 @@ void PVGame::UpdateScene(float dt)
 			renderMan->ChangeBlurCount(1);
 		if (input->wasKeyPressed(VK_OEM_4))
 			renderMan->ChangeBlurCount(-1);
-		
+		#pragma endregion
+		#pragma region Physics for Worlds Game Objects
 		// If physics updated, tell the game objects to update their world matrix.
 		if (physicsMan->update(dt))
 		{
 			for (unsigned int i = 0; i < gameObjects.size(); ++i)
+			{
 				gameObjects[i]->Update();
+				/* //Should delete objects below -20. Doesn't work 'well' or 'at all'
+				if(gameObjects[i]->getRigidBody()->getWorldTransform().getOrigin().getY() < -20)
+				{
+				gameObjects.erase(gameObjects.begin() += i);
+
+				SortGameObjects();
+				}*/
+			}
+		}
+		#pragma endregion
+		#if USE_FRUSTUM_CULLING
+		player->GetCamera()->frustumCull();
+		#endif
+
+		for (unsigned int i = 0; i < loadedRooms.size(); i++)
+		{
+			if ((player->getPosition().x > loadedRooms[i]->getX()) && (player->getPosition().x < (loadedRooms[i]->getX() + loadedRooms[i]->getWidth())) &&
+				(player->getPosition().z > loadedRooms[i]->getZ()) && (player->getPosition().z < (loadedRooms[i]->getZ() + loadedRooms[i]->getDepth())))
+			{
+					currentRoom = loadedRooms[i];
+					break;
+			}
 		}
 
-		//If the player falls of the edge of the world, spawn at the initial sapwn
+		//If the player falls of the edge of the world, respawn in current room
 		if (player->getPosition().y < -20)
-			player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 
 		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
 		{
@@ -290,6 +319,9 @@ void PVGame::UpdateScene(float dt)
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
 
+		// Reset blur, we only do it if a single Medusa is in sight.
+		renderMan->RemovePostProcessingEffect(BlurEffect);
+
 		for(unsigned int i = 0; i < gameObjects.size(); i++)
 		{
 			if(gameObjects[i]->GetVisionAffected())
@@ -305,15 +337,15 @@ void PVGame::UpdateScene(float dt)
 				{
 					btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
 					
-					if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
+					if(physicsMan->broadPhase(player->GetCamera(), gameObjects[i]) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 					{
 						currentCrest->ChangeView(true);
 
 						// For now, only Medusa causes blur effect.
-						if (currentCrest->GetCrestType() == MEDUSA)
+						if (currentCrest->GetCrestType() == MEDUSA && player->getController()->onGround())
 						{
 							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
-							renderMan->AddPostProcessingEffect(BlurEffect);
+							//renderMan->AddPostProcessingEffect(BlurEffect);
 						}
 					}
 					else
@@ -327,84 +359,19 @@ void PVGame::UpdateScene(float dt)
 						}
 					}
 					currentCrest->Update(player);
-
-					#pragma region Commented Old Switch for Crest Types
-					/*
-					switch(currentCrest->GetCrestType())
-					{
-						
-						#pragma region Medusa Crest
-						case MEDUSA: //GREEN
-							//Increment the player's movement speed.
-							renderMan->SetLightPosition(1, &crestPos);
-
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
-							{	
-								currentCrest->ChangeView(true);
-								//renderMan->EnableLight(1);
-								//player->setMedusaStatus(true);
-								//player->increaseMedusaPercent();
-							}
-							else
-							{
-								currentCrest->ChangeView(false);
-								//renderMan->DisableLight(1);
-							}
-							break;
-						#pragma endregion
-						#pragma region Leap Crest
-						case LEAP:	//RED
-							//Increase the player's jump variable.
-							renderMan->SetLightPosition(0, &crestPos);
-
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
-							{	
-								renderMan->EnableLight(0);
-								player->setLeapStatus(true);
-							}
-							else
-							{
-								renderMan->DisableLight(0);
-							}
-							break;
-						#pragma endregion
-						#pragma region Mobility Crest
-						case MOBILITY:	//BLUE
-							//Increase the player's movement speed.
-							renderMan->SetLightPosition(2, &crestPos);
-							if(physicsMan->broadPhase(player->GetCamera(), &crestPos) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
-							{	
-								renderMan->EnableLight(2);
-								player->setMobilityStatus(true);
-							}
-							else
-							{
-								renderMan->DisableLight(2);
-							}
-							break;
-						#pragma endregion
-						#pragma region Unlock Crest
-						case UNLOCK:
-							renderMan->SetLightPosition(3, &crestPos);
-							//Change the unlocking object to the unlocked state.
-							break;
-						#pragma endregion
-					}
-					*/
-					#pragma endregion
 				}
 			}
 		}
 		#pragma endregion
 
-		#pragma region Outdated Light Code
+		#pragma region Throwing Crests
 		if(input->wasKeyPressed('3'))
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
+			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
@@ -417,7 +384,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
+			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(LEAP), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
@@ -442,7 +409,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
+			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
@@ -451,7 +418,7 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		
+		#pragma region Outdated Light Code
 		/*if(renderMan->getNumLights() > 3)
 		{
 			renderMan->SetLightPosition(3, &player->getCameraPosition());
@@ -470,19 +437,20 @@ void PVGame::UpdateScene(float dt)
 				renderMan->ToggleLight(3);
 			}*/
 		}
+		#pragma	endregion
 
 		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 8;
+			float speed = 10;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, 1.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, ObjectType::WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+			testSphere->initAudio("Audio\\shot.wav");
 			
-			//testSphere->playAudio();
+			testSphere->playAudio();
 			gameObjects.push_back(testSphere);
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
@@ -498,9 +466,9 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 0;
+			float speed = 10;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -514,6 +482,27 @@ void PVGame::UpdateScene(float dt)
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
 		
+		if((input->wasKeyPressed('8') || input->getGamepadRightTrigger(0))  && is8Up)
+		{
+			XMFLOAT4 p = player->getPosition();
+			XMFLOAT3 look = player->GetCamera()->GetLook();
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+			float speed = 0;
+
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
+			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+			//testSphere->playAudio();
+			gameObjects.push_back(testSphere);
+			proceduralGameObjects.push_back(testSphere);
+			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
+			is8Up = false;
+		}
+		else if(!input->isKeyDown('8') && !input->getGamepadRightTrigger(0))
+			is8Up = true;
+
 #if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 #endif

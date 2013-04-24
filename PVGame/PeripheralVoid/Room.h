@@ -19,6 +19,8 @@ class Room
 		Wall* getSpawn(void){return spawnVector[0];};
 		float getX(void){return x;};
 		float getZ(void){return z;};
+		float getWidth(void){return width;};
+		float getDepth(void){return depth;};
 		const char* getFile(void){return mapFile;};
 		vector<Wall*> getExits(void){return exitVector;};
 		vector<Room*> getNeighbors(void){return neighbors;};

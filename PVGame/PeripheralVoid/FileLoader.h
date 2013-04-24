@@ -10,9 +10,10 @@
 #include <d3d11.h>
 #include <d3dx11.h>
 #include "Constants.h"
-//#include "RenderManager.h"
 //#include "PVGame.h"
 //The code for this OBJLoader was taken from : http://www.braynzarsoft.net/Code/index.php?p=VC&code=Obj-Model-Loader
+
+class RenderManager;
 
 class FileLoader
 {
@@ -31,5 +32,5 @@ public:
 	bool flipFaces);
 
 private:
-	//RenderManager *renderMan;
+	RenderManager *renderMan;
 };

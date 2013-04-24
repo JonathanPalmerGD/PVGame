@@ -15,6 +15,33 @@ using namespace std;
 class GameObject;
 class Camera;
 
+
+enum CollisionLayers {
+    COL_NOTHING = 0,             //Collide with nothing
+    COL_DEFAULT = BIT(0),        //Collide with everything
+    COL_RAYCAST = BIT(1),        //Able to be hit by a raycast
+    COL_VISION_AFFECTED = BIT(2) //Can collide with the frustum in frustum culling
+};
+
+//Make it easy to choose which layer(s) a game object goes into
+enum ObjectType {
+	NOTHING         = COL_NOTHING,
+	WORLD           = COL_DEFAULT|COL_RAYCAST,
+	VISION_AFFECTED = COL_DEFAULT|COL_RAYCAST|COL_VISION_AFFECTED,
+	PLAYER          = COL_DEFAULT,
+	FRUSTUM         = COL_VISION_AFFECTED,
+    ALL             = COL_NOTHING|COL_DEFAULT|COL_RAYCAST|COL_VISION_AFFECTED
+};
+
+struct CustomFilterCallback : public btOverlapFilterCallback
+{
+	// return true when pairs need collision
+	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0,btBroadphaseProxy* proxy1) const
+	{
+		return (proxy0->m_collisionFilterGroup & proxy1->m_collisionFilterMask) && (proxy1->m_collisionFilterGroup & proxy0->m_collisionFilterMask);
+	}
+};
+
 class PhysicsManager
 {
  
@@ -25,6 +52,7 @@ private:
 	btBroadphaseInterface* broadphase;         //Handles the Broad Phase of Collision Detections, aka determine pairs of objects that could possibly be colliding
 	btConstraintSolver* solver;                //Solves Constraints
 	btGhostPairCallback* ghostPairCallback;	   // Needs to be separate so it can be deallocated.
+	btOverlapFilterCallback* filterCallback;   // Needs to be separate so it can be deallocated.
 	float pStepSize;
 	float pAccumulator;
 
@@ -47,13 +75,13 @@ public:
 	void frustumCulling(btPairCachingGhostObject* ghost);
 
 	void addTriangleMesh(string handle, MeshData meshData);
-	void addRigidBodyToWorld(btRigidBody* rigidBody);
+	void addRigidBodyToWorld(btRigidBody* rigidBody, short collisionLayer);
 	void removeRigidBodyFromWorld(btRigidBody* rigidBody);
 	
 	btKinematicCharacterController* createCharacterController(float height, float radius, float stepHeight);
 	void removeCharacterController(btKinematicCharacterController* cc);
 	
-	bool broadPhase(Camera* playCamera, btVector3* targetV3);
+	bool broadPhase(Camera* playCamera, GameObject* target);
 	bool narrowPhase(Camera* playCamera, GameObject* target);
 };
 

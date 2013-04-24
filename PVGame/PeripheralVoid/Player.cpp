@@ -35,6 +35,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	renderMan = rm;
 
 	listener = new AudioListener();
+	listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
 }
@@ -194,7 +195,15 @@ void Player::HandleInput(Input* input)
 	#pragma endregion
 
 	//DBOUT(controller->canJump());
-	float currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus))) * (1.0f - medusaPercent);
+	float currentPlayerSpeed = 0;
+	if(!controller->onGround())
+	{
+		currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus)));
+	}
+	else
+	{
+		currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus))) * (1.0f - medusaPercent);
+	}
 	controller->setWalkDirection(direction * currentPlayerSpeed);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
@@ -288,6 +297,11 @@ void Player::setPosition(float setX, float setY, float setZ)
 	btVector3 playerPos(setX, setY, setZ);
 
 	controller->getGhostObject()->getWorldTransform().setOrigin(playerPos);
+}
+
+btKinematicCharacterController* Player::getController()
+{
+	return controller;
 }
 
 btVector3 Player::getCameraPosition()

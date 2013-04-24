@@ -11,6 +11,8 @@
 #include "GameObject.h"
 #include "FileLoader.h"
 
+class FileLoader;
+
 class RenderManager
 {
 	public:
@@ -443,14 +445,20 @@ class RenderManager
 			// Loop through all game objects, setting the world matrix appropriately for each instance.
 			for (unsigned int i = 0; i < gameObjects.size(); i++)
 			{
-				GameMaterial aGameMaterial = GAME_MATERIALS[gameObjects[i]->GetMaterialKey()];
-				string bufferKey = gameObjects[i]->GetMeshKey();
+				GameObject* aObject = gameObjects[i];
+
+				GameMaterial aGameMaterial = GAME_MATERIALS[aObject->GetMaterialKey()];
+				string bufferKey = aObject->GetMeshKey();
 				
 				// Fill up the fields of the InstancedData and then push it into a vector of instacedData of the appropriate kind.
 				InstancedData theData;
-				theData.World = gameObjects[i]->GetWorldMatrix();
+				theData.World = aObject->GetWorldMatrix();
 				theData.SurfMaterial = SURFACE_MATERIALS[aGameMaterial.SurfaceKey];
 				theData.AtlasC = diffuseAtlasCoordsMap[aGameMaterial.DiffuseKey];
+				theData.GlowColor = aGameMaterial.GlowColor;
+
+				if (theData.GlowColor.w == 1.0f)
+					int a = 3;
 				mInstancedDataMap[bufferKey].push_back(theData);
 			}
 				
@@ -485,10 +493,14 @@ class RenderManager
 		{
 			FileLoader loaderMan = FileLoader();
 			ObjModel objModel;
-			vector<GameMaterial> gameMats;
-			TextureManager textureMan;
 			loaderMan.LoadFile(md3dDevice, fileName, objModel, gameMats, textureMan, false, false, false);
+			
 			//mObjModels.push_back(objModel);
+		}
+
+		void PushGameMaterial(GameMaterial gameMat)
+		{
+			gameMats.push_back(gameMat);
 		}
 
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
@@ -563,9 +575,13 @@ class RenderManager
 			mfxSpecMapVar			= mFX->GetVariableByName("gSpecMap")->AsShaderResource();
 			mfxNumLights			= mFX->GetVariableByName("numLights");
 			mfxBlurColor			= mFX->GetVariableByName("gBlurColor")->AsVector();
+			mfxScreenSize			= mFX->GetVariableByName("gScreenSize")->AsVector();
 			TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
+
+			float clientSize[2] = {mClientWidth, mClientHeight};
+			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
 		void BuildVertexLayout()
@@ -592,13 +608,13 @@ class RenderManager
 				{ "MATERIAL", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 96, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 				{ "MATERIAL", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 112, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 				{ "ATLASCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 128, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-
+				{ "GLOWCOLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 136, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 			};
 
 			// Create the input layout
 			D3DX11_PASS_DESC passDesc;
 			techniqueMap.begin()->second->GetPassByIndex(0)->GetDesc(&passDesc);
-			HR(md3dDevice->CreateInputLayout(vertexDesc, 12, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
+			HR(md3dDevice->CreateInputLayout(vertexDesc, 13, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
 		}
 
 		void ToggleLight(int index)
@@ -780,6 +796,12 @@ class RenderManager
 			mScreenViewport.MaxDepth = 1.0f;
 
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+
+			if (mfxScreenSize)
+			{
+				float clientSize[2] = {mClientWidth, mClientHeight};
+				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
+			}
 		}
 
 		void SetBlurColor(XMFLOAT4 aFloat)
@@ -802,6 +824,7 @@ class RenderManager
 		ID3DX11EffectMatrixVariable* TexTransform;
 		ID3DX11EffectVectorVariable* mfxEyePosW;
 		ID3DX11EffectVectorVariable* mfxBlurColor;
+		ID3DX11EffectVectorVariable* mfxScreenSize;
 
 		ID3DX11EffectVariable* mfxDirLights;
 		ID3DX11EffectVariable* mfxPointLights;
@@ -848,8 +871,11 @@ class RenderManager
 		// Holds all the (vertex, index, instanceData) buffers. Separate map due to meshes being constant.
 		map<string, BufferPair> bufferPairs;
 
-		// ObjModels
+		// FileLoader.cpp specific things
 		//vector<ObjModel> mObjModels;
+		TextureManager textureMan;
+
+		vector<GameMaterial> gameMats;
 
 		// Lights.
 		vector<DirectionalLight> mDirLights;
@@ -875,6 +901,7 @@ class RenderManager
 			mfxMaterial = nullptr;
 			mfxNumLights = nullptr;
 			mfxBlurColor = nullptr;
+			mfxScreenSize = nullptr;
 			texelWidth = nullptr;
 			texelHeight = nullptr;
 			mInputLayout = nullptr;

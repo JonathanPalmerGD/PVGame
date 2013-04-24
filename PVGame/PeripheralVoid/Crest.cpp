@@ -18,7 +18,7 @@ Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, Physi
 	CreateLightAndIndex();
 }
 
-Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, mass, true)
+Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, ObjectType::VISION_AFFECTED, mass, true)
 {
 	crestType = aCrestType;
 	inVision = false;
@@ -69,6 +69,30 @@ void Crest::SetTargetObject(MovingObject *newTargetObject)
 CREST_TYPE Crest::GetCrestType()
 {
 	return crestType;
+}
+
+// Returns the name of the supplied crest type - this serves as the key to the linked GameMaterial as well.
+string Crest::GetCrestTypeString(CREST_TYPE aType)
+{
+	switch (aType)
+	{
+		case MEDUSA:
+			return "Medusa Crest";
+			break;
+
+		case MOBILITY:
+			return "Mobility Crest";
+			break;
+
+		case LEAP:
+			return "Leap Crest";
+			break;
+
+		case UNLOCK:
+			return "Unlock Crest";
+			break;
+	}
+	return "Unknown Crest";
 }
 
 int Crest::GetLightIndex()

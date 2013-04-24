@@ -11,6 +11,7 @@ Camera::Camera(PhysicsManager* pM)
 	  mLook(0.0f, 0.0f, 1.0f)
 {
 	physicsMan = pM;
+	frustumBody = NULL;
 	SetLens(0.25f*MathHelper::Pi, 1.0f, 0.01f, 1000.0f);
 }
 
@@ -156,6 +157,8 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 
 		body = physicsMan->makeCameraFrustumObject(points, 8);
 		
+		delete points;
+
 		physicsMan->addGhostObjectToWorld(body);
 
 	#if DRAW_FRUSTUM
@@ -246,9 +249,17 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 		MeshMaps::MESH_MAPS["Frustum"].normalizeVertices = false;
 
 		physicsMan->addTriangleMesh("Frustum", MeshMaps::MESH_MAPS["Frustum"]);
-		
-		frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan);
-		frustumBody->addCollisionFlags(btCollisionObject::CollisionFlags::CF_NO_CONTACT_RESPONSE);
+
+		if(frustumBody == NULL)
+		{
+			frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING);
+		}
+		else
+		{
+			//Yeah that happened. I dereferenced the new operator. I. am. GOD! (lol no). 
+			*frustumBody = *(new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING));
+		}
+
 		frustumBody->CalculateWorldMatrix();
 	#endif //DRAW_FRUSTUM
 #endif //USE_FRUSTUM_CULLING
@@ -392,6 +403,7 @@ void Camera::UpdateViewMatrix()
 
 void Camera::transformBody()
 {
+#if USE_FRUSTUM_CULLING
 	btTransform t = body->getWorldTransform();
 	t.setOrigin(btVector3(mPosition.x, mPosition.y, mPosition.z));
 
@@ -402,11 +414,11 @@ void Camera::transformBody()
 	t.setRotation(ret);
 
 	body->setWorldTransform(t);
-
-#if DRAW_FRUSTUM
+	#if DRAW_FRUSTUM
 		btTransform t2 = frustumBody->getRigidBody()->getWorldTransform();
-	
-		XMFLOAT3 cPos(mPosition.x + (mLook.x *2),mPosition.y + (mLook.y * 2), mPosition.z + (mLook.z * 2));
+		
+		float scale = 1.0f;
+		XMFLOAT3 cPos(mPosition.x + (mLook.x * scale),mPosition.y + (mLook.y * scale), mPosition.z + (mLook.z * scale));
 		t2.setOrigin(btVector3(cPos.x, cPos.y, cPos.z));
 
 		XMVECTOR quat2 = XMQuaternionRotationMatrix(View());
@@ -418,6 +430,7 @@ void Camera::transformBody()
 		frustumBody->getRigidBody()->setWorldTransform(t2);
 		frustumBody->getRigidBody()->getMotionState()->setWorldTransform(t2);
 		frustumBody->CalculateWorldMatrix();
+	#endif
 #endif
 }
 

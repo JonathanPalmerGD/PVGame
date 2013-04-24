@@ -31,6 +31,7 @@ class Player
 		void setPosition(float setX, float setY, float setZ);
 
 		Camera* GetCamera();
+		btKinematicCharacterController* getController();
 		bool getMobilityStatus();
 		bool getMedusaStatus();
 		bool getLeapStatus();

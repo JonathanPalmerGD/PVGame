@@ -924,23 +924,25 @@ bool FileLoader::LoadFile( ID3D11Device* device,
                                     {
                                         // New material, set its defaults
                                         GameMaterial tempMat;
+										//renderMan->PushGameMaterial(tempMat);
+										//RenderManager::getInstance().PushGameMaterial(tempMat);
                                         material.push_back(tempMat);
-                                        fileIn >> material[matCount].MatName;
-                                        material[matCount].IsTransparent = false;
-                                        material[matCount].HasDiffTexture = false;
-                                        material[matCount].HasAmbientTexture = false;
-                                        material[matCount].HasSpecularTexture = false;
-                                        material[matCount].HasAlphaTexture = false;
-                                        material[matCount].HasNormMap = false;
-                                        material[matCount].NormMapTextureID = 0;
-                                        material[matCount].DiffuseTextureID = 0;
-                                        material[matCount].AlphaTextureID = 0;
-                                        material[matCount].SpecularTextureID = 0;
-                                        material[matCount].AmbientTextureID = 0;
-                                        material[matCount].Specular = XMFLOAT4(0,0,0,0);
-                                        material[matCount].Ambient = XMFLOAT4(0,0,0,0);
-                                        material[matCount].Diffuse = XMFLOAT4(0,0,0,0);
-                                        matCount++;
+										fileIn >> material[matCount].MatName;
+										material[matCount].IsTransparent = false;
+										material[matCount].HasDiffTexture = false;
+										material[matCount].HasAmbientTexture = false;
+										material[matCount].HasSpecularTexture = false;
+										material[matCount].HasAlphaTexture = false;
+										material[matCount].HasNormMap = false;
+										material[matCount].NormMapTextureID = 0;
+										material[matCount].DiffuseTextureID = 0;
+										material[matCount].AlphaTextureID = 0;
+										material[matCount].SpecularTextureID = 0;
+										material[matCount].AmbientTextureID = 0;
+										material[matCount].Specular = XMFLOAT4(0,0,0,0);
+										material[matCount].Ambient = XMFLOAT4(0,0,0,0);
+										material[matCount].Diffuse = XMFLOAT4(0,0,0,0);
+										matCount++;
                                     }
                                 }
                             }
@@ -1123,6 +1125,7 @@ bool FileLoader::LoadFile( ID3D11Device* device,
     }
 	#pragma endregion
 
+	#pragma region Add Vertices and Indices to the Mesh Maps
 	string name(fileName.begin(), fileName.end());
 	name.erase(name.end() - 4, name.end());
 
@@ -1136,12 +1139,15 @@ bool FileLoader::LoadFile( ID3D11Device* device,
 	{
 		MeshMaps::MESH_MAPS[name].vertices.push_back(vertices[vertexIndex]);
 	}
+	#pragma endregion
 
+	#pragma region AABB Min/max vert creation
     // Create Axis-Aligned Bounding Box (AABB)
     XMFLOAT3 minVertex = XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
     XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     objModel.BoundingSphere = 0;
-    
+    #pragma endregion
+	
 	#pragma region Min and Max Vertexes (used for AABB?)
     for(UINT i = 0; i < objModel.Vertices.size(); i++)
     {       
@@ -1160,32 +1166,34 @@ bool FileLoader::LoadFile( ID3D11Device* device,
         maxVertex.z = max(maxVertex.z, objModel.Vertices[i].z);    // Find largest z value in model
     }
 	#pragma endregion
-    
+
+	#pragma region Model True Center - Commented Out
     // Our AABB [0] is the min vertex and [1] is the max
-    //Model.AABB.push_back(minVertex);
-    //Model.AABB.push_back(maxVertex);
+    ////Model.AABB.push_back(minVertex);
+    ////Model.AABB.push_back(maxVertex);
     
     // Get models true center
-    objModel.Center.x = maxVertex.x - minVertex.x / 2.0f;
+    /*objModel.Center.x = maxVertex.x - minVertex.x / 2.0f;
     objModel.Center.y = maxVertex.y - minVertex.y / 2.0f;
-    objModel.Center.z = maxVertex.z - minVertex.z / 2.0f;
-
-	#pragma region Bounding Sphere
-	// Now that we have the center, get the bounding sphere 
-    for(UINT i = 0; i < objModel.Vertices.size(); i++)
-    {       
-        float x = (objModel.Center.x - objModel.Vertices[i].x) * (objModel.Center.x - objModel.Vertices[i].x);
-        float y = (objModel.Center.y - objModel.Vertices[i].y) * (objModel.Center.y - objModel.Vertices[i].y);
-        float z = (objModel.Center.z - objModel.Vertices[i].z) * (objModel.Center.z - objModel.Vertices[i].z);
-
-        // Get models bounding sphere
-        objModel.BoundingSphere = max(objModel.BoundingSphere, (x+y+z));
-    }
+    objModel.Center.z = maxVertex.z - minVertex.z / 2.0f;*/
 	#pragma endregion
 
-    // We didn't use the square root when finding the largest distance since it slows things down.
-    // We can square root the answer from above to get the actual bounding sphere now
-    objModel.BoundingSphere = sqrt(objModel.BoundingSphere);
+	#pragma region Bounding Sphere - Commented Out
+	//// Now that we have the center, get the bounding sphere 
+ //   for(UINT i = 0; i < objModel.Vertices.size(); i++)
+ //   {       
+ //       float x = (objModel.Center.x - objModel.Vertices[i].x) * (objModel.Center.x - objModel.Vertices[i].x);
+ //       float y = (objModel.Center.y - objModel.Vertices[i].y) * (objModel.Center.y - objModel.Vertices[i].y);
+ //       float z = (objModel.Center.z - objModel.Vertices[i].z) * (objModel.Center.z - objModel.Vertices[i].z);
+
+ //       // Get models bounding sphere
+ //       objModel.BoundingSphere = max(objModel.BoundingSphere, (x+y+z));
+ //   }
+	//
+ //   // We didn't use the square root when finding the largest distance since it slows things down.
+ //   // We can square root the answer from above to get the actual bounding sphere now
+ //   objModel.BoundingSphere = sqrt(objModel.BoundingSphere);
+	#pragma endregion
 
 	#pragma region Flip Faces
     if(flipFaces)
@@ -1199,39 +1207,37 @@ bool FileLoader::LoadFile( ID3D11Device* device,
     }
 	#pragma endregion
 
-	#pragma region Index and Vertex Buffer Setting and assignment
+	#pragma region Index and Vertex Buffer Setting and assignment - Commented Out
 	//Create index buffer
-    D3D11_BUFFER_DESC indexBufferDesc;
-    ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
+    //D3D11_BUFFER_DESC indexBufferDesc;
+    //ZeroMemory( &indexBufferDesc, sizeof(indexBufferDesc) );
 
-    indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    indexBufferDesc.ByteWidth = sizeof(DWORD) * meshTriangles * 3;
-    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    indexBufferDesc.CPUAccessFlags = 0;
-    indexBufferDesc.MiscFlags = 0;
+    //indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    //indexBufferDesc.ByteWidth = sizeof(DWORD) * meshTriangles * 3;
+    //indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    //indexBufferDesc.CPUAccessFlags = 0;
+    //indexBufferDesc.MiscFlags = 0;
 
-    D3D11_SUBRESOURCE_DATA iinitData;
+    //D3D11_SUBRESOURCE_DATA iinitData;
 
-    iinitData.pSysMem = &objModel.Indices[0];
-    device->CreateBuffer(&indexBufferDesc, &iinitData, &objModel.IndexBuff);
+    //iinitData.pSysMem = &objModel.Indices[0];
+    //device->CreateBuffer(&indexBufferDesc, &iinitData, &objModel.IndexBuff);
 
-    //Create Vertex Buffer
-    D3D11_BUFFER_DESC vertexBufferDesc;
-    ZeroMemory( &vertexBufferDesc, sizeof(vertexBufferDesc) );
+    ////Create Vertex Buffer
+    //D3D11_BUFFER_DESC vertexBufferDesc;
+    //ZeroMemory( &vertexBufferDesc, sizeof(vertexBufferDesc) );
 
-    vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    vertexBufferDesc.ByteWidth = sizeof( Vertex ) * totalVerts;
-    vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    vertexBufferDesc.CPUAccessFlags = 0;
-    vertexBufferDesc.MiscFlags = 0;
+    //vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    //vertexBufferDesc.ByteWidth = sizeof( Vertex ) * totalVerts;
+    //vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    //vertexBufferDesc.CPUAccessFlags = 0;
+    //vertexBufferDesc.MiscFlags = 0;
 
-    D3D11_SUBRESOURCE_DATA vertexBufferData; 
+    //D3D11_SUBRESOURCE_DATA vertexBufferData; 
 
-    ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
-    vertexBufferData.pSysMem = &vertices[0];
-    hr = device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &objModel.VertBuff);
-
-
+    //ZeroMemory( &vertexBufferData, sizeof(vertexBufferData) );
+    //vertexBufferData.pSysMem = &vertices[0];
+    //hr = device->CreateBuffer( &vertexBufferDesc, &vertexBufferData, &objModel.VertBuff);
 	#pragma endregion
 	
 	//FLEE THE DEATH METHOD
