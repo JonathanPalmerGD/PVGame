@@ -223,9 +223,9 @@ struct GameMaterial
 	string Name;
 	string SurfaceKey;
 	string DiffuseKey;
-
 	XMFLOAT4 GlowColor;
 
+	//The Unworthy - to be disposed of at a convenient date.
 	XMFLOAT4 Ambient;  //Kill me
 	XMFLOAT4 Diffuse;  //Kill me      
 	XMFLOAT4 Specular; //Kill me
@@ -235,7 +235,6 @@ struct GameMaterial
 	int SpecularTextureID; //Kill me
 	int AlphaTextureID;    //Kill me
 	int NormMapTextureID;  //Kill me
-
 	std::wstring MatName;  //Kill me because nobody loves me. Also surfaceKey is better than me
 
 	// Booleans so we don't implement techniques we don't need

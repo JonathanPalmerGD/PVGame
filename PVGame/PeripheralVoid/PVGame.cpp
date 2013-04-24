@@ -285,9 +285,20 @@ void PVGame::UpdateScene(float dt)
 		#if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 		#endif
-		//If the player falls of the edge of the world, spawn at the initial sapwn
+
+		for (unsigned int i = 0; i < loadedRooms.size(); i++)
+		{
+			if ((player->getPosition().x > loadedRooms[i]->getX()) && (player->getPosition().x < (loadedRooms[i]->getX() + loadedRooms[i]->getWidth())) &&
+				(player->getPosition().z > loadedRooms[i]->getZ()) && (player->getPosition().z < (loadedRooms[i]->getZ() + loadedRooms[i]->getDepth())))
+			{
+					currentRoom = loadedRooms[i];
+					break;
+			}
+		}
+
+		//If the player falls of the edge of the world, respawn in current room
 		if (player->getPosition().y < -20)
-			player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 
 		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
 		{

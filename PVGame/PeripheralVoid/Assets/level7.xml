@@ -8,6 +8,7 @@
 <wall row="19" col="0" xLength="17" zLength="1" centerX="8.5" centerY="0" centerZ="19.5"/>
 </walls>
 <spawns>
+	<spawn row="11" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="12.5" dir="right"/>
 </spawns>
 <exits>
 <exit row="6" col="21" xLength="1" zLength="3" centerX="21.5" centerY="0" centerZ="7.5" file="level8.xml"/>

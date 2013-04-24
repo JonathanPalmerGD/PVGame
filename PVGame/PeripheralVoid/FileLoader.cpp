@@ -11,7 +11,8 @@ FileLoader::~FileLoader(void)
 }
 
 bool FileLoader::LoadFile( ID3D11Device* device,
-    std::wstring fileName, std::string fileNameS,
+    std::wstring fileName,
+	std::string fileNameS,
     ObjModel& objModel,
     std::vector<GameMaterial>& material, 
 	std::vector<SurfaceMaterial>& surface,

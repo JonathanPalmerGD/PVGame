@@ -430,7 +430,7 @@ bool PhysicsManager::narrowPhase(Camera* playCamera, GameObject* target)
 	{
 		if(callback.m_collisionObject->getCollisionShape() == target->getRigidBody()->getCollisionShape())
 			return true;
-#if FINE_PHASE
+		#if FINE_PHASE
 		else //Generate an "octree" type thing and raycast to "areas"
 		{
 			btVector3 min, max;
@@ -453,7 +453,7 @@ bool PhysicsManager::narrowPhase(Camera* playCamera, GameObject* target)
 							return true;
 					}
 		}
-#endif
+		#endif
 		//else // Loop through all vertices and raycast to them
 		//{
 		//	vector<Vertex> verticies = MeshMaps::MESH_MAPS.find(target->GetMeshKey())->second.vertices;
