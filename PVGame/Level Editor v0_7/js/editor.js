@@ -7,6 +7,7 @@ var MAX_TRANSLATE_X = 50;
 var MAX_TRANSLATE_Y = 10;
 var MAX_TRANSLATE_Z = 50;
 var MAX_WALL_HEIGHT = 10;
+var MAX_CUBE_HEIGHT = 10;
 
 var isMouseDown = false;
 var xmlString = "";
@@ -23,6 +24,7 @@ function init()
 	var grid = document.getElementById("grid");
 
 	var wallHeight = document.getElementById("wallHeight");
+	var cubeHeight = document.getElementById("cubeHeight");
 	
 	for (var i = 0; i < MAX_WALL_HEIGHT; i++)
 	{
@@ -32,6 +34,16 @@ function init()
 		option.appendChild(document.createTextNode(option.value));
 		
 		wallHeight.appendChild(option);
+	}
+	
+	for (var i = 0; i < MAX_CUBE_HEIGHT; i++)
+	{
+		var option = document.createElement("option");
+		
+		option.value = i + 1;
+		option.appendChild(document.createTextNode(option.value));
+		
+		cubeHeight.appendChild(option);
 	}
 	
 	var exitNum = document.getElementById("exitNum");
@@ -153,8 +165,8 @@ function onTileClick(evt)
 			break;
 		case "cube":
 			this.setAttribute("style", "background-color: #862125; color: #FFFFFF;");
-			this.appendChild(document.createTextNode("c|" + document.getElementById("ucTranslateX").value + "|" + document.getElementById("ucTranslateY").value + "|" +
-					 document.getElementById("ucTranslateZ").value));
+			this.appendChild(document.createTextNode("c|" + document.getElementById("cubeHeight").value + "|" + document.getElementById("ucTranslateX").value +
+								  "|" + document.getElementById("ucTranslateY").value + "|" + document.getElementById("ucTranslateZ").value));
 			break;
 		case "crest":
 			this.setAttribute("style", "background-color: #42CD76; color: #000000;");
@@ -196,7 +208,7 @@ function createXML()
 				{
 					var strArray = grid.childNodes[i].childNodes[j].firstChild.nodeValue.split("|");
 					
-					cubes.push({row: ((ROWS - i) - 1), col: j, translateX: strArray[1], translateY: strArray[2], translateZ: strArray[3]});	
+					cubes.push({row: ((ROWS - i) - 1), col: j, yLength: strArray[1], translateX: strArray[2], translateY: strArray[3], translateZ: strArray[4]});	
 				}
 					
 				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue[0] == "C")
@@ -403,7 +415,7 @@ function writeXML(walls, spawns, exits, cubes, crests)
 	{	
 		for (var j = 0; j < cubes[i].length; j++)
 		{
-			xmlString += "<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength +
+			xmlString += "<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength + "\" yLength=\"" + cubes[i][j].yLength +
 				     "\" zLength=\"" + cubes[i][j].zLength + "\" centerX=\"" + cubes[i][j].centerX + "\" centerY=\"" + cubes[i][j].centerY +
 				     "\" centerZ=\"" + cubes[i][j].centerZ + "\" translateX=\"" + cubes[i][j].translateX + "\" translateY=\"" + cubes[i][j].translateY +
 				     "\" translateZ=\"" + cubes[i][j].translateZ + "\"/>";
@@ -489,7 +501,7 @@ function writeXML(walls, spawns, exits, cubes, crests)
 	{
 		for (var j = 0; j < cubes[i].length; j++)
 		{
-			output.appendChild(document.createTextNode("<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength +
+			output.appendChild(document.createTextNode("<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength + "\" yLength=\"" + cubes[i][j].yLength +
 								   "\" zLength=\"" + cubes[i][j].zLength + "\" centerX=\"" + cubes[i][j].centerX + "\" centerY=\"" + cubes[i][j].centerY +
 								   "\" centerZ=\"" + cubes[i][j].centerZ + "\" translateX=\"" + cubes[i][j].translateX + "\" translateY=\"" + cubes[i][j].translateY +
 							           "\" translateZ=\"" + cubes[i][j].translateZ + "\"/>"));

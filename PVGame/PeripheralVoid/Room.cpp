@@ -222,6 +222,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* row = cube->Attribute("row");
 		const char* col = cube->Attribute("col");
 		const char* xLength = cube->Attribute("xLength");
+		const char* yLength = cube->Attribute("yLength");
 		const char* zLength = cube->Attribute("zLength");
 		const char* centerX = cube->Attribute("centerX");
 		const char* centerY = cube->Attribute("centerY");
@@ -236,6 +237,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempCube->row = (float)atof(row) + mapOffsetZ;
 		tempCube->col = (float)atof(col) + mapOffsetX;
 		tempCube->xLength = (float)atof(xLength);
+		tempCube->yLength = (float)atof(yLength);
 		tempCube->zLength = (float)atof(zLength);
 		tempCube->centerX = (float)atof(centerX) + mapOffsetX;
 		tempCube->centerY = (float)atof(centerY);
@@ -294,11 +296,11 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < cubeVector.size(); i++)
 	{
-		MovingObject* cubeObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, 1.5f, cubeVector[i]->centerZ + zPos), physicsMan);
-		cubeObj->scale(cubeVector[i]->xLength,3.0,cubeVector[i]->zLength);
+		MovingObject* cubeObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
+		cubeObj->scale(cubeVector[i]->xLength, cubeVector[i]->yLength, cubeVector[i]->zLength);
 		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
-		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, 1.5f, cubeVector[i]->centerZ + zPos));
-		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, 1.5f + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
+		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos));
+		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, (cubeVector[i]->yLength / 2) + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
 
 		float rowId = cubeVector[i]->row - mapOffsetZ;
 		float colId = cubeVector[i]->col - mapOffsetX;
