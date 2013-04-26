@@ -502,6 +502,39 @@ void PVGame::UpdateScene(float dt)
 		else if(!input->isKeyDown('8') && !input->getGamepadRightTrigger(0))
 			is8Up = true;
 
+		if (input->wasKeyPressed('U'))
+		{
+			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+			{
+				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+				{
+					if (i > 0)
+						currentRoom = loadedRooms[i - 1];
+					else
+						currentRoom = loadedRooms[loadedRooms.size() - 1];
+
+					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+					break;
+				}
+			}
+		}
+		if (input->wasKeyPressed('I'))
+		{
+			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+			{
+				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+				{
+					if (i < (loadedRooms.size() - 1))
+						currentRoom = loadedRooms[i + 1];
+					else
+						currentRoom = loadedRooms[0];
+
+					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+					break;
+				}
+			}
+		}
+
 #if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 #endif
