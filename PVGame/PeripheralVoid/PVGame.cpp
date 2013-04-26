@@ -166,57 +166,10 @@ bool PVGame::LoadXML()
 
 	#pragma region Map Loading
 	//Get the filename from constants, hand it into tinyxml
-
 	BuildRooms(currentRoom);
 
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
-
-	//GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -20.0f, 0.0f), physicsMan);
-	//wallObj->scale(250.0f ,3.0f ,250.0f);
-	//gameObjects.push_back(wallObj);
-	//proceduralGameObjects.push_back(wallObj);
-
 	#pragma endregion
-
-	#pragma region Create Moving Objects and Unlocking Crests
-	/*GameObject* crestGObj = new Crest("crest", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
-	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
-	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
-	{
-		XMFLOAT3 newPos = XMFLOAT3(17.7f, 1.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		newPos = XMFLOAT3(17.7f, 4.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		if(Crest* crestObj = dynamic_cast<Crest*>(crestGObj))
-		{
-			crestObj->SetTargetObject(movingObj);
-		}
-	}
-	gameObjects.push_back(movingGObj);
-	gameObjects.push_back(crestGObj);	
-	proceduralGameObjects.push_back(movingGObj);
-	proceduralGameObjects.push_back(crestGObj);
-
-	GameObject* crestGObj2 = new Crest("Cube", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
-	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
-	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj2))
-	{
-		XMFLOAT3 newPos = XMFLOAT3(5.7f, 1.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		newPos = XMFLOAT3(8.7f, 1.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		if(Crest* crestObj = dynamic_cast<Crest*>(crestGObj2))
-		{
-			crestObj->SetTargetObject(movingObj);
-		}
-	}
-	gameObjects.push_back(movingGObj2);
-	gameObjects.push_back(crestGObj2);	
-	proceduralGameObjects.push_back(movingGObj2);
-	proceduralGameObjects.push_back(crestGObj2);*/
-	#pragma endregion
-
-	//renderMan->LoadFile(L"Assets//Cube.obj");
 
 	SortGameObjects();
 
