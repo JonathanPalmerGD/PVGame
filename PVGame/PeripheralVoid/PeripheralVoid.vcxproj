@@ -57,7 +57,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Audio\AL;bullet-2.81-rev2613\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>FW1FontWrapper;Audio\AL;bullet-2.81-rev2613\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -102,6 +102,31 @@
     <ClCompile Include="Common\xnacollision.cpp" />
     <ClCompile Include="Crest.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1ColorRGBA.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1ColorRGBAInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1DWriteRenderTarget.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1DWriteRenderTargetInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1Factory.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1FactoryInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1FontWrapper.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1FontWrapperInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphAtlas.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphAtlasInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphProvider.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphProviderInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphRenderStates.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphRenderStatesInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphSheet.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphSheetInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphVertexDrawer.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphVertexDrawerInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1StateSaver.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1TextGeometry.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1TextGeometryInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1TextRenderer.cpp" />
+    <ClCompile Include="FW1FontWrapper\CFW1TextRendererInterface.cpp" />
+    <ClCompile Include="FW1FontWrapper\FW1FontWrapper.cpp" />
+    <ClCompile Include="FW1FontWrapper\FW1Precompiled.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="MovingObject.cpp" />
@@ -130,6 +155,22 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Crest.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1ColorRGBA.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1DWriteRenderTarget.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1Factory.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1FontWrapper.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1GlyphAtlas.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1GlyphProvider.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1GlyphRenderStates.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1GlyphSheet.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1GlyphVertexDrawer.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1Object.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1StateSaver.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1TextGeometry.h" />
+    <ClInclude Include="FW1FontWrapper\CFW1TextRenderer.h" />
+    <ClInclude Include="FW1FontWrapper\FW1CompileSettings.h" />
+    <ClInclude Include="FW1FontWrapper\FW1FontWrapper.h" />
+    <ClInclude Include="FW1FontWrapper\FW1Precompiled.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MovingObject.h" />

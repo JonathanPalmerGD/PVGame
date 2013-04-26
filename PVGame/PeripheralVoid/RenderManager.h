@@ -10,7 +10,7 @@
 #include "Common\Camera.h"
 #include "GameObject.h"
 #include "FileLoader.h"
-
+#include "FW1FontWrapper\FW1FontWrapper.h"
 class FileLoader;
 
 class RenderManager
@@ -168,6 +168,9 @@ class RenderManager
 
 			BuildRasterizerStates();  
 
+			FW1CreateFactory(FW1_VERSION, &pFW1Factory);
+			pFW1Factory->CreateFontWrapper(md3dDevice, L"Arial", &pFontWrapper);
+			
 			return true;
 		}
 
@@ -178,6 +181,17 @@ class RenderManager
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::Silver));
+			
+			pFontWrapper->DrawString(
+										md3dImmediateContext,
+										L"Text",// String
+										128.0f,// Font size
+										100.0f,// X position
+										50.0f,// Y position
+										0xff0099ff,// Text color, 0xAaBbGgRr
+										FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+									);
+			
 			HR(mSwapChain->Present(0, 0));
 		}
 
@@ -813,6 +827,10 @@ class RenderManager
 		ID3D11Device* GetDevice() { return md3dDevice; }
 
 	private:
+		//2D Text variables
+		IFW1Factory* pFW1Factory;
+		IFW1FontWrapper *pFontWrapper;
+
 		ID3D11Device* md3dDevice;
 		ID3D11DeviceContext* md3dImmediateContext;
 		IDXGISwapChain* mSwapChain;
@@ -930,6 +948,10 @@ class RenderManager
 
 		~RenderManager()
 		{
+			//Release 2D Text code
+			ReleaseCOM(pFontWrapper);
+			ReleaseCOM(pFW1Factory);
+			
 			ReleaseCOM(mSwapChain);
 			ReleaseCOM(mFX);
 			ReleaseCOM(mInputLayout);

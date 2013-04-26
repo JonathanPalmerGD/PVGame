@@ -7,7 +7,7 @@ PVGame::PVGame(HINSTANCE hInstance)
 {
 	// Initialize smart pointers.
 	input = new Input();
-	gameState = PLAYING;
+	gameState = MENU;
 }
 
 
