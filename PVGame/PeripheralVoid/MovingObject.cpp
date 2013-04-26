@@ -116,7 +116,7 @@ MovingObject::MovingObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorl
 	renderMan = &RenderManager::getInstance();
 }
 
-MovingObject::MovingObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, ObjectType::WORLD, 0.0f, true)
+MovingObject::MovingObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, WORLD, 0.0f, true)
 {
 	//crestType = aCrestType;
 	inVision = false;

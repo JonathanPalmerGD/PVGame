@@ -6,8 +6,6 @@ var MAX_ROOMS = 50;
 var MAX_TRANSLATE_X = 50;
 var MAX_TRANSLATE_Y = 10;
 var MAX_TRANSLATE_Z = 50;
-var MAX_WALL_HEIGHT = 10;
-var MAX_CUBE_HEIGHT = 10;
 
 var isMouseDown = false;
 var xmlString = "";
@@ -23,29 +21,6 @@ function init()
 	var container = document.getElementById("container");
 	var grid = document.getElementById("grid");
 
-	var wallHeight = document.getElementById("wallHeight");
-	var cubeHeight = document.getElementById("cubeHeight");
-	
-	for (var i = 0; i < MAX_WALL_HEIGHT; i++)
-	{
-		var option = document.createElement("option");
-		
-		option.value = i + 1;
-		option.appendChild(document.createTextNode(option.value));
-		
-		wallHeight.appendChild(option);
-	}
-	
-	for (var i = 0; i < MAX_CUBE_HEIGHT; i++)
-	{
-		var option = document.createElement("option");
-		
-		option.value = i + 1;
-		option.appendChild(document.createTextNode(option.value));
-		
-		cubeHeight.appendChild(option);
-	}
-	
 	var exitNum = document.getElementById("exitNum");
 	
 	var ucTranslateX = document.getElementById("ucTranslateX");
@@ -153,7 +128,7 @@ function onTileClick(evt)
 	{
 		case "wall":
 			this.setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
-			this.appendChild(document.createTextNode("W|" + document.getElementById("wallHeight").value));
+			this.appendChild(document.createTextNode("W"));
 			break;
 		case "spawn":
 			this.setAttribute("style", "background-color: #0000FF; color: #FFFFFF;");
@@ -165,8 +140,8 @@ function onTileClick(evt)
 			break;
 		case "cube":
 			this.setAttribute("style", "background-color: #862125; color: #FFFFFF;");
-			this.appendChild(document.createTextNode("c|" + document.getElementById("cubeHeight").value + "|" + document.getElementById("ucTranslateX").value +
-								  "|" + document.getElementById("ucTranslateY").value + "|" + document.getElementById("ucTranslateZ").value));
+			this.appendChild(document.createTextNode("c|" + document.getElementById("ucTranslateX").value + "|" + document.getElementById("ucTranslateY").value + "|" +
+					 document.getElementById("ucTranslateZ").value));
 			break;
 		case "crest":
 			this.setAttribute("style", "background-color: #42CD76; color: #000000;");
@@ -195,8 +170,8 @@ function createXML()
 		{
 			if (grid.childNodes[i].childNodes[j].firstChild)
 			{	
-				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue[0] == "W")
-					walls.push({row: ((ROWS - i) - 1), col: j, yLength: grid.childNodes[i].childNodes[j].firstChild.nodeValue.substr(2)});
+				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue == "W")
+					walls.push({row: ((ROWS - i) - 1), col: j});
 				
 				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue[0] == "S")
 					spawns.push({row: ((ROWS - i) - 1), col: j, dir: grid.childNodes[i].childNodes[j].firstChild.nodeValue.substr(6)});
@@ -208,7 +183,7 @@ function createXML()
 				{
 					var strArray = grid.childNodes[i].childNodes[j].firstChild.nodeValue.split("|");
 					
-					cubes.push({row: ((ROWS - i) - 1), col: j, yLength: strArray[1], translateX: strArray[2], translateY: strArray[3], translateZ: strArray[4]});	
+					cubes.push({row: ((ROWS - i) - 1), col: j, translateX: strArray[1], translateY: strArray[2], translateZ: strArray[3]});	
 				}
 					
 				if (grid.childNodes[i].childNodes[j].firstChild.nodeValue[0] == "C")
@@ -251,12 +226,11 @@ function combineElements (elementArray)
 	
 	for (var i = 0; i < elementArray.length; i++)
 	{		
-		var tempWall = {row: 0.0, col: -1.0, xLength: 1.0, yLength: 1.0, zLength: 1.0, centerX: 0.0, centerY: 0.0, centerZ: 0.0, translateX: 0.0, translateY: 0.0, translateZ: 0.0,
+		var tempWall = {row: 0.0, col: -1.0, xLength: 1.0, zLength: 1.0, centerX: 0.0, centerY: 0.0, centerZ: 0.0, translateX: 0.0, translateY: 0.0, translateZ: 0.0,
 				dir: undefined, file: undefined, effect: undefined, target: undefined};
 
 		tempWall.row = elementArray[i].row;
 		tempWall.col = elementArray[i].col;
-		tempWall.yLength = elementArray[i].yLength;
 		tempWall.dir = elementArray[i].dir;
 		tempWall.file = elementArray[i].file;
 		tempWall.effect = elementArray[i].effect;
@@ -283,8 +257,8 @@ function combineElements (elementArray)
 				
 				if (((wallRowCol[i][j].dir == undefined) || (((wallRowCol[i][j].dir != undefined) && (wallRowCol[i][j].dir == wallRowCol[i][j + 1].dir)))) &&
 				   ((wallRowCol[i][j].file == undefined) || (((wallRowCol[i][j].file != undefined) && (wallRowCol[i][j].file == wallRowCol[i][j + 1].file)))) &&
-				   (wallRowCol[i][j].yLength == wallRowCol[i][j + 1].yLength) && ((wallRowCol[i][j].translateX == wallRowCol[i][j + 1].translateX) &&
-				   (wallRowCol[i][j].translateY == wallRowCol[i][j + 1].translateY) && (wallRowCol[i][j].translateZ == wallRowCol[i][j + 1].translateZ)))
+				   ((wallRowCol[i][j].translateX == wallRowCol[i][j + 1].translateX) && (wallRowCol[i][j].translateY == wallRowCol[i][j + 1].translateY) &&
+				   (wallRowCol[i][j].translateZ == wallRowCol[i][j + 1].translateZ)))
 				{	
 					wallRowCol[i].splice(j + 1, 1);
 
@@ -323,8 +297,8 @@ function combineElements (elementArray)
 						
 						if (((wallRowCol[i][l].dir == undefined) || (((wallRowCol[i][l].dir != undefined) && (wallRowCol[i][l].dir == wallRowCol[i + j][k].dir)))) &&
 						   ((wallRowCol[i][l].file == undefined) || (((wallRowCol[i][l].file != undefined) && (wallRowCol[i][l].file == wallRowCol[i + j][k].file)))) &&
-						   (wallRowCol[i][l].yLength == wallRowCol[i + j][k].yLength) && ((wallRowCol[i][l].translateX == wallRowCol[i + j][k].translateX) &&
-						   (wallRowCol[i][l].translateY == wallRowCol[i + j][k].translateY) && (wallRowCol[i][l].translateZ == wallRowCol[i + j][k].translateZ)))
+						   ((wallRowCol[i][l].translateX == wallRowCol[i + j][k].translateX) && (wallRowCol[i][l].translateY == wallRowCol[i + j][k].translateY) &&
+						   (wallRowCol[i][l].translateZ == wallRowCol[i + j][k].translateZ)))
 						{
 							wallRowCol[i + j].splice(k, 1);
 	
@@ -378,7 +352,7 @@ function writeXML(walls, spawns, exits, cubes, crests)
 	{
 		for (var j = 0; j < walls[i].length; j++)
 		{
-			xmlString += "<wall row=\"" + walls[i][j].row + "\" col=\"" + walls[i][j].col + "\" xLength=\"" + walls[i][j].xLength +  "\" yLength=\"" + walls[i][j].yLength +
+			xmlString += "<wall row=\"" + walls[i][j].row + "\" col=\"" + walls[i][j].col + "\" xLength=\"" + walls[i][j].xLength +
 				     "\" zLength=\"" + walls[i][j].zLength + "\" centerX=\"" + walls[i][j].centerX + "\" centerY=\"" + walls[i][j].centerY +
 				     "\" centerZ=\"" + walls[i][j].centerZ + "\"/>";
 		}
@@ -415,7 +389,7 @@ function writeXML(walls, spawns, exits, cubes, crests)
 	{	
 		for (var j = 0; j < cubes[i].length; j++)
 		{
-			xmlString += "<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength + "\" yLength=\"" + cubes[i][j].yLength +
+			xmlString += "<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength +
 				     "\" zLength=\"" + cubes[i][j].zLength + "\" centerX=\"" + cubes[i][j].centerX + "\" centerY=\"" + cubes[i][j].centerY +
 				     "\" centerZ=\"" + cubes[i][j].centerZ + "\" translateX=\"" + cubes[i][j].translateX + "\" translateY=\"" + cubes[i][j].translateY +
 				     "\" translateZ=\"" + cubes[i][j].translateZ + "\"/>";
@@ -451,7 +425,7 @@ function writeXML(walls, spawns, exits, cubes, crests)
 	{
 		for (var j = 0; j < walls[i].length; j++)
 		{
-			output.appendChild(document.createTextNode("<wall row=\"" + walls[i][j].row + "\" col=\"" + walls[i][j].col + "\" xLength=\"" + walls[i][j].xLength +  "\" yLength=\"" + walls[i][j].yLength +
+			output.appendChild(document.createTextNode("<wall row=\"" + walls[i][j].row + "\" col=\"" + walls[i][j].col + "\" xLength=\"" + walls[i][j].xLength +
 								   "\" zLength=\"" + walls[i][j].zLength + "\" centerX=\"" + walls[i][j].centerX + "\" centerY=\"" + walls[i][j].centerY +
 								   "\" centerZ=\"" + walls[i][j].centerZ + "\"/>"));
 			output.appendChild(document.createElement("br"));
@@ -501,7 +475,7 @@ function writeXML(walls, spawns, exits, cubes, crests)
 	{
 		for (var j = 0; j < cubes[i].length; j++)
 		{
-			output.appendChild(document.createTextNode("<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength + "\" yLength=\"" + cubes[i][j].yLength +
+			output.appendChild(document.createTextNode("<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength +
 								   "\" zLength=\"" + cubes[i][j].zLength + "\" centerX=\"" + cubes[i][j].centerX + "\" centerY=\"" + cubes[i][j].centerY +
 								   "\" centerZ=\"" + cubes[i][j].centerZ + "\" translateX=\"" + cubes[i][j].translateX + "\" translateY=\"" + cubes[i][j].translateY +
 							           "\" translateZ=\"" + cubes[i][j].translateZ + "\"/>"));

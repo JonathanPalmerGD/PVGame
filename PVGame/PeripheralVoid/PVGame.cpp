@@ -7,7 +7,7 @@ PVGame::PVGame(HINSTANCE hInstance)
 {
 	// Initialize smart pointers.
 	input = new Input();
-	gameState = PLAYING;
+	gameState = MENU;
 }
 
 
@@ -166,57 +166,10 @@ bool PVGame::LoadXML()
 
 	#pragma region Map Loading
 	//Get the filename from constants, hand it into tinyxml
-
 	BuildRooms(currentRoom);
 
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
-
-	//GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", 0.0f, -20.0f, 0.0f), physicsMan);
-	//wallObj->scale(250.0f ,3.0f ,250.0f);
-	//gameObjects.push_back(wallObj);
-	//proceduralGameObjects.push_back(wallObj);
-
 	#pragma endregion
-
-	#pragma region Create Moving Objects and Unlocking Crests
-	/*GameObject* crestGObj = new Crest("crest", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("crest", 15.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
-	GameObject* movingGObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 16.7f, 3.0f, 20.7f, 0.0f), physicsMan);
-	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj))
-	{
-		XMFLOAT3 newPos = XMFLOAT3(17.7f, 1.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		newPos = XMFLOAT3(17.7f, 4.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		if(Crest* crestObj = dynamic_cast<Crest*>(crestGObj))
-		{
-			crestObj->SetTargetObject(movingObj);
-		}
-	}
-	gameObjects.push_back(movingGObj);
-	gameObjects.push_back(crestGObj);	
-	proceduralGameObjects.push_back(movingGObj);
-	proceduralGameObjects.push_back(crestGObj);
-
-	GameObject* crestGObj2 = new Crest("Cube", Crest::GetCrestTypeString(UNLOCK), physicsMan->createRigidBody("Cube", 4.0f, 4.0f, 15.0f, 1.0f), physicsMan, UNLOCK, 1.0f);
-	GameObject* movingGObj2 = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", 6.7f, 3.0f, 20.7f, 0.0f), physicsMan);
-	if(MovingObject* movingObj = dynamic_cast<MovingObject*>(movingGObj2))
-	{
-		XMFLOAT3 newPos = XMFLOAT3(5.7f, 1.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		newPos = XMFLOAT3(8.7f, 1.0f, 17.7f);
-		movingObj->AddPosition(newPos);
-		if(Crest* crestObj = dynamic_cast<Crest*>(crestGObj2))
-		{
-			crestObj->SetTargetObject(movingObj);
-		}
-	}
-	gameObjects.push_back(movingGObj2);
-	gameObjects.push_back(crestGObj2);	
-	proceduralGameObjects.push_back(movingGObj2);
-	proceduralGameObjects.push_back(crestGObj2);*/
-	#pragma endregion
-
-	//renderMan->LoadFile(L"Assets//Cube.obj");
 
 	SortGameObjects();
 
@@ -233,9 +186,12 @@ void PVGame::OnResize()
 	//XMStoreFloat4x4(&mProj, P);
 }
 
+#pragma region Awful use of variables courtesy of Jason
 bool is1Up = true;
 bool is2Up = true;
 bool is8Up = true;
+bool isEUp = true;
+#pragma endregion
 void PVGame::UpdateScene(float dt)
 {
 	switch(gameState)
@@ -286,6 +242,7 @@ void PVGame::UpdateScene(float dt)
 		player->GetCamera()->frustumCull();
 		#endif
 
+		#pragma region Player Room Tracking and Resetting to Checkpoints
 		for (unsigned int i = 0; i < loadedRooms.size(); i++)
 		{
 			if ((player->getPosition().x > loadedRooms[i]->getX()) && (player->getPosition().x < (loadedRooms[i]->getX() + loadedRooms[i]->getWidth())) &&
@@ -295,26 +252,10 @@ void PVGame::UpdateScene(float dt)
 					break;
 			}
 		}
-
 		//If the player falls of the edge of the world, respawn in current room
 		if (player->getPosition().y < -20)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-
-		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
-		{
-			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
-			btVector3 lightPos = renderMan->getLightPosition(i);
-			//btVector3 targetV3 = &lightPos;
-			if(physicsMan->broadPhase(player->GetCamera(), &lightPos))
-			{
-				//renderMan->EnableLight(i);
-			}
-			else
-			{
-				//renderMan->DisableLight(i);
-			}
-		}*/
-		
+		#pragma endregion
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
 
@@ -437,7 +378,7 @@ void PVGame::UpdateScene(float dt)
 			}*/
 		}
 		#pragma	endregion
-
+		#pragma region 1: Slow Sphere
 		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
 			XMFLOAT4 p = player->getPosition();
@@ -445,7 +386,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 10;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, ObjectType::WORLD, 1.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\shot.wav");
 			
@@ -459,15 +400,16 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
 			is1Up = true;
-
+		#pragma endregion
+		#pragma region 2: Slow Cube
 		if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 10;
+			float speed = 20;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -480,15 +422,16 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
-		
-		if((input->wasKeyPressed('8') || input->getGamepadRightTrigger(0))  && is8Up)
+		#pragma endregion
+		#pragma region 8: Speedless Cube
+		if((input->wasKeyPressed('8'))  && is8Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 0;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -499,9 +442,32 @@ void PVGame::UpdateScene(float dt)
 			SortGameObjects();
 			is8Up = false;
 		}
-		else if(!input->isKeyDown('8') && !input->getGamepadRightTrigger(0))
+		else if(!input->isKeyDown('8'))
 			is8Up = true;
+		#pragma endregion
+		#pragma region E: Fast Sphere
+		if((input->wasKeyPressed('E'))  && isEUp)
+		{
+			XMFLOAT4 p = player->getPosition();
+			XMFLOAT3 look = player->GetCamera()->GetLook();
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+			float speed = 90;
 
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
+			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->initAudio("Audio\\shot.wav");
+			testSphere->playAudio();
+			gameObjects.push_back(testSphere);
+			proceduralGameObjects.push_back(testSphere);
+			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
+			isEUp = false;
+		}
+		else if(!input->isKeyDown('E'))
+			isEUp = true;
+		#pragma endregion
+		#pragma region Level Controls U and I
 		if (input->wasKeyPressed('U'))
 		{
 			for (unsigned int i = 0; i < loadedRooms.size(); i++)
@@ -518,7 +484,6 @@ void PVGame::UpdateScene(float dt)
 				}
 			}
 		}
-
 		if (input->wasKeyPressed('I'))
 		{
 			for (unsigned int i = 0; i < loadedRooms.size(); i++)
@@ -535,6 +500,7 @@ void PVGame::UpdateScene(float dt)
 				}
 			}
 		}
+		#pragma endregion
 
 #if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();

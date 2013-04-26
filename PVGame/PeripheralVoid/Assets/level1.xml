@@ -19,13 +19,13 @@
 <exit row="24" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="24.5" file="level2.xml"/>
 </exits>
 <cubes>
-<cube row="19" col="7" xLength="1" yLength="1" zLength="1" centerX="7.5" centerY="0" centerZ="19.5" translateX="10" translateY="0" translateZ="0" scaleX="1" scaleY="1" scaleZ="1"/>
+<cube row="19" col="7" xLength="3" yLength="1" zLength="3" centerX="7.5" centerY="0" centerZ="19.5" translateX="10" translateY="0" translateZ="0" scaleX="1" scaleY="1" scaleZ="1"/>
 <cube row="23" col="10" xLength="5" yLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="23.5" translateX="0" translateY="10" translateZ="0" scaleX="1" scaleY="1" scaleZ="1"/>
 </cubes>
 <crests>
-<crest row="1" col="1" xLength="1" zLength="1" centerX="1.5" centerY="0" centerZ="1.5" effect="1" target=""/>
-<crest row="1" col="23" xLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="1.5" effect="2" target=""/>
-<crest row="13" col="7" xLength="1" zLength="1" centerX="7.5" centerY="0" centerZ="13.5" effect="3" target="19|7"/>
-<crest row="13" col="17" xLength="1" zLength="1" centerX="17.5" centerY="0" centerZ="13.5" effect="3" target="23|10"/>
+<crest row="2" col="1" xLength="1" zLength="1" centerX="1.5" centerY="0" centerZ="2.5" dir="right" effect="1" target=""/>
+<crest row="2" col="23" xLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="2.5" dir="left" effect="2" target=""/>
+<crest row="23" col="6" xLength="1" zLength="1" centerX="6.5" centerY="0" centerZ="23.5" dir="down" effect="3" target="19|7"/>
+<crest row="23" col="19" xLength="1" zLength="1" centerX="19.5" centerY="0" centerZ="23.5" dir="down" effect="3" target="23|10"/>
 </crests>
 </level>

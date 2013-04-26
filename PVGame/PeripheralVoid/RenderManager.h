@@ -10,7 +10,7 @@
 #include "Common\Camera.h"
 #include "GameObject.h"
 #include "FileLoader.h"
-
+#include "FW1FontWrapper\FW1FontWrapper.h"
 class FileLoader;
 
 class RenderManager
@@ -168,6 +168,9 @@ class RenderManager
 
 			BuildRasterizerStates();  
 
+			FW1CreateFactory(FW1_VERSION, &pFW1Factory);
+			pFW1Factory->CreateFontWrapper(md3dDevice, L"Arial", &pFontWrapper);
+			
 			return true;
 		}
 
@@ -178,6 +181,17 @@ class RenderManager
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::Silver));
+			
+			pFontWrapper->DrawString(
+										md3dImmediateContext,
+										L"Text",// String
+										128.0f,// Font size
+										100.0f,// X position
+										50.0f,// Y position
+										0xff0099ff,// Text color, 0xAaBbGgRr
+										FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+									);
+			
 			HR(mSwapChain->Present(0, 0));
 		}
 
@@ -581,7 +595,7 @@ class RenderManager
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 
-			float clientSize[2] = {mClientWidth, mClientHeight};
+			float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
@@ -800,7 +814,7 @@ class RenderManager
 
 			if (mfxScreenSize)
 			{
-				float clientSize[2] = {mClientWidth, mClientHeight};
+				float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 			}
 		}
@@ -813,6 +827,10 @@ class RenderManager
 		ID3D11Device* GetDevice() { return md3dDevice; }
 
 	private:
+		//2D Text variables
+		IFW1Factory* pFW1Factory;
+		IFW1FontWrapper *pFontWrapper;
+
 		ID3D11Device* md3dDevice;
 		ID3D11DeviceContext* md3dImmediateContext;
 		IDXGISwapChain* mSwapChain;
@@ -930,6 +948,10 @@ class RenderManager
 
 		~RenderManager()
 		{
+			//Release 2D Text code
+			ReleaseCOM(pFontWrapper);
+			ReleaseCOM(pFW1Factory);
+			
 			ReleaseCOM(mSwapChain);
 			ReleaseCOM(mFX);
 			ReleaseCOM(mInputLayout);
@@ -1016,53 +1038,4 @@ class RenderManager
 		RenderManager(RenderManager const&); // Don't implement.
 		void operator=(RenderManager const&); // Don't implement.
 };
-
 #endif
-
-/* Uncomment to re-induce nausea
-// Bind the render target view to the back buffer.
-md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
-		
-// Clear the render target and depth/stencil view.
-md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-// Set texture atlas once for now.
-mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
-
-DrawGameObjects("LightsWithoutAtlas");
-*/
-
-//CreateLight(XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f), XMFLOAT4(30.0f, 30.0f, 30.0f, 1.0f), XMFLOAT4(2.0f, 2.0f, 2.0f, 1.0f), 15.0f, XMFLOAT3(0.0f, 0.0f, -0.0f));
-//PointLight aPointLight;
-//
-//// Second is green.
-//aPointLight.Ambient = XMFLOAT4(0.0f, 0.6f, 0.0f, 1.0f);
-//aPointLight.Diffuse = XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f);
-//aPointLight.Specular = XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f);
-//aPointLight.Range = 5.0f;
-//aPointLight.Position = XMFLOAT3(-0.0f, 0.5f, -7.5f);
-//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-//mPointLights.push_back(PointLight(aPointLight));
-
-//// Third is blue.
-//PointLight bPointLight;
-//bPointLight.Ambient = XMFLOAT4(0.0f, 0.0f, 0.6f, 1.0f);
-//bPointLight.Diffuse = XMFLOAT4(0.0f, 0.0f, 3.0f, 1.0f);
-//bPointLight.Specular = XMFLOAT4(0.0f, 0.0f,2.0f, 1.0f);
-//bPointLight.Range = 5.0f;
-//bPointLight.Position = XMFLOAT3(-7.5f, 0.5f, -0.0f);
-//bPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-//bPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-//mPointLights.push_back(PointLight(bPointLight));
-
-//// Fourth is White 
-//aPointLight.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-//aPointLight.Diffuse = XMFLOAT4(3.0f, 0.0f, 3.0f, 1.0f);
-//aPointLight.Specular = XMFLOAT4(2.0f, 0.0f, 2.0f, 1.0f);
-//aPointLight.Range = 5.0f;
-//aPointLight.Position = XMFLOAT3(-4.5f, 3.5f, -4.5f);
-//aPointLight.Att = XMFLOAT3(0.0f, 0.0f, 10.0f);
-//aPointLight.On = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-//mPointLights.push_back(PointLight(aPointLight));
