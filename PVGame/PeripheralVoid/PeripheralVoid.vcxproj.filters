@@ -1,349 +1,339 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{2d836ca6-9641-42d2-8ed6-9bcf4e1011f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FX">
-      <UniqueIdentifier>{65ed053b-d147-4329-be15-ce7deeea5954}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Audio">
-      <UniqueIdentifier>{131f6860-5c77-4a12-a819-5eca64bf0ee2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TinyXML2">
-      <UniqueIdentifier>{50e790db-797f-4a0f-8993-e8cf7f3ce623}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="XML Files">
-      <UniqueIdentifier>{efd5f48c-12e2-44bf-861a-73856ec6afcd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FW1FontWrapper">
-      <UniqueIdentifier>{d263d811-3439-44ba-b1a9-4d27f4ed1e24}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Common\Camera.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\d3dApp.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\d3dUtil.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\GameTimer.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\GeometryGenerator.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\LightHelper.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\MathHelper.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\TextureMgr.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Waves.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\xnacollision.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PVGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Audio\AudioListener.cpp">
-      <Filter>Audio</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Audio\AudioSource.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxml2.cpp">
-      <Filter>TinyXML2</Filter>
-    </ClCompile>
-    <ClCompile Include="FileLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Crest.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="FileLoader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="MovingObject.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Turret.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="PhysicsManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PVGame.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\TextureMgr.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Turret.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="FW1FontWrapper\CFW1ColorRGBA.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1ColorRGBAInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1DWriteRenderTarget.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1DWriteRenderTargetInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1Factory.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1FactoryInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1FontWrapper.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1FontWrapperInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphAtlas.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphAtlasInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphProvider.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphProviderInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphRenderStates.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphRenderStatesInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphSheet.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphSheetInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphVertexDrawer.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1GlyphVertexDrawerInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1StateSaver.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1TextGeometry.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1TextGeometryInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="FW1FontWrapper\CFW1TextRenderer.cpp">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClCompile>
     <ClCompile Include="FW1FontWrapper\CFW1TextRendererInterface.cpp">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1ColorRGBAInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1DWriteRenderTarget.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1DWriteRenderTargetInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1Factory.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1FactoryInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1FontWrapper.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1FontWrapperInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphAtlas.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphAtlasInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphProvider.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphProviderInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphRenderStates.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphRenderStatesInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphSheet.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphSheetInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphVertexDrawer.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1GlyphVertexDrawerInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1StateSaver.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1TextGeometry.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1TextGeometryInterface.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FW1FontWrapper\CFW1TextRenderer.cpp">
+      <Filter>Font</Filter>
     </ClCompile>
     <ClCompile Include="FW1FontWrapper\FW1FontWrapper.cpp">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClCompile>
     <ClCompile Include="FW1FontWrapper\FW1Precompiled.cpp">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\d3dApp.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\d3dUtil.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GameTimer.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\GeometryGenerator.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\LightHelper.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\MathHelper.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Waves.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\xnacollision.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>XML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common\Camera.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\d3dApp.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\d3dUtil.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\d3dx11effect.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\GameTimer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\GeometryGenerator.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\LightHelper.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\MathHelper.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\TextureMgr.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Waves.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\xnacollision.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PVGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio\AudioListener.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio\AudioSource.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="tinyxml2.h">
-      <Filter>TinyXML2</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Crest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MovingObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Turret.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Projectile.h">
-      <Filter>Header Files</Filter>
-	<ClInclude Include="FW1FontWrapper\CFW1ColorRGBA.h">
-      <Filter>FW1FontWrapper</Filter>
+    <ClInclude Include="FW1FontWrapper\CFW1ColorRGBA.h">
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1DWriteRenderTarget.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1Factory.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1FontWrapper.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1GlyphAtlas.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1GlyphProvider.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1GlyphRenderStates.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1GlyphSheet.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1GlyphVertexDrawer.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1Object.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1StateSaver.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1TextGeometry.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\CFW1TextRenderer.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\FW1CompileSettings.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\FW1FontWrapper.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="FW1FontWrapper\FW1Precompiled.h">
-      <Filter>FW1FontWrapper</Filter>
+      <Filter>Font</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Common\Effects11.lib">
-      <Filter>Common</Filter>
-    </Library>
-    <Library Include="Common\Effects11d.lib">
-      <Filter>Common</Filter>
-    </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FX\color.cod">
-      <Filter>FX</Filter>
-    </None>
-    <None Include="FX\LightHelper.fx">
-      <Filter>FX</Filter>
-    </None>
-    <None Include="Assets\Materials.xml">
-      <Filter>XML Files</Filter>
-    </None>
-    <None Include="Assets\SurfaceMaterials.xml">
-      <Filter>XML Files</Filter>
-    </None>
-    <None Include="Assets\Textures.xml">
-      <Filter>XML Files</Filter>
-    </None>
+    <ClInclude Include="Audio\AudioListener.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\AudioSource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Crest.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PVGame.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\TextureMgr.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Camera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dApp.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dUtil.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dx11effect.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GameTimer.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GeometryGenerator.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\LightHelper.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MathHelper.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Waves.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\xnacollision.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>XML</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="FX\Basic.fx">
-      <Filter>FX</Filter>
-    </CustomBuild>
-    <CustomBuild Include="FX\Lighting.fx">
-      <Filter>FX</Filter>
+      <Filter>Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="FX\HardwareInstancing.fx">
-      <Filter>FX</Filter>
+      <Filter>Shaders</Filter>
     </CustomBuild>
+    <CustomBuild Include="FX\Lighting.fx">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FX\color.cod">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FX\LightHelper.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Assets\Materials.xml">
+      <Filter>XML</Filter>
+    </None>
+    <None Include="Assets\SurfaceMaterials.xml">
+      <Filter>XML</Filter>
+    </None>
+    <None Include="Assets\Textures.xml">
+      <Filter>XML</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Common\Effects11d.lib">
+      <Filter>Luna</Filter>
+    </Library>
+    <Library Include="Common\Effects11.lib">
+      <Filter>Luna</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Font">
+      <UniqueIdentifier>{efff8ceb-7dd0-4771-9fe0-e0002bdd7fec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Luna">
+      <UniqueIdentifier>{fb3fca86-84dd-44df-ad52-e2c7c60cd15d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{26a55b6f-c56d-4797-9332-e742698339cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{68aeb45f-7ac5-4175-904f-e6fe0f483585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XML">
+      <UniqueIdentifier>{f10fd82b-3b6a-48b8-bd6d-1feb03366fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{084914fc-6d38-47d7-9605-481cb6426485}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
