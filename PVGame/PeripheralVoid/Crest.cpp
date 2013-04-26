@@ -18,7 +18,7 @@ Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, Physi
 	CreateLightAndIndex();
 }
 
-Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED, mass, true)
+Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED_NOCOLLISION, mass, true)
 {
 	crestType = aCrestType;
 	inVision = false;

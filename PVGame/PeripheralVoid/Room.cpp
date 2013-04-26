@@ -288,7 +288,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, ObjectType::WORLD);
+			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
 		}
@@ -308,8 +308,8 @@ void Room::loadRoom(float xPos, float zPos)
 		char rowChar[30];
 		char colChar[30];
 
-		itoa(rowId, rowChar, 10); 
-		itoa(colId, colChar, 10); 
+		itoa((int)rowId, rowChar, 10); 
+		itoa((int)colId, colChar, 10); 
 
 		strcat(rowChar, "|");
 		strcat(rowChar, colChar);

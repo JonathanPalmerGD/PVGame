@@ -25,12 +25,13 @@ enum CollisionLayers {
 
 //Make it easy to choose which layer(s) a game object goes into
 enum ObjectType {
-	NOTHING         = COL_NOTHING,
-	WORLD           = COL_DEFAULT|COL_RAYCAST,
-	VISION_AFFECTED = COL_DEFAULT|COL_RAYCAST|COL_VISION_AFFECTED,
-	PLAYER          = COL_DEFAULT,
-	FRUSTUM         = COL_VISION_AFFECTED,
-    ALL             = COL_NOTHING|COL_DEFAULT|COL_RAYCAST|COL_VISION_AFFECTED
+	NOTHING                     = COL_NOTHING,
+	WORLD                       = COL_DEFAULT|COL_RAYCAST,
+	VISION_AFFECTED_COLLISION   = COL_DEFAULT|COL_RAYCAST|COL_VISION_AFFECTED,
+	VISION_AFFECTED_NOCOLLISION = COL_RAYCAST|COL_VISION_AFFECTED,
+	PLAYER                      = COL_DEFAULT,
+	FRUSTUM                     = COL_VISION_AFFECTED,
+    ALL                         = COL_NOTHING|COL_DEFAULT|COL_RAYCAST|COL_VISION_AFFECTED
 };
 
 struct CustomFilterCallback : public btOverlapFilterCallback
