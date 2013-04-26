@@ -53,10 +53,9 @@ bool PVGame::Init()
 	physicsMan = new PhysicsManager();
 	player = new Player(physicsMan, renderMan);
 	
-	
 	//Test load a cube.obj
-	renderMan->LoadFile(L"crest.obj");
-	renderMan->LoadFile(L"medusacrest.obj");
+	//renderMan->LoadFile(L"crest.obj", "crest");
+	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
 
 	renderMan->BuildBuffers();
 
@@ -345,7 +344,7 @@ void PVGame::UpdateScene(float dt)
 						if (currentCrest->GetCrestType() == MEDUSA && player->getController()->onGround())
 						{
 							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
-							//renderMan->AddPostProcessingEffect(BlurEffect);
+							renderMan->AddPostProcessingEffect(BlurEffect);
 						}
 					}
 					else
@@ -502,6 +501,40 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('8') && !input->getGamepadRightTrigger(0))
 			is8Up = true;
+
+		if (input->wasKeyPressed('U'))
+		{
+			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+			{
+				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+				{
+					if (i > 0)
+						currentRoom = loadedRooms[i - 1];
+					else
+						currentRoom = loadedRooms[loadedRooms.size() - 1];
+
+					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+					break;
+				}
+			}
+		}
+
+		if (input->wasKeyPressed('I'))
+		{
+			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+			{
+				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+				{
+					if (i < (loadedRooms.size() - 1))
+						currentRoom = loadedRooms[i + 1];
+					else
+						currentRoom = loadedRooms[0];
+
+					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+					break;
+				}
+			}
+		}
 
 #if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();

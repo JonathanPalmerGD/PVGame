@@ -5,7 +5,7 @@
       <OffsetV>0</OffsetV>
       <Type>Diffuse</Type>
 	  </Texture>
-    <Texture name="Wall02">
+    <Texture name="medusacrest">
       <OffsetU>0</OffsetU>
       <OffsetV>1</OffsetV>
     </Texture>
@@ -13,7 +13,7 @@
       <OffsetU>1</OffsetU>
       <OffsetV>0</OffsetV>
     </Texture>
-    <Texture name="MetalCrate01">
+    <Texture name="Floor">
       <OffsetU>1</OffsetU>
       <OffsetV>1</OffsetV>
     </Texture>

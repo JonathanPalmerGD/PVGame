@@ -321,8 +321,11 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < crestVector.size(); i++)
 	{
-		GameObject* crestObj = new Crest("medusacrest", Crest::GetCrestTypeString(crestVector[i]->effect), physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-		crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
+		GameObject* crestObj = new Crest("medusacrest", "medusacrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+		//GameObject* crestObj = new Crest("medusacrest", Crest::GetCrestTypeString(crestVector[i]->effect), physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+		//crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
+		crestObj->rotate(0.0f, 3.14f, 0.0f);
+		crestObj->translate(0.0f, 1.0f, 0.0f);
 
 		dynamic_cast<Crest*>(crestObj)->SetTargetObject(cubeMap[crestVector[i]->target]);
 
