@@ -1,11 +1,11 @@
 ﻿<level>
 <walls>
-<wall row="5" col="0" xLength="22" zLength="1" centerX="11" centerY="0" centerZ="5.5"/>
-<wall row="6" col="0" xLength="1" zLength="10" centerX="0.5" centerY="0" centerZ="11"/>
-<wall row="9" col="21" xLength="1" zLength="1" centerX="21.5" centerY="0" centerZ="9.5"/>
-<wall row="10" col="16" xLength="6" zLength="1" centerX="19" centerY="0" centerZ="10.5"/>
-<wall row="11" col="16" xLength="1" zLength="8" centerX="16.5" centerY="0" centerZ="15"/>
-<wall row="19" col="0" xLength="17" zLength="1" centerX="8.5" centerY="0" centerZ="19.5"/>
+<wall row="5" col="0" xLength="22" yLength="6" zLength="1" centerX="11" centerY="0" centerZ="5.5"/>
+<wall row="6" col="0" xLength="1" yLength="6" zLength="10" centerX="0.5" centerY="0" centerZ="11"/>
+<wall row="9" col="21" xLength="1" yLength="6" zLength="1" centerX="21.5" centerY="0" centerZ="9.5"/>
+<wall row="10" col="16" xLength="6" yLength="6" zLength="1" centerX="19" centerY="0" centerZ="10.5"/>
+<wall row="11" col="16" xLength="1" yLength="6" zLength="8" centerX="16.5" centerY="0" centerZ="15"/>
+<wall row="19" col="0" xLength="17" yLength="6" zLength="1" centerX="8.5" centerY="0" centerZ="19.5"/>
 </walls>
 <spawns>
 	<spawn row="11" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="12.5" dir="right"/>

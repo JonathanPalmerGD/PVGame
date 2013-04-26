@@ -1,15 +1,15 @@
 <level>
 <walls>
-<wall row="5" col="17" xLength="8" zLength="1" centerX="21" centerY="0" centerZ="5.5"/>
-<wall row="6" col="16" xLength="1" zLength="2" centerX="16.5" centerY="0" centerZ="7"/>
-<wall row="6" col="24" xLength="1" zLength="5" centerX="24.5" centerY="0" centerZ="8.5"/>
-<wall row="8" col="15" xLength="1" zLength="2" centerX="15.5" centerY="0" centerZ="9"/>
-<wall row="10" col="14" xLength="1" zLength="5" centerX="14.5" centerY="0" centerZ="12.5"/>
-<wall row="14" col="24" xLength="1" zLength="1" centerX="24.5" centerY="0" centerZ="14.5"/>
-<wall row="15" col="15" xLength="1" zLength="2" centerX="15.5" centerY="0" centerZ="16"/>
-<wall row="15" col="24" xLength="1" zLength="4" centerX="24.5" centerY="0" centerZ="17"/>
-<wall row="17" col="16" xLength="1" zLength="2" centerX="16.5" centerY="0" centerZ="18"/>
-<wall row="19" col="17" xLength="8" zLength="1" centerX="21" centerY="0" centerZ="19.5"/>
+<wall row="5" col="17" xLength="8" yLength="6" zLength="1" centerX="21" centerY="0" centerZ="5.5"/>
+<wall row="6" col="16" xLength="1" yLength="6" zLength="2" centerX="16.5" centerY="0" centerZ="7"/>
+<wall row="6" col="24" xLength="1" yLength="6" zLength="5" centerX="24.5" centerY="0" centerZ="8.5"/>
+<wall row="8" col="15" xLength="1" yLength="6" zLength="2" centerX="15.5" centerY="0" centerZ="9"/>
+<wall row="10" col="14" xLength="1" yLength="6" zLength="5" centerX="14.5" centerY="0" centerZ="12.5"/>
+<wall row="14" col="24" xLength="1" yLength="6" zLength="1" centerX="24.5" centerY="0" centerZ="14.5"/>
+<wall row="15" col="15" xLength="1" yLength="6" zLength="2" centerX="15.5" centerY="0" centerZ="16"/>
+<wall row="15" col="24" xLength="1" yLength="6" zLength="4" centerX="24.5" centerY="0" centerZ="17"/>
+<wall row="17" col="16" xLength="1" yLength="6" zLength="2" centerX="16.5" centerY="0" centerZ="18"/>
+<wall row="19" col="17" xLength="8" yLength="6" zLength="1" centerX="21" centerY="0" centerZ="19.5"/>
 </walls>
 <spawns>
 <spawn row="11" col="23" xLength="1" zLength="3" centerX="23.5" centerY="0" centerZ="12.5" dir="left"/>

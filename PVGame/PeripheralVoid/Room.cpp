@@ -169,6 +169,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* row = wall->Attribute("row");
 		const char* col = wall->Attribute("col");
 		const char* xLength = wall->Attribute("xLength");
+		const char* yLength = wall->Attribute("yLength");
 		const char* zLength = wall->Attribute("zLength");
 		const char* centerX = wall->Attribute("centerX");
 		const char* centerY = wall->Attribute("centerY");
@@ -177,6 +178,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
 		tempWall->xLength = (float)atof(xLength);
+		tempWall->yLength = (float)atof(yLength);
 		tempWall->zLength = (float)atof(zLength);
 		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
 		tempWall->centerY = (float)atof(centerY);
@@ -284,8 +286,8 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, 1.5f, wallRowCol[i][j]->centerZ + zPos), physicsMan, ObjectType::WORLD);
-			wallObj->scale(wallRowCol[i][j]->xLength,3.0,wallRowCol[i][j]->zLength);
+			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, ObjectType::WORLD);
+			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
 		}
 	}

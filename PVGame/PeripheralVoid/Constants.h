@@ -187,6 +187,7 @@ struct Wall
 	float row;
 	float col;
 	float xLength;
+	float yLength;
 	float zLength;
 	float centerX;
 	float centerY;

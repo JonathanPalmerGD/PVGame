@@ -1,19 +1,30 @@
-﻿Build started 4/26/2013 11:32:28 AM.
+﻿Build started 4/26/2013 1:21:46 PM.
      1>Project "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\PVGame LOCAL\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\PeripheralVoid.unsuccessfulbuild" because "AlwaysCreate" was specified.
        CustomBuild:
          All outputs are up-to-date.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /I"bullet-2.81-rev2613\src" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt PVGame.cpp
-         PVGame.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /I"bullet-2.81-rev2613\src" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Room.cpp
+         Room.cpp
      1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\rendermanager.h(584): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
      1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\rendermanager.h(584): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
      1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\rendermanager.h(803): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
      1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\rendermanager.h(803): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\pvgame.cpp(448): warning C4482: nonstandard extension used: enum 'ObjectType' used in qualified name
-     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\pvgame.cpp(470): warning C4482: nonstandard extension used: enum 'ObjectType' used in qualified name
-     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\pvgame.cpp(491): warning C4482: nonstandard extension used: enum 'ObjectType' used in qualified name
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(76): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(289): warning C4482: nonstandard extension used: enum 'ObjectType' used in qualified name
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(309): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(309): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(867) : see declaration of 'itoa'
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(310): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(310): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(867) : see declaration of 'itoa'
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(312): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(313): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+     1>\\banner.main.ad.rit.edu\students\mjs5767\igmprofile\desktop\pvgame local\peripheralvoid\room.cpp(337): warning C4482: nonstandard extension used: enum 'ObjectType' used in qualified name
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -67,4 +78,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:20.18
+Time Elapsed 00:00:19.51
