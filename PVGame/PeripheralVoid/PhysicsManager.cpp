@@ -241,7 +241,7 @@ btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btVector3* poi
 void PhysicsManager::addGhostObjectToWorld(btPairCachingGhostObject* ghost)
 {
 	if(ghost != NULL)
-		world->addCollisionObject(ghost, ObjectType::FRUSTUM, ObjectType::FRUSTUM);
+		world->addCollisionObject(ghost, FRUSTUM, FRUSTUM);
 }
 
 void PhysicsManager::removeGhostObjectFromWorld(btPairCachingGhostObject* ghost)
@@ -251,6 +251,7 @@ void PhysicsManager::removeGhostObjectFromWorld(btPairCachingGhostObject* ghost)
 		world->removeCollisionObject(ghost);
 		delete ghost->getCollisionShape();
 		delete ghost;
+		ghost = NULL;
 	}
 }
 
@@ -348,7 +349,7 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	ghost->setWorldTransform(t);
 	
 	btKinematicCharacterController* cc = new btKinematicCharacterController(ghost, capsule, stepHeight);
-	world->addCollisionObject(ghost, ObjectType::PLAYER, ObjectType::PLAYER);
+	world->addCollisionObject(ghost, PLAYER, PLAYER);
 	//world->addCollisionObject(ghost, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter);
 	world->addCharacter(cc);
 	return cc;

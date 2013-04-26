@@ -4,7 +4,7 @@
 //{
 //}
 
-Turret::Turret(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, TURRET_TYPE aTurretType) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, ObjectType::VISION_AFFECTED, 0.0f, true)
+Turret::Turret(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, TURRET_TYPE aTurretType) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED, 0.0f, true)
 {
 	turretType = aTurretType;
 	inVision = false;

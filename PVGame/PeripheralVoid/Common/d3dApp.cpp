@@ -123,7 +123,7 @@ bool D3DApp::Init()
 void D3DApp::OnResize()
 {
 	renderMan->OnResize();
-		SetFocus(mhMainWnd);
+	SetFocus(mhMainWnd);
 }
 
 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

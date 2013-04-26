@@ -17,7 +17,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 
 	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f);
 	physicsMan = pm;
-	playerCamera = new Camera(physicsMan);
+	playerCamera = new Camera(physicsMan, 1.3333334f);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
 	

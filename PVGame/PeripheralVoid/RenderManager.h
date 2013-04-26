@@ -168,6 +168,7 @@ class RenderManager
 
 			BuildRasterizerStates();  
 
+			//Create Text stuffs
 			FW1CreateFactory(FW1_VERSION, &pFW1Factory);
 			pFW1Factory->CreateFontWrapper(md3dDevice, L"Arial", &pFontWrapper);
 			
@@ -714,8 +715,14 @@ class RenderManager
 				textureItr++;
 			}
 
-			// Resize the swap chain and recreate the render target view.
+			/*map<string, ID3D11ShaderResourceView*>::iterator srvItr = shaderResourceViewsMap.begin();
+			while (srvItr != shaderResourceViewsMap.end())
+			{
+				ReleaseCOM(srvItr->second);
+				srvItr++;
+			}*/
 
+			// Resize the swap chain and recreate the render target view.
 			HR(mSwapChain->ResizeBuffers(1, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 			ID3D11Texture2D* backBuffer;
 			HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
@@ -1039,3 +1046,16 @@ class RenderManager
 		void operator=(RenderManager const&); // Don't implement.
 };
 #endif
+/* Uncomment to re-induce nausea
+// Bind the render target view to the back buffer.
+md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
+		
+// Clear the render target and depth/stencil view.
+md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+// Set texture atlas once for now.
+mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+
+DrawGameObjects("LightsWithoutAtlas");
+*/

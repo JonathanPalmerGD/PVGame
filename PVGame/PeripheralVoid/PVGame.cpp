@@ -70,6 +70,8 @@ bool PVGame::Init()
 	LoadContent();
 	BuildGeometryBuffers();
 
+	//OnResize();
+
 #if DRAW_FRUSTUM
 		gameObjects.push_back(player->GetCamera()->frustumBody);
 		proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
