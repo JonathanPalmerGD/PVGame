@@ -595,7 +595,7 @@ class RenderManager
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 
-			float clientSize[2] = {mClientWidth, mClientHeight};
+			float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
@@ -814,7 +814,7 @@ class RenderManager
 
 			if (mfxScreenSize)
 			{
-				float clientSize[2] = {mClientWidth, mClientHeight};
+				float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 			}
 		}

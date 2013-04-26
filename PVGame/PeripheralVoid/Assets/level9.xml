@@ -1,8 +1,8 @@
 ﻿<level>
 <walls>
-<wall row="18" col="4" xLength="21" zLength="1" centerX="14.5" centerY="0" centerZ="18.5"/>
-<wall row="19" col="4" xLength="1" zLength="4" centerX="4.5" centerY="0" centerZ="21"/>
-<wall row="22" col="8" xLength="17" zLength="1" centerX="16.5" centerY="0" centerZ="22.5"/>
+<wall row="18" col="4" xLength="21" yLength="6" zLength="1" centerX="14.5" centerY="0" centerZ="18.5"/>
+<wall row="19" col="4" xLength="1" yLength="6" zLength="4" centerX="4.5" centerY="0" centerZ="21"/>
+<wall row="22" col="8" xLength="17" yLength="6" zLength="1" centerX="16.5" centerY="0" centerZ="22.5"/>
 </walls>
 <spawns>
 <spawn row="19" col="23" xLength="1" zLength="3" centerX="23.5" centerY="0" centerZ="20.5" dir="left"/>

@@ -233,9 +233,12 @@ void PVGame::OnResize()
 	//XMStoreFloat4x4(&mProj, P);
 }
 
+#pragma region Awful use of variables courtesy of Jason
 bool is1Up = true;
 bool is2Up = true;
 bool is8Up = true;
+bool isEUp = true;
+#pragma endregion
 void PVGame::UpdateScene(float dt)
 {
 	switch(gameState)
@@ -286,6 +289,7 @@ void PVGame::UpdateScene(float dt)
 		player->GetCamera()->frustumCull();
 		#endif
 
+		#pragma region Player Room Tracking and Resetting to Checkpoints
 		for (unsigned int i = 0; i < loadedRooms.size(); i++)
 		{
 			if ((player->getPosition().x > loadedRooms[i]->getX()) && (player->getPosition().x < (loadedRooms[i]->getX() + loadedRooms[i]->getWidth())) &&
@@ -295,26 +299,10 @@ void PVGame::UpdateScene(float dt)
 					break;
 			}
 		}
-
 		//If the player falls of the edge of the world, respawn in current room
 		if (player->getPosition().y < -20)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-
-		/*for(int i = 0; i < renderMan->getNumLights(); ++i)
-		{
-			btVector3 playerV3(player->getPosition().x, player->getPosition().y, player->getPosition().z);
-			btVector3 lightPos = renderMan->getLightPosition(i);
-			//btVector3 targetV3 = &lightPos;
-			if(physicsMan->broadPhase(player->GetCamera(), &lightPos))
-			{
-				//renderMan->EnableLight(i);
-			}
-			else
-			{
-				//renderMan->DisableLight(i);
-			}
-		}*/
-		
+		#pragma endregion
 		#pragma region Player Statuses and Crest Checking
 		player->resetStatuses();
 
@@ -437,7 +425,7 @@ void PVGame::UpdateScene(float dt)
 			}*/
 		}
 		#pragma	endregion
-
+		#pragma region 1: Slow Sphere
 		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
 			XMFLOAT4 p = player->getPosition();
@@ -445,7 +433,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 10;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, ObjectType::WORLD, 1.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\shot.wav");
 			
@@ -459,15 +447,16 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
 			is1Up = true;
-
+		#pragma endregion
+		#pragma region 2: Slow Cube
 		if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 10;
+			float speed = 20;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -480,15 +469,16 @@ void PVGame::UpdateScene(float dt)
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
 			is2Up = true;
-		
-		if((input->wasKeyPressed('8') || input->getGamepadRightTrigger(0))  && is8Up)
+		#pragma endregion
+		#pragma region 8: Speedless Cube
+		if((input->wasKeyPressed('8'))  && is8Up)
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 0;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, ObjectType::WORLD, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -499,9 +489,32 @@ void PVGame::UpdateScene(float dt)
 			SortGameObjects();
 			is8Up = false;
 		}
-		else if(!input->isKeyDown('8') && !input->getGamepadRightTrigger(0))
+		else if(!input->isKeyDown('8'))
 			is8Up = true;
+		#pragma endregion
+		#pragma region E: Fast Sphere
+		if((input->wasKeyPressed('E'))  && isEUp)
+		{
+			XMFLOAT4 p = player->getPosition();
+			XMFLOAT3 look = player->GetCamera()->GetLook();
+			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+			float speed = 0;
 
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
+			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->initAudio("Audio\\shot.wav");
+			testSphere->playAudio();
+			gameObjects.push_back(testSphere);
+			proceduralGameObjects.push_back(testSphere);
+			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
+			SortGameObjects();
+			isEUp = false;
+		}
+		else if(!input->isKeyDown('E'))
+			isEUp = true;
+		#pragma endregion
+		#pragma region Level Controls U and I
 		if (input->wasKeyPressed('U'))
 		{
 			for (unsigned int i = 0; i < loadedRooms.size(); i++)
@@ -534,6 +547,7 @@ void PVGame::UpdateScene(float dt)
 				}
 			}
 		}
+		#pragma endregion
 
 #if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();

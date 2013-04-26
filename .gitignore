@@ -4,6 +4,7 @@
 *.tlog
 *.lastbuildstate
 *.log
+*.cache
 *.pdb
 *.idb
 *.bak
