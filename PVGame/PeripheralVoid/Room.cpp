@@ -222,6 +222,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* row = cube->Attribute("row");
 		const char* col = cube->Attribute("col");
 		const char* xLength = cube->Attribute("xLength");
+		const char* yLength = cube->Attribute("yLength");
 		const char* zLength = cube->Attribute("zLength");
 		const char* centerX = cube->Attribute("centerX");
 		const char* centerY = cube->Attribute("centerY");
@@ -236,6 +237,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempCube->row = (float)atof(row) + mapOffsetZ;
 		tempCube->col = (float)atof(col) + mapOffsetX;
 		tempCube->xLength = (float)atof(xLength);
+		tempCube->yLength = (float)atof(yLength);
 		tempCube->zLength = (float)atof(zLength);
 		tempCube->centerX = (float)atof(centerX) + mapOffsetX;
 		tempCube->centerY = (float)atof(centerY);
@@ -286,7 +288,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
+			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, ObjectType::WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
 		}
@@ -294,11 +296,11 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < cubeVector.size(); i++)
 	{
-		MovingObject* cubeObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, 1.5f, cubeVector[i]->centerZ + zPos), physicsMan);
-		cubeObj->scale(cubeVector[i]->xLength,3.0,cubeVector[i]->zLength);
+		MovingObject* cubeObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
+		cubeObj->scale(cubeVector[i]->xLength, cubeVector[i]->yLength, cubeVector[i]->zLength);
 		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
-		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, 1.5f, cubeVector[i]->centerZ + zPos));
-		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, 1.5f + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
+		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos));
+		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, (cubeVector[i]->yLength / 2) + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
 
 		float rowId = cubeVector[i]->row - mapOffsetZ;
 		float colId = cubeVector[i]->col - mapOffsetX;
@@ -306,8 +308,8 @@ void Room::loadRoom(float xPos, float zPos)
 		char rowChar[30];
 		char colChar[30];
 
-		itoa((int)rowId, rowChar, 10);
-		itoa((int)colId, colChar, 10);
+		itoa(rowId, rowChar, 10); 
+		itoa(colId, colChar, 10); 
 
 		strcat(rowChar, "|");
 		strcat(rowChar, colChar);
@@ -327,14 +329,14 @@ void Room::loadRoom(float xPos, float zPos)
 		//GameObject* crestObj = new Crest("medusacrest", Crest::GetCrestTypeString(crestVector[i]->effect), physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 		//crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
 		crestObj->rotate(0.0f, 3.14f, 0.0f);
-		crestObj->translate(0.0f, 0.6f, 0.0f);
+		crestObj->translate(0.0f, 1.0f, 0.0f);
 
 		dynamic_cast<Crest*>(crestObj)->SetTargetObject(cubeMap[crestVector[i]->target]);
 
 		gameObjs.push_back(crestObj);
 	}
 
-	GameObject* floorObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan, WORLD);
+	GameObject* floorObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", xPos + (width / 2), -0.5f, zPos + (depth / 2)), physicsMan, ObjectType::WORLD);
 	floorObj->scale(width, 1.0f, depth);
 	gameObjs.push_back(floorObj);
 

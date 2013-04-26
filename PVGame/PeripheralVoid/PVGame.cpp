@@ -498,9 +498,9 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 0;
+			float speed = 90;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\shot.wav");
 			testSphere->playAudio();
