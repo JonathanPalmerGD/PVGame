@@ -9,7 +9,7 @@
   </Material>
 	<Material name="Floor">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
-		<DiffuseMap>Floor</DiffuseMap>
+		<DiffuseMap>floor</DiffuseMap>
 	</Material>
 	<Material name="LeapCrest">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
@@ -23,6 +23,36 @@
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>medusacrest</DiffuseMap>
 	</Material>
+	<Material name="Snow">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>snow</DiffuseMap>
+	</Material>
+	<Material name="Hedge">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>hedge</DiffuseMap>
+	</Material>
+	<Material name="Gravel">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>gravel</DiffuseMap>
+	</Material>
+	<Material name="Sand">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>sand</DiffuseMap>
+	</Material>
+	<Material name="Rock">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>rock</DiffuseMap>
+	</Material>
+	<Material name="Grass">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>grass</DiffuseMap>
+	</Material>
+	<Material name="Brick">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>brick</DiffuseMap>
+	</Material>
+	
+	
 	
   <Material name="Leap Crest">
     <SurfaceMaterial>Basic</SurfaceMaterial>

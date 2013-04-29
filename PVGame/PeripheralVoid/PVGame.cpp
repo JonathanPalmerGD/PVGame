@@ -177,17 +177,17 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Make Turrets
-	GameObject* turretGOJ = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	GameObject* turretGOJ = new Turret("Cube", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
 	turretGOJ->scale(1.5, 0.6, 0.6);
 	turretGOJ->rotate(1.0f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ);
 
-	GameObject* turretGOJ2 = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
+	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
 	turretGOJ2->scale(1.5, 0.6, 0.6);
 	turretGOJ2->rotate(2.2f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ2);
 
-	GameObject* turretGOJ3 = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
+	GameObject* turretGOJ3 = new Turret("Cube", "Brick", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
 	turretGOJ3->scale(1.5, 0.6, 0.6);
 	turretGOJ3->rotate(1.77f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ3);
