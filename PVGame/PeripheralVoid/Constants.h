@@ -192,6 +192,9 @@ struct Wall
 	float centerX;
 	float centerY;
 	float centerZ;
+	float xRotation;
+	float yRotation;
+	float zRotation;
 	string direction;
 	string file;
 	CREST_TYPE effect;

@@ -2,4 +2,8 @@
 
 Create rooms by selecting a tile type and dragging across tiles to place them.  
 
-IMPORTANT: Keep exits on the "outer" walls (walls that are on the first row/col being used or the last row/col) and only use one side per exit.
+IMPORTANT: 
+
+ - Keep exits on the "outer" walls (walls that are on the first row/col being used or the last row/col) and only use one side per exit.
+
+ - Don't place crests in corners
