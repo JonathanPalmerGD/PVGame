@@ -235,8 +235,12 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     return litColor;
 }
 
-float4 TexturePS(VertexOut pin) : SV_Target
+float4 TexturePS(VertexOut pin, uniform bool drawCursor) : SV_Target
 {
+	if (drawCursor && pin.Tex.x >= 0.495f && pin.Tex.x <= 0.505f
+				&& pin.Tex.y >= 0.495f && pin.Tex.y <= 0.505f)
+		return float4(0.0f, 0.0f, 0.0f, 1.0f);
+
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
 
@@ -334,7 +338,17 @@ technique11 TexturePassThrough
 	{
 		SetVertexShader( CompileShader( vs_5_0, TextureVS() ) );
 		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, TexturePS() ) );
+        SetPixelShader( CompileShader( ps_5_0, TexturePS(false) ) );
+	}
+}
+
+technique11 TexturePassThroughWithCursor
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, TextureVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, TexturePS(true) ) );
 	}
 }
 
@@ -404,7 +418,17 @@ technique11 TexturePassThroughDX10
 	{
 		SetVertexShader( CompileShader( vs_4_0, TextureVS() ) );
 		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_4_0, TexturePS() ) );
+        SetPixelShader( CompileShader( ps_4_0, TexturePS(false) ) );
+	}
+}
+
+technique11 TexturePassThroughWithCursorDX10
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_4_0, TextureVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, TexturePS(true) ) );
 	}
 }
 

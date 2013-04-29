@@ -260,6 +260,7 @@ class RenderManager
 		{
 			// Bind the render target view and depth/stencil view to the pipeline.
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
 
 			// Set texture atlas once for now.
 			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
@@ -344,12 +345,27 @@ class RenderManager
 
 			if (postProcessingFlags & BlurEffect)
 			{
+				md3dImmediateContext->RSSetViewports(1, &mHalfScreenViewport);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Blur Input Texture"], depthStencilViewsMap["Blur"]);
+				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Blur Input Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Blur"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				techniqueMap["TexturePassThrough"]->GetDesc(&techDesc);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+				for(UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
+					md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+					techniqueMap["TexturePassThrough"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+					md3dImmediateContext->DrawIndexed(6, 0, 0);
+				}
+
 				for (int blurIndex = 0; blurIndex < blurCount; ++blurIndex)
 				{
-					md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Blur Output Texture"], depthStencilViewsMap["Default"]);
+					md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Blur Output Texture"], depthStencilViewsMap["Blur"]);
 					md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Blur Output Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-					md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-					mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+					md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Blur"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+					mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Blur Input Texture"]);
 
 					techniqueMap["HorzBlur"]->GetDesc(&techDesc);
 					for(UINT p = 0; p < techDesc.Passes; ++p)
@@ -362,9 +378,9 @@ class RenderManager
 					mfxDiffuseMapVar->SetResource(nullptr);
 					techniqueMap["HorzBlur"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
 
-					md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
-					md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-					md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+					md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Blur Input Texture"], depthStencilViewsMap["Blur"]);
+					md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Blur Input Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+					md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Blur"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 					mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Blur Output Texture"]);
 				
 					techniqueMap["VertBlur"]->GetDesc(&techDesc);
@@ -378,6 +394,21 @@ class RenderManager
 					mfxDiffuseMapVar->SetResource(nullptr);
 					techniqueMap["VertBlur"]->GetPassByIndex(0)->Apply(0, md3dImmediateContext);
 				}
+
+				md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Blur Output Texture"]);
+				techniqueMap["TexturePassThrough"]->GetDesc(&techDesc);
+				for(UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
+					md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+					techniqueMap["TexturePassThrough"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+					md3dImmediateContext->DrawIndexed(6, 0, 0);
+				}
 			}
 
 			mfxDiffuseMapVar->SetResource(nullptr);
@@ -388,7 +419,7 @@ class RenderManager
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
 
-			techniqueMap["TexturePassThrough"]->GetDesc(&techDesc);
+			techniqueMap["TexturePassThroughWithCursor"]->GetDesc(&techDesc);
 			for(UINT p = 0; p < techDesc.Passes; ++p)
 			{
 				md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
@@ -399,7 +430,7 @@ class RenderManager
 				mfxViewProj->SetMatrix(identity);
 				TexTransform->SetMatrix(identity);
 
-				techniqueMap["TexturePassThrough"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+				techniqueMap["TexturePassThroughWithCursor"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
 				md3dImmediateContext->DrawIndexed(6, 0, 0);
 			}
 
@@ -567,6 +598,7 @@ class RenderManager
 				techniqueMap["HorzBlur"]						= mFX->GetTechniqueByName("HorzBlur");
 				techniqueMap["VertBlur"]						= mFX->GetTechniqueByName("VertBlur");
 				techniqueMap["Blur"]							= mFX->GetTechniqueByName("Blur");
+				techniqueMap["TexturePassThroughWithCursor"]	= mFX->GetTechniqueByName("TexturePassThroughWithCursor");
 			}
 			else
 			{
@@ -576,6 +608,7 @@ class RenderManager
 				techniqueMap["HorzBlur"]						= mFX->GetTechniqueByName("HorzBlurDX10");
 				techniqueMap["VertBlur"]						= mFX->GetTechniqueByName("VertBlurDX10");
 				techniqueMap["Blur"]							= mFX->GetTechniqueByName("BlurDX10");
+				techniqueMap["TexturePassThroughWithCursor"]	= mFX->GetTechniqueByName("TexturePassThroughWithCursorDX10");
 			}
 
 			// Creates association between shader variables and program variables.
@@ -596,7 +629,7 @@ class RenderManager
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 
-			float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
+			float clientSize[2] = {mClientWidth, mClientHeight};
 			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
@@ -694,33 +727,7 @@ class RenderManager
 			// Release the old views, as they hold references to the buffers we
 			// will be destroying.  Also release the old depth/stencil buffer.
 
-			map<string, ID3D11DepthStencilView*>::iterator depthViewItr = depthStencilViewsMap.begin();
-			while (depthViewItr != depthStencilViewsMap.end())
-			{
-				ReleaseCOM(depthViewItr->second);
-				depthViewItr++;
-			}
-
-			map<string, ID3D11RenderTargetView*>::iterator renderViewItr = renderTargetViewsMap.begin();
-			while (renderViewItr != renderTargetViewsMap.end())
-			{
-				ReleaseCOM(renderViewItr->second);
-				renderViewItr++;
-			}
-
-			map<string, ID3D11Texture2D*>::iterator textureItr = texture2DMap.begin();
-			while (textureItr != texture2DMap.end())
-			{
-				ReleaseCOM(textureItr->second);
-				textureItr++;
-			}
-
-			/*map<string, ID3D11ShaderResourceView*>::iterator srvItr = shaderResourceViewsMap.begin();
-			while (srvItr != shaderResourceViewsMap.end())
-			{
-				ReleaseCOM(srvItr->second);
-				srvItr++;
-			}*/
+			ReleaseResizeMaps();
 
 			// Resize the swap chain and recreate the render target view.
 			HR(mSwapChain->ResizeBuffers(1, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
@@ -760,6 +767,10 @@ class RenderManager
 			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &texture2DMap["Default Depth Stencil Buffer Texture"]));
 			HR(md3dDevice->CreateDepthStencilView(texture2DMap["Default Depth Stencil Buffer Texture"], 0, &depthStencilViewsMap["Default"]));
 
+			depthStencilDesc.Width /= 2;
+			depthStencilDesc.Height /= 2;
+			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &texture2DMap["Blur Depth Stencil Buffer Texture"]));
+			HR(md3dDevice->CreateDepthStencilView(texture2DMap["Blur Depth Stencil Buffer Texture"], 0, &depthStencilViewsMap["Blur"]));
 
 			// Bind the render target view and depth/stencil view to the pipeline.
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
@@ -796,6 +807,10 @@ class RenderManager
 			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Default Render Texture"]));
 			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Default Render Texture"], 0, &renderTargetViewsMap["Default Render Texture"]));
 
+			renderTextureDesc.Width /= 2;
+			renderTextureDesc.Height /= 2;
+			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Blur Input Texture"]));
+			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Blur Input Texture"], 0, &renderTargetViewsMap["Blur Input Texture"]));
 			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Blur Output Texture"]));
 			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Blur Output Texture"], 0, &renderTargetViewsMap["Blur Output Texture"]));
 
@@ -807,6 +822,7 @@ class RenderManager
 
 			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Default Render Texture"], &srvDesc, &shaderResourceViewsMap["Default Render Texture"]));
 			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Blur Output Texture"], &srvDesc, &shaderResourceViewsMap["Blur Output Texture"]));
+			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Blur Input Texture"], &srvDesc, &shaderResourceViewsMap["Blur Input Texture"]));
 
 			// Set the viewport transform.
 
@@ -819,9 +835,13 @@ class RenderManager
 
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
 
+			mHalfScreenViewport = mScreenViewport;
+			mHalfScreenViewport.Width /= 2;
+			mHalfScreenViewport.Height /= 2;
+
 			if (mfxScreenSize)
 			{
-				float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
+				float clientSize[2] = {mClientWidth, mClientHeight};
 				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 			}
 		}
@@ -883,6 +903,7 @@ class RenderManager
 		XMFLOAT3 mEyePosW;
 
 		D3D11_VIEWPORT mScreenViewport;
+		D3D11_VIEWPORT mHalfScreenViewport;
 		D3D_DRIVER_TYPE md3dDriverType;
 
 		unsigned char postProcessingFlags;
@@ -934,6 +955,8 @@ class RenderManager
 			md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
 
 			ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
+			ZeroMemory(&mHalfScreenViewport, sizeof(D3D11_VIEWPORT));
+			
 			m4xMsaaQuality = 0;
 			mEnable4xMsaa = 0;
 			blurCount = 1; // Set default to 1 blur when blurring.
@@ -980,39 +1003,13 @@ class RenderManager
 				bufferItr++;
 			}
 
+			ReleaseResizeMaps();
+
 			map<string, ID3D11ShaderResourceView*>::iterator srvItr = shaderResourceViewsMap.begin();
 			while (srvItr != shaderResourceViewsMap.end())
 			{
 				ReleaseCOM(srvItr->second);
 				srvItr++;
-			}
-
-			map<string, ID3D11Texture2D*>::iterator textureItr = texture2DMap.begin();
-			while (textureItr != texture2DMap.end())
-			{
-				ReleaseCOM(textureItr->second);
-				textureItr++;
-			}
-
-			map<string, ID3D11DepthStencilView*>::iterator depthViewItr = depthStencilViewsMap.begin();
-			while (depthViewItr != depthStencilViewsMap.end())
-			{
-				ReleaseCOM(depthViewItr->second);
-				depthViewItr++;
-			}
-
-			map<string, ID3D11RenderTargetView*>::iterator renderViewItr = renderTargetViewsMap.begin();
-			while (renderViewItr != renderTargetViewsMap.end())
-			{
-				ReleaseCOM(renderViewItr->second);
-				renderViewItr++;
-			}
-
-			map<string, ID3D11RasterizerState*>::iterator rastItr = rasterizerStatesMap.begin();
-			while (rastItr != rasterizerStatesMap.end())
-			{
-				ReleaseCOM(rastItr->second);
-				++rastItr;
 			}
 		}
 
@@ -1040,6 +1037,42 @@ class RenderManager
 		void ToggleWireframe(bool isEnabled)
 		{
 			md3dImmediateContext->RSSetState ( (isEnabled ? rasterizerStatesMap["Wireframe"] : rasterizerStatesMap["Default"]) ); 
+		}
+
+		// Release all DX components stored in maps that are created via OnResize.
+		void ReleaseResizeMaps()
+		{
+			map<string, ID3D11DepthStencilView*>::iterator depthViewItr = depthStencilViewsMap.begin();
+			while (depthViewItr != depthStencilViewsMap.end())
+			{
+				ReleaseCOM(depthViewItr->second);
+				depthViewItr++;
+			}
+
+			map<string, ID3D11RenderTargetView*>::iterator renderViewItr = renderTargetViewsMap.begin();
+			while (renderViewItr != renderTargetViewsMap.end())
+			{
+				ReleaseCOM(renderViewItr->second);
+				renderViewItr++;
+			}
+
+			map<string, ID3D11Texture2D*>::iterator textureItr = texture2DMap.begin();
+			while (textureItr != texture2DMap.end())
+			{
+				ReleaseCOM(textureItr->second);
+				textureItr++;
+			}
+
+			map<string, ID3D11RasterizerState*>::iterator rastItr = rasterizerStatesMap.begin();
+			while (rastItr != rasterizerStatesMap.end())
+			{
+				ReleaseCOM(rastItr->second);
+				++rastItr;
+			}
+
+			ReleaseCOM(shaderResourceViewsMap["Default Render Texture"]);
+			ReleaseCOM(shaderResourceViewsMap["Blur Output Texture"]);
+			ReleaseCOM(shaderResourceViewsMap["Blur Input Texture"]);
 		}
 
 		RenderManager(RenderManager const&); // Don't implement.
