@@ -1,6 +1,9 @@
 #pragma once
 #include "GameObject.h"
+#include "Projectile.h"
 #include "PVGame.h"
+
+class Projectile;
 
 class Turret :	public GameObject
 {
@@ -17,16 +20,18 @@ public:
 	void ChangeView(bool newVisionBool);
 	//void SetShootTarget(btVector3 newShootTarget);
 	TURRET_TYPE GetTurretType();
-	btVector3 GetFacing();
+	btVector3 GetFacing(); //Will return the gameObject 'rigidbody' position
 	int GetLightIndex();
 	void CreateLightAndIndex();
+	void CreateProjectiles();
 	void Update(Player* player);
+	void UpdateProjectiles();
 
 protected:
 	TURRET_TYPE turretType;
 	int lightIndex;
-	btVector3 facing;
-	vector<Crest> projectiles;
+	//btVector3 facing;
+	vector<Projectile> projectiles;
 	//Each projectile wants a boolean of whether or not it is active. Probably a max number of projectiles.
 	//btVector3 shootTarget;
 	bool inVision;

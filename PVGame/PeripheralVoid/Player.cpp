@@ -35,7 +35,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	renderMan = rm;
 
 	listener = new AudioListener();
-	listener->mute();
+	//listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
 }

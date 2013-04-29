@@ -1,7 +1,6 @@
 #pragma once
 #include "GameObject.h"
 #include "PVGame.h"
-#include "Turret.h"
 
 class Turret;
 
@@ -14,7 +13,7 @@ public:
 	//void SetFacing(btVector3 newFacing);
 	void SetParent(Turret *newParent);
 	bool GetMoving();
-	btVector3 GetFacing();
+	btVector3 GetFacing(); //Will return the gameObject 'rigidbody' position
 	Turret GetParent();
 	void ResetProjectile();
 

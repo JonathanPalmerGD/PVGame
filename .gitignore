@@ -1,9 +1,13 @@
 *.suo
+*.sdf
+*.opensdf
 *.user
 *.ipch
 *.tlog
 *.lastbuildstate
 *.log
+*.onetoc2
+*.obj
 *.cache
 *.pdb
 *.idb
