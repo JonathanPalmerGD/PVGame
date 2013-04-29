@@ -269,13 +269,13 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 
 		if(frustumBody == NULL)
 		{
-			frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING);
+			frustumBody = new GameObject("Frustum", "Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING);
 		}
 		else
 		{
 			delete frustumBody;
 			//Yeah that happened. I dereferenced the new operator. I. am. GOD! (lol no). 
-			*frustumBody = *(new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING));
+			*frustumBody = *(new GameObject("Frustum", "Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING));
 		}
 
 		frustumBody->CalculateWorldMatrix();

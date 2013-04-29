@@ -17,5 +17,13 @@
       <OffsetU>1</OffsetU>
       <OffsetV>1</OffsetV>
     </Texture>
+		<Texture name="leapcrest">
+			<OffsetU>2</OffsetU>
+			<OffsetV>0</OffsetV>
+		</Texture>
+		<Texture name="mobilitycrest">
+			<OffsetU>3</OffsetU>
+			<OffsetV>0</OffsetV>
+		</Texture>
   </Atlas>
 </TextureList>

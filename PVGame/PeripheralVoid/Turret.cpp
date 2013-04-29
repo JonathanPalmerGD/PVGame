@@ -95,7 +95,7 @@ void Turret::CreateLightAndIndex()
 
 void Turret::CreateProjectiles()
 {
-	//GameObject* projectileGObj = new GameObject("Sphere", "Test Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
+	//GameObject* projectileGObj = new GameObject("Sphere", "Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
 	//gameObjects.push_back(projectileGObj);
 }
 

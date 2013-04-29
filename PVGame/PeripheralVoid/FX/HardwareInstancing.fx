@@ -105,8 +105,8 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 		
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
-	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 2.0f) + (1.0f / 2.0f * vin.AtlasCoord.x),
-							(vin.Tex.y / 2.0f) + (1.0f / 2.0f * vin.AtlasCoord.y))
+	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.x),
+							(vin.Tex.y / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.y))
 							: vin.Tex;
 
 	// Output vertex attributes for interpolation across triangle.
@@ -170,7 +170,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     if(gUseTexure)
 	{
 		// Sample texture.
-		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.5f) + (pin.AtlasCoord * 0.5f));
+		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f));
 	}
 	 
 	//
