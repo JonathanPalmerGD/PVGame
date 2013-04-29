@@ -148,6 +148,7 @@ void Turret::UpdateProjectiles()
 	//For each projectile
 		//If it is active
 			//Check collision with something?
+				//Projectile.ResetProjectile();
 				//If collided with nonplayer. Mark as inactive and move off the world.
 				//If collided with player. Mark as inactive, move off world, reset the player to last checkpoint
 }
