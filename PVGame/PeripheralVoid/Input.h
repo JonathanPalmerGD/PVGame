@@ -91,7 +91,9 @@ private:
     bool mouseX1Button;                         // true if X1 mouse button down
     bool mouseX2Button;                         // true if X2 mouse button down
     ControllerState controllers[MAX_CONTROLLERS];    // state of controllers
-
+	HWND window;
+	int screenWidth;
+	int screenHeight;
 public:
     // Constructor
     Input();
@@ -147,6 +149,10 @@ public:
 
     // Reads mouse screen position into mouseX, mouseY
     void mouseIn(LPARAM);
+
+	void centerMouse();
+
+	void setScreen(int width, int height);
 
     // Reads raw mouse data into mouseRawX, mouseRawY
     // This routine is compatible with a high-definition mouse

@@ -49,6 +49,9 @@ Input::Input()
         controllers[i].vibrateTimeLeft = 0;
         controllers[i].vibrateTimeRight = 0;
     }
+
+	screenWidth = 800;
+	screenHeight = 600;
 }
 
 //=============================================================================
@@ -85,6 +88,8 @@ void Input::initialize(HWND hwnd, bool capture)
         ZeroMemory( controllers, sizeof(ControllerState) * MAX_CONTROLLERS );
 
         checkControllers();             // check for connected controllers
+
+		window = hwnd;
     }
     catch(...)
     {
@@ -232,6 +237,17 @@ void Input::mouseIn(LPARAM lParam)
 {
     mouseX = GET_X_LPARAM(lParam); 
     mouseY = GET_Y_LPARAM(lParam);
+}
+
+void Input::centerMouse()
+{
+	POINT p;
+	p.x = screenWidth/2;
+	p.y = screenHeight/2;
+	mouseX = p.x;
+	mouseY = p.y;
+	ClientToScreen(window, &p);
+	SetCursorPos(p.x,p.y);
 }
 
 //=============================================================================

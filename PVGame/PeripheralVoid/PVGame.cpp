@@ -224,7 +224,10 @@ void PVGame::UpdateScene(float dt)
 			audioSource->play();
 		}
 		if(input->isKeyDown(VK_RETURN))
+		{
+			ShowCursor(false);
 			gameState = PLAYING;
+		}
 		break;
 	case PLAYING:
 		if(audioSource->isPlaying())

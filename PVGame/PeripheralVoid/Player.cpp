@@ -101,26 +101,31 @@ void Player::HandleInput(Input* input)
 	//}
 
 		// Make each pixel correspond to a quarter of a degree.
-	//float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
-	//float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
+	#pragma region Mouse Controls
+	float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
+	float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
 
-	//// Update angles based on input to orbit camera around box.
-	//mTheta += dx;
-	//mPhi   += dy;
-	//playerCamera->Pitch(dy/2); // Rotate the camera  up/down.
+	// Update angles based on input
+	mTheta += dx/32;
+	mPhi   += dy/32;
+	playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
 
-	//playerCamera->RotateY(dx / 2); // Rotate ABOUT the y-axis. So really turning left/right.
-	//XMMATRIX R = XMMatrixRotationY(dx/2);
+	playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
+	XMMATRIX R = XMMatrixRotationY(mTheta);
 
-	//XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-	//XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-	//XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-	//mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
+	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+	mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
+	mTheta = MathHelper::Clamp(dx, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
 
 	playerCamera->UpdateViewMatrix();
+	
+	input->centerMouse();
 
 	mLastMousePos.x = input->getMouseX();
 	mLastMousePos.y = input->getMouseY();
+	#pragma endregion
 
 	// Now check for camera input.
 	if (input->isCameraUpKeyDown())

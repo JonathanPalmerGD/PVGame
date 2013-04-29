@@ -117,8 +117,6 @@ void GameObject::rotate(float x, float y, float z, float w)
 
 		rigidBody->getMotionState()->setWorldTransform(t);
 		CalculateWorldMatrix();
-
-		CalculateWorldMatrix();
 	}
 }
 
