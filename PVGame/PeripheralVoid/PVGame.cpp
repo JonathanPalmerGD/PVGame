@@ -10,7 +10,6 @@ PVGame::PVGame(HINSTANCE hInstance)
 	gameState = MENU;
 }
 
-
 PVGame::~PVGame(void)
 {
 	delete player;
@@ -187,7 +186,7 @@ bool PVGame::LoadXML()
 	turretGOJ2->rotate(2.2f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ2);
 
-	GameObject* turretGOJ3 = new Turret("Cube", "Brick", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
+	GameObject* turretGOJ3 = new Turret("Cube", "Rock", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
 	turretGOJ3->scale(1.5, 0.6, 0.6);
 	turretGOJ3->rotate(1.77f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ3);
@@ -379,18 +378,18 @@ void PVGame::UpdateScene(float dt)
 			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
 		}
-		/*
+		
 		if(input->wasKeyPressed('5'))
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, UNLOCK, 1.0f);
+			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			renderMan->BuildInstancedBuffer(gameObjects);
-		}*/
+		}
 		if(input->wasKeyPressed('9'))
 		{
 			XMFLOAT4 p = player->getPosition();

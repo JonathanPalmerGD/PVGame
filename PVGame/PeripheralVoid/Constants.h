@@ -28,7 +28,7 @@ using std::string;
 #define MAX_BLURS 2
 
 const enum GAME_STATE { MENU, OPTION, PLAYING, END };
-const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK};
+const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds

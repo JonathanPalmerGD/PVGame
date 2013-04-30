@@ -79,17 +79,17 @@ string Crest::GetCrestTypeString(CREST_TYPE aType)
 		case MEDUSA:
 			return "Medusa Crest";
 			break;
-
 		case MOBILITY:
 			return "Mobility Crest";
 			break;
-
 		case LEAP:
 			return "Leap Crest";
 			break;
-
 		case UNLOCK:
 			return "Unlock Crest";
+			break;
+		case HADES:
+			return "Hades Crest";
 			break;
 	}
 	return "Unknown Crest";
@@ -140,10 +140,13 @@ void Crest::CreateLightAndIndex()
 		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case LEAP:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(3.0f, 3.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case UNLOCK:   //255, 215, 0
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(10.0f, 8.4f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 8.4f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		break;
+	case HADES:
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	}
 }
@@ -177,6 +180,9 @@ void Crest::Update(Player* player)
 				targetObject->SetTargetPosition(1);
 			}
 			break;
+		case HADES:
+			collisionLayer = VISION_AFFECTED_COLLISION;
+			break;
 		}
 	}
 	else
@@ -189,7 +195,9 @@ void Crest::Update(Player* player)
 				targetObject->SetTargetPosition(0);
 			}
 		}
-		//renderMan->DisableLight(lightIndex);
+		if(crestType == HADES)
+		{
+			collisionLayer = VISION_AFFECTED_NOCOLLISION;
+		}
 	}
-
 }
