@@ -8,8 +8,8 @@
  
 #define MAX_LIGHTS 10
 #define MAX_GLOW_RANGE 27 // How many "units" away from the eye an object must be to achieve full glow.
-#define GLOW_RANGE_POWER (0.333333333)
-#define GLOW_ANGLE_POWER (0.666666666)
+#define GLOW_RANGE_POWER (0.000000000)
+#define GLOW_ANGLE_POWER (1.000000000)
 
 cbuffer cbPerFrame
 {

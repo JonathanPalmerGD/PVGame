@@ -378,7 +378,6 @@ void PVGame::UpdateScene(float dt)
 			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
 		}
-		
 		if(input->wasKeyPressed('5'))
 		{
 			XMFLOAT4 p = player->getPosition();
