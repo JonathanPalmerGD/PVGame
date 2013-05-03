@@ -7,8 +7,8 @@
 #include "Input.h"
 #include "Audio\AudioListener.h"
 #include <string>
-
 #include <memory>
+#include "RiftManager.h"
 
 using namespace std;
 using namespace XNA;
@@ -16,7 +16,7 @@ using namespace XNA;
 class Player
 {
 	public:
-		Player(PhysicsManager* pm, RenderManager* rm);
+		Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM);
 		virtual ~Player(void);
 		void OnResize(float aspectRatio);
 		void Update(float dt, Input* aInput);
@@ -63,5 +63,10 @@ class Player
 		float mTheta;
 		float mPhi;
 		POINT mLastMousePos;
+
+		//OCULUS RIFT
+		RiftManager* riftMan;
+
+		float EyeYaw, EyePitch, EyeRoll, yaw;
 };
 

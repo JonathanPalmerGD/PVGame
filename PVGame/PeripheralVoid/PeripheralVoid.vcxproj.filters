@@ -148,6 +148,7 @@
     <ClCompile Include="tinyxml2.cpp">
       <Filter>XML</Filter>
     </ClCompile>
+    <ClCompile Include="RiftManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FW1FontWrapper\CFW1ColorRGBA.h">
@@ -279,6 +280,7 @@
     <ClInclude Include="Turret.h">
       <Filter>SHeaders</Filter>
     </ClInclude>
+    <ClInclude Include="RiftManager.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="FX\Basic.fx">

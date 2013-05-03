@@ -117,8 +117,6 @@ void GameObject::rotate(float x, float y, float z, float w)
 
 		rigidBody->getMotionState()->setWorldTransform(t);
 		CalculateWorldMatrix();
-
-		CalculateWorldMatrix();
 	}
 }
 
@@ -169,8 +167,17 @@ void GameObject::SetRigidBody(btRigidBody* rBody, short layer)
 
 void GameObject::changeCollisionLayer(short layer)
 {
-	physicsMan->removeRigidBodyFromWorld(rigidBody);
-	physicsMan->addRigidBodyToWorld(rigidBody, layer);
+	if(rigidBody != NULL)
+	{
+		btTransform t;
+		rigidBody->getMotionState()->getWorldTransform(t);
+		btVector3 position = t.getOrigin();
+
+		physicsMan->removeRigidBodyFromWorld(rigidBody);
+		rigidBody = physicsMan->createRigidBody(meshKey, position.getX(), position.getY(), position.getZ(), localScale.x,		         localScale.y, localScale.z, mass);
+		rigidBody->setUserPointer(this);
+		physicsMan->addRigidBodyToWorld(rigidBody, layer);
+	}
 }
 
 void GameObject::Update()

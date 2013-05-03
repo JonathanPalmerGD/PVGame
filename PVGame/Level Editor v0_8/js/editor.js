@@ -187,8 +187,8 @@ function onTileClick(evt)
 		case "crest":
 			this.setAttribute("style", "background-color: #42CD76; color: #000000;");
 			this.appendChild(document.createTextNode("C"));
-			this.appendChild(document.createComment("Crest:" + document.getElementById("crestName").value + ":" + document.getElementById("unlockCube").value +
-								 ":" + document.getElementById("crestFloor").checked));
+			this.appendChild(document.createComment("Crest:" + document.getElementById("crestName").value + ":" + document.getElementById("unlockCube").value + 
+								 ":" + document.getElementById("crestDirection").value + ":" + document.getElementById("crestFloor").checked));
 			break;
 		default:
 			this.setAttribute("style", "background-color: #FFFFFF; color: #000000;");
@@ -368,13 +368,14 @@ function loadXML()
 		var col = parseInt(crests[i].getAttribute("col"));
 		var xLength = parseInt(crests[i].getAttribute("xLength"));
 		var zLength = parseInt(crests[i].getAttribute("zLength"));
+		var dir = crests[i].getAttribute("dir");
 		var effect = crests[i].getAttribute("effect");
 		var target = crests[i].getAttribute("target");
 		var crestFloor;
 	
 		this.setAttribute("style", "background-color: #42CD76; color: #000000;");
 			this.appendChild(document.createTextNode("Crest:" + document.getElementById("crestName").value + ":" + document.getElementById("unlockCube").value +
-								 ":" + document.getElementById("crestFloor").checked));
+								 ":" + document.getElementById("crestDirection").value + ":" + document.getElementById("crestFloor").checked));
 	
 		for (var j = 0; j < xLength; j++)
 		{
@@ -386,7 +387,7 @@ function loadXML()
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].innerHTML = "";
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #42CD76; color: #000000;");
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("C"));
-			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + crestFloor));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + dir + ":"  + crestFloor));
 			
 			for (var k = 1; k < zLength; k++)
 			{
@@ -398,7 +399,7 @@ function loadXML()
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].innerHTML = "";
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #42CD76; color: #000000;");
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("C"));
-				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + crestFloor));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + dir + ":" + crestFloor));
 			}
 		}
 	}
@@ -460,9 +461,9 @@ function createXML()
 					else
 						targetCube = "";
 					
-					crests.push({row: ((ROWS - i) - 1), col: j, effect: strArray[1], target: targetCube});
+					crests.push({row: ((ROWS - i) - 1), col: j, effect: strArray[1], target: targetCube, dir: strArray[3]});
 					
-					if (strArray[3] == "true")
+					if (strArray[4] == "true")
 						floors.push({row: ((ROWS - i) - 1), col: j});
 				}
 			}
@@ -684,7 +685,8 @@ function writeXML(walls, floors, spawns, exits, cubes, crests)
 		{
 			xmlString += "\n<crest row=\"" + crests[i][j].row + "\" col=\"" + crests[i][j].col + "\" xLength=\"" + crests[i][j].xLength +
 				     "\" zLength=\"" + crests[i][j].zLength + "\" centerX=\"" + crests[i][j].centerX + "\" centerY=\"" + crests[i][j].centerY +
-				     "\" centerZ=\"" + crests[i][j].centerZ + "\" effect=\"" + crests[i][j].effect + "\" target=\"" + crests[i][j].target + "\"/>";
+				     "\" centerZ=\"" + crests[i][j].centerZ + "\" effect=\"" + crests[i][j].effect + "\" target=\"" + crests[i][j].target +
+				     "\" dir=\"" + crests[i][j].dir + "\"/>";
 		}
 	}
 	

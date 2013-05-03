@@ -1,35 +1,91 @@
 <MaterialsList>
-	<Material name="Test Wood">
+	<Material name="Wood">
 		<SurfaceMaterial>Red</SurfaceMaterial>
 		<DiffuseMap>WoodCrate01</DiffuseMap>
 	</Material>
-  
-  <Material name="Test Wall">
+  <Material name="Wall">
     <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>Wall01</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
   </Material>
-
+	<Material name="Floor">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>floor</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="LeapCrest">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>leapcrest</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.7" a="1.0"></Glow>
+	</Material>
+	<Material name="MobilityCrest">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>mobilitycrest</DiffuseMap>
+		<Glow r="0.7" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="MedusaCrest">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>medusacrest</DiffuseMap>
+		<Glow r="0.0" g="0.7" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Snow">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>snow</DiffuseMap>
+		<Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Hedge">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>hedge</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Gravel">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>gravel</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Sand">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>sand</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Rock">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>rock</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Grass">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>grass</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	<Material name="Brick">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>brick</DiffuseMap>
+		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+	</Material>
+	
+	
+	
   <Material name="Leap Crest">
-    <SurfaceMaterial>Red</SurfaceMaterial>
+    <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>WoodCrate01</DiffuseMap>
-    <Glow r="0.7" g="0.0" b="0.0" a="1.0"></Glow>
+    <Glow r="0.0" g="0.0" b="0.7" a="1.0"></Glow>
   </Material>
   
   <Material name="Medusa Crest">
-    <SurfaceMaterial>Red</SurfaceMaterial>
+    <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>WoodCrate01</DiffuseMap>
     <Glow r="0.0" g="0.7" b="0.0" a="1.0"></Glow>
   </Material>
 
-  
   <Material name="Mobility Crest">
-    <SurfaceMaterial>Red</SurfaceMaterial>
+    <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>WoodCrate01</DiffuseMap>
-    <Glow r="0.0" g="0.0" b="0.7" a="1.0"></Glow>
+    <Glow r="0.7" g="0.0" b="0.0" a="1.0"></Glow>
   </Material>
 
   <Material name="Unlock Crest">
-    <SurfaceMaterial>Red</SurfaceMaterial>
+    <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>WoodCrate01</DiffuseMap>
     <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
   </Material>

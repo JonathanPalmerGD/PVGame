@@ -5,17 +5,53 @@
       <OffsetV>0</OffsetV>
       <Type>Diffuse</Type>
 	  </Texture>
-    <Texture name="medusacrest">
-      <OffsetU>0</OffsetU>
-      <OffsetV>1</OffsetV>
-    </Texture>
-    <Texture name="WoodCrate01">
-      <OffsetU>1</OffsetU>
-      <OffsetV>0</OffsetV>
-    </Texture>
-    <Texture name="Floor">
-      <OffsetU>1</OffsetU>
-      <OffsetV>1</OffsetV>
-    </Texture>
+		<Texture name="medusacrest">
+			<OffsetU>0</OffsetU>
+			<OffsetV>1</OffsetV>
+		</Texture>
+		<Texture name="snow">
+			<OffsetU>0</OffsetU>
+			<OffsetV>2</OffsetV>
+		</Texture>
+		<Texture name="hedge">
+			<OffsetU>0</OffsetU>
+			<OffsetV>3</OffsetV>
+		</Texture>
+		<Texture name="WoodCrate01">
+			<OffsetU>1</OffsetU>
+			<OffsetV>0</OffsetV>
+		</Texture>
+		<Texture name="floor">
+			<OffsetU>1</OffsetU>
+			<OffsetV>1</OffsetV>
+		</Texture>
+		<Texture name="sand">
+			<OffsetU>1</OffsetU>
+			<OffsetV>2</OffsetV>
+		</Texture>
+		<Texture name="rock">
+			<OffsetU>1</OffsetU>
+			<OffsetV>3</OffsetV>
+		</Texture>
+		<Texture name="leapcrest">
+			<OffsetU>2</OffsetU>
+			<OffsetV>0</OffsetV>
+		</Texture>
+		<Texture name="brick">
+			<OffsetU>2</OffsetU>
+			<OffsetV>1</OffsetV>
+		</Texture>
+		<Texture name="gravel">
+			<OffsetU>2</OffsetU>
+			<OffsetV>2</OffsetV>
+		</Texture>
+		<Texture name="grass">
+			<OffsetU>2</OffsetU>
+			<OffsetV>3</OffsetV>
+		</Texture>
+		<Texture name="mobilitycrest">
+			<OffsetU>3</OffsetU>
+			<OffsetV>0</OffsetV>
+		</Texture>
   </Atlas>
 </TextureList>

@@ -269,13 +269,13 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 
 		if(frustumBody == NULL)
 		{
-			frustumBody = new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING);
+			frustumBody = new GameObject("Frustum", "Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING);
 		}
 		else
 		{
 			delete frustumBody;
 			//Yeah that happened. I dereferenced the new operator. I. am. GOD! (lol no). 
-			*frustumBody = *(new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING));
+			*frustumBody = *(new GameObject("Frustum", "Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING));
 		}
 
 		frustumBody->CalculateWorldMatrix();
@@ -358,6 +358,30 @@ void Camera::Pitch(float angle)
 #endif
 }
 
+void Camera::Roll(float angle)
+{
+	XMMATRIX R = XMMatrixRotationZ(angle);
+
+	XMStoreFloat3(&mRight,   XMVector3TransformNormal(XMLoadFloat3(&mRight), R));
+	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
+	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
+#if USE_FRUSTUM_CULLING
+		transformBody();
+#endif
+}
+
+void Camera::setRotation(float yaw, float pitch, float roll)
+{
+	mRight = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	mUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	mLook = XMFLOAT3(0.0f, 0.0f, 1.0f);
+
+	Roll(roll);
+	RotateY(-yaw);
+	Pitch(-pitch);
+
+}
+
 void Camera::RotateY(float angle)
 {
 	// Rotate the basis vectors about the world y-axis.
@@ -367,8 +391,9 @@ void Camera::RotateY(float angle)
 	XMStoreFloat3(&mRight,   XMVector3TransformNormal(XMLoadFloat3(&mRight), R));
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
-	if(USE_FRUSTUM_CULLING)
+#if USE_FRUSTUM_CULLING
 		transformBody();
+#endif
 }
 
 void Camera::UpdateViewMatrix()

@@ -71,7 +71,9 @@ public:
 	// Rotate the camera.
 	void Pitch(float angle);
 	void RotateY(float angle);
+	void Roll(float angle);
 
+	void setRotation(float yaw, float pitch, float roll);
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 
@@ -90,6 +92,8 @@ private:
 	XMFLOAT3 mRight;
 	XMFLOAT3 mUp;
 	XMFLOAT3 mLook;
+
+	XMFLOAT4 rotationQuat;
 
 	// Cache frustum properties.
 	float mNearZ;

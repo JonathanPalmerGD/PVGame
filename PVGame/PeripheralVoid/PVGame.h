@@ -1,6 +1,7 @@
 #pragma once
 
 //#include "PhysicsManager.h"
+
 #include "Common\d3dApp.h"
 #include "Common\d3dx11effect.h"
 #include "Common\MathHelper.h"
@@ -14,6 +15,7 @@
 #include "Audio/AL/al.h"
 #include "Audio/AL/alc.h"
 #include <vector>
+#include "RiftManager.h"
 
 using namespace tinyxml2;
 
@@ -56,4 +58,9 @@ public:
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;
 		AudioSource* audioSource;
+
+		/////////////////////////////////////////////////////////////////////
+		//Oculus Rift
+		RiftManager* riftMan;
+		/////////////////////////////////////////////////////////////////////
 };

@@ -95,7 +95,7 @@ void Turret::CreateLightAndIndex()
 
 void Turret::CreateProjectiles()
 {
-	//GameObject* projectileGObj = new GameObject("Sphere", "Test Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
+	//GameObject* projectileGObj = new GameObject("Sphere", "Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
 	//gameObjects.push_back(projectileGObj);
 }
 
@@ -148,6 +148,7 @@ void Turret::UpdateProjectiles()
 	//For each projectile
 		//If it is active
 			//Check collision with something?
+				//Projectile.ResetProjectile();
 				//If collided with nonplayer. Mark as inactive and move off the world.
 				//If collided with player. Mark as inactive, move off world, reset the player to last checkpoint
 }

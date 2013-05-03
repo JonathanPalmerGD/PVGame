@@ -91,7 +91,6 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 	}
 }
 
-
 Room::~Room(void)
 {
 	for (unsigned int i = 0; i < floorVector.size(); ++i)
@@ -266,9 +265,6 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* translateX = cube->Attribute("translateX");
 		const char* translateY = cube->Attribute("translateY");
 		const char* translateZ = cube->Attribute("translateZ");
-		const char* scaleX = cube->Attribute("scaleX");
-		const char* scaleY = cube->Attribute("scaleY");
-		const char* scaleZ = cube->Attribute("scaleZ");
 
 		tempCube->row = (float)atof(row) + mapOffsetZ;
 		tempCube->col = (float)atof(col) + mapOffsetX;
@@ -281,9 +277,6 @@ void Room::loadRoom(float xPos, float zPos)
 		tempCube->translateX = (float)atof(translateX);
 		tempCube->translateY = (float)atof(translateY);
 		tempCube->translateZ = (float)atof(translateZ);
-		tempCube->scaleX = (float)atof(scaleX);
-		tempCube->scaleY = (float)atof(scaleY);
-		tempCube->scaleZ = (float)atof(scaleZ);
 		tempCube->direction = "";
 		tempCube->file = "";
 	
@@ -296,6 +289,7 @@ void Room::loadRoom(float xPos, float zPos)
 
 		const char* row = crest->Attribute("row");
 		const char* col = crest->Attribute("col");
+		const char* dir = crest->Attribute("dir");
 		const char* effect = crest->Attribute("effect");
 		const char* xLength = crest->Attribute("xLength");
 		const char* zLength = crest->Attribute("zLength");
@@ -311,11 +305,29 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
 		tempWall->centerY = (float)atof(centerY);
 		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
-		tempWall->direction = "";
+		tempWall->xRotation = 0.0f;
+		tempWall->yRotation = 3.14f;
+		tempWall->zRotation = 0.0f;
+		tempWall->direction = dir;
 		tempWall->file = "";
 		tempWall->effect = static_cast<CREST_TYPE>(atoi(effect));
 		tempWall->target = target;
 	
+		if (strcmp(dir, "up") == 0)
+			tempWall->centerZ -= 0.4;
+		if (strcmp(dir, "down") == 0)
+			tempWall->centerZ += 0.4;
+		if (strcmp(dir, "right") == 0)
+		{
+			tempWall->centerX -= 0.4;
+			tempWall->xRotation = 3.14f / 2.0f;
+		}
+		if (strcmp(dir, "left") == 0)
+		{
+			tempWall->centerX += 0.4;
+			tempWall->xRotation = -3.14f / 2.0f;
+		}
+
 		crestVector.push_back(tempWall);
 	}
 	
@@ -324,7 +336,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Test Wall", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
+			GameObject* wallObj = new GameObject("Cube", "Hedge", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
 			gameObjs.push_back(wallObj);
 		}
@@ -332,14 +344,14 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < floorVector.size(); i++)
 	{
-		GameObject* floorObj = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, ObjectType::WORLD);
+		GameObject* floorObj = new GameObject("Cube", "Floor", physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, ObjectType::WORLD);
 		floorObj->scale(floorVector[i]->xLength, 1.0f, floorVector[i]->zLength);
 		gameObjs.push_back(floorObj);
 	}
 
 	for (unsigned int i = 0; i < cubeVector.size(); i++)
 	{
-		MovingObject* cubeObj = new MovingObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
+		MovingObject* cubeObj = new MovingObject("Cube", "Wall", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
 		cubeObj->scale(cubeVector[i]->xLength, cubeVector[i]->yLength, cubeVector[i]->zLength);
 		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos));
@@ -365,14 +377,27 @@ void Room::loadRoom(float xPos, float zPos)
 		gameObjs.push_back(cubeObj);
 	}
 
-
 	for (unsigned int i = 0; i < crestVector.size(); i++)
 	{
-		GameObject* crestObj = new Crest("medusacrest", "medusacrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-		//GameObject* crestObj = new Crest("medusacrest", Crest::GetCrestTypeString(crestVector[i]->effect), physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-		//crestObj->scale(crestVector[i]->xLength,1.0,crestVector[i]->zLength);
-		crestObj->rotate(0.0f, 3.14f, 0.0f);
+		GameObject* crestObj;
+		switch(crestVector[i]->effect)
+		{
+		case MEDUSA:
+			crestObj = new Crest("medusacrest", "MedusaCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			break;
+		case LEAP:
+			crestObj = new Crest("medusacrest", "LeapCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			break;
+		case MOBILITY:
+			crestObj = new Crest("medusacrest", "MobilityCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			break;
+		case UNLOCK:
+			crestObj = new Crest("medusacrest", "Snow", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			break;
+		}
+
 		crestObj->translate(0.0f, 1.0f, 0.0f);
+		crestObj->rotate(crestVector[i]->xRotation, crestVector[i]->yRotation, crestVector[i]->zRotation);
 
 		dynamic_cast<Crest*>(crestObj)->SetTargetObject(cubeMap[crestVector[i]->target]);
 

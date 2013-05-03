@@ -21,6 +21,6 @@
 <cubes>
 </cubes>
 <crests>
-<crest row="15" col="7" xLength="1" zLength="1" centerX="7.5" centerY="0" centerZ="15.5" effect="0" target=""/>
+<crest row="15" col="7" xLength="1" zLength="1" centerX="7.5" centerY="0" centerZ="15.5" effect="0" target="" dir="right"/>
 </crests>
 </level>

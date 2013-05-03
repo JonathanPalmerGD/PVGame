@@ -8,6 +8,7 @@
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
 
+
 using std::vector;
 using std::map;
 using std::string;
@@ -17,7 +18,7 @@ using std::string;
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
-#define MOBILITY_MULTIPLIER 1.25f
+#define MOBILITY_MULTIPLIER 0.60f
 
 #define USINGVLD 0
 #if USINGVLD 
@@ -28,7 +29,7 @@ using std::string;
 #define MAX_BLURS 2
 
 const enum GAME_STATE { MENU, OPTION, PLAYING, END };
-const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK};
+const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds
@@ -192,6 +193,9 @@ struct Wall
 	float centerX;
 	float centerY;
 	float centerZ;
+	float xRotation;
+	float yRotation;
+	float zRotation;
 	string direction;
 	string file;
 	CREST_TYPE effect;

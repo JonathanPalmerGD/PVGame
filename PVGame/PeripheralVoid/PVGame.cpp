@@ -10,7 +10,6 @@ PVGame::PVGame(HINSTANCE hInstance)
 	gameState = MENU;
 }
 
-
 PVGame::~PVGame(void)
 {
 	delete player;
@@ -28,10 +27,18 @@ PVGame::~PVGame(void)
 	alcDestroyContext(audioContext);
     alcCloseDevice(audioDevice);
 	delete physicsMan;
+
+	//OCULUS RIFT
+	delete riftMan;
 }
 
 bool PVGame::Init()
 {
+	//OCULUS RIFT
+	riftMan = new RiftManager();
+
+	DBOUT(riftMan->getDetectionMessage());
+
 	if (!D3DApp::Init())
 		return false;
 
@@ -51,7 +58,7 @@ bool PVGame::Init()
         
 
 	physicsMan = new PhysicsManager();
-	player = new Player(physicsMan, renderMan);
+	player = new Player(physicsMan, renderMan, riftMan);
 	
 	//Test load a cube.obj
 	//renderMan->LoadFile(L"crest.obj", "crest");
@@ -177,19 +184,19 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Make Turrets
-	GameObject* turretGOJ = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	GameObject* turretGOJ = new Turret("Cube", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
 	turretGOJ->scale(1.5, 0.6, 0.6);
-	turretGOJ->rotate(0.0f, 1.0f, 0.0f);
+	turretGOJ->rotate(1.0f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ);
 
-	GameObject* turretGOJ2 = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
+	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
 	turretGOJ2->scale(1.5, 0.6, 0.6);
 	turretGOJ2->rotate(2.2f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ2);
 
-	GameObject* turretGOJ3 = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
+	GameObject* turretGOJ3 = new Turret("Cube", "Rock", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
 	turretGOJ3->scale(1.5, 0.6, 0.6);
-	//turretGOJ3->rotate(1.77f, 0.0f, 0.0f);
+	turretGOJ3->rotate(1.77f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ3);
 	#pragma endregion
 
@@ -224,7 +231,10 @@ void PVGame::UpdateScene(float dt)
 			audioSource->play();
 		}
 		if(input->isKeyDown(VK_RETURN))
+		{
+			ShowCursor(false);
 			gameState = PLAYING;
+		}
 		break;
 	case PLAYING:
 		if(audioSource->isPlaying())
@@ -373,21 +383,22 @@ void PVGame::UpdateScene(float dt)
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
-			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 		}
-		/*
 		if(input->wasKeyPressed('5'))
 		{
 			XMFLOAT4 p = player->getPosition();
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, UNLOCK, 1.0f);
+			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
+			crestObj->scale(2.0f, .1f, 2.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
+			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-		}*/
+		}
 		if(input->wasKeyPressed('9'))
 		{
 			XMFLOAT4 p = player->getPosition();
@@ -398,8 +409,8 @@ void PVGame::UpdateScene(float dt)
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
-			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		#pragma endregion
 
@@ -431,7 +442,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 10;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\shot.wav");
 			
@@ -440,7 +451,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			is1Up = false;
 		}
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
@@ -454,7 +464,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 20;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -462,7 +472,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			is2Up = false;
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
@@ -476,7 +485,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 0;
 
-			GameObject* testSphere = new GameObject("Cube", "Test Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -484,7 +493,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			is8Up = false;
 		}
 		else if(!input->isKeyDown('8'))
@@ -498,7 +506,7 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 90;
 
-			GameObject* testSphere = new GameObject("Sphere", "Test Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
+			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\shot.wav");
 			testSphere->playAudio();
@@ -506,7 +514,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			isEUp = false;
 		}
 		else if(!input->isKeyDown('E'))
@@ -581,7 +588,7 @@ void PVGame::DrawScene()
 	switch(gameState)
 	{
 	case MENU:
-		renderMan->DrawMenu();
+		renderMan->DrawMenu("");
 		break;
 	case PLAYING:
 		renderMan->DrawScene(player->GetCamera(), gameObjects);
@@ -599,7 +606,7 @@ void PVGame::BuildGeometryBuffers()
 	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
 	// gameObjects.push_back(aGameObject);
 
-	/*GameObject* aGameObject = new GameObject("Plane", "Test Wood", &(XMMatrixIdentity() * XMMatrixScaling(80.0f, 1.0f, 80.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
+	/*GameObject* aGameObject = new GameObject("Plane", "Wood", &(XMMatrixIdentity() * XMMatrixScaling(80.0f, 1.0f, 80.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
 	aGameObject->SetRigidBody(physicsMan->createPlane(0.0f, 0.0f, 0.0f));
 	aGameObject->scale(8000.0, 1.0, 8000.0);
 	gameObjects.push_back(aGameObject);*/

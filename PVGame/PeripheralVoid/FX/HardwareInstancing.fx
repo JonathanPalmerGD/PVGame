@@ -8,8 +8,8 @@
  
 #define MAX_LIGHTS 10
 #define MAX_GLOW_RANGE 27 // How many "units" away from the eye an object must be to achieve full glow.
-#define GLOW_RANGE_POWER (0.333333333)
-#define GLOW_ANGLE_POWER (0.666666666)
+#define GLOW_RANGE_POWER (0.000000000)
+#define GLOW_ANGLE_POWER (1.000000000)
 
 cbuffer cbPerFrame
 {
@@ -105,8 +105,8 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 		
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
-	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 2.0f) + (1.0f / 2.0f * vin.AtlasCoord.x),
-							(vin.Tex.y / 2.0f) + (1.0f / 2.0f * vin.AtlasCoord.y))
+	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.x),
+							(vin.Tex.y / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.y))
 							: vin.Tex;
 
 	// Output vertex attributes for interpolation across triangle.
@@ -170,7 +170,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     if(gUseTexure)
 	{
 		// Sample texture.
-		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.5f) + (pin.AtlasCoord * 0.5f));
+		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f));
 	}
 	 
 	//
@@ -235,8 +235,12 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     return litColor;
 }
 
-float4 TexturePS(VertexOut pin) : SV_Target
+float4 TexturePS(VertexOut pin, uniform bool drawCursor) : SV_Target
 {
+	if (drawCursor && pin.Tex.x >= 0.495f && pin.Tex.x <= 0.505f
+				&& pin.Tex.y >= 0.495f && pin.Tex.y <= 0.505f)
+		return float4(0.0f, 0.0f, 0.0f, 1.0f);
+
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
 
@@ -334,7 +338,17 @@ technique11 TexturePassThrough
 	{
 		SetVertexShader( CompileShader( vs_5_0, TextureVS() ) );
 		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_5_0, TexturePS() ) );
+        SetPixelShader( CompileShader( ps_5_0, TexturePS(false) ) );
+	}
+}
+
+technique11 TexturePassThroughWithCursor
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_5_0, TextureVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, TexturePS(true) ) );
 	}
 }
 
@@ -404,7 +418,17 @@ technique11 TexturePassThroughDX10
 	{
 		SetVertexShader( CompileShader( vs_4_0, TextureVS() ) );
 		SetGeometryShader( NULL );
-        SetPixelShader( CompileShader( ps_4_0, TexturePS() ) );
+        SetPixelShader( CompileShader( ps_4_0, TexturePS(false) ) );
+	}
+}
+
+technique11 TexturePassThroughWithCursorDX10
+{
+	pass P0
+	{
+		SetVertexShader( CompileShader( vs_4_0, TextureVS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, TexturePS(true) ) );
 	}
 }
 
