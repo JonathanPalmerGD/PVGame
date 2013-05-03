@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(PhysicsManager* pm, RenderManager* rm) 
+Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM) 
 	: PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 //Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 {
@@ -38,6 +38,14 @@ Player::Player(PhysicsManager* pm, RenderManager* rm)
 	//listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
+
+	//OCULUS RIFT
+	riftMan = riftM;
+
+	EyeYaw = 0;
+	EyePitch = 0;
+	EyeRoll = 0;
+	yaw = 0;
 }
 
 void Player::Update(float dt, Input* input)
@@ -65,101 +73,110 @@ void Player::HandleInput(Input* input)
 {
 
 	#pragma region Camera Input
-	// Basic mouse camera controls
-	/*if (input->getMouseY() < renderMan->GetClientHeight() * .2)
-	{
-		playerCamera->Pitch(-camLookSpeed / 2);
-	}
-
-	if (input->getMouseY() >= renderMan->GetClientHeight() * .8)
-	{
-		playerCamera->Pitch(camLookSpeed / 2);
-	}*/
-
-	//if (input->getMouseX() < renderMan->GetClientWidth() * .2)
-	//{
-	//	float angle = -camLookSpeed / 2;
-	//	playerCamera->RotateY(angle);
-	//	XMMATRIX R = XMMatrixRotationY(angle);
-
-	//	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-	//	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-	//	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-	//	//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
-	//}
-
-	//if (input->getMouseX() >= renderMan->GetClientWidth() * .8)
-	//{
-	//	float angle = camLookSpeed / 2;
-	//	playerCamera->RotateY(angle);
-	//	XMMATRIX R = XMMatrixRotationY(angle);
-
-	//	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-	//	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-	//	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-	//	//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
-	//}
-
-		// Make each pixel correspond to a quarter of a degree.
-	#pragma region Mouse Controls
-	float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
-	float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
-
-	// Update angles based on input
-	mTheta += dx/32;
-	mPhi   += dy/32;
-	playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
-
-	playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
-	XMMATRIX R = XMMatrixRotationY(mTheta);
-
-	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-	mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
-	mTheta = MathHelper::Clamp(dx, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
-
-	playerCamera->UpdateViewMatrix();
 	
-	input->centerMouse();
-
-	mLastMousePos.x = input->getMouseX();
-	mLastMousePos.y = input->getMouseY();
-	#pragma endregion
-
-	// Now check for camera input.
-	if (input->isCameraUpKeyDown())
+#pragma region Oculus Rift Look controls
+	if(riftMan->isRiftConnected())
 	{
-		playerCamera->Pitch(-camLookSpeed / 2);
+		//Get head orientation from rift
+		Quatf hmdOrient = riftMan->getOrientation();
+		hmdOrient.GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&EyeYaw, &EyePitch, &EyeRoll);
+
+		//Get extra orientation abilities from mouse, only yaw
+		//(its much nicer than having to turn your body when trying to play)
+		float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
+		yaw += dx/32;
+		input->centerMouse();
+		mLastMousePos.x = input->getMouseX();
+
+		//Get extra orientation abilities from keyboard/gamepad, only yaw
+		//(its much nicer than having to turn your body when trying to play)
+		if (input->isCameraRightKeyDown())
+		{
+			float angle = camLookSpeed / 2;
+			yaw += angle;
+		}
+		if (input->isCameraLeftKeyDown())
+		{
+			float angle = -camLookSpeed / 2;
+			yaw += angle;
+		}
+
+		//Set the rotation of the player
+		XMMATRIX R = XMMatrixRotationY(EyeYaw-yaw);
+		up    = XMFLOAT3(1.0f, 0.0f, 0.0f);
+		right = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		fwd   = XMFLOAT3(0.0f, 0.0f, 1.0f);
+		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+
+		//Set the rotation of the camera
+		playerCamera->setRotation(EyeYaw-yaw, EyePitch, EyeRoll);
 	}
-	if (input->isCameraDownKeyDown())
+#pragma endregion
+	else
 	{
-		playerCamera->Pitch(camLookSpeed/ 2);
-	}
+		#pragma region Mouse Controls
+		// Make each pixel correspond to a quarter of a degree.
+		float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
+		float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
 
-	if (input->isCameraLeftKeyDown())
-	{
-		float angle = -camLookSpeed / 2;
-		playerCamera->RotateY(angle);
-		XMMATRIX R = XMMatrixRotationY(angle);
+		// Update angles based on input
+		mTheta += dx/32;
+		mPhi   += dy/32;
+		playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
+
+		playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
+		XMMATRIX R = XMMatrixRotationY(mTheta);
 
 		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
 		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
-	}
-	if (input->isCameraRightKeyDown())
-	{
-		float angle = camLookSpeed / 2;
-		playerCamera->RotateY(angle);
-		XMMATRIX R = XMMatrixRotationY(angle);
+		mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
+		mTheta = MathHelper::Clamp(dx, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
 
-		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
-		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
-		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-		//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+		playerCamera->UpdateViewMatrix();
+	
+		input->centerMouse();
+
+		mLastMousePos.x = input->getMouseX();
+		mLastMousePos.y = input->getMouseY();
+		#pragma endregion
+
+		// Now check for camera input.
+		if (input->isCameraUpKeyDown())
+		{
+			playerCamera->Pitch(-camLookSpeed / 2);
+		}
+		if (input->isCameraDownKeyDown())
+		{
+			playerCamera->Pitch(camLookSpeed/ 2);
+		}
+
+		if (input->isCameraLeftKeyDown())
+		{
+			float angle = -camLookSpeed / 2;
+			playerCamera->RotateY(angle);
+			XMMATRIX R = XMMatrixRotationY(angle);
+
+			XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+			XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+			XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+			//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+		}
+		if (input->isCameraRightKeyDown())
+		{
+			float angle = camLookSpeed / 2;
+			playerCamera->RotateY(angle);
+			XMMATRIX R = XMMatrixRotationY(angle);
+
+			XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+			XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+			XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+			//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
+		}
+		#pragma endregion
 	}
-	#pragma endregion
 
 	//XMVECTOR tempPosition = XMLoadFloat4(&position);
 

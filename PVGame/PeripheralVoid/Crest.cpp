@@ -41,18 +41,30 @@ void Crest::ChangeView(bool newVisionBool)
 	if(newVisionBool && !inVision)
 	{
 		renderMan->EnableLight(lightIndex);
+
 		if(!audioSource->isPlaying())
 		{
 			audioSource->play();
 		}
+
+		if(crestType == HADES)
+		{
+			changeCollisionLayer(VISION_AFFECTED_COLLISION);
+		}
 	}
 	if(!newVisionBool)
 	{
+		renderMan->DisableLight(lightIndex);
+
 		if(audioSource->isPlaying())
 		{
 			audioSource->stop();
 		}
-		renderMan->DisableLight(lightIndex);
+
+		if(crestType == HADES)
+		{
+			changeCollisionLayer(VISION_AFFECTED_NOCOLLISION);
+		}
 	}
 	inVision = newVisionBool;
 }
@@ -181,7 +193,7 @@ void Crest::Update(Player* player)
 			}
 			break;
 		case HADES:
-			collisionLayer = VISION_AFFECTED_COLLISION;
+				//Hi
 			break;
 		}
 	}
@@ -197,7 +209,7 @@ void Crest::Update(Player* player)
 		}
 		if(crestType == HADES)
 		{
-			collisionLayer = VISION_AFFECTED_NOCOLLISION;
+			//Hi
 		}
 	}
 }

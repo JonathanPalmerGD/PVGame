@@ -11,6 +11,8 @@
 #include "GameObject.h"
 #include "FileLoader.h"
 #include "FW1FontWrapper\FW1FontWrapper.h"
+#include "Common\Sky.h"
+
 class FileLoader;
 
 class RenderManager
@@ -172,20 +174,21 @@ class RenderManager
 			FW1CreateFactory(FW1_VERSION, &pFW1Factory);
 			pFW1Factory->CreateFontWrapper(md3dDevice, L"Arial", &pFontWrapper);
 			
+			sky = new Sky(md3dDevice, L"Textures/grasscube1024.dds", 5000.0f, usingDX11);
 			return true;
 		}
 
 		int GetClientWidth() { return mClientWidth; }
 		int GetClientHeight() { return mClientHeight; }
 
-		void DrawMenu()
+		void DrawMenu(char* msg)
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::Silver));
 			
 			pFontWrapper->DrawString(
 										md3dImmediateContext,
-										L"Text",// String
+										L"Peripheral Void",// String
 										128.0f,// Font size
 										100.0f,// X position
 										50.0f,// Y position
@@ -196,6 +199,7 @@ class RenderManager
 			HR(mSwapChain->Present(0, 0));
 		}
 
+		
 		// Loop through all the buffers, drawing each instance for the game objects.
 		void DrawGameObjects(string aTechniqueKey)
 		{
@@ -322,7 +326,9 @@ class RenderManager
 				ToggleWireframe(true);
 
 			DrawGameObjects("LightsWithAtlas");
-
+			sky->Draw(md3dImmediateContext, *aCamera);
+			md3dImmediateContext->IASetInputLayout(mInputLayout);
+			md3dImmediateContext->OMSetDepthStencilState(0, 0);
 			ToggleWireframe(false);
 
 			D3DX11_TECHNIQUE_DESC techDesc;
@@ -629,7 +635,7 @@ class RenderManager
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 
-			float clientSize[2] = {mClientWidth, mClientHeight};
+			float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
@@ -841,7 +847,7 @@ class RenderManager
 
 			if (mfxScreenSize)
 			{
-				float clientSize[2] = {mClientWidth, mClientHeight};
+				float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 			}
 		}
@@ -880,6 +886,7 @@ class RenderManager
 
 		ID3DX11EffectScalarVariable* texelWidth;
 		ID3DX11EffectScalarVariable* texelHeight;
+		Sky* sky;
 
 		// Maps to various rendering compnents.
 		map<string, XMFLOAT2> diffuseAtlasCoordsMap;
@@ -952,6 +959,8 @@ class RenderManager
 			texelWidth = nullptr;
 			texelHeight = nullptr;
 			mInputLayout = nullptr;
+			sky = nullptr;
+
 			md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
 
 			ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
@@ -1011,6 +1020,8 @@ class RenderManager
 				ReleaseCOM(srvItr->second);
 				srvItr++;
 			}
+
+			delete sky;
 		}
 
 		// Build any rasterizer states we'll need - right now this is just 'Default' and 'Wireframe'.

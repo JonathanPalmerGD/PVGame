@@ -8,6 +8,7 @@
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
 
+
 using std::vector;
 using std::map;
 using std::string;
@@ -17,7 +18,7 @@ using std::string;
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
-#define MOBILITY_MULTIPLIER 1.25f
+#define MOBILITY_MULTIPLIER 0.60f
 
 #define USINGVLD 0
 #if USINGVLD 

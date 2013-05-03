@@ -27,10 +27,18 @@ PVGame::~PVGame(void)
 	alcDestroyContext(audioContext);
     alcCloseDevice(audioDevice);
 	delete physicsMan;
+
+	//OCULUS RIFT
+	delete riftMan;
 }
 
 bool PVGame::Init()
 {
+	//OCULUS RIFT
+	riftMan = new RiftManager();
+
+	DBOUT(riftMan->getDetectionMessage());
+
 	if (!D3DApp::Init())
 		return false;
 
@@ -50,7 +58,7 @@ bool PVGame::Init()
         
 
 	physicsMan = new PhysicsManager();
-	player = new Player(physicsMan, renderMan);
+	player = new Player(physicsMan, renderMan, riftMan);
 	
 	//Test load a cube.obj
 	//renderMan->LoadFile(L"crest.obj", "crest");
@@ -375,8 +383,8 @@ void PVGame::UpdateScene(float dt)
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
-			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		if(input->wasKeyPressed('5'))
 		{
@@ -384,9 +392,11 @@ void PVGame::UpdateScene(float dt)
 			XMFLOAT3 look = player->GetCamera()->GetLook();
 			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
 			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 1.0f);
+			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
+			crestObj->scale(2.0f, .1f, 2.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
+			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		if(input->wasKeyPressed('9'))
@@ -399,8 +409,8 @@ void PVGame::UpdateScene(float dt)
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
-			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		#pragma endregion
 
@@ -441,7 +451,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			is1Up = false;
 		}
 		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
@@ -463,7 +472,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			is2Up = false;
 		}
 		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
@@ -485,7 +493,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			is8Up = false;
 		}
 		else if(!input->isKeyDown('8'))
@@ -507,7 +514,6 @@ void PVGame::UpdateScene(float dt)
 			proceduralGameObjects.push_back(testSphere);
 			SortGameObjects();
 			renderMan->BuildInstancedBuffer(gameObjects);
-			SortGameObjects();
 			isEUp = false;
 		}
 		else if(!input->isKeyDown('E'))
@@ -582,7 +588,7 @@ void PVGame::DrawScene()
 	switch(gameState)
 	{
 	case MENU:
-		renderMan->DrawMenu();
+		renderMan->DrawMenu("");
 		break;
 	case PLAYING:
 		renderMan->DrawScene(player->GetCamera(), gameObjects);
