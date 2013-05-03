@@ -1,5 +1,5 @@
-﻿Build started 4/26/2013 3:57:25 PM.
-     1>Project "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\PVGame crest wall snap\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
+﻿Build started 5/3/2013 12:51:00 PM.
+     1>Project "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\PVGame load xml into editor v2\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\PeripheralVoid.unsuccessfulbuild" because "AlwaysCreate" was specified.
        CustomBuild:
@@ -15,8 +15,8 @@
        FinalizeBuildStatus:
          Deleting file "Debug\PeripheralVoid.unsuccessfulbuild".
          Touching "Debug\PeripheralVoid.lastbuildstate".
-     1>Done Building Project "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\PVGame crest wall snap\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)).
+     1>Done Building Project "\\banner.main.ad.rit.edu\students\mjs5767\IGMProfile\Desktop\PVGame load xml into editor v2\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.16
+Time Elapsed 00:00:02.69

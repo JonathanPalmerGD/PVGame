@@ -199,52 +199,52 @@
       <Filter>Font</Filter>
     </ClInclude>
     <ClInclude Include="Audio\AudioListener.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Audio\AudioSource.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Crest.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="FileLoader.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="MovingObject.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsManager.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="PVGame.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="RenderManager.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Common\TextureMgr.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Common\Camera.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
     <ClInclude Include="Common\d3dApp.h">
       <Filter>Luna</Filter>
@@ -277,7 +277,7 @@
       <Filter>XML</Filter>
     </ClInclude>
     <ClInclude Include="Turret.h">
-      <Filter>Headers</Filter>
+      <Filter>SHeaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -326,14 +326,14 @@
     <Filter Include="Source">
       <UniqueIdentifier>{26a55b6f-c56d-4797-9332-e742698339cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{68aeb45f-7ac5-4175-904f-e6fe0f483585}</UniqueIdentifier>
-    </Filter>
     <Filter Include="XML">
       <UniqueIdentifier>{f10fd82b-3b6a-48b8-bd6d-1feb03366fab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{084914fc-6d38-47d7-9605-481cb6426485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SHeaders">
+      <UniqueIdentifier>{68aeb45f-7ac5-4175-904f-e6fe0f483585}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

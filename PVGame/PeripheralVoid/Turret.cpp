@@ -4,7 +4,7 @@
 //{
 //}
 
-Turret::Turret(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, TURRET_TYPE aTurretType) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, ObjectType::VISION_AFFECTED, 0.0f, true)
+Turret::Turret(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, TURRET_TYPE aTurretType) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED_COLLISION, 0.0f, true)
 {
 	turretType = aTurretType;
 	inVision = false;
@@ -82,38 +82,49 @@ void Turret::CreateLightAndIndex()
 	switch(turretType)
 	{
 	case ALPHA:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 10.0f, 10.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case BETA:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 0.0f, 10.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case GAMMA:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(0.0f, 0.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.00f, 1.0f), XMFLOAT4(0.0f, 10.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	}
 }
 
+void Turret::CreateProjectiles()
+{
+	//GameObject* projectileGObj = new GameObject("Sphere", "Test Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
+	//gameObjects.push_back(projectileGObj);
+}
+
 void Turret::Update(Player* player)
 {
-	btVector3 crestPos = getRigidBody()->getCenterOfMassPosition();
-	renderMan->SetLightPosition(lightIndex, &crestPos);
+	btVector3 turretPos = getRigidBody()->getCenterOfMassPosition();
+	renderMan->SetLightPosition(lightIndex, &turretPos);
 
 	if(inVision)
 	{
 		switch(turretType)
 		{
 		case ALPHA:
-			//Increment the player's movement speed.
-			//player->setMedusaStatus(true);
-			//player->increaseMedusaPercent();
+			//If(++FireTimer > 1.0f)
+				//Choose the first inactive projectile and make it active. 
+				//Move it to the turret's muzzle.
+				//Give it speed
+				//Reset FireTimer
+
+			
+			UpdateProjectiles();
 			break;
 		case BETA:
-			//Increase the player's jump variable.
-			//player->setLeapStatus(true);
+			
+			UpdateProjectiles();
 			break;
 		case GAMMA:
-			//Increase the player's movement speed.
-			//player->setMobilityStatus(true);
+			
+			UpdateProjectiles();
 			break;
 		}
 	}
@@ -130,6 +141,15 @@ void Turret::Update(Player* player)
 		//}
 		//renderMan->DisableLight(lightIndex);
 	}
+}
+
+void Turret::UpdateProjectiles()
+{
+	//For each projectile
+		//If it is active
+			//Check collision with something?
+				//If collided with nonplayer. Mark as inactive and move off the world.
+				//If collided with player. Mark as inactive, move off world, reset the player to last checkpoint
 }
 
 //void Crest::ShootTargetObject(btVector3 newShootTarget)

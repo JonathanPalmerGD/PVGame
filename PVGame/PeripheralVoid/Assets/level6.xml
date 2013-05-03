@@ -8,6 +8,10 @@
 <wall row="10" col="18" xLength="1" yLength="6" zLength="12" centerX="18.5" centerY="0" centerZ="16"/>
 <wall row="22" col="6" xLength="13" yLength="6" zLength="1" centerX="12.5" centerY="0" centerZ="22.5"/>
 </walls>
+<floors>
+<floor row="0" col="11" xLength="3" zLength="10" centerX="12.5" centerY="0" centerZ="5"/>
+<floor row="10" col="7" xLength="11" zLength="12" centerX="12.5" centerY="0" centerZ="16"/>
+</floors>
 <spawns>
 <spawn row="1" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="1.5" dir="up"/>
 </spawns>
@@ -17,6 +21,6 @@
 <cubes>
 </cubes>
 <crests>
-<crest row="21" col="12" xLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="21.5" dir="down" effect="0" target=""/>
+<crest row="15" col="7" xLength="1" zLength="1" centerX="7.5" centerY="0" centerZ="15.5" effect="0" target=""/>
 </crests>
 </level>

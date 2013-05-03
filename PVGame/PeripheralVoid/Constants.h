@@ -14,7 +14,7 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
-#define USE_FRUSTUM_CULLING 0
+#define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
 #define MOBILITY_MULTIPLIER 1.25f
@@ -192,9 +192,6 @@ struct Wall
 	float centerX;
 	float centerY;
 	float centerZ;
-	float xRotation;
-	float yRotation;
-	float zRotation;
 	string direction;
 	string file;
 	CREST_TYPE effect;

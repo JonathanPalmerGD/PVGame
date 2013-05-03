@@ -22,7 +22,7 @@ class GameObject;
 class Camera
 {
 public:
-	Camera(PhysicsManager* pm);
+	Camera(PhysicsManager* pm, float aspect);
 	~Camera();
 
 	// Get/Set world camera position.

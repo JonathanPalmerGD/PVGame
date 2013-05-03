@@ -107,10 +107,17 @@ void GameObject::rotate(float x, float y, float z, float w)
 {
 	if(rigidBody!= NULL)
 	{
-		btTransform t = rigidBody->getWorldTransform();
+		/*btTransform t = rigidBody->getWorldTransform();
 		t.setRotation(btQuaternion(x, y , z, w));
 		rigidBody->setWorldTransform(t);
-		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());*/
+		btTransform t = rigidBody->getWorldTransform();
+		btQuaternion rotation(x, y, z, w);
+		t.setRotation(rotation);
+
+		rigidBody->getMotionState()->setWorldTransform(t);
+		CalculateWorldMatrix();
+
 		CalculateWorldMatrix();
 	}
 }
@@ -119,10 +126,16 @@ void GameObject::rotate(float yaw, float pitch, float roll)
 {
 	if(rigidBody!= NULL)
 	{
-		btTransform t = rigidBody->getWorldTransform();
+		/*btTransform t = rigidBody->getWorldTransform();
 		t.setRotation(btQuaternion(yaw, pitch, roll));
 		rigidBody->setWorldTransform(t);
-		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());
+		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());*/
+
+		btTransform t = rigidBody->getWorldTransform();
+		btQuaternion rotation(yaw, pitch, roll);
+		t.setRotation(rotation);
+
+		rigidBody->getMotionState()->setWorldTransform(t);
 		CalculateWorldMatrix();
 	}
 }

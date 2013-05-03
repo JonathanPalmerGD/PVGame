@@ -7,8 +7,14 @@
 <wall row="11" col="16" xLength="1" yLength="6" zLength="8" centerX="16.5" centerY="0" centerZ="15"/>
 <wall row="19" col="0" xLength="17" yLength="6" zLength="1" centerX="8.5" centerY="0" centerZ="19.5"/>
 </walls>
+<floors>
+<floor row="6" col="1" xLength="21" zLength="3" centerX="11.5" centerY="0" centerZ="7.5"/>
+<floor row="9" col="1" xLength="20" zLength="1" centerX="11" centerY="0" centerZ="9.5"/>
+<floor row="10" col="1" xLength="15" zLength="6" centerX="8.5" centerY="0" centerZ="13"/>
+<floor row="16" col="0" xLength="16" zLength="3" centerX="8" centerY="0" centerZ="17.5"/>
+</floors>
 <spawns>
-	<spawn row="11" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="12.5" dir="right"/>
+<spawn row="11" col="1" xLength="1" zLength="3" centerX="1.5" centerY="0" centerZ="12.5" dir="right"/>
 </spawns>
 <exits>
 <exit row="6" col="21" xLength="1" zLength="3" centerX="21.5" centerY="0" centerZ="7.5" file="level8.xml"/>

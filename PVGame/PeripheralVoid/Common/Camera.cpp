@@ -4,7 +4,7 @@
 
 #include "Camera.h"
 
-Camera::Camera(PhysicsManager* pM)
+Camera::Camera(PhysicsManager* pM, float aspect)
 	: mPosition(0.0f, 0.0f, 0.0f), 
 	  mRight(1.0f, 0.0f, 0.0f),
 	  mUp(0.0f, 1.0f, 0.0f),
@@ -12,7 +12,8 @@ Camera::Camera(PhysicsManager* pM)
 {
 	physicsMan = pM;
 	frustumBody = NULL;
-	SetLens(0.25f*MathHelper::Pi, 1.0f, 0.01f, 1000.0f);
+	body = NULL;
+	SetLens(0.25f*MathHelper::Pi, aspect, 0.01f, 1000.0f);
 }
 
 Camera::~Camera()
@@ -140,8 +141,8 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	XMStoreFloat4x4(&mProj, P);
 
 #if USE_FRUSTUM_CULLING
-		float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect );
-		float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect );
+		float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect ) * 0.7f;
+		float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect )  * 0.7f;
 
 		btVector3* points = new btVector3[8];
 		//NearPlane
@@ -155,11 +156,24 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 		points[6] = btVector3( mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
 		points[7] = btVector3(-mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
 
-		body = physicsMan->makeCameraFrustumObject(points, 8);
-		
-		delete points;
+		if(body != NULL)
+		{
+			//physicsMan->removeGhostObjectFromWorld(body);
+			
+			btConvexHullShape* ConvexShape = new btConvexHullShape();
+			for(int i = 0; i < 8; i++)
+				ConvexShape->addPoint(points[i]);
+			btCollisionShape* toDelete = body->getCollisionShape();
+			body->setCollisionShape(ConvexShape);
+			delete toDelete;
+		}
+		else
+		{
+			body = physicsMan->makeCameraFrustumObject(points, 8);
 
-		physicsMan->addGhostObjectToWorld(body);
+			physicsMan->addGhostObjectToWorld(body);
+		}
+		delete points;
 
 	#if DRAW_FRUSTUM
 		//Near Plane
@@ -188,6 +202,7 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 			{ XMFLOAT3(fBR.getX(), fBR.getY(), fBR.getZ()), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(-1.0f,  0.0f)	},	//fBR
 		
 		};
+		MeshMaps::MESH_MAPS["Frustum"].vertices.clear();
 		MeshMaps::MESH_MAPS["Frustum"].vertices.assign(frustumVertices, frustumVertices + 8);
 
 		btTriangleMesh* tMesh = new btTriangleMesh();
@@ -244,6 +259,8 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 			4, 5, 6,
 			4, 7, 6
 		};
+
+		MeshMaps::MESH_MAPS["Frustum"].indices.clear();
 		MeshMaps::MESH_MAPS["Frustum"].indices.assign(planeIndices, planeIndices + 36);
 		MeshMaps::MESH_MAPS["Frustum"].bufferKey = "Frustum";
 		MeshMaps::MESH_MAPS["Frustum"].normalizeVertices = false;
@@ -256,6 +273,7 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 		}
 		else
 		{
+			delete frustumBody;
 			//Yeah that happened. I dereferenced the new operator. I. am. GOD! (lol no). 
 			*frustumBody = *(new GameObject("Frustum", "Test Wall", physicsMan->createRigidBody("Frustum", 0,4,0), physicsMan, ObjectType::NOTHING));
 		}

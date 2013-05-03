@@ -6,6 +6,7 @@
 #include "Common\MathHelper.h"
 #include "Player.h"
 #include "Crest.h"
+#include "Turret.h"
 #include "tinyxml2.h"
 #include "FileLoader.h"
 #include "GameObject.h"
@@ -54,4 +55,5 @@ public:
 
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;
+		AudioSource* audioSource;
 };

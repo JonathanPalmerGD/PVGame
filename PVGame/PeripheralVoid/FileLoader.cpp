@@ -93,7 +93,7 @@ bool FileLoader::LoadFile( ID3D11Device* device,
                         vertPos.push_back(XMFLOAT3( vx, vy, vz));
                 }
                 if(checkChar == 't')  // vt - vert tex coords
-                {           
+				{
                     float vtcu, vtcv;
                     fileIn >> vtcu >> vtcv;     // Store next two types
 
@@ -1154,19 +1154,15 @@ bool FileLoader::LoadFile( ID3D11Device* device,
     }
 	#pragma endregion
 
-	#pragma region Add Vertices and Indices to the Mesh Maps
-	string name(fileName.begin(), fileName.end());
-	name.erase(name.end() - 4, name.end());
-
-	MeshMaps::MESH_MAPS[name].bufferKey = name;
-	MeshMaps::MESH_MAPS[name].normalizeVertices = computeNormals;
-
-	for (unsigned int indexIndex = 0; indexIndex < objModel.Indices.size(); ++indexIndex)
-		MeshMaps::MESH_MAPS[name].indices.push_back(objModel.Indices[indexIndex]);
-
-	for (unsigned int vertexIndex = 0; vertexIndex < objModel.Vertices.size(); ++vertexIndex)
+	#pragma region Flip Faces
+	if(flipFaces)
 	{
-		MeshMaps::MESH_MAPS[name].vertices.push_back(vertices[vertexIndex]);
+		for(unsigned int i = 0; i < objModel.Indices.size(); i+=3)
+		{
+			DWORD ti0 = objModel.Indices[i];
+			objModel.Indices[i] = objModel.Indices[i+2];
+			objModel.Indices[i+2] = ti0;
+		}
 	}
 	#pragma endregion
 
@@ -1224,16 +1220,20 @@ bool FileLoader::LoadFile( ID3D11Device* device,
  //   objModel.BoundingSphere = sqrt(objModel.BoundingSphere);
 	#pragma endregion
 
-	#pragma region Flip Faces
-    if(flipFaces)
-    {
-        for(unsigned int i = 0; i < objModel.Indices.size(); i+=3)
-        {
-            DWORD ti0 = objModel.Indices[i];
-            objModel.Indices[i] = objModel.Indices[i+2];
-            objModel.Indices[i+2] = ti0;
-        }
-    }
+	#pragma region Add Vertices and Indices to the Mesh Maps
+	string name(fileName.begin(), fileName.end());
+	name.erase(name.end() - 4, name.end());
+
+	MeshMaps::MESH_MAPS[name].bufferKey = name;
+	MeshMaps::MESH_MAPS[name].normalizeVertices = computeNormals;
+
+	for (unsigned int indexIndex = 0; indexIndex < objModel.Indices.size(); ++indexIndex)
+		MeshMaps::MESH_MAPS[name].indices.push_back(objModel.Indices[indexIndex]);
+
+	for (unsigned int vertexIndex = 0; vertexIndex < objModel.Vertices.size(); ++vertexIndex)
+	{
+		MeshMaps::MESH_MAPS[name].vertices.push_back(vertices[vertexIndex]);
+	}
 	#pragma endregion
 
 	#pragma region Index and Vertex Buffer Setting and assignment - Commented Out

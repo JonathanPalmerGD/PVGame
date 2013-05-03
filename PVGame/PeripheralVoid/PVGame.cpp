@@ -70,6 +70,8 @@ bool PVGame::Init()
 	LoadContent();
 	BuildGeometryBuffers();
 
+	//OnResize();
+
 #if DRAW_FRUSTUM
 		gameObjects.push_back(player->GetCamera()->frustumBody);
 		proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
@@ -83,6 +85,9 @@ bool PVGame::Init()
 	SortGameObjects();
 
 	renderMan->BuildInstancedBuffer(gameObjects);
+
+	audioSource = new AudioSource();
+	audioSource->initialize("Audio\\HomeSweetHome.wav", AudioSource::WAV);
 
 	return true;
 }
@@ -171,6 +176,23 @@ bool PVGame::LoadXML()
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 	#pragma endregion
 
+	#pragma region Make Turrets
+	GameObject* turretGOJ = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	turretGOJ->scale(1.5, 0.6, 0.6);
+	turretGOJ->rotate(0.0f, 1.0f, 0.0f);
+	gameObjects.push_back(turretGOJ);
+
+	GameObject* turretGOJ2 = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
+	turretGOJ2->scale(1.5, 0.6, 0.6);
+	turretGOJ2->rotate(2.2f, 0.0f, 0.0f);
+	gameObjects.push_back(turretGOJ2);
+
+	GameObject* turretGOJ3 = new Turret("Cube", "medusacrest", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
+	turretGOJ3->scale(1.5, 0.6, 0.6);
+	//turretGOJ3->rotate(1.77f, 0.0f, 0.0f);
+	gameObjects.push_back(turretGOJ3);
+	#pragma endregion
+
 	SortGameObjects();
 
 	return true;
@@ -197,10 +219,18 @@ void PVGame::UpdateScene(float dt)
 	switch(gameState)
 	{
 	case MENU:
+		if(!audioSource->isPlaying())
+		{
+			audioSource->play();
+		}
 		if(input->isKeyDown(VK_RETURN))
 			gameState = PLAYING;
 		break;
 	case PLAYING:
+		if(audioSource->isPlaying())
+		{
+			audioSource->pause();
+		}
 		if (input->isQuitPressed())
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
@@ -256,7 +286,7 @@ void PVGame::UpdateScene(float dt)
 		if (player->getPosition().y < -20)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		#pragma endregion
-		#pragma region Player Statuses and Crest Checking
+		#pragma region Player Statuses and Vision Affected Object Updating
 		player->resetStatuses();
 
 		// Reset blur, we only do it if a single Medusa is in sight.
@@ -272,10 +302,10 @@ void PVGame::UpdateScene(float dt)
 				{
 					currentMovObj->Update();
 				}
-				
+
 				if(Crest* currentCrest = dynamic_cast<Crest*>(gameObjects[i]))
 				{
-					btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
+					//btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
 					
 					if(physicsMan->broadPhase(player->GetCamera(), gameObjects[i]) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 					{
@@ -299,6 +329,21 @@ void PVGame::UpdateScene(float dt)
 						}
 					}
 					currentCrest->Update(player);
+				}
+
+				if(Turret* currentTurret = dynamic_cast<Turret*>(gameObjects[i]))
+				{
+					//btVector3 turretPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
+
+					if(physicsMan->broadPhase(player->GetCamera(), gameObjects[i]) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
+					{
+						currentTurret->ChangeView(true);
+					}
+					else
+					{
+						currentTurret->ChangeView(false);
+					}
+					currentTurret->Update(player);
 				}
 			}
 		}
