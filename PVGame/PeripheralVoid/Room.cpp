@@ -292,15 +292,18 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* dir = crest->Attribute("dir");
 		const char* effect = crest->Attribute("effect");
 		const char* xLength = crest->Attribute("xLength");
+		const char* yLength = crest->Attribute("yLength");
 		const char* zLength = crest->Attribute("zLength");
 		const char* centerX = crest->Attribute("centerX");
 		const char* centerY = crest->Attribute("centerY");
 		const char* centerZ = crest->Attribute("centerZ");
 		const char* target = crest->Attribute("target");
+		const char* placement = crest->Attribute("placement");
 
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
 		tempWall->xLength = (float)atof(xLength);
+		tempWall->yLength = (float)atof(yLength);
 		tempWall->zLength = (float)atof(zLength);
 		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
 		tempWall->centerY = (float)atof(centerY);
@@ -313,20 +316,63 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->effect = static_cast<CREST_TYPE>(atoi(effect));
 		tempWall->target = target;
 	
+		if (strcmp(placement, "platform") == 0)
+			tempWall->yLength *= 0.1f;
+
 		if (strcmp(dir, "up") == 0)
-			tempWall->centerZ -= 0.4;
+		{
+			if (strcmp(placement, "") == 0)
+				tempWall->centerZ -= 0.4;
+
+			if (strcmp(placement, "wall") == 0)
+			{
+				tempWall->zLength *= 0.1f;
+				//tempWall->yLength = 1.0f;
+			}
+		}
+
 		if (strcmp(dir, "down") == 0)
-			tempWall->centerZ += 0.4;
+		{
+			if (strcmp(placement, "") == 0)
+				tempWall->centerZ += 0.4;
+
+			if (strcmp(placement, "wall") == 0)
+			{
+				tempWall->zLength *= 0.1f;
+				//tempWall->yLength = 1.0f;
+			}
+		}
+
 		if (strcmp(dir, "right") == 0)
 		{
-			tempWall->centerX -= 0.4;
-			tempWall->xRotation = 3.14f / 2.0f;
+			if (strcmp(placement, "") == 0)
+			{
+				tempWall->centerX -= 0.4;
+				tempWall->xRotation = 3.14f / 2.0f;
+			}
+
+			if (strcmp(placement, "wall") == 0)
+			{
+				tempWall->xLength *= 0.1f;
+				//tempWall->yLength = 1.0f;
+			}
 		}
 		if (strcmp(dir, "left") == 0)
 		{
-			tempWall->centerX += 0.4;
-			tempWall->xRotation = -3.14f / 2.0f;
+			if (strcmp(placement, "") == 0)
+			{
+				tempWall->centerX += 0.4;
+				tempWall->xRotation = -3.14f / 2.0f;
+			}
+
+			if (strcmp(placement, "wall") == 0)
+			{
+				tempWall->xLength *= 0.1f;
+				//tempWall->yLength = 1.0f;
+			}
 		}
+
+		tempWall->centerY = tempWall->yLength / 2;
 
 		crestVector.push_back(tempWall);
 	}
@@ -384,19 +430,28 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 		case MEDUSA:
 			crestObj = new Crest("medusacrest", "MedusaCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj->translate(0.0f, 1.0f, 0.0f);
 			break;
 		case LEAP:
 			crestObj = new Crest("medusacrest", "LeapCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj->translate(0.0f, 1.0f, 0.0f);
 			break;
 		case MOBILITY:
 			crestObj = new Crest("medusacrest", "MobilityCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj->translate(0.0f, 1.0f, 0.0f);
 			break;
 		case UNLOCK:
 			crestObj = new Crest("medusacrest", "Snow", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj->translate(0.0f, 1.0f, 0.0f);
+			break;
+		case HADES:
+			crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj->scale(crestVector[i]->xLength, crestVector[i]->yLength, crestVector[i]->zLength);
+			//crestObj->translate(0.0f, crestVector[i]->centerY, 0.0f);
 			break;
 		}
 
-		crestObj->translate(0.0f, 1.0f, 0.0f);
+		
 		crestObj->rotate(crestVector[i]->xRotation, crestVector[i]->yRotation, crestVector[i]->zRotation);
 
 		dynamic_cast<Crest*>(crestObj)->SetTargetObject(cubeMap[crestVector[i]->target]);

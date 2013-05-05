@@ -8,6 +8,7 @@ var MAX_TRANSLATE_Y = 10;
 var MAX_TRANSLATE_Z = 50;
 var MAX_WALL_HEIGHT = 10;
 var MAX_CUBE_HEIGHT = 10;
+var MAX_CREST_HEIGHT = 10;
 
 var isMouseDown = false;
 var xmlString = "";
@@ -25,6 +26,7 @@ function init()
 
 	var wallHeight = document.getElementById("wallHeight");
 	var cubeHeight = document.getElementById("cubeHeight");
+	var crestHeight = document.getElementById("crestHeight");
 	
 	for (var i = 0; i < MAX_WALL_HEIGHT; i++)
 	{
@@ -44,6 +46,16 @@ function init()
 		option.appendChild(document.createTextNode(option.value));
 		
 		cubeHeight.appendChild(option);
+	}
+	
+	for (var i = 0; i < MAX_CREST_HEIGHT; i++)
+	{
+		var option = document.createElement("option");
+		
+		option.value = i + 1;
+		option.appendChild(document.createTextNode(option.value));
+		
+		crestHeight.appendChild(option);
 	}
 	
 	var exitNum = document.getElementById("exitNum");
@@ -187,8 +199,19 @@ function onTileClick(evt)
 		case "crest":
 			this.setAttribute("style", "background-color: #42CD76; color: #000000;");
 			this.appendChild(document.createTextNode("C"));
+			
+			var hadesTypes = document.getElementsByName("hadesType");
+			var selectedHades;
+			
+			for (var i = 0; i < hadesTypes.length; i++)
+			{
+				if (hadesTypes[i].checked)
+					selectedHades = hadesTypes[i].value;
+			}
+			
 			this.appendChild(document.createComment("Crest:" + document.getElementById("crestName").value + ":" + document.getElementById("unlockCube").value + 
-								 ":" + document.getElementById("crestDirection").value + ":" + document.getElementById("crestFloor").checked));
+								 ":" + document.getElementById("crestDirection").value + ":" + document.getElementById("crestFloor").checked + ":" + selectedHades +
+								 ":" + document.getElementById("crestHeight").value));
 			break;
 		default:
 			this.setAttribute("style", "background-color: #FFFFFF; color: #000000;");
@@ -367,15 +390,13 @@ function loadXML()
 		var row = parseInt(crests[i].getAttribute("row"));
 		var col = parseInt(crests[i].getAttribute("col"));
 		var xLength = parseInt(crests[i].getAttribute("xLength"));
+		var yLength = parseInt(crests[i].getAttribute("yLength"));
 		var zLength = parseInt(crests[i].getAttribute("zLength"));
 		var dir = crests[i].getAttribute("dir");
-		var effect = crests[i].getAttribute("effect");
+		var effect = parseInt(crests[i].getAttribute("effect"));
 		var target = crests[i].getAttribute("target");
+		var placement = crests[i].getAttribute("placement");
 		var crestFloor;
-	
-		this.setAttribute("style", "background-color: #42CD76; color: #000000;");
-			this.appendChild(document.createTextNode("Crest:" + document.getElementById("crestName").value + ":" + document.getElementById("unlockCube").value +
-								 ":" + document.getElementById("crestDirection").value + ":" + document.getElementById("crestFloor").checked));
 	
 		for (var j = 0; j < xLength; j++)
 		{
@@ -387,7 +408,7 @@ function loadXML()
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].innerHTML = "";
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #42CD76; color: #000000;");
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("C"));
-			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + dir + ":"  + crestFloor));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + dir + ":"  + crestFloor + ":" + placement + ":" + yLength));
 			
 			for (var k = 1; k < zLength; k++)
 			{
@@ -399,7 +420,7 @@ function loadXML()
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].innerHTML = "";
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #42CD76; color: #000000;");
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("C"));
-				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + dir + ":" + crestFloor));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("Crest:" + effect + ":" + target + ":" + dir + ":" + crestFloor + ":" + placement + ":" + yLength));
 			}
 		}
 	}
@@ -455,13 +476,26 @@ function createXML()
 				{
 					var strArray = grid.childNodes[i].childNodes[j].lastChild.nodeValue.split(":");
 					var targetCube;
+					var placementType;
 					
 					if (strArray[1] == 3)
+					{
 						targetCube = strArray[2];
-					else
+						placementType = "";
+					}
+					else if (strArray[1] == 4)
+					{
 						targetCube = "";
+						placementType = strArray[5];
+					}
+					else
+					{
+						targetCube = "";
+						placementType = "";
+					}	
 					
-					crests.push({row: ((ROWS - i) - 1), col: j, effect: strArray[1], target: targetCube, dir: strArray[3]});
+					
+					crests.push({row: ((ROWS - i) - 1), col: j, effect: strArray[1], target: targetCube, dir: strArray[3], placement: placementType, yLength: strArray[6]});
 					
 					if (strArray[4] == "true")
 						floors.push({row: ((ROWS - i) - 1), col: j});
@@ -496,7 +530,7 @@ function combineElements (elementArray)
 	for (var i = 0; i < elementArray.length; i++)
 	{		
 		var tempWall = {row: 0.0, col: -1.0, xLength: 1.0, yLength: 1.0, zLength: 1.0, centerX: 0.0, centerY: 0.0, centerZ: 0.0, translateX: 0.0, translateY: 0.0, translateZ: 0.0,
-				dir: undefined, file: undefined, effect: undefined, target: undefined};
+				dir: undefined, file: undefined, effect: undefined, target: undefined, placement: undefined};
 
 		tempWall.row = elementArray[i].row;
 		tempWall.col = elementArray[i].col;
@@ -505,6 +539,7 @@ function combineElements (elementArray)
 		tempWall.file = elementArray[i].file;
 		tempWall.effect = elementArray[i].effect;
 		tempWall.target = elementArray[i].target;
+		tempWall.placement = elementArray[i].placement;
 		tempWall.centerX = tempWall.col + tempWall.xLength / 2;
 		tempWall.centerZ = tempWall.row + tempWall.zLength / 2;
 		tempWall.translateX = elementArray[i].translateX;
@@ -513,9 +548,6 @@ function combineElements (elementArray)
 		
 		wallRowCol[elementArray[i].row].push(tempWall);
 	}
-	
-	if (elementArray[0].effect != undefined)
-		return wallRowCol;
 	
 	// Combine rows
 	for (var i = 0; i < wallRowCol.length; i++)
@@ -527,6 +559,8 @@ function combineElements (elementArray)
 				
 				if (((wallRowCol[i][j].dir == undefined) || (((wallRowCol[i][j].dir != undefined) && (wallRowCol[i][j].dir == wallRowCol[i][j + 1].dir)))) &&
 				   ((wallRowCol[i][j].file == undefined) || (((wallRowCol[i][j].file != undefined) && (wallRowCol[i][j].file == wallRowCol[i][j + 1].file)))) &&
+				   ((wallRowCol[i][j].effect == undefined) || (((wallRowCol[i][j].effect == 4 && wallRowCol[i][j + 1].effect == 4)))) &&
+				   ((wallRowCol[i][j].placement == undefined) || (((wallRowCol[i][j].placement != undefined) && (wallRowCol[i][j].placement == wallRowCol[i][j + 1].placement)))) &&
 				   (wallRowCol[i][j].yLength == wallRowCol[i][j + 1].yLength) && ((wallRowCol[i][j].translateX == wallRowCol[i][j + 1].translateX) &&
 				   (wallRowCol[i][j].translateY == wallRowCol[i][j + 1].translateY) && (wallRowCol[i][j].translateZ == wallRowCol[i][j + 1].translateZ)))
 				{	
@@ -567,6 +601,8 @@ function combineElements (elementArray)
 						
 						if (((wallRowCol[i][l].dir == undefined) || (((wallRowCol[i][l].dir != undefined) && (wallRowCol[i][l].dir == wallRowCol[i + j][k].dir)))) &&
 						   ((wallRowCol[i][l].file == undefined) || (((wallRowCol[i][l].file != undefined) && (wallRowCol[i][l].file == wallRowCol[i + j][k].file)))) &&
+						   ((wallRowCol[i][l].effect == undefined) || (((wallRowCol[i][l].effect == 4 && wallRowCol[i + j][k].effect == 4)))) &&
+						   ((wallRowCol[i][l].placement == undefined) || (((wallRowCol[i][l].placement != undefined) && (wallRowCol[i][l].placement == wallRowCol[i + j][k].placement)))) &&
 						   (wallRowCol[i][l].yLength == wallRowCol[i + j][k].yLength) && ((wallRowCol[i][l].translateX == wallRowCol[i + j][k].translateX) &&
 						   (wallRowCol[i][l].translateY == wallRowCol[i + j][k].translateY) && (wallRowCol[i][l].translateZ == wallRowCol[i + j][k].translateZ)))
 						{
@@ -683,10 +719,10 @@ function writeXML(walls, floors, spawns, exits, cubes, crests)
 	{	
 		for (var j = 0; j < crests[i].length; j++)
 		{
-			xmlString += "\n<crest row=\"" + crests[i][j].row + "\" col=\"" + crests[i][j].col + "\" xLength=\"" + crests[i][j].xLength +
+			xmlString += "\n<crest row=\"" + crests[i][j].row + "\" col=\"" + crests[i][j].col + "\" xLength=\"" + crests[i][j].xLength + "\" yLength=\"" + crests[i][j].yLength +
 				     "\" zLength=\"" + crests[i][j].zLength + "\" centerX=\"" + crests[i][j].centerX + "\" centerY=\"" + crests[i][j].centerY +
 				     "\" centerZ=\"" + crests[i][j].centerZ + "\" effect=\"" + crests[i][j].effect + "\" target=\"" + crests[i][j].target +
-				     "\" dir=\"" + crests[i][j].dir + "\"/>";
+				     "\" dir=\"" + crests[i][j].dir + "\" placement=\"" + crests[i][j].placement + "\"/>";
 		}
 	}
 	
