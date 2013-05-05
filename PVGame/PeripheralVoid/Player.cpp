@@ -24,7 +24,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	leftCamera = new Camera(*playerCamera);
 	rightCamera = new Camera(*playerCamera);
 	
-	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
+	controller = physicsMan->createCharacterController( 0.4f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(15.0f);
