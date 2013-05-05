@@ -60,7 +60,15 @@ bool PVGame::Init()
 		return 0;
 	}
 	alcMakeContextCurrent(audioContext);
-        
+    
+	selector = 0;
+
+	SELECTOR_MAP[MENU]			=  5;
+	SELECTOR_MAP[OPTION]		=  5;
+	SELECTOR_MAP[INSTRUCTIONS]	=  3;
+	SELECTOR_MAP[END]			=  2;
+
+	const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
 
 	physicsMan = new PhysicsManager();
 	player = new Player(physicsMan, renderMan, riftMan);
@@ -190,7 +198,12 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Make Turrets
-	GameObject* turretGOJ = new Turret("Cube", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	/*GameObject* turretGOJ = new Turret("Cube", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
+	{
+		turretOJ->CreateProjectiles(gameObjects);
+	}
+	
 	turretGOJ->scale(1.5, 0.6, 0.6);
 	turretGOJ->rotate(1.0f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ);
@@ -203,7 +216,7 @@ bool PVGame::LoadXML()
 	GameObject* turretGOJ3 = new Turret("Cube", "Rock", physicsMan->createRigidBody("Cube", 48.0f, 0.5f, 13.0f, 0.0f), physicsMan, GAMMA);
 	turretGOJ3->scale(1.5, 0.6, 0.6);
 	turretGOJ3->rotate(1.77f, 0.0f, 0.0f);
-	gameObjects.push_back(turretGOJ3);
+	gameObjects.push_back(turretGOJ3);*/
 	#pragma endregion
 
 	SortGameObjects();
@@ -229,6 +242,17 @@ bool isEUp = true;
 #pragma endregion
 void PVGame::UpdateScene(float dt)
 {
+	#pragma region General Controls
+	if (input->isQuitPressed())
+		PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+	if(input->wasKeyPressed('M'))
+	{
+		if(player->getListener()->isMuted())
+			player->getListener()->unmute();
+		else
+			player->getListener()->mute();
+	}
+	#pragma endregion
 	switch(gameState)
 	{
 	case MENU:
@@ -236,11 +260,15 @@ void PVGame::UpdateScene(float dt)
 		{
 			audioSource->play();
 		}
+		ListenSelectorChange();
 		if(input->isKeyDown(VK_RETURN))
 		{
 			ShowCursor(false);
 			gameState = PLAYING;
 		}
+		break;
+	case OPTION:
+		ListenSelectorChange();
 		break;
 	case PLAYING:
 		if(audioSource->isPlaying())
@@ -380,8 +408,8 @@ void PVGame::UpdateScene(float dt)
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
-			renderMan->BuildInstancedBuffer(gameObjects);
 			SortGameObjects();
+			renderMan->BuildInstancedBuffer(gameObjects);
 		}
 		if(input->wasKeyPressed('4'))
 		{
@@ -574,8 +602,41 @@ void PVGame::UpdateScene(float dt)
 		player->GetCamera()->frustumCull();
 #endif
 		break;
+	case END:
+		ListenSelectorChange();
+		break;
+
+	case INSTRUCTIONS:
+		break;
+		ListenSelectorChange();
 	default:
 		break;
+	}
+}
+
+void PVGame::ListenSelectorChange()
+{
+	if(input->wasMenuDownPressed())
+	{
+		if(selector >= SELECTOR_MAP[gameState] - 1)
+		{
+			selector = 0;
+		}
+		else
+		{
+			selector++;
+		}
+	}
+	if(input->wasMenuUpPressed())
+	{
+		if(selector <= 0)
+		{
+			selector = SELECTOR_MAP[gameState] - 1;
+		}
+		else
+		{
+			selector--;
+		}
 	}
 }
 
@@ -601,13 +662,61 @@ void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
 
 void PVGame::DrawScene()
 {
+	int cWidth = renderMan->GetClientHeight();
+	int cHeight = renderMan->GetClientWidth();
+	UINT32 color1 = 0xff0000ff;
+	UINT32 color2 = 0xffff0000;
+	UINT32 color3 = 0xff00ff00;
+	UINT32 color4 = 0xff000000;
+	std::string cStats = "cHeight: " + cHeight;
 	switch(gameState)
 	{
 	case MENU:
-		renderMan->DrawMenu("");
+		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("By Entire Team is Babies", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+		if(selector == 0)
+		{
+			renderMan->DrawString(">Play", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+		}
+		else
+			renderMan->DrawString("  Play", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+		if(selector == 1)
+		{
+			renderMan->DrawString(">Instructions", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+		}
+		else
+			renderMan->DrawString("  Instructions", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Options", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+		}
+		else
+			renderMan->DrawString("  Options", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+		if(selector == 3)
+		{
+			renderMan->DrawString(">Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+		}
+		else
+			renderMan->DrawString("  Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
+		if(selector == 4)
+		{
+			renderMan->DrawString(">Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+		}
+		else
+			renderMan->DrawString("  Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);
+		
+		//renderMan->DrawString(L"Peripheral Void", 128.0f, 100.0f, 50.0f, 0xff0099ff);
+		//renderMan->DrawString(L"By Entire Team is Babies", 65.0f, 110.0f, 200.0f, 0xff0099ff);
+		renderMan->EndDrawMenu();
 		break;
 	case PLAYING:
 		renderMan->DrawScene(player->GetCamera(), player->GetLeftCamera(), player->GetRightCamera(), gameObjects);
+		renderMan->DrawString("Health: 100", 24.0f, 50.0f, 50.0f, 0xff0099ff);
+		//renderMan->DrawString(L"Babies:   0", 24.0f, 50.0f, 70.0f, 0xff0099ff);
+		renderMan->EndDrawMenu();
 		break;
 	default:
 		break;

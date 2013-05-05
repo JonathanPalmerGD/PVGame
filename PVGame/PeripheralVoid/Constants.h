@@ -8,7 +8,6 @@
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
 
-
 using std::vector;
 using std::map;
 using std::string;
@@ -27,8 +26,8 @@ using std::string;
 
 #define MAX_LIGHTS 10
 #define MAX_BLURS 2
-
-const enum GAME_STATE { MENU, OPTION, PLAYING, END };
+const float MOUSESENSITIVITY = 32;
+const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
 const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 
@@ -253,6 +252,7 @@ struct GameMaterial
 
 static std::map<string, GameMaterial> GAME_MATERIALS;
 static std::map<string, SurfaceMaterial> SURFACE_MATERIALS;
+static std::map<unsigned int, int> SELECTOR_MAP;
 
 // For hardware instancing.
 struct InstancedData

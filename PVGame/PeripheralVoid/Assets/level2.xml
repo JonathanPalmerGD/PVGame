@@ -11,6 +11,13 @@
 <wall row="10" col="10" xLength="1" yLength="6" zLength="1" centerX="10.5" centerY="0" centerZ="10.5"/>
 <wall row="10" col="14" xLength="1" yLength="6" zLength="1" centerX="14.5" centerY="0" centerZ="10.5"/>
 </walls>
+<floors>
+<floor row="0" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="0.5"/>
+<floor row="1" col="6" xLength="13" zLength="7" centerX="12.5" centerY="0" centerZ="4.5"/>
+<floor row="8" col="8" xLength="9" zLength="1" centerX="12.5" centerY="0" centerZ="8.5"/>
+<floor row="9" col="10" xLength="5" zLength="1" centerX="12.5" centerY="0" centerZ="9.5"/>
+<floor row="10" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="10.5"/>
+</floors>
 <spawns>
 <spawn row="1" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="1.5" dir="up"/>
 </spawns>

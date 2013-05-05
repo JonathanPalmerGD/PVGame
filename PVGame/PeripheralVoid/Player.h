@@ -39,6 +39,8 @@ class Player
 		bool getMedusaStatus();
 		bool getLeapStatus();
 		XMFLOAT4 getPosition();
+
+		AudioListener* getListener();
 		btVector3 getCameraPosition();
 	private:
 		bool leapStatus;

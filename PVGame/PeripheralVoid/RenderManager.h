@@ -195,25 +195,45 @@ class RenderManager
 		int GetClientWidth() { return mClientWidth; }
 		int GetClientHeight() { return mClientHeight; }
 
-		void DrawMenu(char* msg)
+		void ClearTargetToColor() //XMVECTORF32 clearColor
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
-			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::Silver));
-			
-			pFontWrapper->DrawString(
-										md3dImmediateContext,
-										L"Peripheral Void",// String
-										128.0f,// Font size
-										100.0f,// X position
-										50.0f,// Y position
-										0xff0099ff,// Text color, 0xAaBbGgRr
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], 
+				reinterpret_cast<const float*>(&Colors::Silver));
+		}
+
+		void DrawString(const char *text, float fontSize, float xPos, float yPos, UINT32 textColor)
+		{	
+			std::wstring s = s2ws(text);
+			const wchar_t *str = s.c_str();
+			pFontWrapper->DrawString(	md3dImmediateContext,
+										str,// String
+										fontSize,// Font size
+										xPos,// X position
+										yPos,// Y position
+										textColor,// Text color, 0xAaBbGgRr
 										FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
 									);
-			
+		}
+
+		//I really hope you don't have to do wstrings
+		void DrawString(const WCHAR *text, float fontSize, float xPos, float yPos, UINT32 textColor)
+		{	
+			pFontWrapper->DrawString(	md3dImmediateContext,
+				text,// String
+				fontSize,// Font size
+				xPos,// X position
+				yPos,// Y position
+				textColor,// Text color, 0xAaBbGgRr
+				FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+				);
+		}
+
+		void EndDrawMenu()
+		{	
 			HR(mSwapChain->Present(0, 0));
 		}
 
-		
 		// Loop through all the buffers, drawing each instance for the game objects.
 		void DrawGameObjects(string aTechniqueKey)
 		{
@@ -559,7 +579,6 @@ class RenderManager
 			#pragma endregion
 
 			mfxDiffuseMapVar->SetResource(nullptr);
-			
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
 		
 			// Pretty self-explanatory. Clears the screen, essentially.
@@ -1084,7 +1103,7 @@ class RenderManager
 		Sky* sky;
 		RiftManager* riftMan;
 
-		// Maps to various rendering compnents.
+		// Maps to various rendering components.
 		map<string, XMFLOAT2> diffuseAtlasCoordsMap;
 		map<string, ID3D11ShaderResourceView*> shaderResourceViewsMap;
 		map<string, ID3D11Texture2D*> texture2DMap;
@@ -1188,7 +1207,7 @@ class RenderManager
 			mDirLights[0].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 			mDirLights[0].Diffuse  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 			mDirLights[0].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
-			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.707f, 0.0f);
+			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.5f, 0.0f);
 		}
 
 		~RenderManager()

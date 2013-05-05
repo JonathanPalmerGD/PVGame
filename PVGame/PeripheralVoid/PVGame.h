@@ -1,7 +1,6 @@
 #pragma once
 
 //#include "PhysicsManager.h"
-
 #include "Common\d3dApp.h"
 #include "Common\d3dx11effect.h"
 #include "Common\MathHelper.h"
@@ -30,6 +29,7 @@ public:
 		bool LoadXML();
 		void OnResize();
 		void UpdateScene(float dt);
+		void ListenSelectorChange();
 		void DrawScene();
 		void OnMouseMove(WPARAM btnState, int x, int y);
 
@@ -43,6 +43,7 @@ public:
 
 		Player*	player;
 		Room* currentRoom;
+		int selector;
 
 		float mTheta;
 		float mPhi;

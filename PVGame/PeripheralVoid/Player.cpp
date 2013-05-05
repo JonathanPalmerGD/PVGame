@@ -55,7 +55,6 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 
 void Player::Update(float dt, Input* input)
 {
-	
 	if(controller->onGround())
 	{
 		if(leapStatus)
@@ -89,7 +88,7 @@ void Player::HandleInput(Input* input)
 		//Get extra orientation abilities from mouse, only yaw
 		//(its much nicer than having to turn your body when trying to play)
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
-		yaw += dx/32;
+		yaw += dx/MOUSESENSITIVITY;
 		input->centerMouse();
 		mLastMousePos.x = input->getMouseX();
 
@@ -127,8 +126,8 @@ void Player::HandleInput(Input* input)
 		float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
 
 		// Update angles based on input
-		mTheta += dx/32;
-		mPhi   += dy/32;
+		mTheta += dx/MOUSESENSITIVITY;
+		mPhi   += dy/MOUSESENSITIVITY;
 		playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
 
 		playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
@@ -182,6 +181,7 @@ void Player::HandleInput(Input* input)
 		}
 		#pragma endregion
 	}
+	#pragma endregion
 
 	//XMVECTOR tempPosition = XMLoadFloat4(&position);
 
@@ -208,7 +208,7 @@ void Player::HandleInput(Input* input)
 		direction += r;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
-	if(input->isJumpKeyPressed() && !medusaStatus)
+	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
 		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
 		{
@@ -241,13 +241,6 @@ void Player::HandleInput(Input* input)
 	listener->setPosition(cPos.x, cPos.y, cPos.z);
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
 
-	if(input->wasKeyPressed('M'))
-	{
-		if(listener->isMuted())
-			listener->unmute();
-		else
-			listener->mute();
-	}
 	#pragma endregion
 	//XMFLOAT4 unit(0.0f, 0.0f, 0.0f, 1.0f);
 	
@@ -353,6 +346,11 @@ XMFLOAT4 Player::getPosition()
 {
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
 	return  XMFLOAT4(pos.getX(), pos.getY(), pos.getZ(), 1);
+}
+
+AudioListener* Player::getListener()
+{
+	return listener;
 }
 
 void Player::setPosition(float setX, float setY, float setZ)

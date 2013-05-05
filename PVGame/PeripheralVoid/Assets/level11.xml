@@ -5,6 +5,10 @@
 <wall row="14" col="4" xLength="1" yLength="6" zLength="3" centerX="4.5" centerY="0" centerZ="15.5"/>
 <wall row="17" col="4" xLength="21" yLength="6" zLength="1" centerX="14.5" centerY="0" centerZ="17.5"/>
 </walls>
+<floors>
+<floor row="13" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="13.5"/>
+<floor row="14" col="5" xLength="19" zLength="3" centerX="14.5" centerY="0" centerZ="15.5"/>
+</floors>
 <spawns>
 <spawn row="14" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="14.5" dir="up"/>
 </spawns>

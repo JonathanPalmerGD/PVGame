@@ -484,15 +484,15 @@ public:
 
 	// MENU MOVEMENT
 	// True if the player hits up arrow key or up on the DPad or up on Left thumbstick.
-	bool isMenuUpPressed() const;
+	bool wasMenuUpPressed() const;
 
 	// True if the player hits up arrow key or down on the DPad or down on Left thumbstick.
-	bool isMenuDownPressed() const;
+	bool wasMenuDownPressed() const;
 
 	// True if return or A button on gamepad is pressed.
-	bool isMenuSelectPressed() const;
+	bool wasMenuSelectPressed() const;
 
-	bool isJumpKeyPressed() const;
+	bool wasJumpKeyPressed() const;
 
 	// Returns true if 'o' or a TBD gamepad button is pressed.
 	bool isOculusButtonPressed() const;

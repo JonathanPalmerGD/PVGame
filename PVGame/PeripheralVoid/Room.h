@@ -29,6 +29,7 @@ class Room
 	private:
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjs;
+		vector<Wall*> floorVector;
 		vector<Wall*> exitVector;
 		vector<Wall*> spawnVector;
 		vector<Cube*> cubeVector;

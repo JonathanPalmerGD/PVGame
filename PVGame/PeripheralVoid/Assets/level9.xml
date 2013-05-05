@@ -4,6 +4,10 @@
 <wall row="19" col="4" xLength="1" yLength="6" zLength="4" centerX="4.5" centerY="0" centerZ="21"/>
 <wall row="22" col="8" xLength="17" yLength="6" zLength="1" centerX="16.5" centerY="0" centerZ="22.5"/>
 </walls>
+<floors>
+<floor row="19" col="5" xLength="20" zLength="3" centerX="15" centerY="0" centerZ="20.5"/>
+<floor row="22" col="5" xLength="3" zLength="1" centerX="6.5" centerY="0" centerZ="22.5"/>
+</floors>
 <spawns>
 <spawn row="19" col="23" xLength="1" zLength="3" centerX="23.5" centerY="0" centerZ="20.5" dir="left"/>
 </spawns>
