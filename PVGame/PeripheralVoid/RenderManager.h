@@ -231,7 +231,7 @@ class RenderManager
 
 		void EndDrawMenu()
 		{	
-			HR(mSwapChain->Present(0, 0));
+			HR(mSwapChain->Present(1, 0));
 		}
 
 		// Loop through all the buffers, drawing each instance for the game objects.

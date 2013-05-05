@@ -6,7 +6,10 @@ Crest::Crest(void)
 	inVision = false;
 	renderMan = &RenderManager::getInstance();
 	SetupAudio();
-	CreateLightAndIndex();
+	if(crestType != HADES)
+	{
+		CreateLightAndIndex();
+	}
 }
 
 Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, CREST_TYPE aCrestType) : GameObject(aMeshKey, aMaterialKey, aWorldMatrix, physicsMan, true)
@@ -15,7 +18,10 @@ Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, Physi
 	inVision = false;
 	renderMan = &RenderManager::getInstance();
 	SetupAudio();
-	CreateLightAndIndex();
+	if(aCrestType != HADES)
+	{
+		CreateLightAndIndex();
+	}
 }
 
 Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED_NOCOLLISION, mass, true)
@@ -24,7 +30,10 @@ Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManag
 	inVision = false;
 	renderMan = &RenderManager::getInstance();
 	SetupAudio();
-	CreateLightAndIndex();
+	if(aCrestType != HADES)
+	{
+		CreateLightAndIndex();
+	}
 }
 
 Crest::~Crest(void)
@@ -40,30 +49,32 @@ void Crest::ChangeView(bool newVisionBool)
 {
 	if(newVisionBool && !inVision)
 	{
-		renderMan->EnableLight(lightIndex);
-
 		if(!audioSource->isPlaying())
 		{
 			audioSource->play();
 		}
-
 		if(crestType == HADES)
 		{
 			changeCollisionLayer(VISION_AFFECTED_COLLISION);
 		}
+		else
+		{
+			renderMan->EnableLight(lightIndex);
+		}	
 	}
 	if(!newVisionBool)
 	{
-		renderMan->DisableLight(lightIndex);
-
 		if(audioSource->isPlaying())
 		{
 			audioSource->stop();
 		}
-
 		if(crestType == HADES)
 		{
 			changeCollisionLayer(VISION_AFFECTED_NOCOLLISION);
+		}
+		else
+		{
+			renderMan->DisableLight(lightIndex);
 		}
 	}
 	inVision = newVisionBool;
@@ -158,7 +169,7 @@ void Crest::CreateLightAndIndex()
 		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 8.4f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case HADES:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		//SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	}
 }

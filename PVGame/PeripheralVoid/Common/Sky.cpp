@@ -30,15 +30,15 @@ Sky::Sky(ID3D11Device* device, const std::wstring& cubemapFilename, float skySph
 	CubeMap = mFX->GetVariableByName("gCubeMap")->AsShaderResource();
 	HR(D3DX11CreateShaderResourceViewFromFile(device, cubemapFilename.c_str(), 0, 0, &mCubeMapSRV, 0));
 
-	GeometryGenerator::MeshData sphere;
+	GeometryGenerator::MeshData cube;
 	GeometryGenerator geoGen;
-	geoGen.CreateSphere(skySphereRadius, 30, 30, sphere);
+	geoGen.CreateBox(skySphereRadius, skySphereRadius, skySphereRadius, cube);
 
-	std::vector<XMFLOAT3> vertices(sphere.Vertices.size());
+	std::vector<XMFLOAT3> vertices(cube.Vertices.size());
 
-	for(size_t i = 0; i < sphere.Vertices.size(); ++i)
+	for(size_t i = 0; i < cube.Vertices.size(); ++i)
 	{
-		vertices[i] = sphere.Vertices[i].Position;
+		vertices[i] = cube.Vertices[i].Position;
 	}
 
     D3D11_BUFFER_DESC vbd;
@@ -54,7 +54,7 @@ Sky::Sky(ID3D11Device* device, const std::wstring& cubemapFilename, float skySph
 
     HR(device->CreateBuffer(&vbd, &vinitData, &mVB));
 	
-	mIndexCount = sphere.Indices.size();
+	mIndexCount = cube.Indices.size();
 
 	D3D11_BUFFER_DESC ibd;
     ibd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -65,7 +65,7 @@ Sky::Sky(ID3D11Device* device, const std::wstring& cubemapFilename, float skySph
     ibd.MiscFlags = 0;
 
 	std::vector<USHORT> indices16;
-	indices16.assign(sphere.Indices.begin(), sphere.Indices.end());
+	indices16.assign(cube.Indices.begin(), cube.Indices.end());
 
     D3D11_SUBRESOURCE_DATA iinitData;
     iinitData.pSysMem = &indices16[0];

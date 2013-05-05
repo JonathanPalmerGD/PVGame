@@ -714,9 +714,9 @@ void PVGame::DrawScene()
 		break;
 	case PLAYING:
 		renderMan->DrawScene(player->GetCamera(), player->GetLeftCamera(), player->GetRightCamera(), gameObjects);
-		renderMan->DrawString("Health: 100", 24.0f, 50.0f, 50.0f, 0xff0099ff);
+		//renderMan->DrawString("Health: 100", 24.0f, 50.0f, 50.0f, 0xff0099ff);
 		//renderMan->DrawString(L"Babies:   0", 24.0f, 50.0f, 70.0f, 0xff0099ff);
-		renderMan->EndDrawMenu();
+		//renderMan->EndDrawMenu();
 		break;
 	default:
 		break;
