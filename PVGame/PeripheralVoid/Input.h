@@ -493,6 +493,9 @@ public:
 	bool isMenuSelectPressed() const;
 
 	bool isJumpKeyPressed() const;
+
+	// Returns true if 'o' or a TBD gamepad button is pressed.
+	bool isOculusButtonPressed() const;
 };
 
 #endif

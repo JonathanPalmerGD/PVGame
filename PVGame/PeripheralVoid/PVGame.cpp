@@ -36,6 +36,11 @@ bool PVGame::Init()
 {
 	//OCULUS RIFT
 	riftMan = new RiftManager();
+	if(riftMan->isRiftConnected())
+	{
+		gameState = PLAYING;
+		ShowCursor(false);
+	}
 
 	DBOUT(riftMan->getDetectionMessage());
 
@@ -65,6 +70,7 @@ bool PVGame::Init()
 	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
 
 	renderMan->BuildBuffers();
+	renderMan->SetRiftMan(riftMan);
 
 	//Cook Rigid Bodies from the meshes
 	map<string, MeshData>::const_iterator itr;
@@ -256,6 +262,10 @@ void PVGame::UpdateScene(float dt)
 		if (input->wasKeyPressed('V'))
 			renderMan->RemovePostProcessingEffect(BlurEffect);
 
+		if (riftMan->isRiftConnected() && input->isOculusButtonPressed())
+			renderMan->ToggleOculusEffect();
+
+		// Brackets.
 		if (input->wasKeyPressed(VK_OEM_6))
 			renderMan->ChangeBlurCount(1);
 		if (input->wasKeyPressed(VK_OEM_4))
@@ -519,6 +529,12 @@ void PVGame::UpdateScene(float dt)
 		else if(!input->isKeyDown('E'))
 			isEUp = true;
 		#pragma endregion
+
+		if(input->isKeyDown('Z'))
+			player->eyeDist += 0.1f;
+		if(input->isKeyDown('X'))
+			player->eyeDist -= 0.1f;
+
 		#pragma region Level Controls U and I
 		if (input->wasKeyPressed('U'))
 		{
@@ -591,7 +607,7 @@ void PVGame::DrawScene()
 		renderMan->DrawMenu("");
 		break;
 	case PLAYING:
-		renderMan->DrawScene(player->GetCamera(), gameObjects);
+		renderMan->DrawScene(player->GetCamera(), player->GetLeftCamera(), player->GetRightCamera(), gameObjects);
 		break;
 	default:
 		break;

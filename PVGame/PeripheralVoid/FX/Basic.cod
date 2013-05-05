@@ -9,9 +9,12 @@ cbuffer cbPerFrame
     PointLight testLights[4];           // Offset:  192, size:  384
     PointLight gPointLight;             // Offset:  576, size:   96
     float3  gEyePosW;                   // Offset:  672, size:   12
-    float   gFogStart;                  // Offset:  684, size:    4
-    float   gFogRange;                  // Offset:  688, size:    4
-    float4  gFogColor;                  // Offset:  704, size:   16
+    float2  LensCenter;                 // Offset:  688, size:    8
+    float2  ScreenCenter;               // Offset:  696, size:    8
+    float2  Scale;                      // Offset:  704, size:    8
+    float2  ScaleIn;                    // Offset:  712, size:    8
+    float4  HmdWarpParam;               // Offset:  720, size:   16
+    float4  ChromAbParam;               // Offset:  736, size:   16
 }
 
 cbuffer cbPerObject
@@ -24,7 +27,7 @@ cbuffer cbPerObject
 }
 
 //
-// 2 local object(s)
+// 3 local object(s)
 //
 Texture2D gDiffuseMap;
 SamplerState samAnisotropic
@@ -34,6 +37,9 @@ SamplerState samAnisotropic
     AddressU = uint(WRAP /* 1 */);
     AddressV = uint(WRAP /* 1 */);
 };
+SamplerState Linear
+{
+};
 
 //
 // 1 groups(s)
@@ -41,7 +47,7 @@ SamplerState samAnisotropic
 fxgroup
 {
     //
-    // 16 technique(s)
+    // 18 technique(s)
     //
     technique11 Light1
     {
@@ -113,7 +119,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -123,13 +129,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -192,9 +198,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -253,26 +262,26 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 104
+                #line 110
                 mov r2.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r3.xyz, r2.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r4.xyz, r2.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -324,21 +333,21 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,2]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r2.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r6.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -411,7 +420,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -419,12 +428,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r2.xyzx
                 mul r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, cb1[17].w, l(1.000000)  // litColor<3>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3>
@@ -506,7 +515,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -516,13 +525,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -585,9 +594,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -646,26 +658,26 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 104
+                #line 110
                 mov r2.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r3.xyz, r2.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r4.xyz, r2.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -717,21 +729,21 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,3]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r2.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r6.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -804,7 +816,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -812,12 +824,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r2.xyzx
                 mul r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, cb1[17].w, l(1.000000)  // litColor<3>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3>
@@ -899,7 +911,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -909,13 +921,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -978,9 +990,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -1039,26 +1054,26 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 104
+                #line 110
                 mov r2.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r3.xyz, r2.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r4.xyz, r2.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1110,21 +1125,21 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r2.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r6.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -1197,7 +1212,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1205,12 +1220,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r2.xyzx
                 mul r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, cb1[17].w, l(1.000000)  // litColor<3>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3>
@@ -1292,7 +1307,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -1302,13 +1317,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -1354,7 +1369,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerObject                       cbuffer      NA          NA    0        1
                 //
@@ -1379,19 +1394,19 @@ fxgroup
                 ps_5_0
                 dcl_globalFlags refactoringAllowed
                 dcl_constantbuffer cb0[18], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v3.xy
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 93 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
-                sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
+                sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 100
+                #line 106
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r0.w, cb0[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -1472,7 +1487,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -1482,13 +1497,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -1551,9 +1566,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -1582,7 +1600,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -1608,7 +1626,7 @@ fxgroup
                 ps_4_0
                 dcl_constantbuffer cb0[43], dynamicIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -1616,29 +1634,29 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 93
-                sample r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99
+                sample r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 104
+                #line 110
                 mov r3.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r4.xyz, r3.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r5.xyz, r3.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1690,21 +1708,21 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r4.xyz, r4.xyzx, r7.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r6.xyz, r6.xyzx, r9.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,2]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -1777,7 +1795,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1785,12 +1803,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r5.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r6.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -1872,7 +1890,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -1882,13 +1900,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -1951,9 +1969,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -1982,7 +2003,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -2009,7 +2030,7 @@ fxgroup
                 dcl_globalFlags refactoringAllowed
                 dcl_constantbuffer cb0[43], dynamicIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -2017,29 +2038,29 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 93
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 104
+                #line 110
                 mov r3.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r4.xyz, r3.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r5.xyz, r3.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2091,21 +2112,21 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r4.xyz, r4.xyzx, r7.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r6.xyz, r6.xyzx, r9.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,3]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -2178,7 +2199,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2186,12 +2207,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r5.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r6.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -2273,7 +2294,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2283,13 +2304,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -2352,9 +2373,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -2383,7 +2407,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -2410,7 +2434,7 @@ fxgroup
                 dcl_globalFlags refactoringAllowed
                 dcl_constantbuffer cb0[43], dynamicIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -2418,29 +2442,29 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 93
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 104
+                #line 110
                 mov r3.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r4.xyz, r3.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r5.xyz, r3.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2492,21 +2516,21 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r4.xyz, r4.xyzx, r7.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r6.xyz, r6.xyzx, r9.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -2579,7 +2603,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2587,12 +2611,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r5.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r6.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -2674,7 +2698,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2684,13 +2708,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -2753,9 +2777,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96 [unused]
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -2784,7 +2811,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -2811,7 +2838,7 @@ fxgroup
                 dcl_globalFlags refactoringAllowed
                 dcl_constantbuffer cb0[43], immediateIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -2819,30 +2846,30 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 140 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 146 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 143
+                #line 149
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 146
+                #line 152
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 149
+                #line 155
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 156
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 162
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 174
+                #line 180
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r4.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -2915,7 +2942,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2923,7 +2950,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -2932,7 +2959,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -3005,7 +3032,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3013,12 +3040,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -3091,7 +3118,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3099,12 +3126,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -3177,7 +3204,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3185,10 +3212,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 endif 
                 
-                #line 186
+                #line 192
                 nop 
                 mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -3231,27 +3258,294 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 186 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 192 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 189
+                #line 195
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 194
+                #line 200
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 197
+                #line 203
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // TestPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // TestPS<3:NaN:Inf>
                 ret 
                 // Approximately 297 instruction slots used
+                            
+            };
+        }
+
+    }
+
+    technique11 OculusTech
+    {
+        pass P0
+        {
+            VertexShader = asm {
+                //
+                // Generated by Microsoft (R) HLSL Shader Compiler 9.29.952.3111
+                //
+                //
+                // Buffer Definitions: 
+                //
+                // cbuffer cbPerObject
+                // {
+                //
+                //   float4x4 gWorld;                   // Offset:    0 Size:    64
+                //   float4x4 gWorldInvTranspose;       // Offset:   64 Size:    64
+                //   float4x4 gWorldViewProj;           // Offset:  128 Size:    64
+                //   float4x4 gTexTransform;            // Offset:  192 Size:    64
+                //   
+                //   struct Material
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:  256
+                //       float4 Diffuse;                // Offset:  272
+                //       float4 Specular;               // Offset:  288
+                //       float4 Reflect;                // Offset:  304
+                //
+                //   } gMaterial;                       // Offset:  256 Size:    64 [unused]
+                //
+                // }
+                //
+                //
+                // Resource Bindings:
+                //
+                // Name                                 Type  Format         Dim Slot Elements
+                // ------------------------------ ---------- ------- ----------- ---- --------
+                // cbPerObject                       cbuffer      NA          NA    0        1
+                //
+                //
+                //
+                // Input signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // POSITION                 0   xyz         0     NONE  float   xyz 
+                // NORMAL                   0   xyz         1     NONE  float   xyz 
+                // TEXCOORD                 0   xy          2     NONE  float   xy  
+                //
+                //
+                // Output signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // SV_POSITION              0   xyzw        0      POS  float   xyzw
+                // POSITION                 0   xyz         1     NONE  float   xyz 
+                // NORMAL                   0   xyz         2     NONE  float   xyz 
+                // TEXCOORD                 0   xy          3     NONE  float   xy  
+                //
+                vs_5_0
+                dcl_globalFlags refactoringAllowed
+                dcl_constantbuffer cb0[14], immediateIndexed
+                dcl_input v0.xyz
+                dcl_input v1.xyz
+                dcl_input v2.xy
+                dcl_output_siv o0.xyzw, position
+                dcl_output o1.xyz
+                dcl_output o2.xyz
+                dcl_output o3.xy
+                dcl_temps 5
+                
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
+                mov r0.xyz, v0.xyzx
+                mov r0.w, l(1.000000)
+                dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
+                dp4 r1.y, r0.xyzw, cb0[1].xyzw  // vout<5:NaN:Inf>
+                dp4 r1.z, r0.xyzw, cb0[2].xyzw  // vout<6:NaN:Inf>
+                dp3 r2.x, v1.xyzx, cb0[4].xyzx  // vout<7:NaN:Inf>
+                dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
+                dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
+                
+                #line 72
+                dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
+                dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
+                dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
+                dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
+                
+                #line 75
+                mov r0.xy, v2.xyxx
+                mov r0.zw, l(0,0,0,1.000000)
+                dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
+                dp4 r4.y, r0.xyzw, cb0[13].xyzw  // vout<11:NaN:Inf>
+                mov o0.xyzw, r3.xyzw  // VS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
+                mov o1.xyz, r1.xyzx  // VS<4:NaN:Inf,5:NaN:Inf,6:NaN:Inf>
+                mov o2.xyz, r2.xyzx  // VS<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
+                mov o3.xy, r4.xyxx  // VS<10:NaN:Inf,11:NaN:Inf>
+                ret 
+                // Approximately 21 instruction slots used
+                            
+            };
+            GeometryShader = NULL;
+            PixelShader = asm {
+                //
+                // Generated by Microsoft (R) HLSL Shader Compiler 9.29.952.3111
+                //
+                //
+                // Buffer Definitions: 
+                //
+                // cbuffer cbPerFrame
+                // {
+                //
+                //   struct DirectionalLight
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:    0
+                //       float4 Diffuse;                // Offset:   16
+                //       float4 Specular;               // Offset:   32
+                //       float3 Direction;              // Offset:   48
+                //       float pad;                     // Offset:   60
+                //
+                //   } gDirLights[3];                   // Offset:    0 Size:   192 [unused]
+                //   
+                //   struct PointLight
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:  192
+                //       float4 Diffuse;                // Offset:  208
+                //       float4 Specular;               // Offset:  224
+                //       float3 Position;               // Offset:  240
+                //       float Range;                   // Offset:  252
+                //       float3 Att;                    // Offset:  256
+                //       float pad;                     // Offset:  268
+                //       float4 On;                     // Offset:  272
+                //
+                //   } testLights[4];                   // Offset:  192 Size:   384 [unused]
+                //   
+                //   struct PointLight
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:  576
+                //       float4 Diffuse;                // Offset:  592
+                //       float4 Specular;               // Offset:  608
+                //       float3 Position;               // Offset:  624
+                //       float Range;                   // Offset:  636
+                //       float3 Att;                    // Offset:  640
+                //       float pad;                     // Offset:  652
+                //       float4 On;                     // Offset:  656
+                //
+                //   } gPointLight;                     // Offset:  576 Size:    96 [unused]
+                //   float3 gEyePosW;                   // Offset:  672 Size:    12 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8
+                //   float2 Scale;                      // Offset:  704 Size:     8
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16
+                //
+                // }
+                //
+                //
+                // Resource Bindings:
+                //
+                // Name                                 Type  Format         Dim Slot Elements
+                // ------------------------------ ---------- ------- ----------- ---- --------
+                // Linear                            sampler      NA          NA    0        1
+                // gDiffuseMap                       texture  float4          2d    0        1
+                // cbPerFrame                        cbuffer      NA          NA    0        1
+                //
+                //
+                //
+                // Input signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // SV_POSITION              0   xyzw        0      POS  float       
+                // POSITION                 0   xyz         1     NONE  float       
+                // NORMAL                   0   xyz         2     NONE  float       
+                // TEXCOORD                 0   xy          3     NONE  float   xy  
+                //
+                //
+                // Output signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // SV_Target                0   xyzw        0   TARGET  float   xyzw
+                //
+                ps_5_0
+                dcl_globalFlags refactoringAllowed
+                dcl_constantbuffer cb0[47], immediateIndexed
+                dcl_sampler s0, mode_default
+                dcl_resource_texture2d (float,float,float,float) t0
+                dcl_input_ps linear v3.xy
+                dcl_output o0.xyzw
+                dcl_temps 3
+                
+                #line 210 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
+                mov r0.xy, -cb0[43].xyxx
+                add r0.xy, r0.xyxx, v3.xyxx
+                mul r0.xy, r0.xyxx, cb0[44].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
+                mul r0.z, r0.x, r0.x
+                mul r0.w, r0.y, r0.y
+                add r0.z, r0.w, r0.z  // rSq<0:NaN:Inf>
+                mul r0.w, r0.z, cb0[45].y
+                add r0.w, r0.w, cb0[45].x
+                mul r1.x, r0.z, cb0[45].z
+                mul r1.x, r0.z, r1.x
+                add r0.w, r0.w, r1.x
+                mul r1.x, r0.z, cb0[45].w
+                mul r1.x, r0.z, r1.x
+                mul r1.x, r0.z, r1.x
+                add r0.w, r0.w, r1.x
+                mul r0.xy, r0.wwww, r0.xyxx  // theta1<0:NaN:Inf,1:NaN:Inf>
+                
+                #line 216
+                mul r0.w, r0.z, cb0[46].w
+                add r0.w, r0.w, cb0[46].z
+                mul r1.xy, r0.wwww, r0.xyxx  // thetaBlue<0:NaN:Inf,1:NaN:Inf>
+                mul r1.xy, r1.xyxx, cb0[44].xyxx
+                add r1.xy, r1.xyxx, cb0[43].xyxx  // tcBlue<0:NaN:Inf,1:NaN:Inf>
+                add r1.zw, cb0[43].zzzw, l(0.000000, 0.000000, -0.250000, -0.500000)
+                add r2.xy, cb0[43].zwzz, l(0.250000, 0.500000, 0.000000, 0.000000)
+                max r1.zw, r1.zzzw, r1.xxxy
+                min r1.zw, r2.xxxy, r1.zzzw
+                mov r2.xy, -r1.xyxx
+                add r1.zw, r1.zzzw, r2.xxxy
+                dp2 r0.w, r1.zwzz, r1.zwzz
+                ne r0.w, r0.w, l(0.000000)
+                
+                #line 222
+                sample_indexable(texture2d)(float,float,float,float) r1.x, r1.xyxx, t0.zxyw, s0
+                
+                #line 225
+                mul r1.yz, r0.xxyx, cb0[44].xxyx
+                add r1.yz, r1.yyzy, cb0[43].xxyx  // tcGreen<0:NaN:Inf,1:NaN:Inf>
+                sample_indexable(texture2d)(float,float,float,float) r1.y, r1.yzyy, t0.xyzw, s0
+                mul r0.z, r0.z, cb0[46].y
+                add r0.z, r0.z, cb0[46].x
+                mul r0.xy, r0.zzzz, r0.xyxx  // thetaRed<0:NaN:Inf,1:NaN:Inf>
+                mul r0.xy, r0.xyxx, cb0[44].xyxx
+                add r0.xy, r0.xyxx, cb0[43].xyxx  // tcRed<0:NaN:Inf,1:NaN:Inf>
+                sample_indexable(texture2d)(float,float,float,float) r0.x, r0.xyxx, t0.xyzw, s0
+                
+                #line 218
+                if_nz r0.w
+                  mov o0.xyzw, l(0,0,0,0)  // OculusPS<0: 0f,1: 0f,2: 0f,3: 0f>
+                  ret 
+                endif 
+                
+                #line 222
+                mov r1.x, r1.x  // blue<0:Inf>
+                
+                #line 226
+                mov r1.y, r1.y  // green<0:Inf>
+                
+                #line 230
+                mov r0.x, r0.x  // red<0:Inf>
+                mov o0.w, l(1.000000)  // OculusPS<3: 1f>
+                mov o0.x, r0.x  // OculusPS<0:Inf>
+                mov o0.y, r1.y  // OculusPS<1:Inf>
+                mov o0.z, r1.x  // OculusPS<2:Inf>
+                ret 
+                // Approximately 51 instruction slots used
                             
             };
         }
@@ -3327,7 +3621,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -3337,13 +3631,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -3406,9 +3700,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -3466,26 +3763,26 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 104
+                #line 110
                 mov r2.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r3.xyz, r2.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r4.xyz, r2.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3537,21 +3834,21 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,2]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r2.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r6.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -3624,7 +3921,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3632,12 +3929,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r2.xyzx
                 mul r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, cb1[17].w, l(1.000000)  // litColor<3>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3>
@@ -3718,7 +4015,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -3728,13 +4025,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -3797,9 +4094,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -3857,26 +4157,26 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 104
+                #line 110
                 mov r2.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r3.xyz, r2.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r4.xyz, r2.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3928,21 +4228,21 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,3]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r2.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r6.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -4015,7 +4315,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4023,12 +4323,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r2.xyzx
                 mul r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, cb1[17].w, l(1.000000)  // litColor<3>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3>
@@ -4109,7 +4409,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -4119,13 +4419,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -4188,9 +4488,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -4248,26 +4551,26 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 104
+                #line 110
                 mov r2.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r3.xyz, r2.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r4.xyz, r2.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4319,21 +4622,21 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r2.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r6.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -4406,7 +4709,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4414,12 +4717,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r2.xyzx
                 mul r0.xyz, r0.xyzx, l(1.000000, 1.000000, 1.000000, 0.000000)
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, cb1[17].w, l(1.000000)  // litColor<3>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3>
@@ -4500,7 +4803,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -4510,13 +4813,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -4562,7 +4865,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerObject                       cbuffer      NA          NA    0        1
                 //
@@ -4586,19 +4889,19 @@ fxgroup
                 //
                 ps_4_0
                 dcl_constantbuffer cb0[18], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v3.xy
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 93 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
-                sample r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
+                sample r0.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 100
+                #line 106
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r0.w, cb0[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -4679,7 +4982,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -4689,13 +4992,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -4758,9 +5061,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -4789,7 +5095,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -4815,7 +5121,7 @@ fxgroup
                 ps_4_0
                 dcl_constantbuffer cb0[43], dynamicIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -4823,29 +5129,29 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 93
-                sample r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99
+                sample r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 104
+                #line 110
                 mov r3.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r4.xyz, r3.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r5.xyz, r3.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4897,21 +5203,21 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r4.xyz, r4.xyzx, r7.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r6.xyz, r6.xyzx, r9.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,2]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -4984,7 +5290,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4992,12 +5298,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r5.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r6.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -5078,7 +5384,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -5088,13 +5394,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -5157,9 +5463,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -5188,7 +5497,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -5214,7 +5523,7 @@ fxgroup
                 ps_4_0
                 dcl_constantbuffer cb0[43], dynamicIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -5222,29 +5531,29 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 93
-                sample r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99
+                sample r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 104
+                #line 110
                 mov r3.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r4.xyz, r3.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r5.xyz, r3.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5296,21 +5605,21 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r4.xyz, r4.xyzx, r7.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r6.xyz, r6.xyzx, r9.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0:[1,3]>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -5383,7 +5692,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5391,12 +5700,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r5.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r6.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -5477,7 +5786,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -5487,13 +5796,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -5556,9 +5865,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -5587,7 +5899,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -5613,7 +5925,7 @@ fxgroup
                 ps_4_0
                 dcl_constantbuffer cb0[43], dynamicIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -5621,29 +5933,29 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 77 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 80
+                #line 86
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 83
+                #line 89
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 86
+                #line 92
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 93
-                sample r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 99
+                sample r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 104
+                #line 110
                 mov r3.xyz, l(0,0,0,0)  // ambient<0: -0f,1: -0f,2: -0f>
                 
-                #line 112
+                #line 118
                 mov r0.w, l(0)  // i<0: 0>
                 mov r4.xyz, r3.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r5.xyz, r3.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5695,21 +6007,21 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 114 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 117
+                #line 123
                   add r4.xyz, r4.xyzx, r7.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r6.xyz, r6.xyzx, r9.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 112
+                #line 118
                   iadd r1.w, r1.w, l(1)  // i<0>
                 endloop 
                 
-                #line 122
+                #line 128
                 nop 
                 mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -5782,7 +6094,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 122 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5790,12 +6102,12 @@ fxgroup
                 add r0.xyz, r0.xyzx, r5.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r6.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 128
+                #line 134
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 132
+                #line 138
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -5876,7 +6188,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 62 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -5886,13 +6198,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
                 
-                #line 66
+                #line 72
                 dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
                 
-                #line 69
+                #line 75
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
@@ -5955,9 +6267,12 @@ fxgroup
                 //
                 //   } gPointLight;                     // Offset:  576 Size:    96 [unused]
                 //   float3 gEyePosW;                   // Offset:  672 Size:    12
-                //   float gFogStart;                   // Offset:  684 Size:     4 [unused]
-                //   float gFogRange;                   // Offset:  688 Size:     4 [unused]
-                //   float4 gFogColor;                  // Offset:  704 Size:    16 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8 [unused]
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8 [unused]
+                //   float2 Scale;                      // Offset:  704 Size:     8 [unused]
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8 [unused]
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16 [unused]
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16 [unused]
                 //
                 // }
                 //
@@ -5986,7 +6301,7 @@ fxgroup
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
-                // samAnisotropic                    sampler      NA          NA    0        1
+                // samAnisotropic                    sampler      NA          NA    1        1
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
                 // cbPerObject                       cbuffer      NA          NA    1        1
@@ -6012,7 +6327,7 @@ fxgroup
                 ps_4_0
                 dcl_constantbuffer cb0[43], immediateIndexed
                 dcl_constantbuffer cb1[19], immediateIndexed
-                dcl_sampler s0, mode_default
+                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
@@ -6020,30 +6335,30 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 140 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 146 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 143
+                #line 149
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[42].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 146
+                #line 152
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 149
+                #line 155
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 156
-                sample r2.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                #line 162
+                sample r2.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 174
+                #line 180
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r3.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r4.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -6116,7 +6431,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6124,7 +6439,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -6133,7 +6448,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -6206,7 +6521,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6214,12 +6529,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -6292,7 +6607,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6300,12 +6615,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 177
+                #line 183
                   nop 
                   mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                   mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -6378,7 +6693,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 177 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6386,10 +6701,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 174
+                #line 180
                 endif 
                 
-                #line 186
+                #line 192
                 nop 
                 mov r6.xyz, cb1[16].xyzx  // mat<0,1,2>
                 mov r7.xyz, cb1[17].xyzx  // mat<4,5,6>
@@ -6432,27 +6747,292 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 186 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 192 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 189
+                #line 195
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 194
+                #line 200
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 197
+                #line 203
                 mul r0.w, r2.w, cb1[17].w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // TestPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // TestPS<3:NaN:Inf>
                 ret 
                 // Approximately 297 instruction slots used
+                            
+            };
+        }
+
+    }
+
+    technique11 OculusTechDX10
+    {
+        pass P0
+        {
+            VertexShader = asm {
+                //
+                // Generated by Microsoft (R) HLSL Shader Compiler 9.29.952.3111
+                //
+                //
+                // Buffer Definitions: 
+                //
+                // cbuffer cbPerObject
+                // {
+                //
+                //   float4x4 gWorld;                   // Offset:    0 Size:    64
+                //   float4x4 gWorldInvTranspose;       // Offset:   64 Size:    64
+                //   float4x4 gWorldViewProj;           // Offset:  128 Size:    64
+                //   float4x4 gTexTransform;            // Offset:  192 Size:    64
+                //   
+                //   struct
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:  256
+                //       float4 Diffuse;                // Offset:  272
+                //       float4 Specular;               // Offset:  288
+                //       float4 Reflect;                // Offset:  304
+                //
+                //   } gMaterial;                       // Offset:  256 Size:    64 [unused]
+                //
+                // }
+                //
+                //
+                // Resource Bindings:
+                //
+                // Name                                 Type  Format         Dim Slot Elements
+                // ------------------------------ ---------- ------- ----------- ---- --------
+                // cbPerObject                       cbuffer      NA          NA    0        1
+                //
+                //
+                //
+                // Input signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // POSITION                 0   xyz         0     NONE  float   xyz 
+                // NORMAL                   0   xyz         1     NONE  float   xyz 
+                // TEXCOORD                 0   xy          2     NONE  float   xy  
+                //
+                //
+                // Output signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // SV_POSITION              0   xyzw        0      POS  float   xyzw
+                // POSITION                 0   xyz         1     NONE  float   xyz 
+                // NORMAL                   0   xyz         2     NONE  float   xyz 
+                // TEXCOORD                 0   xy          3     NONE  float   xy  
+                //
+                vs_4_0
+                dcl_constantbuffer cb0[14], immediateIndexed
+                dcl_input v0.xyz
+                dcl_input v1.xyz
+                dcl_input v2.xy
+                dcl_output_siv o0.xyzw, position
+                dcl_output o1.xyz
+                dcl_output o2.xyz
+                dcl_output o3.xy
+                dcl_temps 5
+                
+                #line 68 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
+                mov r0.xyz, v0.xyzx
+                mov r0.w, l(1.000000)
+                dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
+                dp4 r1.y, r0.xyzw, cb0[1].xyzw  // vout<5:NaN:Inf>
+                dp4 r1.z, r0.xyzw, cb0[2].xyzw  // vout<6:NaN:Inf>
+                dp3 r2.x, v1.xyzx, cb0[4].xyzx  // vout<7:NaN:Inf>
+                dp3 r2.y, v1.xyzx, cb0[5].xyzx  // vout<8:NaN:Inf>
+                dp3 r2.z, v1.xyzx, cb0[6].xyzx  // vout<9:NaN:Inf>
+                
+                #line 72
+                dp4 r3.x, r0.xyzw, cb0[8].xyzw  // vout<0:NaN:Inf>
+                dp4 r3.y, r0.xyzw, cb0[9].xyzw  // vout<1:NaN:Inf>
+                dp4 r3.z, r0.xyzw, cb0[10].xyzw  // vout<2:NaN:Inf>
+                dp4 r3.w, r0.xyzw, cb0[11].xyzw  // vout<3:NaN:Inf>
+                
+                #line 75
+                mov r0.xy, v2.xyxx
+                mov r0.zw, l(0,0,0,1.000000)
+                dp4 r4.x, r0.xyzw, cb0[12].xyzw  // vout<10:NaN:Inf>
+                dp4 r4.y, r0.xyzw, cb0[13].xyzw  // vout<11:NaN:Inf>
+                mov o0.xyzw, r3.xyzw  // VS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
+                mov o1.xyz, r1.xyzx  // VS<4:NaN:Inf,5:NaN:Inf,6:NaN:Inf>
+                mov o2.xyz, r2.xyzx  // VS<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
+                mov o3.xy, r4.xyxx  // VS<10:NaN:Inf,11:NaN:Inf>
+                ret 
+                // Approximately 21 instruction slots used
+                            
+            };
+            GeometryShader = NULL;
+            PixelShader = asm {
+                //
+                // Generated by Microsoft (R) HLSL Shader Compiler 9.29.952.3111
+                //
+                //
+                // Buffer Definitions: 
+                //
+                // cbuffer cbPerFrame
+                // {
+                //
+                //   struct
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:    0
+                //       float4 Diffuse;                // Offset:   16
+                //       float4 Specular;               // Offset:   32
+                //       float3 Direction;              // Offset:   48
+                //       float pad;                     // Offset:   60
+                //
+                //   } gDirLights[3];                   // Offset:    0 Size:   192 [unused]
+                //   
+                //   struct
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:  192
+                //       float4 Diffuse;                // Offset:  208
+                //       float4 Specular;               // Offset:  224
+                //       float3 Position;               // Offset:  240
+                //       float Range;                   // Offset:  252
+                //       float3 Att;                    // Offset:  256
+                //       float pad;                     // Offset:  268
+                //       float4 On;                     // Offset:  272
+                //
+                //   } testLights[4];                   // Offset:  192 Size:   384 [unused]
+                //   
+                //   struct
+                //   {
+                //       
+                //       float4 Ambient;                // Offset:  576
+                //       float4 Diffuse;                // Offset:  592
+                //       float4 Specular;               // Offset:  608
+                //       float3 Position;               // Offset:  624
+                //       float Range;                   // Offset:  636
+                //       float3 Att;                    // Offset:  640
+                //       float pad;                     // Offset:  652
+                //       float4 On;                     // Offset:  656
+                //
+                //   } gPointLight;                     // Offset:  576 Size:    96 [unused]
+                //   float3 gEyePosW;                   // Offset:  672 Size:    12 [unused]
+                //   float2 LensCenter;                 // Offset:  688 Size:     8
+                //   float2 ScreenCenter;               // Offset:  696 Size:     8
+                //   float2 Scale;                      // Offset:  704 Size:     8
+                //   float2 ScaleIn;                    // Offset:  712 Size:     8
+                //   float4 HmdWarpParam;               // Offset:  720 Size:    16
+                //   float4 ChromAbParam;               // Offset:  736 Size:    16
+                //
+                // }
+                //
+                //
+                // Resource Bindings:
+                //
+                // Name                                 Type  Format         Dim Slot Elements
+                // ------------------------------ ---------- ------- ----------- ---- --------
+                // Linear                            sampler      NA          NA    0        1
+                // gDiffuseMap                       texture  float4          2d    0        1
+                // cbPerFrame                        cbuffer      NA          NA    0        1
+                //
+                //
+                //
+                // Input signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // SV_POSITION              0   xyzw        0      POS  float       
+                // POSITION                 0   xyz         1     NONE  float       
+                // NORMAL                   0   xyz         2     NONE  float       
+                // TEXCOORD                 0   xy          3     NONE  float   xy  
+                //
+                //
+                // Output signature:
+                //
+                // Name                 Index   Mask Register SysValue Format   Used
+                // -------------------- ----- ------ -------- -------- ------ ------
+                // SV_Target                0   xyzw        0   TARGET  float   xyzw
+                //
+                ps_4_0
+                dcl_constantbuffer cb0[47], immediateIndexed
+                dcl_sampler s0, mode_default
+                dcl_resource_texture2d (float,float,float,float) t0
+                dcl_input_ps linear v3.xy
+                dcl_output o0.xyzw
+                dcl_temps 4
+                
+                #line 210 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\Basic.fx"
+                mov r0.xy, -cb0[43].xyxx
+                add r0.xy, r0.xyxx, v3.xyxx
+                mul r0.xy, r0.xyxx, cb0[44].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
+                mul r0.z, r0.x, r0.x
+                mul r0.w, r0.y, r0.y
+                add r0.z, r0.w, r0.z  // rSq<0:NaN:Inf>
+                mul r0.w, r0.z, cb0[45].y
+                add r0.w, r0.w, cb0[45].x
+                mul r1.x, r0.z, cb0[45].z
+                mul r1.x, r0.z, r1.x
+                add r0.w, r0.w, r1.x
+                mul r1.x, r0.z, cb0[45].w
+                mul r1.x, r0.z, r1.x
+                mul r1.x, r0.z, r1.x
+                add r0.w, r0.w, r1.x
+                mul r0.xy, r0.wwww, r0.xyxx  // theta1<0:NaN:Inf,1:NaN:Inf>
+                
+                #line 216
+                mul r0.w, r0.z, cb0[46].w
+                add r0.w, r0.w, cb0[46].z
+                mul r1.xy, r0.wwww, r0.xyxx  // thetaBlue<0:NaN:Inf,1:NaN:Inf>
+                mul r1.xy, r1.xyxx, cb0[44].xyxx
+                add r1.xy, r1.xyxx, cb0[43].xyxx  // tcBlue<0:NaN:Inf,1:NaN:Inf>
+                add r1.zw, cb0[43].zzzw, l(0.000000, 0.000000, -0.250000, -0.500000)
+                add r2.xy, cb0[43].zwzz, l(0.250000, 0.500000, 0.000000, 0.000000)
+                max r1.zw, r1.zzzw, r1.xxxy
+                min r1.zw, r2.xxxy, r1.zzzw
+                mov r2.xy, -r1.xyxx
+                add r1.zw, r1.zzzw, r2.xxxy
+                dp2 r0.w, r1.zwzz, r1.zwzz
+                ne r0.w, r0.w, l(0.000000)
+                
+                #line 222
+                sample r1.xyzw, r1.xyxx, t0.xyzw, s0
+                
+                #line 225
+                mul r1.xy, r0.xyxx, cb0[44].xyxx
+                add r1.xy, r1.xyxx, cb0[43].xyxx  // tcGreen<0:NaN:Inf,1:NaN:Inf>
+                sample r2.xyzw, r1.xyxx, t0.xyzw, s0
+                mul r0.z, r0.z, cb0[46].y
+                add r0.z, r0.z, cb0[46].x
+                mul r0.xy, r0.zzzz, r0.xyxx  // thetaRed<0:NaN:Inf,1:NaN:Inf>
+                mul r0.xy, r0.xyxx, cb0[44].xyxx
+                add r0.xy, r0.xyxx, cb0[43].xyxx  // tcRed<0:NaN:Inf,1:NaN:Inf>
+                sample r3.xyzw, r0.xyxx, t0.xyzw, s0
+                
+                #line 218
+                if_nz r0.w
+                  mov o0.xyzw, l(0,0,0,0)  // OculusPS<0: 0f,1: 0f,2: 0f,3: 0f>
+                  ret 
+                endif 
+                
+                #line 222
+                mov r1.z, r1.z  // blue<0:Inf>
+                
+                #line 226
+                mov r2.y, r2.y  // green<0:Inf>
+                
+                #line 230
+                mov r3.x, r3.x  // red<0:Inf>
+                mov o0.w, l(1.000000)  // OculusPS<3: 1f>
+                mov o0.x, r3.x  // OculusPS<0:Inf>
+                mov o0.y, r2.y  // OculusPS<1:Inf>
+                mov o0.z, r1.z  // OculusPS<2:Inf>
+                ret 
+                // Approximately 51 instruction slots used
                             
             };
         }

@@ -594,3 +594,9 @@ bool Input::isJumpKeyPressed() const
 {
 	return (wasKeyPressed(VK_SPACE) || wasGamepadButtonPressed(ButtonA));
 }
+
+// Returns true if 'o' or a TBD gamepad button is pressed.
+bool Input::isOculusButtonPressed() const
+{
+	return (wasKeyPressed('O'));
+}

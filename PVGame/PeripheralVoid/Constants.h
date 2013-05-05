@@ -273,7 +273,8 @@ const char MATERIALS_FILE[] = "Assets/Materials.xml";
 const enum PostProcessingEffects
 {
 	BlurEffect = 0x01,
-	WireframeEffect = 0x02
+	WireframeEffect = 0x02,
+	OculusEffect = 0x04
 };
 
 // http://stackoverflow.com/questions/27220/how-to-convert-stdstring-to-lpcwstr-in-c-unicode

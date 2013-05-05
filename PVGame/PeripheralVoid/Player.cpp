@@ -20,6 +20,9 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera = new Camera(physicsMan, 1.3333334f);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
+
+	leftCamera = new Camera(*playerCamera);
+	rightCamera = new Camera(*playerCamera);
 	
 	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
 	controller->setGravity(30.0f);
@@ -31,6 +34,8 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	leapStatus = false;
 	mobilityStatus = false;
 	medusaPercent = 0.0f;
+
+	eyeDist = 0.5f;
 
 	renderMan = rm;
 
@@ -50,6 +55,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 
 void Player::Update(float dt, Input* input)
 {
+	
 	if(controller->onGround())
 	{
 		if(leapStatus)
@@ -71,10 +77,9 @@ void Player::Update(float dt, Input* input)
 
 void Player::HandleInput(Input* input)
 {
-
 	#pragma region Camera Input
 	
-#pragma region Oculus Rift Look controls
+	#pragma region Oculus Rift Look controls
 	if(riftMan->isRiftConnected())
 	{
 		//Get head orientation from rift
@@ -102,9 +107,9 @@ void Player::HandleInput(Input* input)
 		}
 
 		//Set the rotation of the player
-		XMMATRIX R = XMMatrixRotationY(EyeYaw-yaw);
-		up    = XMFLOAT3(1.0f, 0.0f, 0.0f);
-		right = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		XMMATRIX R = XMMatrixRotationY(-EyeYaw+yaw);
+		up    = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		right = XMFLOAT3(1.0f, 0.0f, 0.0f);
 		fwd   = XMFLOAT3(0.0f, 0.0f, 1.0f);
 		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
@@ -263,12 +268,37 @@ void Player::HandleInput(Input* input)
 	delete cstr;
 	*/
 	playerCamera->UpdateViewMatrix();
+	*leftCamera = *playerCamera;
+	*rightCamera = *playerCamera;
+
+	float halfIPD = 0.032000002f;
+	if(riftMan->isRiftConnected())
+		halfIPD = riftMan->getHMDInfo().EyeDistance * eyeDist;
+
+	XMFLOAT3 translation = XMFLOAT3(playerCamera->GetRight().x * halfIPD, playerCamera->GetRight().y * halfIPD,playerCamera->GetRight().z * halfIPD);
+
+	leftCamera->SetPosition(playerCamera->GetPosition().x - translation.x,
+						    playerCamera->GetPosition().y - translation.y,
+							playerCamera->GetPosition().z - translation.z);
+	
+	rightCamera->SetPosition(playerCamera->GetPosition().x + translation.x,
+						     playerCamera->GetPosition().y + translation.y,
+							 playerCamera->GetPosition().z + translation.z);
+	leftCamera->UpdateViewMatrix();
+	rightCamera->UpdateViewMatrix();
 }
 
 void Player::OnResize(float aspectRatio)
 {
-	playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
+	if(riftMan->isRiftConnected())
+	{
+		riftMan->calcStereo();
+		playerCamera->SetLens(0.25f*MathHelper::Pi/*(riftMan->getStereo().GetYFOVRadians()*/, riftMan->getStereo().GetAspect(), 0.01, 1000.0f);
+	}
+	else
+		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
 	playerCamera->UpdateViewMatrix();
+	
 }
 
 XMMATRIX Player::ViewProj() const
@@ -280,6 +310,17 @@ Camera* Player::GetCamera()
 {
 	return playerCamera;
 }
+
+Camera* Player::GetLeftCamera()
+{
+	return leftCamera;
+}
+
+Camera* Player::GetRightCamera()
+{
+	return rightCamera;
+}
+
 
 void Player::resetStatuses() 
 {	

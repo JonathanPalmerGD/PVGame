@@ -32,7 +32,7 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 	mResizing(false)
 {
 	renderMan = &RenderManager::getInstance();
-	renderMan->SetClientSize(800, 600);
+	renderMan->SetClientSize(1280, 800);
 
 	// Get a pointer to the application object so we can forward 
 	// Windows messages to the object's window procedure through
