@@ -202,6 +202,13 @@ class RenderManager
 				reinterpret_cast<const float*>(&Colors::Silver));
 		}
 
+		void ClearTargetToColor(const float* clearColor) //XMVECTORF32 clearColor
+		{
+			// Pretty self-explanatory. Clears the screen, essentially.
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], 
+				clearColor);
+		}
+
 		void DrawString(const char *text, float fontSize, float xPos, float yPos, UINT32 textColor)
 		{	
 			std::wstring s = s2ws(text);

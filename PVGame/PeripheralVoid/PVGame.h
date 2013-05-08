@@ -34,7 +34,6 @@ public:
 		void OnMouseMove(WPARAM btnState, int x, int y);
 
 	private:
-		void BuildGeometryBuffers();
 		void BuildFX();
 		void BuildVertexLayout();
 		void BuildRooms(Room* startRoom);

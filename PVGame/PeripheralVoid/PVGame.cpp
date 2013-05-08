@@ -89,7 +89,6 @@ bool PVGame::Init()
 	BuildVertexLayout();
 	
 	LoadContent();
-	BuildGeometryBuffers();
 
 	//OnResize();
 
@@ -255,21 +254,21 @@ void PVGame::UpdateScene(float dt)
 	#pragma endregion
 	switch(gameState)
 	{
+	#pragma region Menu
 	case MENU:
 		if(!audioSource->isPlaying())
 		{
 			audioSource->play();
 		}
 		ListenSelectorChange();
-		if(input->isKeyDown(VK_RETURN))
-		{
-			ShowCursor(false);
-			gameState = PLAYING;
-		}
 		break;
+	#pragma endregion
+	#pragma region Option
 	case OPTION:
 		ListenSelectorChange();
 		break;
+	#pragma endregion
+	#pragma region Playing
 	case PLAYING:
 		if(audioSource->isPlaying())
 		{
@@ -598,17 +597,21 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-#if USE_FRUSTUM_CULLING
+		#if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
-#endif
+		#endif
 		break;
+	#pragma endregion
+	#pragma region End
 	case END:
 		ListenSelectorChange();
 		break;
-
+	#pragma endregion
+	#pragma region Instructions
 	case INSTRUCTIONS:
-		break;
 		ListenSelectorChange();
+		break;
+	#pragma endregion
 	default:
 		break;
 	}
@@ -616,6 +619,7 @@ void PVGame::UpdateScene(float dt)
 
 void PVGame::ListenSelectorChange()
 {
+	#pragma region Move Selector Up//Down
 	if(input->wasMenuDownPressed())
 	{
 		if(selector >= SELECTOR_MAP[gameState] - 1)
@@ -638,6 +642,118 @@ void PVGame::ListenSelectorChange()
 			selector--;
 		}
 	}
+	#pragma endregion
+	#pragma region Select Current Option
+	if(input->wasMenuSelectPressed())
+	{
+		#pragma region MENU
+		if(gameState == MENU)
+		{
+			//Play
+			if(selector == 0)
+			{
+				ShowCursor(false);
+				gameState = PLAYING;
+				return;
+			}
+			//Instructions
+			if(selector == 1)
+			{
+				selector = 0;
+				gameState = INSTRUCTIONS;
+				return;
+			}
+			//Options
+			if(selector == 2)
+			{
+				selector = 0;
+				gameState = OPTION;
+				return;
+			}
+			//Credits
+			if(selector == 3)
+			{
+				selector = 0;
+				gameState = END;
+				return;
+			}
+			//End
+			if(selector == 4)
+			{
+				PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+				return;
+			}
+		}
+		#pragma endregion
+		#pragma region OPTION
+		if(gameState == OPTION)
+		{
+			//Option 1
+			if(selector == 0)
+			{
+
+				return;
+			}
+			//Option 2
+			if(selector == 1)
+			{
+
+				return;
+			}
+			//Option 3
+			if(selector == 2)
+			{
+
+				return;
+			}
+			//Option 3
+			if(selector == 3)
+			{
+
+				return;
+			}
+			//Option 5
+			if(selector == 4)
+			{
+				selector = 2;
+				gameState = MENU;
+				return;
+			}
+		}
+		#pragma endregion
+		#pragma region END
+		if(gameState == END)
+		{
+
+		}
+		#pragma endregion
+		#pragma region INSTRUCTIONS
+		if(gameState == INSTRUCTIONS)
+		{
+			//NEXT
+			if(selector == 0)
+			{
+				
+				return;
+			}
+			//PLAY
+			if(selector == 1)
+			{
+				ShowCursor(false);
+				gameState = PLAYING;
+				return;
+			}
+			//MENU
+			if(selector == 2)
+			{
+				selector = 1;
+				gameState = MENU;
+				return;
+			}
+		}
+		#pragma endregion
+	}
+	#pragma endregion
 }
 
 void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
@@ -668,9 +784,13 @@ void PVGame::DrawScene()
 	UINT32 color2 = 0xffff0000;
 	UINT32 color3 = 0xff00ff00;
 	UINT32 color4 = 0xff000000;
+	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+	float colortwo[4] = {0.2f, 0.7f, 0.7f, 1.0f};
 	std::string cStats = "cHeight: " + cHeight;
+	
 	switch(gameState)
 	{
+	#pragma region MENU
 	case MENU:
 		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
@@ -712,44 +832,108 @@ void PVGame::DrawScene()
 		//renderMan->DrawString(L"By Entire Team is Babies", 65.0f, 110.0f, 200.0f, 0xff0099ff);
 		renderMan->EndDrawMenu();
 		break;
+	#pragma endregion
+	#pragma region PLAYING
 	case PLAYING:
 		renderMan->DrawScene(player->GetCamera(), player->GetLeftCamera(), player->GetRightCamera(), gameObjects);
 		//renderMan->DrawString("Health: 100", 24.0f, 50.0f, 50.0f, 0xff0099ff);
 		//renderMan->DrawString(L"Babies:   0", 24.0f, 50.0f, 70.0f, 0xff0099ff);
 		//renderMan->EndDrawMenu();
 		break;
+	#pragma endregion
+	#pragma region OPTION
+	case OPTION:
+		renderMan->ClearTargetToColor(colortwo); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("Options!", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+		if(selector == 0)
+		{
+			renderMan->DrawString(">Option 1", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+		}
+		else
+			renderMan->DrawString("  Option 1", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+		if(selector == 1)
+		{
+			renderMan->DrawString(">Option 2", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+		}
+		else
+			renderMan->DrawString("  Option 2", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Option 3", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+		}
+		else
+			renderMan->DrawString("  Option 3", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+		if(selector == 3)
+		{
+			renderMan->DrawString(">Option 4", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+		}
+		else
+			renderMan->DrawString("  Option 4", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
+		if(selector == 4)
+		{
+			renderMan->DrawString(">Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+		}
+		else
+			renderMan->DrawString("  Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);
+		renderMan->EndDrawMenu();
+		break;
+	#pragma endregion
+	#pragma region INSTRUCTIONS
+	case INSTRUCTIONS:
+		renderMan->ClearTargetToColor(color); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("Instructions!", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+		if(selector == 0)
+		{
+			renderMan->DrawString(">Next", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+		}
+		else
+			renderMan->DrawString("  Next", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+		if(selector == 1)
+		{
+			renderMan->DrawString(">Play", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+		}
+		else
+			renderMan->DrawString("  Play", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Menu", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+		}
+		else
+			renderMan->DrawString("  Menu", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+		/*if(selector == 3)
+		{
+			renderMan->DrawString(">Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+		}
+		else
+			renderMan->DrawString("  Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
+		if(selector == 4)
+		{
+			renderMan->DrawString(">Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+		}
+		else
+			renderMan->DrawString("  Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);*/
+
+		//renderMan->DrawString(L"Peripheral Void", 128.0f, 100.0f, 50.0f, 0xff0099ff);
+		//renderMan->DrawString(L"By Entire Team is Babies", 65.0f, 110.0f, 200.0f, 0xff0099ff);
+		renderMan->EndDrawMenu();
+
+		break;
+	#pragma endregion
+	#pragma region END
+	case END:
+
+
+		break;
+	#pragma endregion
 	default:
 		break;
 	}
-}
-
-void PVGame::BuildGeometryBuffers()
-{
-	//GameObject* aGameObject = new GameObject("Triangle", aMaterial, &XMMatrixIdentity());
-	// gameObjects.push_back(aGameObject);
-
-	//aGameObject = new GameObject("Cube", aMaterial, &XMMatrixIdentity());
-	// gameObjects.push_back(aGameObject);
-
-	/*GameObject* aGameObject = new GameObject("Plane", "Wood", &(XMMatrixIdentity() * XMMatrixScaling(80.0f, 1.0f, 80.0f) * XMMatrixTranslation(0.0f, 0.0f, 0.0f)), physicsMan);
-	aGameObject->SetRigidBody(physicsMan->createPlane(0.0f, 0.0f, 0.0f));
-	aGameObject->scale(8000.0, 1.0, 8000.0);
-	gameObjects.push_back(aGameObject);*/
-
-	/*GameObject* bGameObject = new GameObject("Plane", aMaterial, &(XMMatrixIdentity() * XMMatrixRotationZ(3.14f) * XMMatrixScaling(10.0f, 1.0f, 10.0f) * XMMatrixTranslation(0.0f, 3.0f, 0.0f)), physicsMan);
-	bGameObject->SetRigidBody(physicsMan->createPlane(0.0f,0.0f,0.0f));
-	bGameObject->scale(20.0f, 1.0f, 20.0f);
-	bGameObject->translate(0.0f, 3.0f, 0.0f);
-	bGameObject->rotate(1.0f, 0.0f, 0.0f, 0.0f);
-	gameObjects.push_back(bGameObject);*/
-
-	//aMaterial.Ambient = XMFLOAT4(0.46f, 0.46f, 0.46f, 1.0f);
-	//GameObject* testSphere = new GameObject("Sphere", aMaterial, &(XMMatrixIdentity() * XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixTranslation(5.0f, 1.0f, 0.0f)), 
-	//										physicsMan->createRigidBody("Sphere", 5.0, 2.0, 0.0, 1.0), physicsMan);
-	////testSphere->translate(5.0f, 2.0f, 0.0f);
-	//testSphere->scale(0.5, 0.5, 0.5);
-	//testSphere->setLinearVelocity(0,0,0);
-	//gameObjects.push_back(testSphere);
 }
  
 void PVGame::BuildFX()

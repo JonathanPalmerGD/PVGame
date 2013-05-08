@@ -5,7 +5,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 //Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
-	XMVECTOR aPos = XMVectorSet(0.0f, 2.0f, 0.0f, 1.0f);
+	XMVECTOR aPos = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);
 	XMVECTOR aUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR aFwd = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	XMVECTOR aRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);

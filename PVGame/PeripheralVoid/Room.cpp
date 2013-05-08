@@ -322,7 +322,7 @@ void Room::loadRoom(float xPos, float zPos)
 		if (strcmp(dir, "up") == 0)
 		{
 			if (strcmp(placement, "") == 0)
-				tempWall->centerZ -= 0.4;
+				tempWall->centerZ -= 0.4f;
 
 			if (strcmp(placement, "wall") == 0)
 			{
@@ -334,7 +334,7 @@ void Room::loadRoom(float xPos, float zPos)
 		if (strcmp(dir, "down") == 0)
 		{
 			if (strcmp(placement, "") == 0)
-				tempWall->centerZ += 0.4;
+				tempWall->centerZ += 0.4f;
 
 			if (strcmp(placement, "wall") == 0)
 			{
@@ -347,7 +347,7 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 			if (strcmp(placement, "") == 0)
 			{
-				tempWall->centerX -= 0.4;
+				tempWall->centerX -= 0.4f;
 				tempWall->xRotation = 3.14f / 2.0f;
 			}
 
@@ -361,7 +361,7 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 			if (strcmp(placement, "") == 0)
 			{
-				tempWall->centerX += 0.4;
+				tempWall->centerX += 0.4f;
 				tempWall->xRotation = -3.14f / 2.0f;
 			}
 
