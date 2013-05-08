@@ -10,10 +10,10 @@ RiftManager::RiftManager(void)
 	pHMD = *pManager->EnumerateDevices<HMDDevice>().CreateDevice();
 
 	riftConnected = false;
-
+	usingRift = false;
 	if(pHMD)
 	{
-		stereo.SetFullViewport(Viewport(0,0, 800, 600));
+		stereo.SetFullViewport(Viewport(0,0, 1280, 800));
 		//Get Information from the HMD
 		if (pHMD->GetDeviceInfo(&hmd))
 		{
@@ -26,8 +26,6 @@ RiftManager::RiftManager(void)
 			hmdInfo.ScreenCenter[0]   = hmd.HScreenSize/2;
 			hmdInfo.ScreenCenter[1]   = hmd.VScreenCenter;
 			hmdInfo.ChromaticAberationCorrection = hmd.ChromaAbCorrection;
-
-			
 		}
 	
 		//Set up sensor
@@ -37,10 +35,23 @@ RiftManager::RiftManager(void)
 			SFusion.AttachToSensor(pSensor);
 			SFusion.SetDelegateMessageHandler(this);
 		}
+
+		stereo.SetHMDInfo(hmd);
+	}
+	else
+	{
+		hmdInfo.DisplayDeviceName = const_cast<char*>(stereo.GetHMDInfo().DisplayDeviceName);
+			hmdInfo.EyeDistance       = stereo.GetHMDInfo().InterpupillaryDistance;
+			hmdInfo.DistortionK[0]    = stereo.GetHMDInfo().DistortionK[0];
+			hmdInfo.DistortionK[1]    = stereo.GetHMDInfo().DistortionK[1];
+			hmdInfo.DistortionK[2]    = stereo.GetHMDInfo().DistortionK[2];
+			hmdInfo.DistortionK[3]    = stereo.GetHMDInfo().DistortionK[3];
+			hmdInfo.ScreenCenter[0]   = stereo.GetHMDInfo().HScreenSize/2;
+			hmdInfo.ScreenCenter[1]   = stereo.GetHMDInfo().VScreenCenter;
+			hmdInfo.ChromaticAberationCorrection = const_cast<float*>(stereo.GetHMDInfo().ChromaAbCorrection);
 	}
 	
-	stereo.SetHMDInfo(hmd);
-	stereo.SetFullViewport(Viewport(0,0, hmd.HResolution, hmd.VResolution));
+	//stereo.SetFullViewport(Viewport(0,0, hmd.HResolution, hmd.VResolution));
 	stereo.SetStereoMode(Stereo_LeftRight_Multipass);
 	stereo.SetDistortionFitPointVP(-1.0f, 0.0f);
 	renderScale = stereo.GetDistortionScale();
@@ -174,7 +185,7 @@ void RiftManager::calcMatriciesNoRift()
 	Matrix4f projRight = Matrix4f::Translation(-projectionCenterOffset, 0, 0) * projCenter;
 
 	// View transformation translation in world units.
-	float halfIPD = 0.064000003 * 0.5f;
+	float halfIPD = 0.064000003f * 0.5f;
 	leftMatrix  = Matrix4f::Translation(halfIPD, 0, 0) * viewCenter;
 	rightMatrix = Matrix4f::Translation(-halfIPD, 0, 0) * viewCenter;
 
@@ -193,4 +204,14 @@ Matrix4f RiftManager::getRightMatrix()
 Quatf RiftManager::getOrientation()
 {
 	return SFusion.GetOrientation();
+}
+
+bool RiftManager::isUsingRift()
+{
+	return usingRift;
+}
+
+void RiftManager::setUsingRift(bool ur)
+{
+	usingRift = ur;
 }

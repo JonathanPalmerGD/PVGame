@@ -18,6 +18,7 @@ class RiftManager : public MessageHandler
 {
 private:
 	bool riftConnected;
+	bool usingRift;
 	Ptr<DeviceManager> pManager;
 	Ptr<HMDDevice> pHMD;
 	HMDInfo hmd;
@@ -56,6 +57,9 @@ public:
 	StereoConfig getStereo();
 
 	Quatf getOrientation();
+
+	bool isUsingRift();
+	void setUsingRift(bool);
 };
 
 

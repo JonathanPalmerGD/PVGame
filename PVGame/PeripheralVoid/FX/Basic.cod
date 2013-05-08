@@ -119,7 +119,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -262,7 +262,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -333,7 +333,7 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -420,7 +420,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -515,7 +515,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -658,7 +658,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -729,7 +729,7 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -816,7 +816,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -911,7 +911,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -1054,7 +1054,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -1125,7 +1125,7 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1212,7 +1212,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1307,7 +1307,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -1400,7 +1400,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 99 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 99 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
                 #line 106
@@ -1487,7 +1487,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -1634,7 +1634,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -1708,7 +1708,7 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1795,7 +1795,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1890,7 +1890,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2038,7 +2038,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -2112,7 +2112,7 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2199,7 +2199,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2294,7 +2294,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2442,7 +2442,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -2516,7 +2516,7 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2603,7 +2603,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2698,7 +2698,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2846,7 +2846,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 146 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 146 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -2942,7 +2942,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3032,7 +3032,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3118,7 +3118,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3204,7 +3204,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3258,7 +3258,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 192 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 192 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3355,7 +3355,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -3479,7 +3479,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 3
                 
-                #line 210 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 210 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xy, -cb0[43].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[44].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -3621,7 +3621,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -3763,7 +3763,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -3834,7 +3834,7 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -3921,7 +3921,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4015,7 +4015,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -4157,7 +4157,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -4228,7 +4228,7 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4315,7 +4315,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4409,7 +4409,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -4551,7 +4551,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 15
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -4622,7 +4622,7 @@ fxgroup
                   movc r7.xyz, r3.wwww, r7.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r8.xyz, r3.wwww, r8.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4709,7 +4709,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r2.xyz, r2.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4803,7 +4803,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -4895,7 +4895,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 99 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 99 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 sample r0.xyzw, v3.xyxx, t0.xyzw, s1  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
                 #line 106
@@ -4982,7 +4982,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -5129,7 +5129,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -5203,7 +5203,7 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5290,7 +5290,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5384,7 +5384,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -5531,7 +5531,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -5605,7 +5605,7 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5692,7 +5692,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5786,7 +5786,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -5933,7 +5933,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 16
                 
-                #line 83 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 83 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -6007,7 +6007,7 @@ fxgroup
                   movc r8.xyz, r4.wwww, r8.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r9.xyz, r4.wwww, r9.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 120 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 120 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r7.xyz, r7.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r8.xyz, r8.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r9.xyz, r9.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6094,7 +6094,7 @@ fxgroup
                   mov r1.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                 endif 
                 
-                #line 128 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 128 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6188,7 +6188,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -6335,7 +6335,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 146 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 146 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
@@ -6431,7 +6431,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6521,7 +6521,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6607,7 +6607,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6693,7 +6693,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 183 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 183 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6747,7 +6747,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 192 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 192 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6843,7 +6843,7 @@ fxgroup
                 dcl_output o3.xy
                 dcl_temps 5
                 
-                #line 68 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 68 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -6966,7 +6966,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 4
                 
-                #line 210 "C:\Users\Jason\Desktop\3DGP\PVGame\PVGame\PeripheralVoid\FX\Basic.fx"
+                #line 210 "C:\Users\Jason\Desktop\3DGP\OculusSingleRender\PVGame\PeripheralVoid\FX\Basic.fx"
                 mov r0.xy, -cb0[43].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[44].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>

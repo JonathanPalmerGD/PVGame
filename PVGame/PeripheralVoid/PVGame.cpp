@@ -27,7 +27,7 @@ PVGame::~PVGame(void)
 	alcDestroyContext(audioContext);
     alcCloseDevice(audioDevice);
 	delete physicsMan;
-
+	delete audioSource;
 	//OCULUS RIFT
 	delete riftMan;
 }
@@ -44,6 +44,7 @@ bool PVGame::Init()
 
 	DBOUT(riftMan->getDetectionMessage());
 
+	renderMan->SetRiftMan(riftMan);
 	if (!D3DApp::Init())
 		return false;
 
@@ -289,8 +290,12 @@ void PVGame::UpdateScene(float dt)
 		if (input->wasKeyPressed('V'))
 			renderMan->RemovePostProcessingEffect(BlurEffect);
 
-		if (riftMan->isRiftConnected() && input->isOculusButtonPressed())
+		if ( riftMan->isRiftConnected() &&  input->isOculusButtonPressed())
+		{
 			renderMan->ToggleOculusEffect();
+			riftMan->setUsingRift(!riftMan->isUsingRift());
+			player->OnResize(AspectRatio());
+		}
 
 		// Brackets.
 		if (input->wasKeyPressed(VK_OEM_6))
@@ -330,7 +335,7 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		//If the player falls of the edge of the world, respawn in current room
-		if (player->getPosition().y < -20)
+		if (player->getPosition().y < -160)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		#pragma endregion
 		#pragma region Player Statuses and Vision Affected Object Updating
@@ -557,11 +562,6 @@ void PVGame::UpdateScene(float dt)
 			isEUp = true;
 		#pragma endregion
 
-		if(input->isKeyDown('Z'))
-			player->eyeDist += 0.1f;
-		if(input->isKeyDown('X'))
-			player->eyeDist -= 0.1f;
-
 		#pragma region Level Controls U and I
 		if (input->wasKeyPressed('U'))
 		{
@@ -778,15 +778,15 @@ void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
 
 void PVGame::DrawScene()
 {
-	int cWidth = renderMan->GetClientHeight();
-	int cHeight = renderMan->GetClientWidth();
+	float cWidth = (float)renderMan->GetClientHeight();
+	float cHeight = (float)renderMan->GetClientWidth();
 	UINT32 color1 = 0xff0000ff;
 	UINT32 color2 = 0xffff0000;
 	UINT32 color3 = 0xff00ff00;
 	UINT32 color4 = 0xff000000;
 	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 	float colortwo[4] = {0.2f, 0.7f, 0.7f, 1.0f};
-	std::string cStats = "cHeight: " + cHeight;
+	std::string cStats = "cHeight: " + (int)cHeight;
 	
 	switch(gameState)
 	{
@@ -1007,4 +1007,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	return theApp.Run();
 }
-

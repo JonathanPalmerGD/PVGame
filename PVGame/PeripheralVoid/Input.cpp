@@ -50,8 +50,8 @@ Input::Input()
         controllers[i].vibrateTimeRight = 0;
     }
 
-	screenWidth = 800;
-	screenHeight = 600;
+	screenWidth = 1280;
+	screenHeight = 800;
 }
 
 //=============================================================================

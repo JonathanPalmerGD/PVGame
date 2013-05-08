@@ -5,7 +5,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 //Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
-	XMVECTOR aPos = XMVectorSet(0.0f, 5.0f, 0.0f, 1.0f);
+	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
 	XMVECTOR aUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR aFwd = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	XMVECTOR aRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
@@ -15,9 +15,12 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	XMStoreFloat3(&fwd, aFwd);
 	XMStoreFloat3(&right, aRight);
 
+	//OCULUS RIFT
+	riftMan = riftM;
+
 	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f);
 	physicsMan = pm;
-	playerCamera = new Camera(physicsMan, 1.3333334f);
+	playerCamera = new Camera(physicsMan, riftMan, 1.3333334f);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
 
@@ -36,17 +39,12 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	mobilityStatus = false;
 	medusaPercent = 0.0f;
 
-	eyeDist = 0.5f;
-
 	renderMan = rm;
 
 	listener = new AudioListener();
 	//listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
-
-	//OCULUS RIFT
-	riftMan = riftM;
 
 	EyeYaw = 0;
 	EyePitch = 0;
@@ -80,7 +78,7 @@ void Player::HandleInput(Input* input)
 	#pragma region Camera Input
 	
 	#pragma region Oculus Rift Look controls
-	if(riftMan->isRiftConnected())
+	if(riftMan->isUsingRift())
 	{
 		//Get head orientation from rift
 		Quatf hmdOrient = riftMan->getOrientation();
@@ -267,7 +265,7 @@ void Player::HandleInput(Input* input)
 
 	float halfIPD = 0.032000002f;
 	if(riftMan->isRiftConnected())
-		halfIPD = riftMan->getHMDInfo().EyeDistance * eyeDist;
+		halfIPD = riftMan->getHMDInfo().EyeDistance * 0.5f;
 
 	XMFLOAT3 translation = XMFLOAT3(playerCamera->GetRight().x * halfIPD, playerCamera->GetRight().y * halfIPD,playerCamera->GetRight().z * halfIPD);
 
@@ -284,10 +282,10 @@ void Player::HandleInput(Input* input)
 
 void Player::OnResize(float aspectRatio)
 {
-	if(riftMan->isRiftConnected())
+	if(riftMan->isUsingRift())
 	{
 		riftMan->calcStereo();
-		playerCamera->SetLens(0.25f*MathHelper::Pi/*(riftMan->getStereo().GetYFOVRadians()*/, riftMan->getStereo().GetAspect(), 0.01, 1000.0f);
+		playerCamera->SetLens(0.25f*MathHelper::Pi/*(riftMan->getStereo().GetYFOVRadians()*/, riftMan->getStereo().GetAspect(), 0.01f, 1000.0f);
 	}
 	else
 		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);

@@ -16,7 +16,6 @@ using namespace XNA;
 class Player
 {
 	public:
-		float eyeDist;
 		Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM);
 		virtual ~Player(void);
 		void OnResize(float aspectRatio);

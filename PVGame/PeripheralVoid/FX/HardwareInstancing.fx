@@ -66,12 +66,12 @@ SamplerState samAnisotropic
 	AddressV = WRAP;
 };
 
-SamplerState Linear : register(s0)
+SamplerState Linear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = BORDER;
-	AddressV = BORDER;
-	AddressW = BORDER;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+	AddressW = CLAMP;
 };
 
 SamplerState samInputImage
@@ -170,9 +170,12 @@ float4x4 gOcView;
 VertexOut OculusVS(VertexIn vin)
 {
 	VertexOut vout;
-	vout.PosH = mul(gOcView, float4(vin.PosL, 1.0f));
-	vout.PosW = mul(gOcView, float4(vin.PosL, 1.0f));
-	vout.Tex = mul(gTexTransform, float4(vin.Tex, 0, 1)).xy;
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gOcView);
+	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+
+	//vout.PosH = mul(gOcView, float4(vin.PosL, 1.0f));
+	//vout.PosW = mul(gOcView, float4(vin.PosL, 1.0f));
+	//vout.Tex = mul(gTexTransform, float4(vin.Tex, 0, 1)).xy;
 
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
