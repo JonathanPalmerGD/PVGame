@@ -18,5 +18,6 @@
 <cubes>
 </cubes>
 <crests>
+<crest row="15" col="6" xLength="1" yLength="1" zLength="1" centerX="6.5" centerY="0" centerZ="15.5" effect="5" target="" dir="right" placement=""/>
 </crests>
 </level>

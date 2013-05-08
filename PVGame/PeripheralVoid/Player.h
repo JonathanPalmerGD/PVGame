@@ -24,10 +24,12 @@ class Player
 		
 		void resetStatuses();
 		void increaseMedusaPercent();
+		void increaseWinPercent();
 
 		void setMobilityStatus(bool newStatus);
 		void setMedusaStatus(bool newStatus);
 		void setLeapStatus(bool newStatus);
+		void setWinStatus(bool newStatus);
 		void setPosition(float setX, float setY, float setZ);
 
 		Camera* GetCamera();
@@ -37,6 +39,10 @@ class Player
 		bool getMobilityStatus();
 		bool getMedusaStatus();
 		bool getLeapStatus();
+		bool getWinStatus();
+
+		float getWinPercent() {return winPercent;}
+
 		XMFLOAT4 getPosition();
 
 		AudioListener* getListener();
@@ -45,7 +51,9 @@ class Player
 		bool leapStatus;
 		bool mobilityStatus;
 		bool medusaStatus;
+		bool winStatus;
 		float medusaPercent;
+		float winPercent;
 		float playerSpeed;
 		float camLookSpeed;
 		const float PIXELS_PER_SEC;

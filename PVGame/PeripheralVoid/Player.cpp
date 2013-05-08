@@ -37,7 +37,9 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	medusaStatus = false;
 	leapStatus = false;
 	mobilityStatus = false;
+	winStatus = false;
 	medusaPercent = 0.0f;
+	winPercent = 0.0f;
 
 	renderMan = rm;
 
@@ -317,12 +319,14 @@ Camera* Player::GetRightCamera()
 void Player::resetStatuses() 
 {	
 	if(!medusaStatus)
-	{
 		medusaPercent = 0;
-	}
+	if(!winStatus)
+		winPercent = 0;
+
 	medusaStatus = false;
 	mobilityStatus = false;
 	leapStatus = false; 
+	winStatus = false;
 }
 
 void Player::increaseMedusaPercent()
@@ -333,13 +337,23 @@ void Player::increaseMedusaPercent()
 	}
 }
 
+void Player::increaseWinPercent()
+{
+	if(winStatus && winPercent < 1.0f)
+	{
+		winPercent += 0.01;
+	}
+}
+
 void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
 void Player::setMedusaStatus(bool newStatus) { medusaStatus = newStatus; }
 void Player::setLeapStatus(bool newStatus) { leapStatus = newStatus; }
+void Player::setWinStatus(bool newStatus) { winStatus = newStatus; }
 
 bool Player::getMobilityStatus() { return mobilityStatus; }
 bool Player::getMedusaStatus() { return medusaStatus; }
 bool Player::getLeapStatus() { return leapStatus; }
+bool Player::getWinStatus() { return winStatus; }
 
 XMFLOAT4 Player::getPosition()
 {

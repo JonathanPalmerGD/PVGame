@@ -278,6 +278,12 @@ void PVGame::UpdateScene(float dt)
 		if (input->isQuitPressed())
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
+		if (player->getWinPercent() >= 0.99f)
+		{
+			gameState = END;
+			return;
+		}
+
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
 		if (input->wasKeyPressed('R'))
@@ -369,6 +375,13 @@ void PVGame::UpdateScene(float dt)
 							renderMan->SetBlurColor(XMFLOAT4(0.0f, 0.25f, 0.0f, 1.0f));
 							renderMan->AddPostProcessingEffect(BlurEffect);
 						}
+
+						if (currentCrest->GetCrestType() == WIN)
+						{
+							renderMan->SetBlurColor(XMFLOAT4(0.99f * player->getWinPercent(), 0.99f * player->getWinPercent(), 0.0f, 1.0f));
+							renderMan->AddPostProcessingEffect(BlurEffect);
+						}
+
 					}
 					else
 					{
@@ -377,7 +390,12 @@ void PVGame::UpdateScene(float dt)
 						// If Medusa is out of sight, remove blur. Overrides manual blur add - comment out to require manual toggle on/off.
 						if (currentCrest->GetCrestType() == MEDUSA)
 						{
-							renderMan->RemovePostProcessingEffect(BlurEffect);
+							//renderMan->RemovePostProcessingEffect(BlurEffect);
+						}
+
+						if (currentCrest->GetCrestType() == WIN)
+						{
+							//renderMan->RemovePostProcessingEffect(BlurEffect);
 						}
 					}
 					currentCrest->Update(player);
@@ -786,6 +804,7 @@ void PVGame::DrawScene()
 	UINT32 color4 = 0xff000000;
 	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 	float colortwo[4] = {0.2f, 0.7f, 0.7f, 1.0f};
+	float colorthree[4] = {0.4f, 0.3f, 0.1f, 1.0f};
 	std::string cStats = "cHeight: " + (int)cHeight;
 	
 	switch(gameState)
@@ -927,8 +946,42 @@ void PVGame::DrawScene()
 	#pragma endregion
 	#pragma region END
 	case END:
-
-
+		renderMan->ClearTargetToColor(colorthree); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("Credits!", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+		if(selector == 0)
+		{
+			renderMan->DrawString(">Thanks Chris Cascioli", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+		}
+		else
+			renderMan->DrawString("  Thanks Chris Cascioli", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+		if(selector == 1)
+		{
+			renderMan->DrawString(">Thanks Jen Stranton", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+		}
+		else
+			renderMan->DrawString("  Thanks Jen Stranton", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Thanks Oculus", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+		}
+		else
+			renderMan->DrawString("  Thanks Oculus", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+		if(selector == 3)
+		{
+			renderMan->DrawString(">Thanks SFXR", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+		}
+		else
+			renderMan->DrawString("  Thanks SFXR", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
+		if(selector == 4)
+		{
+			renderMan->DrawString(">Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+		}
+		else
+			renderMan->DrawString("  Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);
+		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
 	default:

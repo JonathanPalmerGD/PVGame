@@ -28,10 +28,12 @@ using std::string;
 #define MAX_BLURS 2
 const float MOUSESENSITIVITY = 32;
 const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
-const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES};
+const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES, WIN};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds
+
+const float GAME_SCALE = 0.5f;
 
 struct Vertex
 {

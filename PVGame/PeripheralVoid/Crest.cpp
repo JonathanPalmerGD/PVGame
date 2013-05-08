@@ -171,6 +171,9 @@ void Crest::CreateLightAndIndex()
 	case HADES:
 		//SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
+	case WIN:
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(10.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		break;
 	}
 }
 
@@ -205,6 +208,10 @@ void Crest::Update(Player* player)
 			break;
 		case HADES:
 				//Hi
+			break;
+		case WIN:
+			player->setWinStatus(true);
+			player->increaseWinPercent();
 			break;
 		}
 	}
