@@ -30,7 +30,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	controller = physicsMan->createCharacterController( 0.4f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
-	controller->setJumpSpeed(15.0f);
+	controller->setJumpSpeed(9.0f);
 	controller->setMaxJumpHeight(50.0f);
 	controller->setMaxSlope(3.0f * 3.1415f);
 
@@ -61,11 +61,11 @@ void Player::Update(float dt, Input* input)
 		if(leapStatus)
 		{
 			controller->setMaxJumpHeight(60.0f);
-			controller->setJumpSpeed(22.0f);
+			controller->setJumpSpeed(14.0f);
 		}
 		else
 		{
-			controller->setJumpSpeed(15.0f);
+			controller->setJumpSpeed(9.0f);
 			controller->setMaxJumpHeight(30.0f);
 		}
 	}
@@ -118,7 +118,7 @@ void Player::HandleInput(Input* input)
 		//Set the rotation of the camera
 		playerCamera->setRotation(EyeYaw-yaw, EyePitch, EyeRoll);
 	}
-#pragma endregion
+	#pragma endregion
 	else
 	{
 		#pragma region Mouse Controls
@@ -202,13 +202,13 @@ void Player::HandleInput(Input* input)
 
 	#pragma region Player Controls
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
-		direction += forward;
+		direction += 3 * forward / 4;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
-		direction -= forward;
+		direction -= 3 * forward / 4;
 	if(input->isPlayerRightKeyDown()) //if(input->isPlayerRightKeyDown() && !medusaStatus)
-		direction += r;
+		direction += 3 * r / 4;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
-		direction -= r;
+		direction -= 3 * r / 4;
 	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
 		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
