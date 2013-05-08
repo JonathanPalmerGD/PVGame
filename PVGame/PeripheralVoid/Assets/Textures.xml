@@ -15,7 +15,7 @@
 		</Texture>
 		<Texture name="hedge">
 			<OffsetU>0</OffsetU>
-			<OffsetV>3</OffsetV>
+			<OffsetV>0</OffsetV>
 		</Texture>
 		<Texture name="WoodCrate01">
 			<OffsetU>1</OffsetU>

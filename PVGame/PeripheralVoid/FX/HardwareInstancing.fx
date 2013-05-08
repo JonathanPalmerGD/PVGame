@@ -59,8 +59,8 @@ Texture2D gDiffuseMap;
 
 SamplerState samAnisotropic
 {
-	Filter = ANISOTROPIC;
-	MaxAnisotropy = 4;
+	Filter = MIN_MAG_MIP_LINEAR;
+	MaxAnisotropy = 0;
 
 	AddressU = WRAP;
 	AddressV = WRAP;
@@ -90,8 +90,9 @@ struct VertexIn
 	row_major float4x4 World	: WORLD;
 	Material Material			: MATERIAL;
 	uint InstanceId				: SV_InstanceID;
-	float2 AtlasCoord			: ATLASCOORD;
 	float4 GlowColor			: GLOWCOLOR;
+	float4 TexScale				: TEXSCALE;
+	float2 AtlasCoord			: ATLASCOORD;
 };
 
 struct VertexOut
@@ -127,6 +128,11 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex   = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+	if (vin.TexScale.w == 1.0f)
+	{
+		vout.Tex.x *= vin.TexScale.x;
+		vout.Tex.y *= vin.TexScale.y;
+	}
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
 	vout.GlowColor = vin.GlowColor;

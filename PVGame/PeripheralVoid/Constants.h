@@ -19,7 +19,7 @@ using std::string;
 #define FINE_PHASE 0
 #define MOBILITY_MULTIPLIER 0.60f
 
-#define USINGVLD 0
+#define USINGVLD 1
 #if USINGVLD 
 #include <vld.h>
 #endif
@@ -261,8 +261,9 @@ struct InstancedData
 {
 	XMFLOAT4X4 World;
 	SurfaceMaterial SurfMaterial;
-	XMFLOAT2 AtlasC;
 	XMFLOAT4 GlowColor;
+	XMFLOAT4 TexScale;
+	XMFLOAT2 AtlasC;
 	bool isRendered;
 };
 

@@ -356,174 +356,6 @@ class RenderManager
 				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
 				RenderToEye(riftMan->getRightEyeParams(), aCamera, leftCamera, rightCamera);
 				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
-				/*
-				//md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
-				//mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Oculus Texture"]);
-				Matrix4f ocView(2.0f, 0.0f, 0.0f, -1.0f,
-								0.0f, 2.0f, 0.0f, -1.0f,
-								0.0f, 0.0f, 0.0f, 0.0f,
-								0.0f, 0.0f, 0.0f, 1.0f);
-
-				// Left eye
-				float	w = float(riftMan->getLeftEyeParams().VP.w) / float(mClientWidth),
-						h = float(riftMan->getLeftEyeParams().VP.h) / float(mClientHeight),
-						x = float(riftMan->getLeftEyeParams().VP.x) / float(mClientWidth),
-						y = float(riftMan->getLeftEyeParams().VP.y) / float(mClientHeight);
-
-				//float scaleFactor = 0.58322453f; //Distortion.Scale;
-				float scaleFactor = 1.0f / riftMan->getStereo().GetDistortionConfig().Scale;
-				float as = float(riftMan->getLeftEyeParams().VP.w) / float(riftMan->getLeftEyeParams().VP.h);
-				float aLens[2] = {x + (w + riftMan->getStereo().GetDistortionConfig().XCenterOffset * 0.5f)*0.5f, y + h*0.5f};
-				float aScale[2] = { (w/2) * scaleFactor, (h/2) * scaleFactor * as };
-				float aScaleIn[2] = { (2/w),(2/h) / as };
-			
-				mfxLensCenter->SetRawValue(aLens, 0, 2 * sizeof(float));
-				mfxScale->SetRawValue(aScale, 0, 2 * sizeof(float));
-				mfxScaleIn->SetRawValue(aScaleIn, 0, 2 * sizeof(float));
-
-				float screenCenter[2] = {x + w*0.5f, y + h*0.5f};
-
-				mfxScreenCenter->SetRawValue(screenCenter, 0, 2 * sizeof(float));
-				mfxHmdWarpParam->SetRawValue(riftMan->getStereo().GetDistortionConfig().K, 0, 4 * sizeof(float));
-				mfxChromAbParam->SetRawValue(riftMan->getStereo().GetDistortionConfig().ChromaticAberration, 0, 4 * sizeof(float));
-				
-				Matrix4f texmLeft(w, 0.0f, 0.0f, x,
-								  0.0f, h, 0.0f, y,
-								  0.0f, 0.0f, 0.0f, 0.0f,
-								  0.0f, 0.0f, 0.0f, 1.0f);
-
-				mfxOcView->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
-				//mfxOcView->SetMatrix(reinterpret_cast<const float*>(&ocView));
-				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Distortion Texture"], depthStencilViewsMap["Distortion"]);
-				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Distortion Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Distortion"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-				
-				// Left eye
-				XMMATRIX view = aCamera->View();
-				XMMATRIX proj = XMMATRIX(reinterpret_cast<float*>(riftMan->getLeftEyeParams().Projection.M));
-
-				// Recalculate projection to use left-hand coordinate system.
-				Matrix4f projCenter = Matrix4f::PerspectiveLH(aCamera->GetFovY(), aCamera->GetAspect() * riftMan->getStereo().GetAspectMultiplier(), 
-										aCamera->GetNearZ(), aCamera->GetFarZ());
-				XMMATRIX projLeft = XMMATRIX(reinterpret_cast<float*>( (Matrix4f::Translation(riftMan->getStereo().GetProjectionCenterOffset(), 0, 0) * projCenter).M) );
-				XMMATRIX viewAdjust = XMMATRIX(reinterpret_cast<float*>(Matrix4f::Translation(Vector3f(-riftMan->getStereo().GetHMDInfo().InterpupillaryDistance * 0.5f,0,0)).M));
-				//XMMATRIX viewAdjust = XMMATRIX(reinterpret_cast<float*>(riftMan->getLeftEyeParams().ViewAdjust.M));
-				
-				Viewport vp = riftMan->getLeftEyeParams().VP;
-
-				view = XMMatrixMultiply(view, viewAdjust);
-
-				D3D11_VIEWPORT tLV = leftViewport;
-				tLV.Width = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.Width);
-				tLV.Height = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.Height);
-				tLV.TopLeftX = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.TopLeftX);
-				tLV.TopLeftY = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.TopLeftY);
-				
-				md3dImmediateContext->RSSetViewports(1, &tLV);
-
-				mEyePosW = aCamera->GetPosition();
-				mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
-				mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&XMMatrixMultiply( view, XMMatrixTranspose(projLeft) ))); 
-				//mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&XMMatrixMultiply( aCamera->View(), aCamera->Proj() ))); 
-				DrawGameObjects("LightsWithAtlas");
-				UnbindShaderResource(mfxDiffuseMapVar, "LightsWithAtlas");
-				//sky->Draw(md3dImmediateContext, *leftCamera);
-
-				md3dImmediateContext->IASetInputLayout(mInputLayout);
-				md3dImmediateContext->OMSetDepthStencilState(0, 0);
-
-				md3dImmediateContext->RSSetViewports(1, &leftViewport);
-
-				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
-				TexTransform->SetMatrix(reinterpret_cast<const float*>(&texmLeft));
-				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
-				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Distortion Texture"]);
-
-				DrawQuad("OculusTech");
-				UnbindShaderResource(mfxDiffuseMapVar, "OculusTech");
-
-				//// Right eye
-				float	w = float(riftMan->getLeftEyeParams().VP.w) / float(mClientWidth),
-						h = float(riftMan->getLeftEyeParams().VP.h) / float(mClientHeight),
-						x = float(riftMan->getLeftEyeParams().VP.x) / float(mClientWidth),
-						y = float(riftMan->getLeftEyeParams().VP.y) / float(mClientHeight);
-
-				//float scaleFactor = 0.58322453f; //Distortion.Scale;
-				float scaleFactor = 1.0f / riftMan->getStereo().GetDistortionConfig().Scale;
-				float as = float(riftMan->getLeftEyeParams().VP.w) / float(riftMan->getLeftEyeParams().VP.h);
-				float aLens[2] = {x + (w + riftMan->getStereo().GetDistortionConfig().XCenterOffset  * 0.5f)*0.5f, y + h*0.5f};
-				float aScale[2] = { (w/2) * scaleFactor, (h/2) * scaleFactor * as };
-				float aScaleIn[2] = { (2/w),(2/h) / as };
-			
-				mfxLensCenter->SetRawValue(aLens, 0, 2 * sizeof(float));
-				mfxScale->SetRawValue(aScale, 0, 2 * sizeof(float));
-				mfxScaleIn->SetRawValue(aScaleIn, 0, 2 * sizeof(float));
-
-				float screenCenter[2] = {x + w*0.5f, y + h*0.5f};
-
-				mfxScreenCenter->SetRawValue(screenCenter, 0, 2 * sizeof(float));
-				mfxHmdWarpParam->SetRawValue(riftMan->getStereo().GetDistortionConfig().K, 0, 4 * sizeof(float));
-				mfxChromAbParam->SetRawValue(riftMan->getStereo().GetDistortionConfig().ChromaticAberration, 0, 4 * sizeof(float));
-				
-				Matrix4f texmLeft(w, 0.0f, 0.0f, x,
-								  0.0f, h, 0.0f, y,
-								  0.0f, 0.0f, 0.0f, 0.0f,
-								  0.0f, 0.0f, 0.0f, 1.0f);
-
-				mfxOcView->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
-				//mfxOcView->SetMatrix(reinterpret_cast<const float*>(&ocView));
-				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Distortion Texture"], depthStencilViewsMap["Distortion"]);
-				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Distortion Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Distortion"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-				
-				// Left eye
-				XMMATRIX view = aCamera->View();
-				XMMATRIX proj = XMMATRIX(reinterpret_cast<float*>(riftMan->getLeftEyeParams().Projection.M));
-
-				// Recalculate projection to use left-hand coordinate system.
-				Matrix4f projCenter = Matrix4f::PerspectiveLH(aCamera->GetFovY(), aCamera->GetAspect() * riftMan->getStereo().GetAspectMultiplier(), 
-										aCamera->GetNearZ(), aCamera->GetFarZ());
-				XMMATRIX projLeft = XMMATRIX(reinterpret_cast<float*>( (Matrix4f::Translation(riftMan->getStereo().GetProjectionCenterOffset(), 0, 0) * projCenter).M) );
-				XMMATRIX viewAdjust = XMMATRIX(reinterpret_cast<float*>(Matrix4f::Translation(Vector3f(-riftMan->getStereo().GetHMDInfo().InterpupillaryDistance * 0.5f,0,0)).M));
-				//XMMATRIX viewAdjust = XMMATRIX(reinterpret_cast<float*>(riftMan->getLeftEyeParams().ViewAdjust.M));
-				
-				Viewport vp = riftMan->getLeftEyeParams().VP;
-
-				view = XMMatrixMultiply(view, viewAdjust);
-
-				D3D11_VIEWPORT tLV = leftViewport;
-				tLV.Width = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.Width);
-				tLV.Height = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.Height);
-				tLV.TopLeftX = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.TopLeftX);
-				tLV.TopLeftY = (float)(int)ceil(riftMan->getStereo().GetDistortionScale() * tLV.TopLeftY);
-				
-				md3dImmediateContext->RSSetViewports(1, &tLV);
-
-				mEyePosW = aCamera->GetPosition();
-				mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
-				mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&XMMatrixMultiply( view, XMMatrixTranspose(projLeft) ))); 
-				//mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&XMMatrixMultiply( aCamera->View(), aCamera->Proj() ))); 
-				DrawGameObjects("LightsWithAtlas");
-				UnbindShaderResource(mfxDiffuseMapVar, "LightsWithAtlas");
-				//sky->Draw(md3dImmediateContext, *leftCamera);
-
-				md3dImmediateContext->IASetInputLayout(mInputLayout);
-				md3dImmediateContext->OMSetDepthStencilState(0, 0);
-
-				md3dImmediateContext->RSSetViewports(1, &leftViewport);
-
-				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
-				TexTransform->SetMatrix(reinterpret_cast<const float*>(&texmLeft));
-				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
-				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Distortion Texture"]);
-
-				DrawQuad("OculusTech");
-				UnbindShaderResource(mfxDiffuseMapVar, "OculusTech");
-				*/
 			}
 			else
 			{
@@ -738,6 +570,7 @@ class RenderManager
 				theData.SurfMaterial = SURFACE_MATERIALS[aGameMaterial.SurfaceKey];
 				theData.AtlasC = diffuseAtlasCoordsMap[aGameMaterial.DiffuseKey];
 				theData.GlowColor = aGameMaterial.GlowColor;
+				theData.TexScale = aObject->GetTexScale();
 
 				if (theData.GlowColor.w == 1.0f)
 					int a = 3;
@@ -904,14 +737,15 @@ class RenderManager
 				{ "MATERIAL", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 80, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 				{ "MATERIAL", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 96, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 				{ "MATERIAL", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 112, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-				{ "ATLASCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 128, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-				{ "GLOWCOLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 136, D3D11_INPUT_PER_INSTANCE_DATA, 1}
+				{ "GLOWCOLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 128, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "TEXSCALE", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 144, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "ATLASCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 160, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 			};
 
 			// Create the input layout
 			D3DX11_PASS_DESC passDesc;
 			techniqueMap.begin()->second->GetPassByIndex(0)->GetDesc(&passDesc);
-			HR(md3dDevice->CreateInputLayout(vertexDesc, 13, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
+			HR(md3dDevice->CreateInputLayout(vertexDesc, 14, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &mInputLayout));
 		}
 
 		void ToggleLight(int index)
@@ -1328,57 +1162,6 @@ class RenderManager
 			// For Wireframe, we just need to change fill mode.
 			rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
 			md3dDevice->CreateRasterizerState ( &rasterDesc , &rasterizerStatesMap["Wireframe"]);
-		}
-
-		struct StandardUniformData
-		{
-			Matrix4f  Proj;
-			Matrix4f  View;
-		}                        StdUniforms;
-
-		void Clear(float r, float g, float b, float a, float depth)
-		{
-			//const float color[] = {r, g, b, a};
-
-			//// Needed for each eye to do its own clear, since ClearRenderTargetView doesn't honor viewport.    
-   //     
-			//// Save state that is affected by clearing this way
-			//ID3D11DepthStencilState* oldDepthState = CurDepthState;
-			//StandardUniformData      clearUniforms;
-   // 
-			//SetDepthMode(true, true, Compare_Always);
-   // 
-			//md3dImmediateContext->IASetInputLayout(mInputLayout);
-   // 
-			//ID3D11ShaderResourceView* sv[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-   // 
-			//ID3D11Buffer* vertexBuffer = bufferPairs["Quad"].vertexBuffer;
-			//UINT vertexStride = sizeof(Vertex);
-			//UINT vertexOffset = 0;
-			//md3dImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &vertexStride, &vertexOffset);
-   // 
-			//clearUniforms.View = Matrix4f(2, 0, 0, 0,
-			//								0, 2, 0, 0,
-			//								0, 0, 0, 0,
-			//								-1, -1, depth, 1);
-			//UniformBuffers[Shader_Vertex]->Data(Buffer_Uniform, &clearUniforms, sizeof(clearUniforms));
-   // 
-			//ID3D11Buffer* vertexConstants = UniformBuffers[Shader_Vertex]->GetBuffer();
-			//Context->VSSetConstantBuffers(0, 1, &vertexConstants);
-			//Context->IASetPrimitiveTopology(D3D1x_(PRIMITIVE_TOPOLOGY_TRIANGLESTRIP));
-			//VertexShaders[VShader_MV]->Set(Prim_TriangleStrip);
-			//PixelShaders[FShader_Solid]->Set(Prim_TriangleStrip);
-   // 
-			//UniformBuffers[Shader_Pixel]->Data(Buffer_Uniform, color, sizeof(color));
-			//PixelShaders[FShader_Solid]->SetUniformBuffer(UniformBuffers[Shader_Pixel]);
-   //     
-			//// Clear Viewport   
-			//md3dImmediateContext->OMSetBlendState(NULL, NULL, 0xffffffff);
-			//md3dImmediateContext->Draw(4, 0);
-   // 
-			//// reset
-			//CurDepthState = oldDepthState;
-			//Context->OMSetDepthStencilState(CurDepthState, 0);        
 		}
 
 		void ToggleWireframe(bool isEnabled)

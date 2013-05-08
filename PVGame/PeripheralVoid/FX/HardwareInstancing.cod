@@ -46,8 +46,8 @@ cbuffer cbPerObject
 Texture2D gDiffuseMap;
 SamplerState samAnisotropic
 {
-    Filter   = uint(ANISOTROPIC /* 85 */);
-    MaxAnisotropy = uint(4);
+    Filter   = uint(MIN_MAG_MIP_LINEAR /* 21 */);
+    MaxAnisotropy = uint(0);
     AddressU = uint(WRAP /* 1 */);
     AddressV = uint(WRAP /* 1 */);
 };
@@ -120,8 +120,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float   xyzw
+                // GLOWCOLOR                0   xyzw       12     NONE  float   xyzw
+                // TEXSCALE                 0   xyzw       13     NONE  float   xy w
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -153,8 +154,9 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
-                dcl_input v13.xyzw
+                dcl_input v12.xyzw
+                dcl_input v13.xyw
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -167,7 +169,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 119 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -182,24 +184,33 @@ fxgroup
                 mul r3.xyz, v1.zzzz, v5.xyzx
                 add r2.xyz, r2.xyzx, r3.xyzx  // vout<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 123
+                #line 124
                 mov r0.w, l(1.000000)
                 dp4 r3.x, r0.xyzw, cb0[4].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[5].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 129
+                #line 130
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r4.y, r0.xyzw, cb0[9].xyzw  // vout<11:NaN:Inf>
+                eq r0.x, v13.w, l(1.000000)
+                if_nz r0.x
+                  mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
+                  mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
+                
+                #line 131
+                endif 
+                
+                #line 136
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
-                mov r8.xyzw, v13.xyzw  // vout<30,31,32,33>
+                mov r4.zw, v14.xxxy  // vout<28,29>
+                mov r8.xyzw, v12.xyzw  // vout<30,31,32,33>
                 mov o0.xyzw, r3.xyzw  // VS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // VS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // VS<28,29>
@@ -211,7 +222,7 @@ fxgroup
                 mov o1.xyz, r1.xyzx  // VS<4:NaN:Inf,5:NaN:Inf,6:NaN:Inf>
                 mov o2.xyz, r2.xyzx  // VS<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 ret 
-                // Approximately 39 instruction slots used
+                // Approximately 44 instruction slots used
                             
             };
             GeometryShader = NULL;
@@ -327,34 +338,34 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 189 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 192
+                #line 198
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 195
+                #line 201
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 198
+                #line 204
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 206
+                #line 212
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
                 add r2.xy, r2.zwzz, r2.xyxx
                 sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 223
+                #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -427,7 +438,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -435,7 +446,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -444,7 +455,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -517,7 +528,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -525,12 +536,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -603,7 +614,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -611,12 +622,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -689,7 +700,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -697,12 +708,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -775,7 +786,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -783,12 +794,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -861,7 +872,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -869,12 +880,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -947,7 +958,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -955,12 +966,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1033,7 +1044,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1041,12 +1052,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1119,7 +1130,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1127,12 +1138,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1205,7 +1216,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1213,10 +1224,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 
-                #line 235
+                #line 241
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1259,22 +1270,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 235 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 238
+                #line 244
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 243
+                #line 249
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248
+                #line 254
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -1303,7 +1314,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 259
+                #line 265
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -1312,10 +1323,10 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 248
+                #line 254
                 endif 
                 
-                #line 266
+                #line 272
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -1374,8 +1385,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float   xyzw
+                // GLOWCOLOR                0   xyzw       12     NONE  float   xyzw
+                // TEXSCALE                 0   xyzw       13     NONE  float   xy w
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -1407,8 +1419,9 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
-                dcl_input v13.xyzw
+                dcl_input v12.xyzw
+                dcl_input v13.xyw
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -1421,7 +1434,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 119 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -1436,24 +1449,33 @@ fxgroup
                 mul r3.xyz, v1.zzzz, v5.xyzx
                 add r2.xyz, r2.xyzx, r3.xyzx  // vout<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 123
+                #line 124
                 mov r0.w, l(1.000000)
                 dp4 r3.x, r0.xyzw, cb0[4].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[5].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 129
+                #line 130
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r4.y, r0.xyzw, cb0[9].xyzw  // vout<11:NaN:Inf>
+                eq r0.x, v13.w, l(1.000000)
+                if_nz r0.x
+                  mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
+                  mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
+                
+                #line 131
+                endif 
+                
+                #line 136
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
-                mov r8.xyzw, v13.xyzw  // vout<30,31,32,33>
+                mov r4.zw, v14.xxxy  // vout<28,29>
+                mov r8.xyzw, v12.xyzw  // vout<30,31,32,33>
                 mov o0.xyzw, r3.xyzw  // VS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // VS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // VS<28,29>
@@ -1465,7 +1487,7 @@ fxgroup
                 mov o1.xyz, r1.xyzx  // VS<4:NaN:Inf,5:NaN:Inf,6:NaN:Inf>
                 mov o2.xyz, r2.xyzx  // VS<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 ret 
-                // Approximately 39 instruction slots used
+                // Approximately 44 instruction slots used
                             
             };
             GeometryShader = NULL;
@@ -1581,34 +1603,34 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 189 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 192
+                #line 198
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 195
+                #line 201
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 198
+                #line 204
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 206
+                #line 212
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
                 add r2.xy, r2.zwzz, r2.xyxx
                 sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 223
+                #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -1681,7 +1703,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1689,7 +1711,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -1698,7 +1720,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1771,7 +1793,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1779,12 +1801,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1857,7 +1879,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1865,12 +1887,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1943,7 +1965,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1951,12 +1973,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2029,7 +2051,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2037,12 +2059,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2115,7 +2137,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2123,12 +2145,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2201,7 +2223,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2209,12 +2231,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2287,7 +2309,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2295,12 +2317,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2373,7 +2395,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2381,12 +2403,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2459,7 +2481,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2467,10 +2489,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 
-                #line 235
+                #line 241
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2513,22 +2535,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 235 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 238
+                #line 244
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 243
+                #line 249
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248
+                #line 254
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -2557,7 +2579,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 259
+                #line 265
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -2566,10 +2588,10 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 248
+                #line 254
                 endif 
                 
-                #line 266
+                #line 272
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -2628,8 +2650,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -2657,7 +2680,7 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -2669,7 +2692,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 141 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2679,13 +2702,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 145
+                #line 151
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 148
+                #line 154
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -2694,7 +2717,7 @@ fxgroup
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
+                mov r4.zw, v14.xxxy  // vout<28,29>
                 mov o0.xyzw, r3.xyzw  // TextureVS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // TextureVS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // TextureVS<28,29>
@@ -2753,11 +2776,11 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 293 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 299 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 298
+                #line 304
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -2816,8 +2839,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -2845,7 +2869,7 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -2857,7 +2881,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 141 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2867,13 +2891,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 145
+                #line 151
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 148
+                #line 154
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -2882,7 +2906,7 @@ fxgroup
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
+                mov r4.zw, v14.xxxy  // vout<28,29>
                 mov o0.xyzw, r3.xyzw  // TextureVS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // TextureVS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // TextureVS<28,29>
@@ -2941,7 +2965,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 273 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 279 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v3.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v3.x
@@ -2955,11 +2979,11 @@ fxgroup
                   ret 
                 endif 
                 
-                #line 293
+                #line 299
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 298
+                #line 304
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -2997,8 +3021,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -3016,11 +3041,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3155,16 +3180,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 308 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 316
+                #line 322
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3173,31 +3198,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3234,8 +3259,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -3253,11 +3279,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3392,16 +3418,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 312 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 316
+                #line 322
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3410,31 +3436,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3471,8 +3497,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -3490,11 +3517,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3629,16 +3656,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 312 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 316
+                #line 322
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3647,31 +3674,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3704,8 +3731,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -3723,11 +3751,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3862,16 +3890,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 308 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 316
+                #line 322
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3880,31 +3908,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3970,8 +3998,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -3999,7 +4028,7 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o3.xy
                 dcl_output o3.zw
@@ -4009,7 +4038,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 6
                 
-                #line 173 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 179 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
@@ -4021,12 +4050,12 @@ fxgroup
                 dp4 r2.x, r0.xyzw, cb1[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r2.y, r0.xyzw, cb1[9].xyzw  // vout<11:NaN:Inf>
                 
-                #line 180
+                #line 186
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r3.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r4.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r5.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r2.zw, v12.xxxy  // vout<28,29>
+                mov r2.zw, v14.xxxy  // vout<28,29>
                 mov o0.xyzw, r1.xyzw  // OculusVS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r2.xyxx  // OculusVS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r2.zzzw  // OculusVS<28,29>
@@ -4143,7 +4172,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 3
                 
-                #line 349 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 355 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -4161,7 +4190,7 @@ fxgroup
                 add r0.w, r0.w, r1.x
                 mul r0.xy, r0.wwww, r0.xyxx  // theta1<0:NaN:Inf,1:NaN:Inf>
                 
-                #line 355
+                #line 361
                 mul r0.w, r0.z, cb0[84].w
                 add r0.w, r0.w, cb0[84].z
                 mul r1.xy, r0.wwww, r0.xyxx  // thetaBlue<0:NaN:Inf,1:NaN:Inf>
@@ -4176,10 +4205,10 @@ fxgroup
                 dp2 r0.w, r1.zwzz, r1.zwzz
                 ne r0.w, r0.w, l(0.000000)
                 
-                #line 361
+                #line 367
                 sample_indexable(texture2d)(float,float,float,float) r1.x, r1.xyxx, t0.zxyw, s0
                 
-                #line 364
+                #line 370
                 mul r1.yz, r0.xxyx, cb0[82].xxyx
                 add r1.yz, r1.yyzy, cb0[81].xxyx  // tcGreen<0:NaN:Inf,1:NaN:Inf>
                 sample_indexable(texture2d)(float,float,float,float) r1.y, r1.yzyy, t0.xyzw, s0
@@ -4190,19 +4219,19 @@ fxgroup
                 add r0.xy, r0.xyxx, cb0[81].xyxx  // tcRed<0:NaN:Inf,1:NaN:Inf>
                 sample_indexable(texture2d)(float,float,float,float) r0.x, r0.xyxx, t0.xyzw, s0
                 
-                #line 357
+                #line 363
                 if_nz r0.w
                   mov o0.xyzw, l(0,0,0,0)  // OculusPS<0: 0f,1: 0f,2: 0f,3: 0f>
                   ret 
                 endif 
                 
-                #line 361
+                #line 367
                 mov r1.x, r1.x  // blue<0:Inf>
                 
-                #line 365
+                #line 371
                 mov r1.y, r1.y  // green<0:Inf>
                 
-                #line 369
+                #line 375
                 mov r0.x, r0.x  // red<0:Inf>
                 mov o0.w, l(1.000000)  // OculusPS<3: 1f>
                 mov o0.x, r0.x  // OculusPS<0:Inf>
@@ -4263,8 +4292,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float   xyzw
+                // GLOWCOLOR                0   xyzw       12     NONE  float   xyzw
+                // TEXSCALE                 0   xyzw       13     NONE  float   xy w
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -4295,8 +4325,9 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
-                dcl_input v13.xyzw
+                dcl_input v12.xyzw
+                dcl_input v13.xyw
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -4309,7 +4340,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 119 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -4324,24 +4355,33 @@ fxgroup
                 mul r3.xyz, v1.zzzz, v5.xyzx
                 add r2.xyz, r2.xyzx, r3.xyzx  // vout<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 123
+                #line 124
                 mov r0.w, l(1.000000)
                 dp4 r3.x, r0.xyzw, cb0[4].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[5].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 129
+                #line 130
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r4.y, r0.xyzw, cb0[9].xyzw  // vout<11:NaN:Inf>
+                eq r0.x, v13.w, l(1.000000)
+                if_nz r0.x
+                  mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
+                  mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
+                
+                #line 131
+                endif 
+                
+                #line 136
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
-                mov r8.xyzw, v13.xyzw  // vout<30,31,32,33>
+                mov r4.zw, v14.xxxy  // vout<28,29>
+                mov r8.xyzw, v12.xyzw  // vout<30,31,32,33>
                 mov o0.xyzw, r3.xyzw  // VS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // VS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // VS<28,29>
@@ -4353,7 +4393,7 @@ fxgroup
                 mov o1.xyz, r1.xyzx  // VS<4:NaN:Inf,5:NaN:Inf,6:NaN:Inf>
                 mov o2.xyz, r2.xyzx  // VS<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 ret 
-                // Approximately 39 instruction slots used
+                // Approximately 44 instruction slots used
                             
             };
             GeometryShader = NULL;
@@ -4468,34 +4508,34 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 189 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 192
+                #line 198
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 195
+                #line 201
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 198
+                #line 204
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 206
+                #line 212
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
                 add r2.xy, r2.zwzz, r2.xyxx
                 sample r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 223
+                #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -4568,7 +4608,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4576,7 +4616,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -4585,7 +4625,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4658,7 +4698,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4666,12 +4706,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4744,7 +4784,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4752,12 +4792,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4830,7 +4870,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4838,12 +4878,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4916,7 +4956,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4924,12 +4964,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5002,7 +5042,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5010,12 +5050,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5088,7 +5128,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5096,12 +5136,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5174,7 +5214,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5182,12 +5222,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5260,7 +5300,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5268,12 +5308,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5346,7 +5386,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5354,10 +5394,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 
-                #line 235
+                #line 241
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5400,22 +5440,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 235 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 238
+                #line 244
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 243
+                #line 249
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248
+                #line 254
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -5444,7 +5484,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 259
+                #line 265
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -5453,10 +5493,10 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 248
+                #line 254
                 endif 
                 
-                #line 266
+                #line 272
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -5515,8 +5555,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float   xyzw
+                // GLOWCOLOR                0   xyzw       12     NONE  float   xyzw
+                // TEXSCALE                 0   xyzw       13     NONE  float   xy w
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -5547,8 +5588,9 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
-                dcl_input v13.xyzw
+                dcl_input v12.xyzw
+                dcl_input v13.xyw
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -5561,7 +5603,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 119 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -5576,24 +5618,33 @@ fxgroup
                 mul r3.xyz, v1.zzzz, v5.xyzx
                 add r2.xyz, r2.xyzx, r3.xyzx  // vout<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 123
+                #line 124
                 mov r0.w, l(1.000000)
                 dp4 r3.x, r0.xyzw, cb0[4].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[5].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 129
+                #line 130
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r4.y, r0.xyzw, cb0[9].xyzw  // vout<11:NaN:Inf>
+                eq r0.x, v13.w, l(1.000000)
+                if_nz r0.x
+                  mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
+                  mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
+                
+                #line 131
+                endif 
+                
+                #line 136
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
-                mov r8.xyzw, v13.xyzw  // vout<30,31,32,33>
+                mov r4.zw, v14.xxxy  // vout<28,29>
+                mov r8.xyzw, v12.xyzw  // vout<30,31,32,33>
                 mov o0.xyzw, r3.xyzw  // VS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // VS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // VS<28,29>
@@ -5605,7 +5656,7 @@ fxgroup
                 mov o1.xyz, r1.xyzx  // VS<4:NaN:Inf,5:NaN:Inf,6:NaN:Inf>
                 mov o2.xyz, r2.xyzx  // VS<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 ret 
-                // Approximately 39 instruction slots used
+                // Approximately 44 instruction slots used
                             
             };
             GeometryShader = NULL;
@@ -5720,34 +5771,34 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 189 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 192
+                #line 198
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 195
+                #line 201
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 198
+                #line 204
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 206
+                #line 212
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
                 add r2.xy, r2.zwzz, r2.xyxx
                 sample r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 223
+                #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -5820,7 +5871,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5828,7 +5879,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -5837,7 +5888,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5910,7 +5961,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5918,12 +5969,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5996,7 +6047,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6004,12 +6055,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6082,7 +6133,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6090,12 +6141,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6168,7 +6219,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6176,12 +6227,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6254,7 +6305,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6262,12 +6313,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6340,7 +6391,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6348,12 +6399,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6426,7 +6477,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6434,12 +6485,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6512,7 +6563,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6520,12 +6571,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 226
+                #line 232
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6598,7 +6649,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 226 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6606,10 +6657,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 223
+                #line 229
                 endif 
                 
-                #line 235
+                #line 241
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6652,22 +6703,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 235 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 238
+                #line 244
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 243
+                #line 249
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248
+                #line 254
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -6696,7 +6747,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 259
+                #line 265
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -6705,10 +6756,10 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 248
+                #line 254
                 endif 
                 
-                #line 266
+                #line 272
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
@@ -6767,8 +6818,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -6795,7 +6847,7 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -6807,7 +6859,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 141 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -6817,13 +6869,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 145
+                #line 151
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 148
+                #line 154
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -6832,7 +6884,7 @@ fxgroup
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
+                mov r4.zw, v14.xxxy  // vout<28,29>
                 mov o0.xyzw, r3.xyzw  // TextureVS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // TextureVS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // TextureVS<28,29>
@@ -6890,11 +6942,11 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 293 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 299 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 298
+                #line 304
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -6953,8 +7005,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -6981,7 +7034,7 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyz
                 dcl_output o2.xyz
@@ -6993,7 +7046,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 141 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -7003,13 +7056,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 145
+                #line 151
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 148
+                #line 154
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -7018,7 +7071,7 @@ fxgroup
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r7.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r4.zw, v12.xxxy  // vout<28,29>
+                mov r4.zw, v14.xxxy  // vout<28,29>
                 mov o0.xyzw, r3.xyzw  // TextureVS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r4.xyxx  // TextureVS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r4.zzzw  // TextureVS<28,29>
@@ -7076,7 +7129,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 273 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 279 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v3.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v3.x
@@ -7090,11 +7143,11 @@ fxgroup
                   ret 
                 endif 
                 
-                #line 293
+                #line 299
                 sample r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 298
+                #line 304
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -7132,8 +7185,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -7150,11 +7204,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7288,16 +7342,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 308 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 316
+                #line 322
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -7306,31 +7360,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -7367,8 +7421,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -7385,11 +7440,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7523,16 +7578,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 312 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 316
+                #line 322
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -7541,31 +7596,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -7602,8 +7657,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -7620,11 +7676,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7758,16 +7814,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 312 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 316
+                #line 322
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -7776,31 +7832,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -7833,8 +7889,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float       
                 // MATERIAL                 3   xyzw       10     NONE  float       
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float       
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float       
                 //
                 //
                 // Output signature:
@@ -7851,11 +7908,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 161 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 164
+                #line 170
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7989,16 +8046,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 308 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 316
+                #line 322
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 326
+                #line 332
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -8007,31 +8064,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 329
+                #line 335
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 332
+                #line 338
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 337
+                #line 343
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 326
+                #line 332
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 342
+                #line 348
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -8097,8 +8154,9 @@ fxgroup
                 // MATERIAL                 2   xyzw        9     NONE  float   xyzw
                 // MATERIAL                 3   xyzw       10     NONE  float   xyzw
                 // SV_InstanceID            0   x          11   INSTID   uint       
-                // ATLASCOORD               0   xy         12     NONE  float   xy  
-                // GLOWCOLOR                0   xyzw       13     NONE  float       
+                // GLOWCOLOR                0   xyzw       12     NONE  float       
+                // TEXSCALE                 0   xyzw       13     NONE  float       
+                // ATLASCOORD               0   xy         14     NONE  float   xy  
                 //
                 //
                 // Output signature:
@@ -8125,7 +8183,7 @@ fxgroup
                 dcl_input v8.xyzw
                 dcl_input v9.xyzw
                 dcl_input v10.xyzw
-                dcl_input v12.xy
+                dcl_input v14.xy
                 dcl_output_siv o0.xyzw, position
                 dcl_output o3.xy
                 dcl_output o3.zw
@@ -8135,7 +8193,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 6
                 
-                #line 173 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 179 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
@@ -8147,12 +8205,12 @@ fxgroup
                 dp4 r2.x, r0.xyzw, cb1[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r2.y, r0.xyzw, cb1[9].xyzw  // vout<11:NaN:Inf>
                 
-                #line 180
+                #line 186
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r3.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r4.xyzw, v9.xyzw  // vout<20,21,22,23>
                 mov r5.xyzw, v10.xyzw  // vout<24,25,26,27>
-                mov r2.zw, v12.xxxy  // vout<28,29>
+                mov r2.zw, v14.xxxy  // vout<28,29>
                 mov o0.xyzw, r1.xyzw  // OculusVS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov o3.xy, r2.xyxx  // OculusVS<10:NaN:Inf,11:NaN:Inf>
                 mov o3.zw, r2.zzzw  // OculusVS<28,29>
@@ -8268,7 +8326,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 4
                 
-                #line 349 "C:\Users\Jon Palmer\School\3dGraphics\gitr\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 355 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -8286,7 +8344,7 @@ fxgroup
                 add r0.w, r0.w, r1.x
                 mul r0.xy, r0.wwww, r0.xyxx  // theta1<0:NaN:Inf,1:NaN:Inf>
                 
-                #line 355
+                #line 361
                 mul r0.w, r0.z, cb0[84].w
                 add r0.w, r0.w, cb0[84].z
                 mul r1.xy, r0.wwww, r0.xyxx  // thetaBlue<0:NaN:Inf,1:NaN:Inf>
@@ -8301,10 +8359,10 @@ fxgroup
                 dp2 r0.w, r1.zwzz, r1.zwzz
                 ne r0.w, r0.w, l(0.000000)
                 
-                #line 361
+                #line 367
                 sample r1.xyzw, r1.xyxx, t0.xyzw, s0
                 
-                #line 364
+                #line 370
                 mul r1.xy, r0.xyxx, cb0[82].xyxx
                 add r1.xy, r1.xyxx, cb0[81].xyxx  // tcGreen<0:NaN:Inf,1:NaN:Inf>
                 sample r2.xyzw, r1.xyxx, t0.xyzw, s0
@@ -8315,19 +8373,19 @@ fxgroup
                 add r0.xy, r0.xyxx, cb0[81].xyxx  // tcRed<0:NaN:Inf,1:NaN:Inf>
                 sample r3.xyzw, r0.xyxx, t0.xyzw, s0
                 
-                #line 357
+                #line 363
                 if_nz r0.w
                   mov o0.xyzw, l(0,0,0,0)  // OculusPS<0: 0f,1: 0f,2: 0f,3: 0f>
                   ret 
                 endif 
                 
-                #line 361
+                #line 367
                 mov r1.z, r1.z  // blue<0:Inf>
                 
-                #line 365
+                #line 371
                 mov r2.y, r2.y  // green<0:Inf>
                 
-                #line 369
+                #line 375
                 mov r3.x, r3.x  // red<0:Inf>
                 mov o0.w, l(1.000000)  // OculusPS<3: 1f>
                 mov o0.x, r3.x  // OculusPS<0:Inf>

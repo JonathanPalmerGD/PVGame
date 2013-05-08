@@ -24,8 +24,8 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
 
-	leftCamera = new Camera(*playerCamera);
-	rightCamera = new Camera(*playerCamera);
+	leftCamera = new Camera(physicsMan, riftMan, 1.3333334f);
+	rightCamera = new Camera(physicsMan, riftMan, 1.3333334f);
 	
 	controller = physicsMan->createCharacterController( 0.4f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
@@ -262,8 +262,8 @@ void Player::HandleInput(Input* input)
 	delete cstr;
 	*/
 	playerCamera->UpdateViewMatrix();
-	*leftCamera = *playerCamera;
-	*rightCamera = *playerCamera;
+	//*leftCamera = *playerCamera;
+	//*rightCamera = *playerCamera;
 
 	float halfIPD = 0.032000002f;
 	if(riftMan->isRiftConnected())
@@ -341,7 +341,7 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
-		winPercent += 0.01;
+		winPercent += 0.01f;
 	}
 }
 
@@ -389,5 +389,7 @@ Player::~Player(void)
 	physicsMan->removeCharacterController(controller);
 	delete listener;
 	delete playerCamera;
+	delete leftCamera;
+	delete rightCamera;
 	delete audioSource;
 }

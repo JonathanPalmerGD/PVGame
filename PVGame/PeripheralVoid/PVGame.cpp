@@ -296,7 +296,7 @@ void PVGame::UpdateScene(float dt)
 		if (input->wasKeyPressed('V'))
 			renderMan->RemovePostProcessingEffect(BlurEffect);
 
-		if ( riftMan->isRiftConnected() &&  input->isOculusButtonPressed())
+		if ( riftMan->isRiftConnected() && input->isOculusButtonPressed())
 		{
 			renderMan->ToggleOculusEffect();
 			riftMan->setUsingRift(!riftMan->isUsingRift());
@@ -428,6 +428,7 @@ void PVGame::UpdateScene(float dt)
 			float speed = 15;
 			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
 			SortGameObjects();
@@ -454,6 +455,7 @@ void PVGame::UpdateScene(float dt)
 			float speed = 15;
 			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
 			crestObj->scale(2.0f, .1f, 2.0f);
+			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			gameObjects.push_back(crestObj);
 			SortGameObjects();
@@ -467,6 +469,7 @@ void PVGame::UpdateScene(float dt)
 			float speed = 15;
 			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
 			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			gameObjects.push_back(crestObj);
 			proceduralGameObjects.push_back(crestObj);
 			SortGameObjects();
@@ -504,6 +507,7 @@ void PVGame::UpdateScene(float dt)
 
 			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			testSphere->initAudio("Audio\\shot.wav");
 			
 			testSphere->playAudio();
@@ -525,6 +529,7 @@ void PVGame::UpdateScene(float dt)
 			float speed = 20;
 
 			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -546,6 +551,7 @@ void PVGame::UpdateScene(float dt)
 			float speed = 0;
 
 			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 			//testSphere->playAudio();
@@ -567,6 +573,7 @@ void PVGame::UpdateScene(float dt)
 			float speed = 90;
 
 			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
+			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
 			testSphere->initAudio("Audio\\shot.wav");
 			testSphere->playAudio();
