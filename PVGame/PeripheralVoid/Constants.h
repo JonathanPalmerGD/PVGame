@@ -8,7 +8,6 @@
 #include "Common\LightHelper.h"
 #include "Common\GeometryGenerator.h"
 
-
 using std::vector;
 using std::map;
 using std::string;
@@ -27,12 +26,14 @@ using std::string;
 
 #define MAX_LIGHTS 10
 #define MAX_BLURS 2
-
-const enum GAME_STATE { MENU, OPTION, PLAYING, END };
-const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES};
+const float MOUSESENSITIVITY = 32;
+const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
+const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES, WIN};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds
+
+const float GAME_SCALE = 0.5f;
 
 struct Vertex
 {
@@ -253,6 +254,7 @@ struct GameMaterial
 
 static std::map<string, GameMaterial> GAME_MATERIALS;
 static std::map<string, SurfaceMaterial> SURFACE_MATERIALS;
+static std::map<unsigned int, int> SELECTOR_MAP;
 
 // For hardware instancing.
 struct InstancedData
@@ -273,7 +275,8 @@ const char MATERIALS_FILE[] = "Assets/Materials.xml";
 const enum PostProcessingEffects
 {
 	BlurEffect = 0x01,
-	WireframeEffect = 0x02
+	WireframeEffect = 0x02,
+	OculusEffect = 0x04
 };
 
 // http://stackoverflow.com/questions/27220/how-to-convert-stdstring-to-lpcwstr-in-c-unicode

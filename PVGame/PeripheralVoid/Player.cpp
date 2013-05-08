@@ -5,7 +5,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 //Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
-	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
+	XMVECTOR aPos = XMVectorSet(0.0f, 2.0f, 0.0f, 1.0f);
 	XMVECTOR aUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR aFwd = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	XMVECTOR aRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
@@ -20,8 +20,12 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera = new Camera(physicsMan, 1.3333334f);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
+
+	leftCamera = new Camera(*playerCamera);
+	rightCamera = new Camera(*playerCamera);
 	
-	controller = physicsMan->createCharacterController( 1.0f, .8f, .1f);
+	controller = physicsMan->createCharacterController( 0.4f, 1.0f, .1f);
+	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(15.0f);
 	controller->setMaxJumpHeight(50.0f);
@@ -30,7 +34,11 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	medusaStatus = false;
 	leapStatus = false;
 	mobilityStatus = false;
+	winStatus = false;
 	medusaPercent = 0.0f;
+	winPercent = 0.0f;
+
+	eyeDist = 0.5f;
 
 	renderMan = rm;
 
@@ -71,10 +79,9 @@ void Player::Update(float dt, Input* input)
 
 void Player::HandleInput(Input* input)
 {
-
 	#pragma region Camera Input
 	
-#pragma region Oculus Rift Look controls
+	#pragma region Oculus Rift Look controls
 	if(riftMan->isRiftConnected())
 	{
 		//Get head orientation from rift
@@ -84,7 +91,7 @@ void Player::HandleInput(Input* input)
 		//Get extra orientation abilities from mouse, only yaw
 		//(its much nicer than having to turn your body when trying to play)
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
-		yaw += dx/32;
+		yaw += dx/MOUSESENSITIVITY;
 		input->centerMouse();
 		mLastMousePos.x = input->getMouseX();
 
@@ -102,9 +109,9 @@ void Player::HandleInput(Input* input)
 		}
 
 		//Set the rotation of the player
-		XMMATRIX R = XMMatrixRotationY(EyeYaw-yaw);
-		up    = XMFLOAT3(1.0f, 0.0f, 0.0f);
-		right = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		XMMATRIX R = XMMatrixRotationY(-EyeYaw+yaw);
+		up    = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		right = XMFLOAT3(1.0f, 0.0f, 0.0f);
 		fwd   = XMFLOAT3(0.0f, 0.0f, 1.0f);
 		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
@@ -122,8 +129,8 @@ void Player::HandleInput(Input* input)
 		float dy = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseY() - mLastMousePos.y));
 
 		// Update angles based on input
-		mTheta += dx/32;
-		mPhi   += dy/32;
+		mTheta += dx/MOUSESENSITIVITY;
+		mPhi   += dy/MOUSESENSITIVITY;
 		playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
 
 		playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
@@ -177,6 +184,7 @@ void Player::HandleInput(Input* input)
 		}
 		#pragma endregion
 	}
+	#pragma endregion
 
 	//XMVECTOR tempPosition = XMLoadFloat4(&position);
 
@@ -203,7 +211,7 @@ void Player::HandleInput(Input* input)
 		direction += r;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
-	if(input->isJumpKeyPressed() && !medusaStatus)
+	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
 		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
 		{
@@ -236,13 +244,6 @@ void Player::HandleInput(Input* input)
 	listener->setPosition(cPos.x, cPos.y, cPos.z);
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
 
-	if(input->wasKeyPressed('M'))
-	{
-		if(listener->isMuted())
-			listener->unmute();
-		else
-			listener->mute();
-	}
 	#pragma endregion
 	//XMFLOAT4 unit(0.0f, 0.0f, 0.0f, 1.0f);
 	
@@ -263,12 +264,37 @@ void Player::HandleInput(Input* input)
 	delete cstr;
 	*/
 	playerCamera->UpdateViewMatrix();
+	*leftCamera = *playerCamera;
+	*rightCamera = *playerCamera;
+
+	float halfIPD = 0.032000002f;
+	if(riftMan->isRiftConnected())
+		halfIPD = riftMan->getHMDInfo().EyeDistance * eyeDist;
+
+	XMFLOAT3 translation = XMFLOAT3(playerCamera->GetRight().x * halfIPD, playerCamera->GetRight().y * halfIPD,playerCamera->GetRight().z * halfIPD);
+
+	leftCamera->SetPosition(playerCamera->GetPosition().x - translation.x,
+						    playerCamera->GetPosition().y - translation.y,
+							playerCamera->GetPosition().z - translation.z);
+	
+	rightCamera->SetPosition(playerCamera->GetPosition().x + translation.x,
+						     playerCamera->GetPosition().y + translation.y,
+							 playerCamera->GetPosition().z + translation.z);
+	leftCamera->UpdateViewMatrix();
+	rightCamera->UpdateViewMatrix();
 }
 
 void Player::OnResize(float aspectRatio)
 {
-	playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
+	if(riftMan->isRiftConnected())
+	{
+		riftMan->calcStereo();
+		playerCamera->SetLens(0.25f*MathHelper::Pi/*(riftMan->getStereo().GetYFOVRadians()*/, riftMan->getStereo().GetAspect(), 0.01, 1000.0f);
+	}
+	else
+		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
 	playerCamera->UpdateViewMatrix();
+	
 }
 
 XMMATRIX Player::ViewProj() const
@@ -281,15 +307,28 @@ Camera* Player::GetCamera()
 	return playerCamera;
 }
 
+Camera* Player::GetLeftCamera()
+{
+	return leftCamera;
+}
+
+Camera* Player::GetRightCamera()
+{
+	return rightCamera;
+}
+
+
 void Player::resetStatuses() 
 {	
 	if(!medusaStatus)
-	{
 		medusaPercent = 0;
-	}
+	if(!winStatus)
+		winPercent = 0;
+
 	medusaStatus = false;
 	mobilityStatus = false;
 	leapStatus = false; 
+	winStatus = false;
 }
 
 void Player::increaseMedusaPercent()
@@ -300,18 +339,35 @@ void Player::increaseMedusaPercent()
 	}
 }
 
+void Player::increaseWinPercent()
+{
+	if(winStatus && winPercent < 1.0f)
+	{
+		winPercent += 0.01;
+	}
+}
+
 void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
 void Player::setMedusaStatus(bool newStatus) { medusaStatus = newStatus; }
 void Player::setLeapStatus(bool newStatus) { leapStatus = newStatus; }
+void Player::setWinStatus(bool newStatus) { winStatus = newStatus; }
 
 bool Player::getMobilityStatus() { return mobilityStatus; }
 bool Player::getMedusaStatus() { return medusaStatus; }
 bool Player::getLeapStatus() { return leapStatus; }
+bool Player::getWinStatus() { return winStatus; }
+
+
 
 XMFLOAT4 Player::getPosition()
 {
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
 	return  XMFLOAT4(pos.getX(), pos.getY(), pos.getZ(), 1);
+}
+
+AudioListener* Player::getListener()
+{
+	return listener;
 }
 
 void Player::setPosition(float setX, float setY, float setZ)

@@ -11,6 +11,9 @@
 #include "GameObject.h"
 #include "FileLoader.h"
 #include "FW1FontWrapper\FW1FontWrapper.h"
+#include "Common\Sky.h"
+#include "RiftManager.h"
+
 class FileLoader;
 
 class RenderManager
@@ -28,6 +31,11 @@ class RenderManager
 			mClientHeight = aHeight;
 		}
 
+		void SetRiftMan(RiftManager* aRiftMan)
+		{
+			riftMan = aRiftMan;
+		}
+
 		int getNumLights()
 		{
 			return mPointLights.size();
@@ -36,6 +44,14 @@ class RenderManager
 		float AspectRatio() const
 		{
 			return static_cast<float>(mClientWidth) / mClientHeight;
+		}
+
+		void ToggleOculusEffect()
+		{
+			if (postProcessingFlags & OculusEffect)
+				RemovePostProcessingEffect(OculusEffect);
+			else
+				AddPostProcessingEffect(OculusEffect);
 		}
 
 		//Returns the index of the newly created light for crests to manage.
@@ -172,31 +188,52 @@ class RenderManager
 			FW1CreateFactory(FW1_VERSION, &pFW1Factory);
 			pFW1Factory->CreateFontWrapper(md3dDevice, L"Arial", &pFontWrapper);
 			
+			sky = new Sky(md3dDevice, L"Textures/grasscube1024.dds", 5000.0f, usingDX11);
 			return true;
 		}
 
 		int GetClientWidth() { return mClientWidth; }
 		int GetClientHeight() { return mClientHeight; }
 
-		void DrawMenu(char* msg)
+		void ClearTargetToColor() //XMVECTORF32 clearColor
 		{
 			// Pretty self-explanatory. Clears the screen, essentially.
-			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::Silver));
-			
-			pFontWrapper->DrawString(
-										md3dImmediateContext,
-										L"Peripheral Void",// String
-										128.0f,// Font size
-										100.0f,// X position
-										50.0f,// Y position
-										0xff0099ff,// Text color, 0xAaBbGgRr
-										FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
-									);
-			
-			HR(mSwapChain->Present(0, 0));
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], 
+				reinterpret_cast<const float*>(&Colors::Silver));
 		}
 
-		
+		void DrawString(const char *text, float fontSize, float xPos, float yPos, UINT32 textColor)
+		{	
+			std::wstring s = s2ws(text);
+			const wchar_t *str = s.c_str();
+			pFontWrapper->DrawString(	md3dImmediateContext,
+										str,// String
+										fontSize,// Font size
+										xPos,// X position
+										yPos,// Y position
+										textColor,// Text color, 0xAaBbGgRr
+										FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+									);
+		}
+
+		//I really hope you don't have to do wstrings
+		void DrawString(const WCHAR *text, float fontSize, float xPos, float yPos, UINT32 textColor)
+		{	
+			pFontWrapper->DrawString(	md3dImmediateContext,
+				text,// String
+				fontSize,// Font size
+				xPos,// X position
+				yPos,// Y position
+				textColor,// Text color, 0xAaBbGgRr
+				FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+				);
+		}
+
+		void EndDrawMenu()
+		{	
+			HR(mSwapChain->Present(1, 0));
+		}
+
 		// Loop through all the buffers, drawing each instance for the game objects.
 		void DrawGameObjects(string aTechniqueKey)
 		{
@@ -257,23 +294,13 @@ class RenderManager
 			}
 		}
 
-		void DrawScene(Camera* aCamera, vector<GameObject*> gameObjects)
+		void DrawScene(Camera* aCamera, Camera* leftCamera, Camera* rightCamera, vector<GameObject*> gameObjects)
 		{
-			// Bind the render target view and depth/stencil view to the pipeline.
-			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
-			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
-
-			// Set texture atlas once for now.
-			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
-
-			// Pretty self-explanatory. Clears the screen, essentially.
-			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-
 			// Performance increasers - Try to limit calls to size, map accessors, etc.
 			const unsigned int totalGameobjs = gameObjects.size();
 			vector<InstancedData>* instanceVector;
 			string currentKey = "";
+			D3DX11_TECHNIQUE_DESC techDesc;
 
 			// Update each instance's world matrix with the corresponding GameObect's world matrix.
 			for (unsigned int i = 0; i < totalGameobjs; ++i)
@@ -293,42 +320,179 @@ class RenderManager
 				(*instanceVector)[instanceCount].isRendered = aGameObject->isSeen();
 				(*instanceVector)[instanceCount].World = aGameObject->GetWorldMatrix();
 			}
-
-			// Sets input layout which describes the vertices we're about to send.
-			md3dImmediateContext->IASetInputLayout(mInputLayout);
-			// Triangle list = every 3 vertices is a SEPERATE triangle.
-			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			mEyePosW = aCamera->GetPosition();
-
-			// Set per frame constants.
-			mfxDirLights->SetRawValue(&mDirLights[0], 0, sizeof(DirectionalLight) * mDirLights.size());
-			if(mPointLights.size() > 0)
-			{
-				mfxPointLights->SetRawValue(&mPointLights[0], 0, (mPointLights.size()) * sizeof(PointLight));
-			}
-			mfxSpotLight->SetRawValue(&mSpotLight, 0, sizeof(mSpotLight));
-			mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
-
-			float numLights = (float)mPointLights.size();
-			mfxNumLights->SetRawValue(&numLights, 0, sizeof(float));
-			//Set the resources for the shader resource view
 			
-			TexTransform->SetMatrix(reinterpret_cast<const float*>(&mTexTransform));
-
-			// This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
-			mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&aCamera->ViewProj()));
-
 			if (postProcessingFlags & WireframeEffect)
 				ToggleWireframe(true);
+			
+			mfxDirLights->SetRawValue(&mDirLights[0], 0, sizeof(DirectionalLight) * mDirLights.size());
+			if(mPointLights.size() > 0)
+				mfxPointLights->SetRawValue(&mPointLights[0], 0, (mPointLights.size()) * sizeof(PointLight));
+			
+			float numLights = (float)mPointLights.size();
+			mfxNumLights->SetRawValue(&numLights, 0, sizeof(float));
+			TexTransform->SetMatrix(reinterpret_cast<const float*>(&mTexTransform));
+			// Bind the render target view and depth/stencil view to the pipeline.
+			
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]); // Set texture atlas once for now.
+			md3dImmediateContext->IASetInputLayout(mInputLayout);
+			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			
+			if (postProcessingFlags & OculusEffect)
+			{	
+				//md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+				//mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Oculus Texture"]);
+				Matrix4f ocView(2, 0, 0, 0,
+								0, 2, 0, 0,
+								0, 0, 0, 0,
+								0, 0, 0, 1);
 
-			DrawGameObjects("LightsWithAtlas");
+				// Left eye
+				float	w = float(leftViewport.Width) / float(mClientWidth),
+						h = float(leftViewport.Height) / float(mClientHeight),
+						x = float(leftViewport.TopLeftX) / float(mClientWidth),
+						y = float(leftViewport.TopLeftY) / float(mClientHeight);
+				//float scaleFactor = 0.58322453f; //Distortion.Scale;
+				float scaleFactor = riftMan->getStereo().GetDistortionConfig().Scale - .1f;
+				float as = float(leftViewport.Width) / float(leftViewport.Height);
+				float aLens[2] = {x + (w + riftMan->getStereo().GetDistortionConfig().XCenterOffset /*0.15197642f*/ * 0.5f)*0.5f, y + h*0.5f};
+				float aScale[2] = { (w/2) * scaleFactor, (h/2) * scaleFactor * as };
+				float aScaleIn[2] = { (2/w),(2/h) / as };
+			
+				mfxLensCenter->SetRawValue(aLens, 0, 2 * sizeof(float));
+				mfxScale->SetRawValue(aScale, 0, 2 * sizeof(float));
+				mfxScaleIn->SetRawValue(aScaleIn, 0, 2 * sizeof(float));
 
+				float distK[4] = {1.0f, 0.22000000f, 0.23999999f, 0.0f};
+				float screenCenter[2] = {x + w*0.5f, y + h*0.5f};
+				float chrom[4] = {1.0f, 0.0f, 1.0f, 0.0f};
+
+				mfxScreenCenter->SetRawValue(screenCenter, 0, 2 * sizeof(float));
+				mfxHmdWarpParam->SetRawValue(riftMan->getStereo().GetDistortionConfig().K, 0, 4 * sizeof(float));
+				mfxChromAbParam->SetRawValue(riftMan->getStereo().GetDistortionConfig().ChromaticAberration, 0, 4 * sizeof(float));
+				
+				Matrix4f texmLeft(0.5f, 0, 0, 0.0f,
+                  0, 1.0f, 0, 0.0f,
+                  0, 0, 0, 0,
+                  0, 0, 0, 1);
+
+				//mfxOcView->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
+				mfxOcView->SetMatrix(reinterpret_cast<const float*>(&ocView));
+				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Oculus Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Oculus"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Oculus Texture"], depthStencilViewsMap["Oculus"]);
+				
+				// Left eye
+				XMMATRIX view = aCamera->View();
+				XMMATRIX proj = XMMATRIX(reinterpret_cast<float*>(riftMan->getLeftEyeParams().Projection.M));
+				XMMATRIX viewAdjust = XMMATRIX(reinterpret_cast<float*>(riftMan->getLeftEyeParams().ViewAdjust.M));
+				Viewport vp = riftMan->getLeftEyeParams().VP;
+
+				view = XMMatrixMultiply(view,viewAdjust);
+
+				D3D11_VIEWPORT tLV = leftViewport;
+				tLV.Width = (int)ceil(scaleFactor * tLV.Width);
+				tLV.Height = (int)ceil(scaleFactor * tLV.Height);
+				tLV.TopLeftX = (int)ceil(scaleFactor * tLV.TopLeftX);
+				tLV.TopLeftY = (int)ceil(scaleFactor * tLV.TopLeftY);
+
+				md3dImmediateContext->RSSetViewports(1, &leftViewport);
+				mEyePosW = leftCamera->GetPosition();
+				mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
+				mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&XMMatrixMultiply(view, leftCamera->Proj()))); // This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
+				DrawGameObjects("LightsWithAtlas");
+				sky->Draw(md3dImmediateContext, *leftCamera);
+
+				md3dImmediateContext->IASetInputLayout(mInputLayout);
+				md3dImmediateContext->OMSetDepthStencilState(0, 0);
+
+				TexTransform->SetMatrix(reinterpret_cast<const float*>(&texmLeft));
+				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Oculus Texture"]);
+				DrawQuad("OculusTech");
+				
+				// Right eye
+				w = float(rightViewport.Width) / float(mClientWidth),
+						h = float(rightViewport.Height) / float(mClientHeight),
+						x = float(rightViewport.TopLeftX) / float(mClientWidth),
+						y = float(rightViewport.TopLeftY) / float(mClientHeight);
+				//float scaleFactor = 0.58322453f; //Distortion.Scale;
+				as = float(rightViewport.Width) / float(rightViewport.Height);
+				float rightLens[2] = {x + (w + /* Change to Distortion.XCenterOffset */ -0.15197642f * 0.5f)*0.5f, y + h*0.5f};
+				float rightScale[2] = { (w/2) * scaleFactor, (h/2) * scaleFactor * as };
+				float rightScaleIn[2] = { (2/w),(2/h) / as };
+			
+				mfxLensCenter->SetRawValue(rightLens, 0, 2 * sizeof(float));
+				mfxScale->SetRawValue(rightScale, 0, 2 * sizeof(float));
+				mfxScaleIn->SetRawValue(rightScaleIn, 0, 2 * sizeof(float));
+
+				float rightDistK[4] = {1.0f, 0.22000000f, 0.23999999f, 0.0f};
+				float rightScreenCenter[2] = {x + w*0.5f, y + h*0.5f};
+				float rightChrom[4] = {1.0f, 0.0f, 1.0f, 0.0f};
+
+				mfxScreenCenter->SetRawValue(rightScreenCenter, 0, 2 * sizeof(float));
+				mfxHmdWarpParam->SetRawValue(rightDistK, 0, 4 * sizeof(float));
+				mfxChromAbParam->SetRawValue(rightChrom, 0, 4 * sizeof(float));
+
+				Matrix4f texmRight(0.5f, 0, 0, 0.5f,
+                  0, 1.0f, 0, 0.0f,
+                  0, 0, 0, 0,
+                  0, 0, 0, 1);
+
+				Matrix4f ocView2(2, 0, 0, riftMan->getStereo().GetDistortionConfig().XCenterOffset,
+								0, 2, 0, 0,
+								0, 0, 0, 0,
+								0, 0, 0, 1);
+				//mfxOcView->SetMatrix(reinterpret_cast<const float*>(&ocView2));
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
+				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Oculus Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Oculus"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Oculus Texture"], depthStencilViewsMap["Oculus"]);
+				
+				XMMATRIX view2 = aCamera->View();
+				XMMATRIX proj2 = XMMATRIX(reinterpret_cast<float*>(riftMan->getRightEyeParams().Projection.M));
+				XMMATRIX viewAdjust2 = XMMATRIX(reinterpret_cast<float*>(riftMan->getRightEyeParams().ViewAdjust.M));
+				Viewport vp2 = riftMan->getRightEyeParams().VP;
+
+				view2 = XMMatrixMultiply(view2,viewAdjust2);
+
+				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
+				md3dImmediateContext->RSSetViewports(1, &rightViewport);
+				mEyePosW = rightCamera->GetPosition();
+				mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
+				mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&XMMatrixMultiply(view2, rightCamera->Proj()))); // This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
+				DrawGameObjects("LightsWithAtlas");
+				sky->Draw(md3dImmediateContext, *rightCamera);
+				md3dImmediateContext->IASetInputLayout(mInputLayout);
+				md3dImmediateContext->OMSetDepthStencilState(0, 0);
+
+				TexTransform->SetMatrix(reinterpret_cast<const float*>(&texmRight));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Oculus Texture"]);
+				
+				DrawQuad("OculusTech");
+				
+			}
+			else
+			{
+				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+				md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+				md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Default Render Texture"], depthStencilViewsMap["Default"]);
+
+				md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+				mEyePosW = aCamera->GetPosition();
+				mfxEyePosW->SetRawValue(&mEyePosW, 0, sizeof(mEyePosW));
+				mfxViewProj->SetMatrix(reinterpret_cast<const float*>(&aCamera->ViewProj())); // This is now the view matrix - The world matrix is passed in via the instance and then multiplied there.
+				DrawGameObjects("LightsWithAtlas");
+				sky->Draw(md3dImmediateContext, *aCamera);
+				md3dImmediateContext->IASetInputLayout(mInputLayout);
+				md3dImmediateContext->OMSetDepthStencilState(0, 0);
+			}
+			
 			ToggleWireframe(false);
-
-			D3DX11_TECHNIQUE_DESC techDesc;
-			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
-
+			
 			UINT stride = sizeof(Vertex);
 			UINT offset = 0;
  
@@ -344,6 +508,7 @@ class RenderManager
 			md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
 			md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
+			#pragma region Post Processing - Blur
 			if (postProcessingFlags & BlurEffect)
 			{
 				md3dImmediateContext->RSSetViewports(1, &mHalfScreenViewport);
@@ -411,6 +576,7 @@ class RenderManager
 					md3dImmediateContext->DrawIndexed(6, 0, 0);
 				}
 			}
+			#pragma endregion
 
 			mfxDiffuseMapVar->SetResource(nullptr);
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
@@ -418,21 +584,24 @@ class RenderManager
 			// Pretty self-explanatory. Clears the screen, essentially.
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+			
+			mfxWorld->SetMatrix(identity);
+			mfxWorldInvTranspose->SetMatrix(identity);
+			mfxViewProj->SetMatrix(identity);
+			TexTransform->SetMatrix(identity);
 
-			techniqueMap["TexturePassThroughWithCursor"]->GetDesc(&techDesc);
-			for(UINT p = 0; p < techDesc.Passes; ++p)
+			if (postProcessingFlags & OculusEffect)
 			{
-				md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
-				md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-				mfxWorld->SetMatrix(identity);
-				mfxWorldInvTranspose->SetMatrix(identity);
-				mfxViewProj->SetMatrix(identity);
-				TexTransform->SetMatrix(identity);
-
-				techniqueMap["TexturePassThroughWithCursor"]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
-				md3dImmediateContext->DrawIndexed(6, 0, 0);
+				//DrawQuad("OculusTech");
+				md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+				DrawQuad("TexturePassThrough");
+			}
+			else
+			{
+				md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Default Render Texture"]);
+				DrawQuad("TexturePassThroughWithCursor");
 			}
 
 			HR(mSwapChain->Present(1, 0));
@@ -444,6 +613,24 @@ class RenderManager
 			mfxBlurColor->SetRawValue(&XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), 0, sizeof(XMFLOAT4));
 		}
 		
+		void DrawQuad(string aTech)
+		{
+			D3DX11_TECHNIQUE_DESC techDesc;
+			techniqueMap[aTech]->GetDesc(&techDesc);
+			
+			UINT stride = sizeof(Vertex);
+			UINT offset = 0;
+			
+			for(UINT p = 0; p < techDesc.Passes; ++p)
+			{
+				md3dImmediateContext->IASetVertexBuffers(0, 1, &bufferPairs["Quad"].vertexBuffer, &stride, &offset);
+				md3dImmediateContext->IASetIndexBuffer(bufferPairs["Quad"].indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+				techniqueMap[aTech]->GetPassByIndex(p)->Apply(0, md3dImmediateContext);
+				md3dImmediateContext->DrawIndexed(6, 0, 0);
+			}
+		}
+
 		// Build a vertex and index buffer for each mesh.
 		void BuildBuffers()
 		{
@@ -593,6 +780,7 @@ class RenderManager
 			// Quick fix to support DX10, assuming we don't care about lower levels.
 			if (usingDX11)
 			{
+				techniqueMap["OculusTech"]						= mFX->GetTechniqueByName("OculusTech");
 				techniqueMap["LightsWithAtlas"]					= mFX->GetTechniqueByName("LightsWithAtlas");
 				techniqueMap["LightsWithoutAtlas"]				= mFX->GetTechniqueByName("LightsWithoutAtlas");
 				techniqueMap["TexturePassThrough"]				= mFX->GetTechniqueByName("TexturePassThrough");
@@ -610,10 +798,12 @@ class RenderManager
 				techniqueMap["VertBlur"]						= mFX->GetTechniqueByName("VertBlurDX10");
 				techniqueMap["Blur"]							= mFX->GetTechniqueByName("BlurDX10");
 				techniqueMap["TexturePassThroughWithCursor"]	= mFX->GetTechniqueByName("TexturePassThroughWithCursorDX10");
+				techniqueMap["OculusTech"]						= mFX->GetTechniqueByName("OculusTechDX10");
 			}
 
 			// Creates association between shader variables and program variables.
 			mfxViewProj				= mFX->GetVariableByName("gViewProj")->AsMatrix();
+			mfxOcView				= mFX->GetVariableByName("gOcView")->AsMatrix();
 			mfxWorld				= mFX->GetVariableByName("gWorld")->AsMatrix();
 			mfxWorldInvTranspose	= mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 			mfxEyePosW				= mFX->GetVariableByName("gEyePosW")->AsVector();
@@ -625,12 +815,21 @@ class RenderManager
 			mfxSpecMapVar			= mFX->GetVariableByName("gSpecMap")->AsShaderResource();
 			mfxNumLights			= mFX->GetVariableByName("numLights");
 			mfxBlurColor			= mFX->GetVariableByName("gBlurColor")->AsVector();
-			mfxScreenSize			= mFX->GetVariableByName("gScreenSize")->AsVector();
+
+			// Rift variables.
+			mfxLensCenter			= mFX->GetVariableByName("LensCenter")->AsVector();
+			mfxScreenCenter			= mFX->GetVariableByName("ScreenCenter")->AsVector();
+			mfxScale				= mFX->GetVariableByName("Scale")->AsVector();
+			mfxScaleIn				= mFX->GetVariableByName("ScaleIn")->AsVector();
+			mfxHmdWarpParam			= mFX->GetVariableByName("HmdWarpParam")->AsVector();
+			mfxChromAbParam			= mFX->GetVariableByName("ChromAbParam")->AsVector();
+			mfxScreenSize			= mFX->GetVariableByName("ScreenSize")->AsVector();
+
 			TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();
 			texelHeight				= mFX->GetVariableByName("gTexelHeight")->AsScalar();
 
-			float clientSize[2] = {mClientWidth, mClientHeight};
+			float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 			mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 		}
 
@@ -767,8 +966,10 @@ class RenderManager
 
 			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &texture2DMap["Default Depth Stencil Buffer Texture"]));
 			HR(md3dDevice->CreateDepthStencilView(texture2DMap["Default Depth Stencil Buffer Texture"], 0, &depthStencilViewsMap["Default"]));
+			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &texture2DMap["Oculus Depth Stencil Buffer Texture"]));
+			HR(md3dDevice->CreateDepthStencilView(texture2DMap["Oculus Depth Stencil Buffer Texture"], 0, &depthStencilViewsMap["Oculus"]));
 
-			depthStencilDesc.Width /= 2;
+			depthStencilDesc.Width /= 2;		
 			depthStencilDesc.Height /= 2;
 			HR(md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &texture2DMap["Blur Depth Stencil Buffer Texture"]));
 			HR(md3dDevice->CreateDepthStencilView(texture2DMap["Blur Depth Stencil Buffer Texture"], 0, &depthStencilViewsMap["Blur"]));
@@ -807,8 +1008,10 @@ class RenderManager
 
 			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Default Render Texture"]));
 			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Default Render Texture"], 0, &renderTargetViewsMap["Default Render Texture"]));
+			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Oculus Texture"]));
+			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Oculus Texture"], 0, &renderTargetViewsMap["Oculus Texture"]));
 
-			renderTextureDesc.Width /= 2;
+			renderTextureDesc.Width /= 2;	
 			renderTextureDesc.Height /= 2;
 			HR(md3dDevice->CreateTexture2D(&renderTextureDesc, 0, &texture2DMap["Blur Input Texture"]));
 			HR(md3dDevice->CreateRenderTargetView(texture2DMap["Blur Input Texture"], 0, &renderTargetViewsMap["Blur Input Texture"]));
@@ -824,6 +1027,7 @@ class RenderManager
 			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Default Render Texture"], &srvDesc, &shaderResourceViewsMap["Default Render Texture"]));
 			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Blur Output Texture"], &srvDesc, &shaderResourceViewsMap["Blur Output Texture"]));
 			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Blur Input Texture"], &srvDesc, &shaderResourceViewsMap["Blur Input Texture"]));
+			HR(md3dDevice->CreateShaderResourceView(texture2DMap["Oculus Texture"], &srvDesc, &shaderResourceViewsMap["Oculus Texture"]));
 
 			// Set the viewport transform.
 
@@ -840,9 +1044,15 @@ class RenderManager
 			mHalfScreenViewport.Width /= 2;
 			mHalfScreenViewport.Height /= 2;
 
+			leftViewport = mScreenViewport;
+			rightViewport = mScreenViewport;
+			leftViewport.Width /= 2;
+			rightViewport.Width /= 2;
+			rightViewport.TopLeftX += rightViewport.Width;
+
 			if (mfxScreenSize)
 			{
-				float clientSize[2] = {mClientWidth, mClientHeight};
+				float clientSize[2] = {(float)mClientWidth, (float)mClientHeight};
 				mfxScreenSize->SetRawValue(&clientSize, 0, 2 * sizeof(float));
 			}
 		}
@@ -866,6 +1076,7 @@ class RenderManager
 		ID3DX11Effect* mFX;
 		ID3DX11EffectMatrixVariable* mfxWorld;
 		ID3DX11EffectMatrixVariable* mfxViewProj;
+		ID3DX11EffectMatrixVariable* mfxOcView;
 		ID3DX11EffectMatrixVariable* mfxWorldInvTranspose;
 		//Texture stuff
 		ID3DX11EffectMatrixVariable* TexTransform;
@@ -879,10 +1090,20 @@ class RenderManager
 		ID3DX11EffectVariable* mfxMaterial;
 		ID3DX11EffectVariable* mfxNumLights;
 
+		// Rift stuff
+		ID3DX11EffectVectorVariable* mfxLensCenter;
+		ID3DX11EffectVectorVariable* mfxScreenCenter;
+		ID3DX11EffectVectorVariable* mfxScale;
+		ID3DX11EffectVectorVariable* mfxScaleIn;
+		ID3DX11EffectVectorVariable* mfxHmdWarpParam;
+		ID3DX11EffectVectorVariable* mfxChromAbParam;
+
 		ID3DX11EffectScalarVariable* texelWidth;
 		ID3DX11EffectScalarVariable* texelHeight;
+		Sky* sky;
+		RiftManager* riftMan;
 
-		// Maps to various rendering compnents.
+		// Maps to various rendering components.
 		map<string, XMFLOAT2> diffuseAtlasCoordsMap;
 		map<string, ID3D11ShaderResourceView*> shaderResourceViewsMap;
 		map<string, ID3D11Texture2D*> texture2DMap;
@@ -905,6 +1126,9 @@ class RenderManager
 
 		D3D11_VIEWPORT mScreenViewport;
 		D3D11_VIEWPORT mHalfScreenViewport;
+		D3D11_VIEWPORT leftViewport;
+		D3D11_VIEWPORT rightViewport;
+
 		D3D_DRIVER_TYPE md3dDriverType;
 
 		unsigned char postProcessingFlags;
@@ -942,6 +1166,7 @@ class RenderManager
 			mFX = nullptr;
 			mfxWorld = nullptr;
 			mfxViewProj = nullptr;
+			mfxOcView = nullptr;
 			mfxWorldInvTranspose = nullptr;
 			mfxEyePosW = nullptr;
 			mfxPointLights = nullptr;
@@ -953,6 +1178,14 @@ class RenderManager
 			texelWidth = nullptr;
 			texelHeight = nullptr;
 			mInputLayout = nullptr;
+			mfxLensCenter = nullptr;
+			mfxScreenCenter = nullptr;
+			mfxScale = nullptr;
+			mfxScaleIn = nullptr;
+			mfxHmdWarpParam = nullptr;
+			mfxChromAbParam = nullptr;
+			sky = nullptr;
+
 			md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
 
 			ZeroMemory(&mScreenViewport, sizeof(D3D11_VIEWPORT));
@@ -974,7 +1207,7 @@ class RenderManager
 			mDirLights[0].Ambient  = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 			mDirLights[0].Diffuse  = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 			mDirLights[0].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
-			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.707f, 0.0f);
+			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.5f, 0.0f);
 		}
 
 		~RenderManager()
@@ -1012,6 +1245,8 @@ class RenderManager
 				ReleaseCOM(srvItr->second);
 				srvItr++;
 			}
+
+			delete sky;
 		}
 
 		// Build any rasterizer states we'll need - right now this is just 'Default' and 'Wireframe'.

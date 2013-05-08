@@ -16,6 +16,7 @@ using namespace XNA;
 class Player
 {
 	public:
+		float eyeDist;
 		Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM);
 		virtual ~Player(void);
 		void OnResize(float aspectRatio);
@@ -24,29 +25,43 @@ class Player
 		
 		void resetStatuses();
 		void increaseMedusaPercent();
+		void increaseWinPercent();
 
 		void setMobilityStatus(bool newStatus);
 		void setMedusaStatus(bool newStatus);
 		void setLeapStatus(bool newStatus);
+		void setWinStatus(bool newStatus);
 		void setPosition(float setX, float setY, float setZ);
 
 		Camera* GetCamera();
+		Camera* GetLeftCamera();
+		Camera* GetRightCamera();
 		btKinematicCharacterController* getController();
 		bool getMobilityStatus();
 		bool getMedusaStatus();
 		bool getLeapStatus();
+		bool getWinStatus();
+
+		float getWinPercent() {return winPercent;}
+
 		XMFLOAT4 getPosition();
+
+		AudioListener* getListener();
 		btVector3 getCameraPosition();
 	private:
 		bool leapStatus;
 		bool mobilityStatus;
 		bool medusaStatus;
+		bool winStatus;
 		float medusaPercent;
+		float winPercent;
 		float playerSpeed;
 		float camLookSpeed;
 		const float PIXELS_PER_SEC;
 		const float LOOK_SPEED;
 		Camera* playerCamera;
+		Camera* leftCamera;
+		Camera* rightCamera;
 		XMFLOAT4 position;
 		XMFLOAT3 fwd;
 		XMFLOAT3 right;

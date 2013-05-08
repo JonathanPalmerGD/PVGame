@@ -23,7 +23,7 @@ public:
 	btVector3 GetFacing(); //Will return the gameObject 'rigidbody' position
 	int GetLightIndex();
 	void CreateLightAndIndex();
-	void CreateProjectiles();
+	void CreateProjectiles(vector<GameObject> gameObjects);
 	void Update(Player* player);
 	void UpdateProjectiles();
 

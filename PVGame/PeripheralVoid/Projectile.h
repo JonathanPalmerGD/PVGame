@@ -8,6 +8,7 @@ class Projectile : public GameObject
 {
 public:
 	Projectile(void);
+	Projectile(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan);
 	~Projectile(void);
 	void SetMoving(bool newMoving);
 	//void SetFacing(btVector3 newFacing);

@@ -13,9 +13,13 @@ cbuffer cbPerFrame
 	PointLight gPointLight;
 	float3 gEyePosW;
 
-	float  gFogStart;
-	float  gFogRange;
-	float4 gFogColor;
+	// Rift variables.
+	float2 LensCenter;
+	float2 ScreenCenter;
+	float2 Scale;
+	float2 ScaleIn;
+	float4 HmdWarpParam;
+	float4 ChromAbParam;
 };
 
 cbuffer cbPerObject
@@ -38,6 +42,8 @@ SamplerState samAnisotropic
 	AddressU = WRAP;
 	AddressV = WRAP;
 };
+
+SamplerState Linear : register(s0);
 
 struct VertexIn
 {
@@ -199,6 +205,33 @@ float4 TestPS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     return litColor;
 }
 
+float4 OculusPS(VertexOut pin) : SV_Target
+{
+	float2 theta = (pin.Tex - LensCenter) * ScaleIn; // Scales to [-1, 1]
+	float rSq = theta.x * theta.x + theta.y * theta.y;
+	float2 theta1 = theta * (HmdWarpParam.x + HmdWarpParam.y * rSq + HmdWarpParam.z * rSq * rSq + HmdWarpParam.w * rSq * rSq * rSq);
+	
+	// Detect whether blue texture coordinates are out of range
+	// since these will scaled out the furthest.
+	float2 thetaBlue = theta1 * (ChromAbParam.z + ChromAbParam.w * rSq);
+	float2 tcBlue = LensCenter + Scale * thetaBlue;
+	if (any(clamp(tcBlue, ScreenCenter -float2(0.25, 0.5), ScreenCenter+float2(0.25, 0.5)) - tcBlue))
+		return 0;
+
+	// Now do blue texture lookup.
+	float blue = gDiffuseMap.Sample(Linear, tcBlue).b;
+
+	// Do green lookup (no scaling).
+	float2 tcGreen = LensCenter + Scale * theta1;
+	float green = gDiffuseMap.Sample(Linear, tcGreen).g;
+	// Do red scale and lookup.
+	float2 thetaRed = theta1 * (ChromAbParam.x + ChromAbParam.y * rSq);
+	float2 tcRed = LensCenter + Scale * thetaRed;
+	float red = gDiffuseMap.Sample(Linear, tcRed).r;
+
+	return float4(red, green, blue, 1);
+}
+
 #pragma region DX11 Techniques
 technique11 Light1
 {
@@ -277,6 +310,16 @@ technique11 TestLights
         SetVertexShader( CompileShader( vs_5_0, VS() ) );
 		SetGeometryShader( NULL );
         SetPixelShader( CompileShader( ps_5_0, TestPS(true) ) );
+    }
+}
+
+technique11 OculusTech
+{
+    pass P0
+    {
+        SetVertexShader( CompileShader( vs_5_0, VS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_5_0, OculusPS() ) );
     }
 }
 
@@ -360,6 +403,16 @@ technique11 TestLightsDX10
         SetVertexShader( CompileShader( vs_4_0, VS() ) );
 		SetGeometryShader( NULL );
         SetPixelShader( CompileShader( ps_4_0, TestPS(true) ) );
+    }
+}
+
+technique11 OculusTechDX10
+{
+    pass P0
+    {
+        SetVertexShader( CompileShader( vs_4_0, VS() ) );
+		SetGeometryShader( NULL );
+        SetPixelShader( CompileShader( ps_4_0, OculusPS() ) );
     }
 }
 #pragma endregion

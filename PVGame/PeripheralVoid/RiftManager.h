@@ -1,13 +1,17 @@
 #pragma once
 #include "LibOVR\Include\OVR.h"
+#include "LibOVR\Src\Util\Util_Render_Stereo.h"
 
 using namespace OVR;
+using namespace OVR::Util::Render;
 
 struct HMDINFO
 {
 	char* DisplayDeviceName;
 	float EyeDistance;
 	float DistortionK[4];
+	float ScreenCenter[2];
+	float* ChromaticAberationCorrection;
 };
 
 class RiftManager : public MessageHandler
@@ -26,6 +30,11 @@ private:
 	int detectionResult;
 	const char* detectionMessage;
 
+	StereoConfig stereo;
+	StereoEyeParams leftEye;
+	StereoEyeParams rightEye;
+	float renderScale;
+
 	Matrix4f leftMatrix;
 	Matrix4f rightMatrix;
 public:
@@ -36,10 +45,17 @@ public:
 	HMDINFO getHMDInfo();
 	const char* getDetectionMessage();
 
-	void calcMatricies();
+	void calcMatricies(Matrix4f viewCenterMat);
+	void calcMatriciesNoRift();
 	Matrix4f getLeftMatrix();
 	Matrix4f getRightMatrix();
 
+	StereoEyeParams getLeftEyeParams();
+	StereoEyeParams getRightEyeParams();
+	void calcStereo();
+	StereoConfig getStereo();
+
 	Quatf getOrientation();
 };
+
 

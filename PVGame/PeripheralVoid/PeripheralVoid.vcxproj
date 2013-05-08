@@ -97,6 +97,7 @@
     <ClCompile Include="Common\GeometryGenerator.cpp" />
     <ClCompile Include="Common\LightHelper.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
+    <ClCompile Include="Common\Sky.cpp" />
     <ClCompile Include="Common\TextureMgr.cpp" />
     <ClCompile Include="Common\Waves.cpp" />
     <ClCompile Include="Common\xnacollision.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Common\GeometryGenerator.h" />
     <ClInclude Include="Common\LightHelper.h" />
     <ClInclude Include="Common\MathHelper.h" />
+    <ClInclude Include="Common\Sky.h" />
     <ClInclude Include="Common\TextureMgr.h" />
     <ClInclude Include="Common\Waves.h" />
     <ClInclude Include="Common\xnacollision.h" />

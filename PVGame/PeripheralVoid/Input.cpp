@@ -573,24 +573,30 @@ bool Input::isCameraDownKeyDown() const
 
 // MENU MOVEMENT
 // True if the player hits up arrow key or up on the DPad or up on Left thumbstick.
-bool Input::isMenuUpPressed() const
+bool Input::wasMenuUpPressed() const
 {
 	return (wasKeyPressed(VK_UP) || wasGamepadButtonPressed(DPadUp) || (getGamepadThumbLY(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)));
 }
 
 // True if the player hits down arrow key or down on the DPad or down on Left thumbstick.
-bool Input::isMenuDownPressed() const
+bool Input::wasMenuDownPressed() const
 {
 	return (wasKeyPressed(VK_DOWN) || wasGamepadButtonPressed(DPadDown) || (getGamepadThumbLY(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)));
 }
 
 // True if return or A button on gamepad is pressed.
-bool Input::isMenuSelectPressed() const
+bool Input::wasMenuSelectPressed() const
 {
 	return (wasKeyPressed(VK_RETURN) || wasGamepadButtonPressed(ButtonA));
 }
 
-bool Input::isJumpKeyPressed() const
+bool Input::wasJumpKeyPressed() const
 {
 	return (wasKeyPressed(VK_SPACE) || wasGamepadButtonPressed(ButtonA));
+}
+
+// Returns true if 'o' or a TBD gamepad button is pressed.
+bool Input::isOculusButtonPressed() const
+{
+	return (wasKeyPressed('O'));
 }

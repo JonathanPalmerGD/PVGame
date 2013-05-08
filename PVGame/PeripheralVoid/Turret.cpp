@@ -93,10 +93,21 @@ void Turret::CreateLightAndIndex()
 	}
 }
 
-void Turret::CreateProjectiles()
+void Turret::CreateProjectiles(vector<GameObject> gameObjects)
 {
-	//GameObject* projectileGObj = new GameObject("Sphere", "Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
-	//gameObjects.push_back(projectileGObj);
+	//btVector3 turretPosition = rigidBody->getCenterOfMassPosition();
+	for(int i = 0; i < 10; i++)
+	{
+		//GameObject* turretGOJ = new Turret("Cube", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+		//gameObjects.push_back(turretGOJ);
+
+		//projectiles.push_back(Projectile());
+		//Projectile* projectileObj = new Projectile("Sphere", "Gravel", physicsMan->createRigidBody("Sphere", turretPosition.getX(), turretPosition.getY(), turretPosition.getZ(), 0.0f), physicsMan);
+		//GameObject* projectileGObj = new GameObject("Sphere", "Wall", physicsMan->createRigidBody("Sphere", turretPos.getX(), turretPos.getY(), turretPos.getZ(), 0.0f), physicsMan, WORLD, 1.0f, false);	
+		//gameObjects.push_back(projectileObj);
+		//projectiles.push_back(projectileObj);
+		//gameObjects.push_back(projectileGObj);
+	}
 }
 
 void Turret::Update(Player* player)

@@ -145,16 +145,18 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 		float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect )  * 0.7f;
 
 		btVector3* points = new btVector3[8];
+		float tempNearHeight = (mNearWindowHeight / 2.0f) * 1.07f;
+		float tempFarHeight  = (mFarWindowHeight  / 2.0f) * 1.07f;
 		//NearPlane
-		points[0] = btVector3( mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
-		points[1] = btVector3(-mNearWindowWidth/2,  mNearWindowHeight/2, mNearZ);
-		points[2] = btVector3( mNearWindowWidth/2, -mNearWindowHeight/2, mNearZ);
-		points[3] = btVector3(-mNearWindowWidth/2, -mNearWindowHeight/2, mNearZ);
+		points[0] = btVector3( mNearWindowWidth/2,  tempNearHeight, mNearZ);
+		points[1] = btVector3(-mNearWindowWidth/2,  tempNearHeight, mNearZ);
+		points[2] = btVector3( mNearWindowWidth/2, -tempNearHeight, mNearZ);
+		points[3] = btVector3(-mNearWindowWidth/2, -tempNearHeight, mNearZ);
 
-		points[4] = btVector3( mFarWindowWidth/2,  mFarWindowHeight/2, mFarZ);
-		points[5] = btVector3(-mFarWindowWidth/2,  mFarWindowHeight/2, mFarZ);
-		points[6] = btVector3( mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
-		points[7] = btVector3(-mFarWindowWidth/2, -mFarWindowHeight/2, mFarZ);
+		points[4] = btVector3( mFarWindowWidth/2,  tempFarHeight, mFarZ);
+		points[5] = btVector3(-mFarWindowWidth/2,  tempFarHeight, mFarZ);
+		points[6] = btVector3( mFarWindowWidth/2, -tempFarHeight, mFarZ);
+		points[7] = btVector3(-mFarWindowWidth/2, -tempFarHeight, mFarZ);
 
 		if(body != NULL)
 		{

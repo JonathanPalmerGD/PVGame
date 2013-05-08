@@ -148,7 +148,12 @@
     <ClCompile Include="tinyxml2.cpp">
       <Filter>XML</Filter>
     </ClCompile>
-    <ClCompile Include="RiftManager.cpp" />
+    <ClCompile Include="RiftManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Sky.cpp">
+      <Filter>Luna</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FW1FontWrapper\CFW1ColorRGBA.h">
@@ -280,7 +285,12 @@
     <ClInclude Include="Turret.h">
       <Filter>SHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="RiftManager.h" />
+    <ClInclude Include="RiftManager.h">
+      <Filter>SHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Sky.h">
+      <Filter>Luna</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="FX\Basic.fx">

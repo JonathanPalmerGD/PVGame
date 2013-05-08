@@ -53,5 +53,9 @@
 			<OffsetU>3</OffsetU>
 			<OffsetV>0</OffsetV>
 		</Texture>
+		<Texture name="unlockcrest">
+			<OffsetU>3</OffsetU>
+			<OffsetV>1</OffsetV>
+		</Texture>
   </Atlas>
 </TextureList>
