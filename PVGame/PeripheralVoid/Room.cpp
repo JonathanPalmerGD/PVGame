@@ -441,7 +441,7 @@ void Room::loadRoom(float xPos, float zPos)
 			crestObj->translate(0.0f, 1.0f, 0.0f);
 			break;
 		case UNLOCK:
-			crestObj = new Crest("medusacrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj = new Crest("unlockcrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
 			break;
 		case HADES:

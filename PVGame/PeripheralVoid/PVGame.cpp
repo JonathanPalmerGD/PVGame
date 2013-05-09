@@ -77,6 +77,8 @@ bool PVGame::Init()
 	//Test load a cube.obj
 	//renderMan->LoadFile(L"crest.obj", "crest");
 	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
+	renderMan->LoadFile(L"unlockcrest.obj", "unlockcrest");
+	//renderMan->LoadFile(L"caelhammer.obj", "caelhammer");
 
 	renderMan->BuildBuffers();
 	renderMan->SetRiftMan(riftMan);
@@ -198,16 +200,18 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Make Turrets
-	/*GameObject* turretGOJ = new Turret("Cube", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	/*
+	GameObject* turretGOJ = new Turret("caelhammer", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
 	if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
 	{
-		turretOJ->CreateProjectiles(gameObjects);
+		//turretOJ->CreateProjectiles(gameObjects);
 	}
 	
 	turretGOJ->scale(1.5, 0.6, 0.6);
 	turretGOJ->rotate(1.0f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ);
-
+	*/
+	/*
 	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
 	turretGOJ2->scale(1.5, 0.6, 0.6);
 	turretGOJ2->rotate(2.2f, 0.0f, 0.0f);
