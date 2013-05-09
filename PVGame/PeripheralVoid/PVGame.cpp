@@ -296,11 +296,11 @@ void PVGame::UpdateScene(float dt)
 		if (input->wasKeyPressed('V'))
 			renderMan->RemovePostProcessingEffect(BlurEffect);
 
-		if ( riftMan->isRiftConnected() &&  input->isOculusButtonPressed())
+		if ( /*riftMan->isRiftConnected() &&*/  input->isOculusButtonPressed())
 		{
 			renderMan->ToggleOculusEffect();
 			riftMan->setUsingRift(!riftMan->isUsingRift());
-			player->OnResize(AspectRatio());
+			player->OnResize(renderMan->AspectRatio());
 		}
 
 		// Brackets.

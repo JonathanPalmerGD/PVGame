@@ -86,15 +86,66 @@ RiftManager::~RiftManager(void)
 
 void RiftManager::calcStereo()
 {
-	stereo.SetHMDInfo(hmd);
-	stereo.SetFullViewport(Viewport(0,0, hmd.HResolution, hmd.VResolution));
+	pManager.Clear();
+	pHMD.Clear();
+	pSensor.Clear();
+	System::Destroy();
+	
+	System::Init(Log::ConfigureDefaultLog(LogMask_All));
+	pManager = *DeviceManager::Create();
+	pManager->SetMessageHandler(this);
+	riftConnected = false;
+	pHMD = *pManager->EnumerateDevices<HMDDevice>().CreateDevice();
+	if(pHMD)
+	{
+		stereo.SetFullViewport(Viewport(0,0, 1280, 800));
+		//Get Information from the HMD
+		if (pHMD->GetDeviceInfo(&hmd))
+		{
+			hmdInfo.DisplayDeviceName = hmd.DisplayDeviceName;
+			hmdInfo.EyeDistance       = hmd.InterpupillaryDistance;
+			hmdInfo.DistortionK[0]    = hmd.DistortionK[0];
+			hmdInfo.DistortionK[1]    = hmd.DistortionK[1];
+			hmdInfo.DistortionK[2]    = hmd.DistortionK[2];
+			hmdInfo.DistortionK[3]    = hmd.DistortionK[3];
+			hmdInfo.ScreenCenter[0]   = hmd.HScreenSize/2;
+			hmdInfo.ScreenCenter[1]   = hmd.VScreenCenter;
+			hmdInfo.ChromaticAberationCorrection = hmd.ChromaAbCorrection;
+		}
+	
+		//Set up sensor
+		pSensor = *pHMD->GetSensor();
+		if (pSensor)
+		{
+			SFusion.AttachToSensor(pSensor);
+			SFusion.SetDelegateMessageHandler(this);
+		}
+
+		stereo.SetHMDInfo(hmd);
+	}
+	else
+	{
+		hmdInfo.DisplayDeviceName = const_cast<char*>(stereo.GetHMDInfo().DisplayDeviceName);
+			hmdInfo.EyeDistance       = stereo.GetHMDInfo().InterpupillaryDistance;
+			hmdInfo.DistortionK[0]    = stereo.GetHMDInfo().DistortionK[0];
+			hmdInfo.DistortionK[1]    = stereo.GetHMDInfo().DistortionK[1];
+			hmdInfo.DistortionK[2]    = stereo.GetHMDInfo().DistortionK[2];
+			hmdInfo.DistortionK[3]    = stereo.GetHMDInfo().DistortionK[3];
+			hmdInfo.ScreenCenter[0]   = stereo.GetHMDInfo().HScreenSize/2;
+			hmdInfo.ScreenCenter[1]   = stereo.GetHMDInfo().VScreenCenter;
+			hmdInfo.ChromaticAberationCorrection = const_cast<float*>(stereo.GetHMDInfo().ChromaAbCorrection);
+	}
+	
+	//stereo.SetFullViewport(Viewport(0,0, hmd.HResolution, hmd.VResolution));
 	stereo.SetStereoMode(Stereo_LeftRight_Multipass);
 	stereo.SetDistortionFitPointVP(-1.0f, 0.0f);
 	renderScale = stereo.GetDistortionScale();
-
 	
 	leftEye = stereo.GetEyeRenderParams(StereoEye_Left);
 	rightEye = stereo.GetEyeRenderParams(StereoEye_Right);
+	
+	if (pHMD && pSensor)
+		riftConnected = true;
 }
 
 StereoConfig RiftManager::getStereo()

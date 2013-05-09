@@ -80,7 +80,7 @@ void Player::HandleInput(Input* input)
 	#pragma region Camera Input
 	
 	#pragma region Oculus Rift Look controls
-	if(riftMan->isUsingRift())
+	if(riftMan->isUsingRift() && riftMan->isRiftConnected())
 	{
 		//Get head orientation from rift
 		Quatf hmdOrient = riftMan->getOrientation();
@@ -287,7 +287,7 @@ void Player::OnResize(float aspectRatio)
 	if(riftMan->isUsingRift())
 	{
 		riftMan->calcStereo();
-		playerCamera->SetLens(0.25f*MathHelper::Pi/*(riftMan->getStereo().GetYFOVRadians()*/, riftMan->getStereo().GetAspect(), 0.01f, 1000.0f);
+		playerCamera->SetLens(riftMan->getStereo().GetYFOVRadians(), riftMan->getStereo().GetAspect(), 0.01f, 1000.0f);
 	}
 	else
 		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
@@ -341,7 +341,7 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
-		winPercent += 0.01;
+		winPercent += 0.005;
 	}
 }
 

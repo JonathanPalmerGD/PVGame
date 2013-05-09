@@ -134,8 +134,9 @@ void Crest::SetupAudio()
 	switch(crestType)
 	{
 	case MEDUSA:
-		//initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-		initAudio("Audio\\Scream.wav");
+		//initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");		
+		initAudio("Audio\\snakehiss2.wav");
+		//initAudio("Audio\\Scream.wav");
 		break;
 	case LEAP:
 		initAudio("Audio\\RedOn.wav");
