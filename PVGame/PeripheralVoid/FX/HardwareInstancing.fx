@@ -59,8 +59,8 @@ Texture2D gDiffuseMap;
 
 SamplerState samAnisotropic
 {
-	Filter = MIN_MAG_MIP_LINEAR;
-	MaxAnisotropy = 0;
+	Filter = ANISOTROPIC;
+	MaxAnisotropy = 4;
 
 	AddressU = WRAP;
 	AddressV = WRAP;
@@ -122,9 +122,6 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 		
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
-	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.x),
-							(vin.Tex.y / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.y))
-							: vin.Tex;
 
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex   = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
@@ -209,7 +206,10 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     if(gUseTexure)
 	{
 		// Sample texture.
-		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f));
+		float2 texCoord = (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f);
+		texCoord.x = clamp(texCoord.x, 0.0625, 0.1875);
+		texCoord.y = clamp(texCoord.y, 0.0625, 0.1875);
+		texColor = gDiffuseMap.Sample( samAnisotropic, texCoord);
 	}
 	 
 	//

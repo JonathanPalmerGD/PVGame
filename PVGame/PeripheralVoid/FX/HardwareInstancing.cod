@@ -46,8 +46,8 @@ cbuffer cbPerObject
 Texture2D gDiffuseMap;
 SamplerState samAnisotropic
 {
-    Filter   = uint(MIN_MAG_MIP_LINEAR /* 21 */);
-    MaxAnisotropy = uint(0);
+    Filter   = uint(ANISOTROPIC /* 85 */);
+    MaxAnisotropy = uint(4);
     AddressU = uint(WRAP /* 1 */);
     AddressV = uint(WRAP /* 1 */);
 };
@@ -169,7 +169,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -191,7 +191,7 @@ fxgroup
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 130
+                #line 127
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -201,10 +201,10 @@ fxgroup
                   mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
                   mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
                 
-                #line 131
+                #line 128
                 endif 
                 
-                #line 136
+                #line 133
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
@@ -338,28 +338,32 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 192 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 198
+                #line 195
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 201
+                #line 198
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 204
+                #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 212
+                #line 209
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                max r0.w, r2.x, l(0.062500)
+                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
+                max r0.w, r2.y, l(0.062500)
+                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
                 #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
@@ -438,7 +442,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -528,7 +532,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -614,7 +618,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -700,7 +704,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -786,7 +790,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -872,7 +876,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -958,7 +962,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1044,7 +1048,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1130,7 +1134,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1216,7 +1220,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1270,7 +1274,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1331,7 +1335,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 696 instruction slots used
+                // Approximately 700 instruction slots used
                             
             };
         }
@@ -1434,7 +1438,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -1456,7 +1460,7 @@ fxgroup
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 130
+                #line 127
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -1466,10 +1470,10 @@ fxgroup
                   mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
                   mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
                 
-                #line 131
+                #line 128
                 endif 
                 
-                #line 136
+                #line 133
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
@@ -1603,28 +1607,32 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 192 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 198
+                #line 195
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 201
+                #line 198
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 204
+                #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 212
+                #line 209
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                max r0.w, r2.x, l(0.062500)
+                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
+                max r0.w, r2.y, l(0.062500)
+                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
                 #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
@@ -1703,7 +1711,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1793,7 +1801,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1879,7 +1887,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1965,7 +1973,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2051,7 +2059,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2137,7 +2145,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2223,7 +2231,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2309,7 +2317,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2395,7 +2403,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2481,7 +2489,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2535,7 +2543,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2596,7 +2604,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 696 instruction slots used
+                // Approximately 700 instruction slots used
                             
             };
         }
@@ -2692,7 +2700,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 144 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2702,13 +2710,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 151
+                #line 148
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 154
+                #line 151
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -2776,7 +2784,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 299 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 299 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
@@ -2881,7 +2889,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 144 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -2891,13 +2899,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 151
+                #line 148
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 154
+                #line 151
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -2965,7 +2973,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 279 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 279 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v3.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v3.x
@@ -3041,11 +3049,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3180,7 +3188,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -3279,11 +3287,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3418,7 +3426,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -3517,11 +3525,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3656,7 +3664,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -3751,11 +3759,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -3890,7 +3898,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -4038,7 +4046,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 6
                 
-                #line 179 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 176 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
@@ -4050,7 +4058,7 @@ fxgroup
                 dp4 r2.x, r0.xyzw, cb1[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r2.y, r0.xyzw, cb1[9].xyzw  // vout<11:NaN:Inf>
                 
-                #line 186
+                #line 183
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r3.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r4.xyzw, v9.xyzw  // vout<20,21,22,23>
@@ -4172,7 +4180,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 3
                 
-                #line 355 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 355 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -4340,7 +4348,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -4362,7 +4370,7 @@ fxgroup
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 130
+                #line 127
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -4372,10 +4380,10 @@ fxgroup
                   mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
                   mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
                 
-                #line 131
+                #line 128
                 endif 
                 
-                #line 136
+                #line 133
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
@@ -4508,28 +4516,32 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 192 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 198
+                #line 195
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 201
+                #line 198
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 204
+                #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 212
+                #line 209
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx
-                sample r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                max r0.w, r2.x, l(0.062500)
+                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
+                max r0.w, r2.y, l(0.062500)
+                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
+                sample r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
                 #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
@@ -4608,7 +4620,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4698,7 +4710,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4784,7 +4796,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4870,7 +4882,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4956,7 +4968,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5042,7 +5054,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5128,7 +5140,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5214,7 +5226,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5300,7 +5312,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5386,7 +5398,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5440,7 +5452,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5501,7 +5513,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 696 instruction slots used
+                // Approximately 700 instruction slots used
                             
             };
         }
@@ -5603,7 +5615,7 @@ fxgroup
                 dcl_output o8.xyzw
                 dcl_temps 9
                 
-                #line 120 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 120 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -5625,7 +5637,7 @@ fxgroup
                 dp4 r3.z, r0.xyzw, cb0[6].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[7].xyzw  // vout<3:NaN:Inf>
                 
-                #line 130
+                #line 127
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -5635,10 +5647,10 @@ fxgroup
                   mul r4.x, r4.x, v13.x  // vout<10:NaN:Inf>
                   mul r4.y, r4.y, v13.y  // vout<11:NaN:Inf>
                 
-                #line 131
+                #line 128
                 endif 
                 
-                #line 136
+                #line 133
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r5.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r6.xyzw, v9.xyzw  // vout<20,21,22,23>
@@ -5771,28 +5783,32 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 17
                 
-                #line 195 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 192 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v2.xyzx, v2.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v2.xyzx  // pin<7:NaN:Inf,8:NaN:Inf,9:NaN:Inf>
                 
-                #line 198
+                #line 195
                 mov r1.xyz, -v1.xyzx
                 add r1.xyz, r1.xyzx, cb0[78].xyzx  // toEye<0:Inf,1:Inf,2:Inf>
                 
-                #line 201
+                #line 198
                 dp3 r0.w, r1.xyzx, r1.xyzx
                 sqrt r0.w, r0.w  // distToEye<0:NaN:Inf>
                 
-                #line 204
+                #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 212
+                #line 209
                 frc r2.xy, v3.xyxx
                 mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx
-                sample r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                max r0.w, r2.x, l(0.062500)
+                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
+                max r0.w, r2.y, l(0.062500)
+                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
+                sample r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
                 #line 229
                 eq r0.w, cb0[17].x, l(1.000000)
@@ -5871,7 +5887,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5961,7 +5977,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6047,7 +6063,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6133,7 +6149,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6219,7 +6235,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6305,7 +6321,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6391,7 +6407,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6477,7 +6493,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6563,7 +6579,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6649,7 +6665,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6703,7 +6719,7 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6764,7 +6780,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 696 instruction slots used
+                // Approximately 700 instruction slots used
                             
             };
         }
@@ -6859,7 +6875,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 144 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -6869,13 +6885,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 151
+                #line 148
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 154
+                #line 151
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -6942,7 +6958,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 299 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 299 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
@@ -7046,7 +7062,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 8
                 
-                #line 147 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 144 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<4:NaN:Inf>
@@ -7056,13 +7072,13 @@ fxgroup
                 dp3 r2.y, v1.xyzx, cb0[17].xyzx  // vout<8:NaN:Inf>
                 dp3 r2.z, v1.xyzx, cb0[18].xyzx  // vout<9:NaN:Inf>
                 
-                #line 151
+                #line 148
                 dp4 r3.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
                 dp4 r3.y, r0.xyzw, cb0[1].xyzw  // vout<1:NaN:Inf>
                 dp4 r3.z, r0.xyzw, cb0[2].xyzw  // vout<2:NaN:Inf>
                 dp4 r3.w, r0.xyzw, cb0[3].xyzw  // vout<3:NaN:Inf>
                 
-                #line 154
+                #line 151
                 mov r0.xy, v2.xyxx
                 mov r0.zw, l(0,0,0,1.000000)
                 dp4 r4.x, r0.xyzw, cb0[8].xyzw  // vout<10:NaN:Inf>
@@ -7129,7 +7145,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 279 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 279 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v3.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v3.x
@@ -7204,11 +7220,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7342,7 +7358,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -7440,11 +7456,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7578,7 +7594,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -7676,11 +7692,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -7814,7 +7830,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -7908,11 +7924,11 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 167 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 164 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
-                #line 170
+                #line 167
                 mov r1.xy, v2.xyxx  // vout<4,5>
                 mov o0.xyzw, r0.xyzw  // BlurVS<0,1,2,3: 1f>
                 mov o1.xy, r1.xyxx  // BlurVS<4,5>
@@ -8046,7 +8062,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -8193,7 +8209,7 @@ fxgroup
                 dcl_output o7.xyzw
                 dcl_temps 6
                 
-                #line 179 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 176 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
@@ -8205,7 +8221,7 @@ fxgroup
                 dp4 r2.x, r0.xyzw, cb1[8].xyzw  // vout<10:NaN:Inf>
                 dp4 r2.y, r0.xyzw, cb1[9].xyzw  // vout<11:NaN:Inf>
                 
-                #line 186
+                #line 183
                 mov r0.xyzw, v7.xyzw  // vout<12,13,14,15>
                 mov r3.xyzw, v8.xyzw  // vout<16,17,18,19>
                 mov r4.xyzw, v9.xyzw  // vout<20,21,22,23>
@@ -8326,7 +8342,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 4
                 
-                #line 355 "\\banner.main.ad.rit.edu\students\axd2706\IGMProfile\Documents\Classes\3DGP\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 355 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
