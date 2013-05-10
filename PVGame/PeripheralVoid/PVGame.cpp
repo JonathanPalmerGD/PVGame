@@ -5,7 +5,6 @@ map<string, MeshData>MeshMaps::MESH_MAPS = MeshMaps::create_map();
 PVGame::PVGame(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
-	// Initialize smart pointers.
 	input = new Input();
 	gameState = MENU;
 }
@@ -32,18 +31,10 @@ PVGame::~PVGame(void)
 	delete riftMan;
 }
 
-bool PVGame::Init()
+bool PVGame::Init(char * args)
 {
 	//OCULUS RIFT
-	riftMan = new RiftManager();
-	if(riftMan->isRiftConnected())
-	{
-		gameState = PLAYING;
-		ShowCursor(false);
-	}
-
-	DBOUT(riftMan->getDetectionMessage());
-
+	riftMan = new RiftManager(args);
 	renderMan->SetRiftMan(riftMan);
 	if (!D3DApp::Init())
 		return false;
@@ -51,13 +42,13 @@ bool PVGame::Init()
 	audioDevice=alcOpenDevice(NULL);
     if(audioDevice==NULL)
 	{
-		//std::cout << "cannot open sound card" << std::endl;
+		DBOUT("cannot open sound card");
 		return 0;
 	}
 	audioContext=alcCreateContext(audioDevice,NULL);
 	if(audioContext==NULL)
 	{
-		//std::cout << "cannot open context" << std::endl;
+		DBOUT("cannot open context");
 		return 0;
 	}
 	alcMakeContextCurrent(audioContext);
@@ -294,6 +285,7 @@ void PVGame::UpdateScene(float dt)
 
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
+		#if DEV_MODE == 1
 		if (input->wasKeyPressed('R'))
 			renderMan->AddPostProcessingEffect(WireframeEffect);
 		if (input->wasKeyPressed('N'))
@@ -304,6 +296,13 @@ void PVGame::UpdateScene(float dt)
 		if (input->wasKeyPressed('V'))
 			renderMan->RemovePostProcessingEffect(BlurEffect);
 
+		// Brackets.
+		if (input->wasKeyPressed(VK_OEM_6))
+			renderMan->ChangeBlurCount(1);
+		if (input->wasKeyPressed(VK_OEM_4))
+			renderMan->ChangeBlurCount(-1);
+		#endif
+
 		if ( /*riftMan->isRiftConnected() &&*/  input->isOculusButtonPressed())
 		{
 			renderMan->ToggleOculusEffect();
@@ -311,11 +310,6 @@ void PVGame::UpdateScene(float dt)
 			player->OnResize(renderMan->AspectRatio());
 		}
 
-		// Brackets.
-		if (input->wasKeyPressed(VK_OEM_6))
-			renderMan->ChangeBlurCount(1);
-		if (input->wasKeyPressed(VK_OEM_4))
-			renderMan->ChangeBlurCount(-1);
 		#pragma endregion
 		#pragma region Physics for Worlds Game Objects
 		// If physics updated, tell the game objects to update their world matrix.
@@ -334,8 +328,9 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		#pragma endregion
+
 		#if USE_FRUSTUM_CULLING
-		player->GetCamera()->frustumCull();
+			player->GetCamera()->frustumCull();
 		#endif
 
 		#pragma region Player Room Tracking and Resetting to Checkpoints
@@ -427,6 +422,7 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
+		#if DEV_MODE == 1
 		#pragma region Throwing Crests
 		if(input->wasKeyPressed('3'))
 		{
@@ -485,26 +481,6 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		#pragma region Outdated Light Code
-		/*if(renderMan->getNumLights() > 3)
-		{
-			renderMan->SetLightPosition(3, &player->getCameraPosition());
-		}*/
-		if(input->wasKeyPressed('Q'))
-		{
-			/*if(renderMan->getNumLights() < 4)
-			{
-				XMFLOAT4 p = player->getPosition();
-				XMFLOAT3 look = player->GetCamera()->GetLook();
-				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-				renderMan->CreateLight(XMFLOAT4(0.00f, 0.00f, 0.00f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), 25.0f, pos, XMFLOAT3(0.0f, 0.0f, 0.2f));
-			}
-			else
-			{
-				renderMan->ToggleLight(3);
-			}*/
-		}
-		#pragma	endregion
 		#pragma region 1: Slow Sphere
 		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
 		{
@@ -629,7 +605,7 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		#pragma endregion
-
+		#endif
 		#if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 		#endif
@@ -878,7 +854,7 @@ void PVGame::DrawScene()
 	#pragma endregion
 	#pragma region PLAYING
 	case PLAYING:
-		renderMan->DrawScene(player->GetCamera(), player->GetLeftCamera(), player->GetRightCamera(), gameObjects);
+		renderMan->DrawScene(player->GetCamera(), gameObjects);
 		//renderMan->DrawString("Health: 100", 24.0f, 50.0f, 50.0f, 0xff0099ff);
 		//renderMan->DrawString(L"Babies:   0", 24.0f, 50.0f, 70.0f, 0xff0099ff);
 		//renderMan->EndDrawMenu();
@@ -1095,7 +1071,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	PVGame theApp(hInstance);
 
-	if (!theApp.Init())
+	if (!theApp.Init(cmdLine))
 		return 0;
 
 	return theApp.Run();

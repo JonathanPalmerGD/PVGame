@@ -1,12 +1,20 @@
 #include "RiftManager.h"
 
-
-RiftManager::RiftManager(void)
+//////////////////////////////////////////////////////////////////////////
+// RiftManager()
+//
+// Set up Rift with either information from the rift if it is connected,
+// or use default paramaters if the rift is not connected
+//////////////////////////////////////////////////////////////////////////
+RiftManager::RiftManager(char* args)
 {
+	//Initialize and set up managers
+	OVR_UNUSED(args);
 	System::Init(Log::ConfigureDefaultLog(LogMask_All));
 	pManager = *DeviceManager::Create();
 	pManager->SetMessageHandler(this);
 
+	//Poll for Rift
 	pHMD = *pManager->EnumerateDevices<HMDDevice>().CreateDevice();
 
 	riftConnected = false;
@@ -34,11 +42,12 @@ RiftManager::RiftManager(void)
 		{
 			SFusion.AttachToSensor(pSensor);
 			SFusion.SetDelegateMessageHandler(this);
+			SFusion.SetPredictionEnabled(true);
 		}
 
 		stereo.SetHMDInfo(hmd);
 	}
-	else
+	else //use default values
 	{
 		hmdInfo.DisplayDeviceName = const_cast<char*>(stereo.GetHMDInfo().DisplayDeviceName);
 			hmdInfo.EyeDistance       = stereo.GetHMDInfo().InterpupillaryDistance;
@@ -51,15 +60,16 @@ RiftManager::RiftManager(void)
 			hmdInfo.ChromaticAberationCorrection = const_cast<float*>(stereo.GetHMDInfo().ChromaAbCorrection);
 	}
 	
-	//stereo.SetFullViewport(Viewport(0,0, hmd.HResolution, hmd.VResolution));
+	//Set StereoConfig Information
 	stereo.SetStereoMode(Stereo_LeftRight_Multipass);
 	stereo.SetDistortionFitPointVP(-1.0f, 0.0f);
+	stereo.Set2DAreaFov(DegreeToRad(85.0f));
 	renderScale = stereo.GetDistortionScale();
 	
 	leftEye = stereo.GetEyeRenderParams(StereoEye_Left);
 	rightEye = stereo.GetEyeRenderParams(StereoEye_Right);
 	
-	
+	//Handle different states
     if (!pHMD && !pSensor)
         detectionMessage = "Oculus Rift not detected.";
     else if (!pHMD)
@@ -71,6 +81,7 @@ RiftManager::RiftManager(void)
     else
 	{
 		riftConnected = true;
+		MagCal.BeginAutoCalibration(SFusion);
         detectionMessage = "Oculus Rift is detected";
 	}
 }
@@ -78,24 +89,36 @@ RiftManager::RiftManager(void)
 
 RiftManager::~RiftManager(void)
 {
+	RemoveHandlerFromDevices();
 	pManager.Clear();
 	pHMD.Clear();
 	pSensor.Clear();
 	System::Destroy();
 }
 
+////////////////////////////////////////////////////////////////
+// calcStero()
+//
+// poll for the rift and if it is found, set the information 
+// needed to start tracking the rift.
+////////////////////////////////////////////////////////////////
 void RiftManager::calcStereo()
 {
+	//Clear current information
+	RemoveHandlerFromDevices();
 	pManager.Clear();
 	pHMD.Clear();
 	pSensor.Clear();
 	System::Destroy();
 	
+	//Initialize and set up managers
 	System::Init(Log::ConfigureDefaultLog(LogMask_All));
 	pManager = *DeviceManager::Create();
 	pManager->SetMessageHandler(this);
 	riftConnected = false;
 	pHMD = *pManager->EnumerateDevices<HMDDevice>().CreateDevice();
+
+	//If a Rift is found, populate information
 	if(pHMD)
 	{
 		stereo.SetFullViewport(Viewport(0,0, 1280, 800));
@@ -119,11 +142,12 @@ void RiftManager::calcStereo()
 		{
 			SFusion.AttachToSensor(pSensor);
 			SFusion.SetDelegateMessageHandler(this);
+			SFusion.SetPredictionEnabled(true);
 		}
 
 		stereo.SetHMDInfo(hmd);
 	}
-	else
+	else //use default information
 	{
 		hmdInfo.DisplayDeviceName = const_cast<char*>(stereo.GetHMDInfo().DisplayDeviceName);
 			hmdInfo.EyeDistance       = stereo.GetHMDInfo().InterpupillaryDistance;
@@ -136,16 +160,20 @@ void RiftManager::calcStereo()
 			hmdInfo.ChromaticAberationCorrection = const_cast<float*>(stereo.GetHMDInfo().ChromaAbCorrection);
 	}
 	
-	//stereo.SetFullViewport(Viewport(0,0, hmd.HResolution, hmd.VResolution));
+	//Set StereoConfig information
 	stereo.SetStereoMode(Stereo_LeftRight_Multipass);
 	stereo.SetDistortionFitPointVP(-1.0f, 0.0f);
+	stereo.Set2DAreaFov(DegreeToRad(85.0f));
 	renderScale = stereo.GetDistortionScale();
 	
 	leftEye = stereo.GetEyeRenderParams(StereoEye_Left);
 	rightEye = stereo.GetEyeRenderParams(StereoEye_Right);
 	
-	if (pHMD && pSensor)
+	if (pHMD && pSensor) //Its connected!
+	{
 		riftConnected = true;
+		MagCal.BeginAutoCalibration(SFusion);
+	}
 }
 
 StereoConfig RiftManager::getStereo()
@@ -155,13 +183,11 @@ StereoConfig RiftManager::getStereo()
 
 StereoEyeParams RiftManager::getLeftEyeParams()
 {
-	leftEye = stereo.GetEyeRenderParams(StereoEye_Left);
 	return leftEye;
 }
 
 StereoEyeParams RiftManager::getRightEyeParams()
 {
-	rightEye = stereo.GetEyeRenderParams(StereoEye_Right);
 	return rightEye;
 }
 
@@ -180,80 +206,21 @@ HMDINFO RiftManager::getHMDInfo()
 	return hmdInfo;
 }
 
-void RiftManager::calcMatricies(Matrix4f viewCenterMat)
-{
-	// Compute Aspect Ratio. Stereo mode cuts width in half.
-	float aspectRatio = float(hmd.HResolution * 0.5f) / float(hmd.VResolution);
-
-	// Compute Vertical FOV based on distance.
-	float halfScreenDistance = (hmd.VScreenSize / 2);
-	float yfov = 2.0f * atan(halfScreenDistance/hmd.EyeToScreenDistance);
-
-	// Post-projection viewport coordinates range from (-1.0, 1.0), with the
-	// center of the left viewport falling at (1/4) of horizontal screen size.
-	// We need to shift this projection center to match with the lens center.
-	// We compute this shift in physical units (meters) to correct
-	// for different screen sizes and then rescale to viewport coordinates.
-	float viewCenter = hmd.HScreenSize * 0.25f;
-	float eyeProjectionShift = viewCenter - hmd.LensSeparationDistance*0.5f;
-	float projectionCenterOffset = 4.0f * eyeProjectionShift / hmd.HScreenSize;
-
-	// Projection matrix for the "center eye", which the left/right matrices are based on.
-	Matrix4f projCenter = Matrix4f::PerspectiveRH(yfov, aspectRatio, 0.01f, 1000.0f);
-	Matrix4f projLeft = Matrix4f::Translation(projectionCenterOffset, 0, 0) * projCenter;
-	Matrix4f projRight = Matrix4f::Translation(-projectionCenterOffset, 0, 0) * projCenter;
-
-	// View transformation translation in world units.
-	float halfIPD = hmd.InterpupillaryDistance * 0.5f;
-	leftMatrix  = Matrix4f::Translation(halfIPD, 0, 0) * viewCenter;
-	rightMatrix = Matrix4f::Translation(-halfIPD, 0, 0) * viewCenter;
-	
-	//leftMatrix  *= viewCenterMat;
-	//rightMatrix *= viewCenterMat;
-}
-
-void RiftManager::calcMatriciesNoRift()
-{
-	// Compute Aspect Ratio. Stereo mode cuts width in half.
-	float aspectRatio = float(800 * 0.5f) / float(600);
-
-	// Compute Vertical FOV based on distance.
-	float halfScreenDistance = (0.9359997f / 2);
-	float yfov = 2.0f * atan(halfScreenDistance / 0.04100001f);
-
-	// Post-projection viewport coordinates range from (-1.0, 1.0), with the
-	// center of the left viewport falling at (1/4) of horizontal screen size.
-	// We need to shift this projection center to match with the lens center.
-	// We compute this shift in physical units (meters) to correct
-	// for different screen sizes and then rescale to viewport coordinates.
-	float viewCenter = 0.14975999f * 0.25f;
-	float eyeProjectionShift = viewCenter - 0.063500002f * 0.5f;
-	float projectionCenterOffset = 4.0f * eyeProjectionShift / 0.14975999f;
-
-	// Projection matrix for the "center eye", which the left/right matrices are based on.
-	Matrix4f projCenter = Matrix4f::PerspectiveRH(yfov, /*aspect*/800.0f / 600.0f, 0.3f, 1000.0f);
-	Matrix4f projLeft = Matrix4f::Translation(projectionCenterOffset, 0, 0) * projCenter;
-	Matrix4f projRight = Matrix4f::Translation(-projectionCenterOffset, 0, 0) * projCenter;
-
-	// View transformation translation in world units.
-	float halfIPD = 0.064000003f * 0.5f;
-	leftMatrix  = Matrix4f::Translation(halfIPD, 0, 0) * viewCenter;
-	rightMatrix = Matrix4f::Translation(-halfIPD, 0, 0) * viewCenter;
-
-}
-
-Matrix4f RiftManager::getLeftMatrix()
-{
-	return leftMatrix;
-}
-
-Matrix4f RiftManager::getRightMatrix()
-{
-	return rightMatrix;
-}
-
+///////////////////////////////////////////////////////////////
+// getOrientation()
+//
+// Handle calibration and get the orientation of the rift
+//
+// return a quaternion representing the rotation of the rift
+///////////////////////////////////////////////////////////////
 Quatf RiftManager::getOrientation()
 {
+	//This gets called every frame, so we can do calibration here
+	if(MagCal.IsAutoCalibrating())
+		MagCal.UpdateAutoCalibration(SFusion);
+	else if(!MagCal.IsCalibrated())
+		MagCal.BeginAutoCalibration(SFusion);
+
 	return SFusion.GetOrientation();
 }
 

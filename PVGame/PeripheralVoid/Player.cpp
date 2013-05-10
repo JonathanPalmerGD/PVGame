@@ -2,7 +2,6 @@
 
 Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM) 
 	: PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
-//Player::Player(PhysicsManager* pm) : PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
@@ -18,15 +17,14 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	//OCULUS RIFT
 	riftMan = riftM;
 
+	//Set the orientation of the camera
 	XMVECTOR target = XMVectorSet(0.0f, 0.0f, 10.0f, 1.0f);
 	physicsMan = pm;
 	playerCamera = new Camera(physicsMan, riftMan, 1.3333334f);
 	playerCamera->LookAt(aPos, target, aUp);
 	playerCamera->UpdateViewMatrix();
 
-	leftCamera = new Camera(*playerCamera);
-	rightCamera = new Camera(*playerCamera);
-	
+	//Set up the character controller
 	controller = physicsMan->createCharacterController( 0.4f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
@@ -43,17 +41,24 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 
 	renderMan = rm;
 
+	//Set up audio
 	listener = new AudioListener();
 	listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
 
+	//Rift Head Tracking variables
 	EyeYaw = 0;
 	EyePitch = 0;
 	EyeRoll = 0;
 	yaw = 0;
 }
 
+///////////////////////////////////////////////////
+// Update()
+//
+// Handle crest effects and user input
+///////////////////////////////////////////////////
 void Player::Update(float dt, Input* input)
 {
 	if(controller->onGround())
@@ -75,16 +80,25 @@ void Player::Update(float dt, Input* input)
 	this->HandleInput(input);
 }
 
+////////////////////////////////////////////////////////////
+// HandleInput()
+//
+// Handles input from the user that affects the player
+///////////////////////////////////////////////////////////
 void Player::HandleInput(Input* input)
 {
 	#pragma region Camera Input
 	
-	#pragma region Oculus Rift Look controls
+	#pragma region Oculus Rift
 	if(riftMan->isUsingRift() && riftMan->isRiftConnected())
 	{
 		//Get head orientation from rift
 		Quatf hmdOrient = riftMan->getOrientation();
-		hmdOrient.GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&EyeYaw, &EyePitch, &EyeRoll);
+		hmdOrient.GetEulerAngles<Axis_Y, Axis_Z, Axis_X, OVR::RotateDirection::Rotate_CCW, OVR::HandedSystem::Handed_R>(&EyeYaw, &EyeRoll, &EyePitch);
+		//DBOUT(EyeYaw);
+		//DBOUT(EyePitch);
+		//DBOUT(EyeRoll);
+		//DBOUT("");
 
 		//Get extra orientation abilities from mouse, only yaw
 		//(its much nicer than having to turn your body when trying to play)
@@ -134,13 +148,16 @@ void Player::HandleInput(Input* input)
 		playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
 		XMMATRIX R = XMMatrixRotationY(mTheta);
 
+		//Set rotation of the player
 		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
 		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+
+		//Clamp angles reprenting rotations
 		mPhi = MathHelper::Clamp(dy, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
 		mTheta = MathHelper::Clamp(dx, -0.10f * MathHelper::Pi, 0.05f * MathHelper::Pi);
 
-		playerCamera->UpdateViewMatrix();
+		//playerCamera->UpdateViewMatrix();
 	
 		input->centerMouse();
 
@@ -148,7 +165,7 @@ void Player::HandleInput(Input* input)
 		mLastMousePos.y = input->getMouseY();
 		#pragma endregion
 
-		// Now check for camera input.
+		// Now check for keyboard/gamepad input.
 		if (input->isCameraUpKeyDown())
 		{
 			float angle = -camLookSpeed/2;
@@ -177,7 +194,6 @@ void Player::HandleInput(Input* input)
 			XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 			XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
 			XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-			//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
 		}
 		if (input->isCameraRightKeyDown())
 		{
@@ -190,29 +206,16 @@ void Player::HandleInput(Input* input)
 			XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
 			XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
 			XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
-			//TransformOrientedBox(boundingBox.get(), boundingBox.get(), 1.0f, XMQuaternionRotationMatrix(R), XMVECTOR());
 		}
 		#pragma endregion
 	}
 	#pragma endregion
 
-	//XMVECTOR tempPosition = XMLoadFloat4(&position);
-
-	//// Checking for position movement input, will want to move to separate method later.
-	//if (input->isPlayerUpKeyDown())
-	//	tempPosition = XMVectorAdd(tempPosition, XMLoadFloat3(&fwd) * playerSpeed);
-	//if (input->isPlayerDownKeyDown())
-	//	tempPosition = XMVectorAdd(tempPosition, -XMLoadFloat3(&fwd) * playerSpeed);
-	//if (input->isPlayerLeftKeyDown())
-	//	tempPosition = XMVectorAdd(tempPosition, -XMLoadFloat3(&right) * playerSpeed);
-	//if (input->isPlayerRightKeyDown())
-	//	tempPosition = XMVectorAdd(tempPosition, XMLoadFloat3(&right) * playerSpeed);
-
+	#pragma region Player Movement
 	btVector3 direction(0,0,0);
 	btVector3 forward(fwd.x, fwd.y, fwd.z);
 	btVector3 r(right.x, right.y, right.z);
 
-	#pragma region Player Controls
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
 		direction += 3 * forward / 4;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
@@ -221,6 +224,7 @@ void Player::HandleInput(Input* input)
 		direction += 3 * r / 4;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= 3 * r / 4;
+
 	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
 		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
@@ -232,7 +236,6 @@ void Player::HandleInput(Input* input)
 		}
 		controller->jump();
 	}
-	#pragma endregion
 
 	//DBOUT(controller->canJump());
 	float currentPlayerSpeed = 0;
@@ -258,73 +261,63 @@ void Player::HandleInput(Input* input)
 	//if(currentPlayerSpeed > .18203889f)//clamp speed
 	//	currentPlayerSpeed = 0.18203889f;
 	direction *= currentPlayerSpeed;
-
 	controller->setWalkDirection(direction);
 
+	//Set the camera's position
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
 	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1.3, pos.getZ());
 	playerCamera->SetPosition(cPos);
-
+	#pragma endregion
+	
 	#pragma region Audio
 	listener->setPosition(cPos.x, cPos.y, cPos.z);
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
-
 	#pragma endregion
-	//XMFLOAT4 unit(0.0f, 0.0f, 0.0f, 1.0f);
-	
-	/*XMFLOAT3 pos;
-	XMStoreFloat3(&pos, tempPosition);
-	playerCamera->SetPosition(pos);
-	XMStoreFloat4(&position, tempPosition);*/
 
-	/*
-	wstring temp = L"";
-	stringstream ss;
-	ss << "Player position - X: " << position.x << ", Y: " << position.y << ", Z: " << position.z << endl;
-	char * cstr = new char [ss.str().length()+1];
-	std::strcpy (cstr, ss.str().c_str());
+#pragma region HEAD MODELING
+	if(riftMan->isUsingRift() && riftMan->isRiftConnected())
+	{
+		// Rotate and position View Camera, using YawPitchRoll in BodyFrame coordinates
+		Matrix4f rollPitchYaw = Matrix4f::RotationY(EyeYaw-yaw) * Matrix4f::RotationX(EyePitch) *
+								Matrix4f::RotationZ(EyeRoll);
+		Vector3f mUp      = rollPitchYaw.Transform(Vector3f(playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z));
+		Vector3f mForward = rollPitchYaw.Transform(Vector3f(playerCamera->GetLook().x, playerCamera->GetLook().y, playerCamera->GetLook().z));
+		float headBaseToEyeHeight     = 0.15f;  // Vertical height of eye from base of head
+		float headBaseToEyeProtrusion = 0.09f;  // Distance forward of eye from base of head
 
-	OutputDebugStringA(cstr);
+		// Minimal head modelling.
+		Vector3f eyeCenterInHeadFrame(0.0f, headBaseToEyeHeight, -headBaseToEyeProtrusion);
+		Vector3f shiftedEyePos = Vector3f(playerCamera->GetPosition().x, playerCamera->GetPosition().y, playerCamera->GetPosition().z) + rollPitchYaw.Transform(eyeCenterInHeadFrame);
+		shiftedEyePos.y -= eyeCenterInHeadFrame.y; // Bring the head back down to original height
 
-	delete cstr;
-	*/
+		playerCamera->SetPosition(shiftedEyePos.x, shiftedEyePos.y, shiftedEyePos.z);
+		//Matrix4f View = Matrix4f::LookAtRH(shiftedEyePos, shiftedEyePos + forward, up);
+		/*playerCamera->LookAt(XMFLOAT3(shiftedEyePos.x, shiftedEyePos.y, shiftedEyePos.z), 
+			XMFLOAT3(shiftedEyePos.x + mForward.x, shiftedEyePos.y + mForward.y, shiftedEyePos.z + mForward.z),
+			XMFLOAT3(mUp.x, mUp.y, mUp.z));*/
+	}
+#pragma endregion
+
 	playerCamera->UpdateViewMatrix();
-	*leftCamera = *playerCamera;
-	*rightCamera = *playerCamera;
-
-	float halfIPD = 0.032000002f;
-	if(riftMan->isRiftConnected())
-		halfIPD = riftMan->getHMDInfo().EyeDistance * 0.5f;
-
-	XMFLOAT3 translation = XMFLOAT3(playerCamera->GetRight().x * halfIPD, playerCamera->GetRight().y * halfIPD,playerCamera->GetRight().z * halfIPD);
-
-	leftCamera->SetPosition(playerCamera->GetPosition().x - translation.x,
-						    playerCamera->GetPosition().y - translation.y,
-							playerCamera->GetPosition().z - translation.z);
-	
-	rightCamera->SetPosition(playerCamera->GetPosition().x + translation.x,
-						     playerCamera->GetPosition().y + translation.y,
-							 playerCamera->GetPosition().z + translation.z);
-	leftCamera->UpdateViewMatrix();
-	rightCamera->UpdateViewMatrix();
 }
 
+///////////////////////////////////////////////////////////////////////
+// OnResize()
+//
+// Handle resizing of the world
+// The way it resizes changes based on whether the rift is connected or not
+///////////////////////////////////////////////////////////////////////////////
 void Player::OnResize(float aspectRatio)
 {
 	if(riftMan->isUsingRift())
 	{
-		riftMan->calcStereo();
+		riftMan->calcStereo(); //Poll for rift
 		playerCamera->SetLens(riftMan->getStereo().GetYFOVRadians(), riftMan->getStereo().GetAspect(), 0.01f, 1000.0f);
 	}
 	else
 		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
-	playerCamera->UpdateViewMatrix();
 	
-}
-
-XMMATRIX Player::ViewProj() const
-{
-	return playerCamera->ViewProj();
+	playerCamera->UpdateViewMatrix();
 }
 
 Camera* Player::GetCamera()
@@ -332,17 +325,11 @@ Camera* Player::GetCamera()
 	return playerCamera;
 }
 
-Camera* Player::GetLeftCamera()
-{
-	return leftCamera;
-}
-
-Camera* Player::GetRightCamera()
-{
-	return rightCamera;
-}
-
-
+//////////////////////////////////////////////
+// resetStatuses()
+//
+// Set crest effects to their default state
+//////////////////////////////////////////////
 void Player::resetStatuses() 
 {	
 	if(!medusaStatus)
@@ -356,6 +343,12 @@ void Player::resetStatuses()
 	winStatus = false;
 }
 
+///////////////////////////////////////////////////////////////
+// increaseMedusaPercent()
+//
+// increases the amount the medusa crest affects the player
+// up to a certain amount
+///////////////////////////////////////////////////////////////
 void Player::increaseMedusaPercent()
 {
 	if(medusaStatus && medusaPercent < 1.0f)
@@ -364,6 +357,11 @@ void Player::increaseMedusaPercent()
 	}
 }
 
+//////////////////////////////////////////////////////////////
+// increaseWinPercent()
+//
+// increases the amount of blur the win crest is causing
+//////////////////////////////////////////////////////////////
 void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
@@ -377,6 +375,7 @@ void Player::resetWinPercent()
 	winPercent = 0.0f;
 }
 
+#pragma region ACCESSORS AND MUTATORS
 void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
 void Player::setMedusaStatus(bool newStatus) { medusaStatus = newStatus; }
 void Player::setLeapStatus(bool newStatus) { leapStatus = newStatus; }
@@ -415,13 +414,12 @@ btVector3 Player::getCameraPosition()
 	XMFLOAT3 pos = playerCamera->GetPosition();
 	return btVector3(pos.x, pos.y, pos.z);
 }
+#pragma endregion
 
 Player::~Player(void)
 {
 	physicsMan->removeCharacterController(controller);
 	delete listener;
 	delete playerCamera;
-	//delete leftCamera;
-	//delete rightCamera;
 	delete audioSource;
 }

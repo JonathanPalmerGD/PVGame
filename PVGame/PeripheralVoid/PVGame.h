@@ -24,7 +24,7 @@ public:
 		PVGame(HINSTANCE hInstance);
 		virtual ~PVGame(void);
 
-		bool Init();
+		bool Init(char* args);
 		bool LoadContent();
 		bool LoadXML();
 		void OnResize();

@@ -1,5 +1,6 @@
 #include "GameObject.h"
 
+//Default Constructor
 GameObject::GameObject(void)
 {
 	meshKey = "None";
@@ -14,6 +15,7 @@ GameObject::GameObject(void)
 		seen = true;
 }
 
+//Constructor for object with no rigidy body
 GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, bool visionAff)
 {
 	visionAffected = visionAff;
@@ -32,6 +34,7 @@ GameObject::GameObject(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMat
 		seen = true;
 }
 
+//Constructor for object with a rigid body
 GameObject::GameObject(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, short collisionLayer, float mass, bool visionAff)
 {
 	visionAffected = visionAff;
@@ -59,6 +62,12 @@ void GameObject::setSeen(bool s)
 	seen = s;
 }
 
+bool GameObject::isSeen()
+{
+	return seen;
+}
+
+//Set the position of the GameObject in the world
 void GameObject::setPosition(float x, float y, float z)
 {
 	if(rigidBody != NULL)
@@ -71,11 +80,7 @@ void GameObject::setPosition(float x, float y, float z)
 	}
 }
 
-bool GameObject::isSeen()
-{
-	return seen;
-}
-
+//Move the position of the GameObject in the world by a set amount
 void GameObject::translate(float x, float y, float z)
 {
 	if(rigidBody != NULL)
@@ -86,6 +91,7 @@ void GameObject::translate(float x, float y, float z)
 	}
 }
 
+//BROKEN AS ALL HELL. I HATE EVERYTHING
 void GameObject::scale(float x, float y, float z)
 {
 	if(rigidBody != NULL)
@@ -108,14 +114,11 @@ void GameObject::SetTexScale(float x, float y, float z, float w)
 	texScale = XMFLOAT4(x, y, z, w);
 }
 
+//Sets the rotation of the GameObject using a quaternion
 void GameObject::rotate(float x, float y, float z, float w)
 {
 	if(rigidBody!= NULL)
 	{
-		/*btTransform t = rigidBody->getWorldTransform();
-		t.setRotation(btQuaternion(x, y , z, w));
-		rigidBody->setWorldTransform(t);
-		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());*/
 		btTransform t = rigidBody->getWorldTransform();
 		btQuaternion rotation(x, y, z, w);
 		t.setRotation(rotation);
@@ -125,15 +128,11 @@ void GameObject::rotate(float x, float y, float z, float w)
 	}
 }
 
+//Set the rotation of the GameObject around three axies
 void GameObject::rotate(float yaw, float pitch, float roll)
 {
 	if(rigidBody!= NULL)
 	{
-		/*btTransform t = rigidBody->getWorldTransform();
-		t.setRotation(btQuaternion(yaw, pitch, roll));
-		rigidBody->setWorldTransform(t);
-		rigidBody->getMotionState()->setWorldTransform(rigidBody->getWorldTransform());*/
-
 		btTransform t = rigidBody->getWorldTransform();
 		btQuaternion rotation(yaw, pitch, roll);
 		t.setRotation(rotation);
@@ -143,6 +142,7 @@ void GameObject::rotate(float yaw, float pitch, float roll)
 	}
 }
 
+//Set the velocity of a gameobject so it can FLY
 void GameObject::setLinearVelocity(float x, float y, float z)
 {
 	rigidBody->setLinearVelocity(btVector3(x, y, z));
@@ -170,6 +170,8 @@ void GameObject::SetRigidBody(btRigidBody* rBody, short layer)
 	CalculateWorldMatrix();
 }
 
+//Moves the GameObject to a new collision layer
+//If you want to keep the current layer, use changeCollisionLayer(getCollisionLayer()|newLayer)
 void GameObject::changeCollisionLayer(short layer)
 {
 	if(rigidBody != NULL)
@@ -185,6 +187,7 @@ void GameObject::changeCollisionLayer(short layer)
 	}
 }
 
+//Update this thing
 void GameObject::Update()
 {
 	if(rigidBody != NULL)
@@ -198,6 +201,7 @@ void GameObject::Update()
 	}
 }
 
+//Pull the matrix from the rigid body
 void GameObject::CalculateWorldMatrix()
 {
 	btTransform t;
@@ -224,6 +228,8 @@ XMFLOAT4X4 GameObject::GetWorldMatrix() const
 	return worldMatrix; 
 }
 
+#pragma region AUDIO
+//Initialize the audio if possible
 void GameObject::initAudio(string file)
 {
 	audioSource->initialize(file.c_str(), AudioSource::WAV);
@@ -270,6 +276,7 @@ void GameObject::restartAndPlayAudio()
 	if(audioSource->Initialized())
 		audioSource->restartAndPlay();
 }
+#pragma endregion
 
 GameObject::~GameObject(void)
 {

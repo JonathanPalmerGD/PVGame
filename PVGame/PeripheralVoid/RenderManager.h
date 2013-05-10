@@ -301,7 +301,7 @@ class RenderManager
 			}
 		}
 
-		void DrawScene(Camera* aCamera, Camera* leftCamera, Camera* rightCamera, vector<GameObject*> gameObjects)
+		void DrawScene(Camera* aCamera, vector<GameObject*> gameObjects)
 		{
 			// Performance increasers - Try to limit calls to size, map accessors, etc.
 			const unsigned int totalGameobjs = gameObjects.size();
@@ -355,12 +355,12 @@ class RenderManager
 				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Distortion Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Default Render Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 				
-				RenderToEye(riftMan->getLeftEyeParams(), aCamera, leftCamera, rightCamera);
+				RenderToEye(riftMan->getLeftEyeParams(), aCamera);
 
 				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Distortion Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-				//mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
+				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
 				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
-				RenderToEye(riftMan->getRightEyeParams(), aCamera, leftCamera, rightCamera);
+				RenderToEye(riftMan->getRightEyeParams(), aCamera);
 				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
 			}
 			else
@@ -1222,7 +1222,7 @@ class RenderManager
 			ReleaseCOM(shaderResourceViewsMap["Blur Input Texture"]);
 		}
 
-		void RenderToEye(StereoEyeParams anEye, Camera* aCamera, Camera* leftCamera, Camera* rightCamera)
+		void RenderToEye(StereoEyeParams anEye, Camera* aCamera)
 		{
 			if (anEye.Eye == StereoEye_Right)
 			{
@@ -1303,9 +1303,9 @@ class RenderManager
 			DrawGameObjects("LightsWithAtlas");
 			UnbindShaderResource(mfxDiffuseMapVar, "LightsWithAtlas");
 			if(anEye.Eye == StereoEye_Right)
-				sky->Draw(md3dImmediateContext, *rightCamera, viewproj);
+				sky->Draw(md3dImmediateContext, *aCamera, viewproj);
 			else
-				sky->Draw(md3dImmediateContext, *leftCamera, viewproj);
+				sky->Draw(md3dImmediateContext, *aCamera, viewproj);
 
 			md3dImmediateContext->IASetInputLayout(mInputLayout);
 			md3dImmediateContext->OMSetDepthStencilState(0, 0);
