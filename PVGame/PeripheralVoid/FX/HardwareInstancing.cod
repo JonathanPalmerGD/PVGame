@@ -354,22 +354,19 @@ fxgroup
                 #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 209
+                #line 210
                 frc r2.xy, v3.xyxx
-                mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
+                mul r2.xy, r2.xyxx, l(0.125000, 0.125000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
-                max r0.w, r2.x, l(0.062500)
-                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
-                max r0.w, r2.y, l(0.062500)
-                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx
+                add r2.xy, r2.xyxx, l(0.062500, 0.062500, 0.000000, 0.000000)  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 229
+                #line 228
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -442,7 +439,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -450,7 +447,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -459,7 +456,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -532,7 +529,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -540,12 +537,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -618,7 +615,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -626,12 +623,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -704,7 +701,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -712,12 +709,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -790,7 +787,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -798,12 +795,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -876,7 +873,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -884,12 +881,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -962,7 +959,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -970,12 +967,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1048,7 +1045,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1056,12 +1053,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1134,7 +1131,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1142,12 +1139,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1220,7 +1217,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1228,10 +1225,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 
-                #line 241
+                #line 240
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1274,22 +1271,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 240 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 244
+                #line 243
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 249
+                #line 248
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 254
+                #line 253
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -1318,7 +1315,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 265
+                #line 264
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -1327,15 +1324,15 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 254
+                #line 253
                 endif 
                 
-                #line 272
+                #line 271
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 700 instruction slots used
+                // Approximately 697 instruction slots used
                             
             };
         }
@@ -1623,22 +1620,19 @@ fxgroup
                 #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 209
+                #line 210
                 frc r2.xy, v3.xyxx
-                mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
+                mul r2.xy, r2.xyxx, l(0.125000, 0.125000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
-                max r0.w, r2.x, l(0.062500)
-                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
-                max r0.w, r2.y, l(0.062500)
-                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
-                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx
+                add r2.xy, r2.xyxx, l(0.062500, 0.062500, 0.000000, 0.000000)  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                sample_indexable(texture2d)(float,float,float,float) r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 229
+                #line 228
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -1711,7 +1705,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1719,7 +1713,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -1728,7 +1722,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1801,7 +1795,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1809,12 +1803,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1887,7 +1881,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1895,12 +1889,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -1973,7 +1967,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1981,12 +1975,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2059,7 +2053,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2067,12 +2061,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2145,7 +2139,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2153,12 +2147,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2231,7 +2225,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2239,12 +2233,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2317,7 +2311,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2325,12 +2319,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2403,7 +2397,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2411,12 +2405,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2489,7 +2483,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2497,10 +2491,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 
-                #line 241
+                #line 240
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -2543,22 +2537,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 240 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 244
+                #line 243
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 249
+                #line 248
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 254
+                #line 253
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -2587,7 +2581,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 265
+                #line 264
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -2596,15 +2590,15 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 254
+                #line 253
                 endif 
                 
-                #line 272
+                #line 271
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 700 instruction slots used
+                // Approximately 697 instruction slots used
                             
             };
         }
@@ -2784,11 +2778,11 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 299 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 298 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 304
+                #line 303
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -2973,7 +2967,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 279 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 278 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v3.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v3.x
@@ -2987,11 +2981,11 @@ fxgroup
                   ret 
                 endif 
                 
-                #line 299
+                #line 298
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 304
+                #line 303
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -3188,16 +3182,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 313 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 322
+                #line 321
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3206,31 +3200,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3426,16 +3420,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 317 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 322
+                #line 321
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3444,31 +3438,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3664,16 +3658,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 317 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 322
+                #line 321
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3682,31 +3676,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -3898,16 +3892,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 313 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 322
+                #line 321
                 sample_l_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -3916,31 +3910,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l_indexable(texture2d)(float,float,float,float) r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -4180,7 +4174,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 3
                 
-                #line 355 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 354 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -4198,7 +4192,7 @@ fxgroup
                 add r0.w, r0.w, r1.x
                 mul r0.xy, r0.wwww, r0.xyxx  // theta1<0:NaN:Inf,1:NaN:Inf>
                 
-                #line 361
+                #line 360
                 mul r0.w, r0.z, cb0[84].w
                 add r0.w, r0.w, cb0[84].z
                 mul r1.xy, r0.wwww, r0.xyxx  // thetaBlue<0:NaN:Inf,1:NaN:Inf>
@@ -4213,10 +4207,10 @@ fxgroup
                 dp2 r0.w, r1.zwzz, r1.zwzz
                 ne r0.w, r0.w, l(0.000000)
                 
-                #line 367
+                #line 366
                 sample_indexable(texture2d)(float,float,float,float) r1.x, r1.xyxx, t0.zxyw, s0
                 
-                #line 370
+                #line 369
                 mul r1.yz, r0.xxyx, cb0[82].xxyx
                 add r1.yz, r1.yyzy, cb0[81].xxyx  // tcGreen<0:NaN:Inf,1:NaN:Inf>
                 sample_indexable(texture2d)(float,float,float,float) r1.y, r1.yzyy, t0.xyzw, s0
@@ -4227,19 +4221,19 @@ fxgroup
                 add r0.xy, r0.xyxx, cb0[81].xyxx  // tcRed<0:NaN:Inf,1:NaN:Inf>
                 sample_indexable(texture2d)(float,float,float,float) r0.x, r0.xyxx, t0.xyzw, s0
                 
-                #line 363
+                #line 362
                 if_nz r0.w
                   mov o0.xyzw, l(0,0,0,0)  // OculusPS<0: 0f,1: 0f,2: 0f,3: 0f>
                   ret 
                 endif 
                 
-                #line 367
+                #line 366
                 mov r1.x, r1.x  // blue<0:Inf>
                 
-                #line 371
+                #line 370
                 mov r1.y, r1.y  // green<0:Inf>
                 
-                #line 375
+                #line 374
                 mov r0.x, r0.x  // red<0:Inf>
                 mov o0.w, l(1.000000)  // OculusPS<3: 1f>
                 mov o0.x, r0.x  // OculusPS<0:Inf>
@@ -4532,22 +4526,19 @@ fxgroup
                 #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 209
+                #line 210
                 frc r2.xy, v3.xyxx
-                mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
+                mul r2.xy, r2.xyxx, l(0.125000, 0.125000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
-                max r0.w, r2.x, l(0.062500)
-                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
-                max r0.w, r2.y, l(0.062500)
-                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
-                sample r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx
+                add r2.xy, r2.xyxx, l(0.062500, 0.062500, 0.000000, 0.000000)  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                sample r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 229
+                #line 228
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -4620,7 +4611,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4628,7 +4619,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -4637,7 +4628,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4710,7 +4701,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4718,12 +4709,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4796,7 +4787,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4804,12 +4795,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4882,7 +4873,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4890,12 +4881,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -4968,7 +4959,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4976,12 +4967,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5054,7 +5045,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5062,12 +5053,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5140,7 +5131,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5148,12 +5139,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5226,7 +5217,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5234,12 +5225,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5312,7 +5303,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5320,12 +5311,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5398,7 +5389,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5406,10 +5397,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 
-                #line 241
+                #line 240
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5452,22 +5443,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 240 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 244
+                #line 243
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 249
+                #line 248
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 254
+                #line 253
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -5496,7 +5487,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 265
+                #line 264
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -5505,15 +5496,15 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 254
+                #line 253
                 endif 
                 
-                #line 272
+                #line 271
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 700 instruction slots used
+                // Approximately 697 instruction slots used
                             
             };
         }
@@ -5799,22 +5790,19 @@ fxgroup
                 #line 201
                 div r1.xyz, r1.xyzx, r0.wwww  // toEye<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 209
+                #line 210
                 frc r2.xy, v3.xyxx
-                mul r2.xy, r2.xyxx, l(0.250000, 0.250000, 0.000000, 0.000000)
+                mul r2.xy, r2.xyxx, l(0.125000, 0.125000, 0.000000, 0.000000)
                 mul r2.zw, v3.zzzw, l(0.000000, 0.000000, 0.250000, 0.250000)
-                add r2.xy, r2.zwzz, r2.xyxx  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
-                max r0.w, r2.x, l(0.062500)
-                min r3.x, r0.w, l(0.187500)  // texCoord<0:[0.0625f,0.1875f]>
-                max r0.w, r2.y, l(0.062500)
-                min r3.y, r0.w, l(0.187500)  // texCoord<1:[0.0625f,0.1875f]>
-                sample r2.xyzw, r3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
+                add r2.xy, r2.zwzz, r2.xyxx
+                add r2.xy, r2.xyxx, l(0.062500, 0.062500, 0.000000, 0.000000)  // texCoord<0:[-8.50706e+037f,8.50706e+037f],1:[-8.50706e+037f,8.50706e+037f]>
+                sample r2.xyzw, r2.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 
-                #line 229
+                #line 228
                 eq r0.w, cb0[17].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r3.xyz, v4.xyzx  // mat<0,1,2>
                   mov r4.xyz, v5.xyzx  // mat<4,5,6>
@@ -5887,7 +5875,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5895,7 +5883,7 @@ fxgroup
                   add r4.xyz, r4.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 else 
                   mov r3.xyz, l(0,0,0,0)  // ambient<0: 0f,1: 0f,2: 0f>
                   mov r4.xyz, l(0,0,0,0)  // diffuse<0: 0f,1: 0f,2: 0f>
@@ -5904,7 +5892,7 @@ fxgroup
                 eq r0.w, cb0[23].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -5977,7 +5965,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5985,12 +5973,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[29].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6063,7 +6051,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6071,12 +6059,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[35].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6149,7 +6137,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6157,12 +6145,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[41].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6235,7 +6223,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6243,12 +6231,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[47].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6321,7 +6309,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6329,12 +6317,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[53].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6407,7 +6395,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6415,12 +6403,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[59].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6493,7 +6481,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6501,12 +6489,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[65].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6579,7 +6567,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6587,12 +6575,12 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 eq r0.w, cb0[71].x, l(1.000000)
                 if_nz r0.w
                 
-                #line 232
+                #line 231
                   nop 
                   mov r6.xyz, v4.xyzx  // mat<0,1,2>
                   mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6665,7 +6653,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 232 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 231 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6673,10 +6661,10 @@ fxgroup
                   add r4.xyz, r4.xyzx, r7.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   add r5.xyz, r5.xyzx, r8.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 229
+                #line 228
                 endif 
                 
-                #line 241
+                #line 240
                 nop 
                 mov r6.xyz, v4.xyzx  // mat<0,1,2>
                 mov r7.xyz, v5.xyzx  // mat<4,5,6>
@@ -6719,22 +6707,22 @@ fxgroup
                 movc r0.xyz, r1.wwww, r0.yzwy, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 movc r1.xyz, r1.wwww, r1.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 241 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 240 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                 mov r0.xyz, r0.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov r1.xyz, r1.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 244
+                #line 243
                 add r3.xyz, r3.xyzx, r6.xyzx  // ambient<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r0.xyz, r0.xyzx, r4.xyzx  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 add r1.xyz, r1.xyzx, r5.xyzx  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 249
+                #line 248
                 add r0.xyz, r0.xyzx, r3.xyzx
                 mul r0.xyz, r0.xyzx, r2.xyzx
                 add r0.xyz, r1.xyzx, r0.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 254
+                #line 253
                 lt r0.w, l(0.000000), v8.w
                 ge r1.x, v0.x, l(0.000000)
                 and r0.w, r0.w, r1.x
@@ -6763,7 +6751,7 @@ fxgroup
                   mul r1.y, r1.z, r1.z
                   add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
                 
-                #line 265
+                #line 264
                   ge r1.y, r1.x, r0.w
                   if_nz r1.y
                     mul r1.yzw, v8.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
@@ -6772,15 +6760,15 @@ fxgroup
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
-                #line 254
+                #line 253
                 endif 
                 
-                #line 272
+                #line 271
                 mul r0.w, r2.w, v5.w  // litColor<3:NaN:Inf>
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 700 instruction slots used
+                // Approximately 697 instruction slots used
                             
             };
         }
@@ -6958,11 +6946,11 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 299 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 298 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 304
+                #line 303
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -7145,7 +7133,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 279 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 278 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v3.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v3.x
@@ -7159,11 +7147,11 @@ fxgroup
                   ret 
                 endif 
                 
-                #line 299
+                #line 298
                 sample r0.xyzw, v3.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
-                #line 304
+                #line 303
                 mul r0.w, r0.w, l(0.500000)  // litColor<3:Inf>
                 mov o0.xyz, r0.xyzx  // TexturePS<0:Inf,1:Inf,2:Inf>
                 mov o0.w, r0.w  // TexturePS<3:Inf>
@@ -7358,16 +7346,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 313 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 322
+                #line 321
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -7376,31 +7364,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -7594,16 +7582,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 317 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 322
+                #line 321
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -7612,31 +7600,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -7830,16 +7818,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 318 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 317 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
-                #line 322
+                #line 321
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -7848,31 +7836,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN,1:NaN:Inf>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -8062,16 +8050,16 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 314 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 313 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
-                #line 322
+                #line 321
                 sample_l r1.xyzw, v1.xyxx, t0.xyzw, s0, l(0.000000)
                 mul r1.xyzw, r1.xyzw, cb1[10].xxxx  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r0.z, cb1[10].x  // totalWeight<0>
                 
-                #line 332
+                #line 331
                 mov r0.w, l(-2.000000)  // i<0:[-2f,-2f]>
                 mov r2.xyzw, r1.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 mov r3.x, r0.z  // totalWeight<0:Inf>
@@ -8080,31 +8068,31 @@ fxgroup
                   ge r3.z, l(2.000000), r3.y
                   breakc_z r3.z
                 
-                #line 335
+                #line 334
                   eq r3.z, r3.y, l(0.000000)
                   if_nz r3.z
                     mov r3.y, l(1.000000)  // i<0: 1f>
                     continue 
                   endif 
                 
-                #line 338
+                #line 337
                   mul r3.zw, r0.xxxy, r3.yyyy
                   add r3.zw, r3.zzzw, v1.xxxy  // tex<0:NaN:Inf,1:NaN>
                   add r4.x, r3.y, l(2.000000)
                   ftou r4.x, r4.x
                   mov r4.x, cb1[r4.x + 0].x  // weight<0>
                 
-                #line 343
+                #line 342
                   sample_l r5.xyzw, r3.zwzz, t0.xyzw, s0, l(0.000000)
                   mul r5.xyzw, r4.xxxx, r5.xyzw
                   add r2.xyzw, r2.xyzw, r5.xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                   add r3.x, r3.x, r4.x  // totalWeight<0:Inf>
                 
-                #line 332
+                #line 331
                   add r3.y, r3.y, l(1.000000)  // i<0:Inf>
                 endloop 
                 
-                #line 348
+                #line 347
                 add r0.xyzw, r2.xyzw, cb0[79].xyzw  // color<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 div o0.xyzw, r0.xyzw, r3.xxxx  // BlurPS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf,3:NaN:Inf>
                 ret 
@@ -8342,7 +8330,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 4
                 
-                #line 355 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 354 "C:\Users\KennyRules\Dropbox\Git\PeripheralVoid\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v3.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -8360,7 +8348,7 @@ fxgroup
                 add r0.w, r0.w, r1.x
                 mul r0.xy, r0.wwww, r0.xyxx  // theta1<0:NaN:Inf,1:NaN:Inf>
                 
-                #line 361
+                #line 360
                 mul r0.w, r0.z, cb0[84].w
                 add r0.w, r0.w, cb0[84].z
                 mul r1.xy, r0.wwww, r0.xyxx  // thetaBlue<0:NaN:Inf,1:NaN:Inf>
@@ -8375,10 +8363,10 @@ fxgroup
                 dp2 r0.w, r1.zwzz, r1.zwzz
                 ne r0.w, r0.w, l(0.000000)
                 
-                #line 367
+                #line 366
                 sample r1.xyzw, r1.xyxx, t0.xyzw, s0
                 
-                #line 370
+                #line 369
                 mul r1.xy, r0.xyxx, cb0[82].xyxx
                 add r1.xy, r1.xyxx, cb0[81].xyxx  // tcGreen<0:NaN:Inf,1:NaN:Inf>
                 sample r2.xyzw, r1.xyxx, t0.xyzw, s0
@@ -8389,19 +8377,19 @@ fxgroup
                 add r0.xy, r0.xyxx, cb0[81].xyxx  // tcRed<0:NaN:Inf,1:NaN:Inf>
                 sample r3.xyzw, r0.xyxx, t0.xyzw, s0
                 
-                #line 363
+                #line 362
                 if_nz r0.w
                   mov o0.xyzw, l(0,0,0,0)  // OculusPS<0: 0f,1: 0f,2: 0f,3: 0f>
                   ret 
                 endif 
                 
-                #line 367
+                #line 366
                 mov r1.z, r1.z  // blue<0:Inf>
                 
-                #line 371
+                #line 370
                 mov r2.y, r2.y  // green<0:Inf>
                 
-                #line 375
+                #line 374
                 mov r3.x, r3.x  // red<0:Inf>
                 mov o0.w, l(1.000000)  // OculusPS<3: 1f>
                 mov o0.x, r3.x  // OculusPS<0:Inf>

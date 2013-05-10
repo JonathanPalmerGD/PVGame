@@ -206,9 +206,8 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     if(gUseTexure)
 	{
 		// Sample texture.
-		float2 texCoord = (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f);
-		texCoord.x = clamp(texCoord.x, 0.0625, 0.1875);
-		texCoord.y = clamp(texCoord.y, 0.0625, 0.1875);
+		//float2 texCoord = (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f); // Original
+		float2 texCoord = (frac(pin.Tex) * 0.125f) + (pin.AtlasCoord * 0.25f) + float2(0.0625f, 0.0625f);
 		texColor = gDiffuseMap.Sample( samAnisotropic, texCoord);
 	}
 	 
