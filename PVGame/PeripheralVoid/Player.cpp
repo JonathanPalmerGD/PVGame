@@ -25,7 +25,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera->UpdateViewMatrix();
 
 	//Set up the character controller
-	controller = physicsMan->createCharacterController( 1.0f, 1.0f, .1f);
+	controller = physicsMan->createCharacterController( 0.2f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(9.0f);
@@ -266,7 +266,7 @@ void Player::HandleInput(Input* input)
 
 	//Set the camera's position
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
-	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1.3, pos.getZ());
+	XMFLOAT3 cPos(pos.getX(), pos.getY() + 0.737, pos.getZ());
 	playerCamera->SetPosition(cPos);
 	#pragma endregion
 	

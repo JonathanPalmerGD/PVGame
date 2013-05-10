@@ -142,16 +142,16 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	XMStoreFloat4x4(&mProj, P);
 
 #if USE_FRUSTUM_CULLING
-	float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect ) * 0.7f;
-	float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect )  * 0.7f;
+	float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect );
+	float mFarWindowWidth  = 2.0f * mFarZ  * tanf( 0.5f*mAspect );
 	float nearHeight = mNearWindowHeight/2;
 	float farHeight  = mFarWindowHeight /2;
 	if(riftMan->isUsingRift())
 	{
-		mNearWindowWidth *= 1.0f;
-		mFarWindowWidth  *= 2.13f;
-		nearHeight = mNearWindowHeight/2 * 1.0f;
-		farHeight  = mFarWindowHeight /2 * 4.65f;
+		//mNearWindowWidth *= 1.0f;
+		mFarWindowWidth  *= 2.03f;
+		//nearHeight = mNearWindowHeight/2 * 1.0f;
+		farHeight  = mFarWindowHeight /2 * 1.3f;
 	}
 	else
 	{
