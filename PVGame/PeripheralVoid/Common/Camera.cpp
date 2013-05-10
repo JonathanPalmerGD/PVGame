@@ -155,10 +155,10 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	}
 	else
 	{
-		mNearWindowWidth *= 0.7f;
-		mFarWindowWidth  *= 0.7f;
-		nearHeight = mNearWindowHeight/2 * 1.07;
-		farHeight  = mFarWindowHeight /2 * 1.07;
+	//	mNearWindowWidth *= 1f;
+		mFarWindowWidth  *= aspect * .3;
+	//	nearHeight = mNearWindowHeight/2 ;
+		farHeight  *= fovY * 1.55;
 	}
 		btVector3* points = new btVector3[8];
 		//NearPlane
