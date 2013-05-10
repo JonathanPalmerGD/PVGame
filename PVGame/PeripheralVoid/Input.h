@@ -419,6 +419,9 @@ public:
 	/*
 	/* ****************************************************************************************************/
 
+	//If the index game pad is connected.
+	bool gamepadConnected(int);
+
 	// Save Gamepad Button down state.
     void gamepadButtonDown(int);
 

@@ -746,7 +746,12 @@ void PVGame::ListenSelectorChange()
 		#pragma region END
 		if(gameState == END)
 		{
-
+			if(selector == 0)
+			{
+				selector = 3;
+				gameState = MENU;
+				return;
+			}
 		}
 		#pragma endregion
 		#pragma region INSTRUCTIONS
@@ -806,6 +811,10 @@ void PVGame::DrawScene()
 	UINT32 color2 = 0xffff0000;
 	UINT32 color3 = 0xff00ff00;
 	UINT32 color4 = 0xff000000;
+	float lgSize = .10f * cHeight;
+	float xmdSize = .05f * cHeight;
+	float medSize = .04f * cHeight;
+	float smlSize = .03f * cHeight;
 	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 	float colortwo[4] = {0.2f, 0.7f, 0.7f, 1.0f};
 	float colorthree[4] = {0.4f, 0.3f, 0.1f, 1.0f};
@@ -816,40 +825,40 @@ void PVGame::DrawScene()
 	#pragma region MENU
 	case MENU:
 		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
-		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("By Entire Team is Babies", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .25f, color1);
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Play", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .30f, color2);
 		}
 		else
-			renderMan->DrawString("  Play", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .30f, color4);
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Instructions", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Instructions", smlSize, cWidth * .20f, cHeight * .35f, color2);
 		}
 		else
-			renderMan->DrawString("  Instructions", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+			renderMan->DrawString("  Instructions", smlSize, cWidth * .20f, cHeight * .35f, color4);
 		if(selector == 2)
 		{
-			renderMan->DrawString(">Options", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(">Options", smlSize, cWidth * .20f, cHeight * .40f, color2);
 		}
 		else
-			renderMan->DrawString("  Options", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+			renderMan->DrawString("  Options", smlSize, cWidth * .20f, cHeight * .40f, color4);
 		if(selector == 3)
 		{
-			renderMan->DrawString(">Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+			renderMan->DrawString(">Credits", smlSize, cWidth * .20f, cHeight * .45f, color2);
 		}
 		else
-			renderMan->DrawString("  Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
+			renderMan->DrawString("  Credits", smlSize, cWidth * .20f, cHeight * .45f, color4);
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Exit", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Exit", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		
 		//renderMan->DrawString(L"Peripheral Void", 128.0f, 100.0f, 50.0f, 0xff0099ff);
 		//renderMan->DrawString(L"By Entire Team is Babies", 65.0f, 110.0f, 200.0f, 0xff0099ff);
@@ -867,124 +876,140 @@ void PVGame::DrawScene()
 	#pragma region OPTION
 	case OPTION:
 		renderMan->ClearTargetToColor(colortwo); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
-		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Options!", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("Options!", medSize, cWidth * .20f, cHeight * .25f, color1);
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Option 1", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Option 1", smlSize, cWidth * .20f, cHeight * .30f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 1", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString("  Option 1", smlSize, cWidth * .20f, cHeight * .30f, color4);
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Option 2", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Option 2", smlSize, cWidth * .20f, cHeight * .35f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 2", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+			renderMan->DrawString("  Option 2", smlSize, cWidth * .20f, cHeight * .35f, color4);
 		if(selector == 2)
 		{
-			renderMan->DrawString(">Option 3", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(">Option 3", smlSize, cWidth * .20f, cHeight * .40f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 3", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+			renderMan->DrawString("  Option 3", smlSize, cWidth * .20f, cHeight * .40f, color4);
 		if(selector == 3)
 		{
-			renderMan->DrawString(">Option 4", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+			renderMan->DrawString(">Option 4", smlSize, cWidth * .20f, cHeight * .45f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 4", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
+			renderMan->DrawString("  Option 4", smlSize, cWidth * .20f, cHeight * .45f, color4);
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
 	#pragma region INSTRUCTIONS
 	case INSTRUCTIONS:
 		renderMan->ClearTargetToColor(color); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
-		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Instructions!", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
+/*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
+		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
+		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 20, color3);*/
+		renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
+		renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
+		renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
+		renderMan->DrawString("Instructions", medSize, cWidth * .20f, cHeight * .07f, color1);
+		//If controller is connected
+		if(input->gamepadConnected(0))
+		{
+			renderMan->DrawString("Right Analog to look!", medSize, cWidth * .20f, cHeight * .15f, color4);
+			renderMan->DrawString("Left Analog to move your character around.", medSize, cWidth * .20f, cHeight * .20f, color4);
+			renderMan->DrawString("Press A to jump.", medSize, cWidth * .20f, cHeight * .25f, color4);
+		}
+		else
+		{
+			renderMan->DrawString("Use the mouse to look!", medSize, cWidth * .20f, cHeight * .15f, color4);
+			renderMan->DrawString("Use WASD to move your character around.", medSize, cWidth * .20f, cHeight * .20f, color4);
+			renderMan->DrawString("Press Spacebar to jump.", medSize, cWidth * .20f, cHeight * .25f, color4);
+		}
+		
+		//        Imagine living in a world
+		//Where things existed whether or not
+		//    they were being directly observed
+
+		renderMan->DrawString("          Imagine living in a world", medSize, cWidth * .20f, cHeight * .35f, color4);
+		renderMan->DrawString("    Where things existed whether or not", medSize, cWidth * .20f, cHeight * .40f, color4);
+		renderMan->DrawString("      they were being directly observed", medSize, cWidth * .20f, cHeight * .45f, color4);
+
+
+		//renderMan->DrawString("Object Permanence is a psychology concept", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+		//renderMan->DrawString("Babies do not know that objects continue to exist when not directly observed", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+		//renderMan->DrawString("Imagine what it would be like if parts of the world", medSize, cWidth * .20f, cHeight * .40f, color4);
+		//renderMan->DrawString("stopped existing when you weren't looking at them", medSize, cWidth * .20f, cHeight * .45f, color4);
+
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Next", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Next", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Next", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString("  Next", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Play", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .54f, color2);
 		}
 		else
-			renderMan->DrawString("  Play", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .54f, color4);
 		if(selector == 2)
 		{
-			renderMan->DrawString(">Menu", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .58f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
-		/*if(selector == 3)
-		{
-			renderMan->DrawString(">Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
-		}
-		else
-			renderMan->DrawString("  Credits", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
-		if(selector == 4)
-		{
-			renderMan->DrawString(">Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
-		}
-		else
-			renderMan->DrawString("  Exit", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);*/
-
-		//renderMan->DrawString(L"Peripheral Void", 128.0f, 100.0f, 50.0f, 0xff0099ff);
-		//renderMan->DrawString(L"By Entire Team is Babies", 65.0f, 110.0f, 200.0f, 0xff0099ff);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .58f, color4);
+		
 		renderMan->EndDrawMenu();
-
 		break;
 	#pragma endregion
 	#pragma region END
 	case END:
 		renderMan->ClearTargetToColor(colorthree); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
-		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Credits!", cHeight * .04f, cWidth * .20f, cHeight * .25f, color1);
-		if(selector == 0)
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
+		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .25f, color1);
+		if(selector == 5)
 		{
-			renderMan->DrawString(">Thanks Chris Cascioli", cHeight * .04f, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Thanks Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color2);
 		}
 		else
-			renderMan->DrawString("  Thanks Chris Cascioli", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
-		if(selector == 1)
+			renderMan->DrawString("  Thanks Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color4);
+		if(selector == 6)
 		{
-			renderMan->DrawString(">Thanks Jen Stranton", cHeight * .04f, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Thanks Jen Stranton", smlSize, cWidth * .20f, cHeight * .40f, color2);
 		}
 		else
-			renderMan->DrawString("  Thanks Jen Stranton", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
+			renderMan->DrawString("  Thanks Jen Stranton", smlSize, cWidth * .20f, cHeight * .40f, color4);
 		if(selector == 2)
 		{
-			renderMan->DrawString(">Thanks Oculus", cHeight * .04f, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(">Thanks Oculus", smlSize, cWidth * .20f, cHeight * .44f, color2);
 		}
 		else
-			renderMan->DrawString("  Thanks Oculus", cHeight * .04f, cWidth * .20f, cHeight * .40f, color4);
+			renderMan->DrawString("  Thanks Oculus", smlSize, cWidth * .20f, cHeight * .44f, color4);
 		if(selector == 3)
 		{
-			renderMan->DrawString(">Thanks SFXR", cHeight * .04f, cWidth * .20f, cHeight * .45f, color2);
+			renderMan->DrawString(">Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color2);
 		}
 		else
-			renderMan->DrawString("  Thanks SFXR", cHeight * .04f, cWidth * .20f, cHeight * .45f, color4);
-		if(selector == 4)
+			renderMan->DrawString("  Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color4);
+		if(selector == 0 || selector == 1)
 		{
-			renderMan->DrawString(">Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .52f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", cHeight * .04f, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .52f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion

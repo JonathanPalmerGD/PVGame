@@ -395,6 +395,21 @@ void Input::vibrateControllers(float frameTime)
 	/*
 	/* ****************************************************************************************************/
 
+
+//If the index game pad is connected.
+bool Input::gamepadConnected(int i)
+{
+	// make sure key code is within buffer range
+	if (controllers[i].connected)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // Set that the corresponding gamepad button is down.
 void Input::gamepadButtonDown(int buttonIndex)
 {

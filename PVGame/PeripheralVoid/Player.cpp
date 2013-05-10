@@ -44,7 +44,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	renderMan = rm;
 
 	listener = new AudioListener();
-	//listener->mute();
+	listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
 
@@ -151,16 +151,26 @@ void Player::HandleInput(Input* input)
 		// Now check for camera input.
 		if (input->isCameraUpKeyDown())
 		{
-			playerCamera->Pitch(-camLookSpeed / 2);
+			float angle = -camLookSpeed/2;
+			if(input->getGamepadThumbRY(0) > GAMEPAD_THUMBSTICK_DEADZONE)
+				angle *= ((float)(input->getGamepadThumbRY(0)) / 30000.0f);
+
+			playerCamera->Pitch(angle);
 		}
 		if (input->isCameraDownKeyDown())
 		{
-			playerCamera->Pitch(camLookSpeed/ 2);
+			float angle = camLookSpeed/2;
+			if(input->getGamepadThumbRY(0) > GAMEPAD_THUMBSTICK_DEADZONE)
+				angle *= -((float)(input->getGamepadThumbRY(0)) / 30000.0f);
+
+			playerCamera->Pitch(angle);
 		}
 
 		if (input->isCameraLeftKeyDown())
 		{
 			float angle = -camLookSpeed / 2;
+			if(input->getGamepadThumbRX(0) > GAMEPAD_THUMBSTICK_DEADZONE)
+				angle *= -((float)(input->getGamepadThumbRX(0)) / 30000.0f);
 			playerCamera->RotateY(angle);
 			XMMATRIX R = XMMatrixRotationY(angle);
 
@@ -172,6 +182,8 @@ void Player::HandleInput(Input* input)
 		if (input->isCameraRightKeyDown())
 		{
 			float angle = camLookSpeed / 2;
+			if(input->getGamepadThumbRX(0) > GAMEPAD_THUMBSTICK_DEADZONE)
+				angle *= ((float)(input->getGamepadThumbRX(0)) / 30000.0f);
 			playerCamera->RotateY(angle);
 			XMMATRIX R = XMMatrixRotationY(angle);
 
@@ -232,10 +244,25 @@ void Player::HandleInput(Input* input)
 	{
 		currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus))) * (1.0f - medusaPercent);
 	}
-	controller->setWalkDirection(direction * currentPlayerSpeed);
+
+	//Scale speed of player based on thumbsticks
+	float xScale = 1.0f;
+	float zScale = 1.0f;
+	if(input->getGamepadThumbLX(0) > GAMEPAD_THUMBSTICK_DEADZONE)
+		xScale = ((float)(input->getGamepadThumbLX(0)) / 30000.0f);
+	if(input->getGamepadThumbLY(0) > GAMEPAD_THUMBSTICK_DEADZONE)
+		zScale = ((float)(input->getGamepadThumbLY(0)) / 30000.0f);
+
+	//calculate final speed
+	currentPlayerSpeed = currentPlayerSpeed * sqrt((xScale * xScale) + (zScale * zScale));
+	//if(currentPlayerSpeed > .18203889f)//clamp speed
+	//	currentPlayerSpeed = 0.18203889f;
+	direction *= currentPlayerSpeed;
+
+	controller->setWalkDirection(direction);
 
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
-	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1, pos.getZ());
+	XMFLOAT3 cPos(pos.getX(), pos.getY() + 1.3, pos.getZ());
 	playerCamera->SetPosition(cPos);
 
 	#pragma region Audio
