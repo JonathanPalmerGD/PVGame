@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM) 
-	: PIXELS_PER_SEC(10.0f), LOOK_SPEED(3.5f)
+	: PIXELS_PER_SEC(3.5f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
@@ -25,7 +25,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera->UpdateViewMatrix();
 
 	//Set up the character controller
-	controller = physicsMan->createCharacterController( 0.4f, 1.0f, .1f);
+	controller = physicsMan->createCharacterController( 1.0f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(9.0f);
@@ -75,7 +75,8 @@ void Player::Update(float dt, Input* input)
 		}
 	}
 	
-	playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
+	//playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
+	playerSpeed = dt * PIXELS_PER_SEC;
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
 }
@@ -217,13 +218,13 @@ void Player::HandleInput(Input* input)
 	btVector3 r(right.x, right.y, right.z);
 
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
-		direction += 3 * forward / 4;
+		direction += forward;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
-		direction -= 3 * forward / 4;
+		direction -= forward;
 	if(input->isPlayerRightKeyDown()) //if(input->isPlayerRightKeyDown() && !medusaStatus)
-		direction += 3 * r / 4;
+		direction += r;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
-		direction -= 3 * r / 4;
+		direction -= r;
 
 	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
