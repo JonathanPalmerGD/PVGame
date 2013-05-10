@@ -57,5 +57,9 @@
 			<OffsetU>3</OffsetU>
 			<OffsetV>1</OffsetV>
 		</Texture>
+		<Texture name="boat">
+			<OffsetU>3</OffsetU>
+			<OffsetV>2</OffsetV>
+		</Texture>
   </Atlas>
 </TextureList>

@@ -723,7 +723,7 @@ class RenderManager
 			}
 		}
 
-		void LoadFile(wstring fileName, string fileNameS)
+		void LoadFile(wstring fileName, string fileNameS) //, bool RHCoordSys
 		{
 			FileLoader loaderMan = FileLoader();
 			ObjModel objModel;

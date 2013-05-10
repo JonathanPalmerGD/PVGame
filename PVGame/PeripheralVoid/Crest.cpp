@@ -114,6 +114,9 @@ string Crest::GetCrestTypeString(CREST_TYPE aType)
 		case HADES:
 			return "Hades Crest";
 			break;
+		case WIN:
+			return "Win Crest";
+			break;
 	}
 	return "Unknown Crest";
 }

@@ -76,6 +76,7 @@ bool PVGame::Init()
 	//Test load a cube.obj
 	//renderMan->LoadFile(L"crest.obj", "crest");
 	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
+	renderMan->LoadFile(L"boat.obj", "boat");
 
 	renderMan->BuildBuffers();
 	renderMan->SetRiftMan(riftMan);
