@@ -172,7 +172,7 @@ function onTileClick(evt)
 	{
 		case "wall":
 			this.setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
-			this.appendChild(document.createTextNode("W"));
+			this.appendChild(document.createTextNode("W|" + document.getElementById("wallHeight").value));
 			this.appendChild(document.createComment("W|" + document.getElementById("wallHeight").value));
 			break;
 		case "floor":
@@ -191,7 +191,7 @@ function onTileClick(evt)
 			break;
 		case "cube":
 			this.setAttribute("style", "background-color: #862125; color: #FFFFFF;");
-			this.appendChild(document.createTextNode("c"));
+			this.appendChild(document.createTextNode("c" + document.getElementById("cubeHeight").value));
 			this.appendChild(document.createComment("c|" + document.getElementById("cubeHeight").value + "|" + document.getElementById("ucTranslateX").value +
 								  "|" + document.getElementById("ucTranslateY").value + "|" + document.getElementById("ucTranslateZ").value +
 								  "|" + document.getElementById("cubeFloor").checked));
@@ -276,14 +276,14 @@ function loadXML()
 		{
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].innerHTML = "";
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
-			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("W"));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("W|" + yLength));
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("W|" + yLength));
 			
 			for (var k = 1; k < zLength; k++)
 			{
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].innerHTML = "";
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
-				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("W"));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("W|" + yLength));
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("W|" + yLength));
 			}
 		}	
@@ -364,7 +364,7 @@ function loadXML()
 			
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].innerHTML = "";
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #862125; color: #FFFFFF;");
-			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("c"));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("c" + yLength));
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("c|" + yLength + "|" + translateX + "|" + translateY + "|" + translateZ + "|" + cubeFloor));
 			
 			for (var k = 1; k < zLength; k++)
@@ -376,7 +376,7 @@ function loadXML()
 				
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].innerHTML = "";
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #862125; color: #FFFFFF;");
-				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("c"));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("c" + yLength));
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("c|" + yLength + "|" + translateX + "|" + translateY + "|" + translateZ + "|" + cubeFloor));
 			}
 		}	

@@ -25,6 +25,7 @@ class Player
 		void resetStatuses();
 		void increaseMedusaPercent();
 		void increaseWinPercent();
+		void resetWinPercent();
 
 		void setMobilityStatus(bool newStatus);
 		void setMedusaStatus(bool newStatus);

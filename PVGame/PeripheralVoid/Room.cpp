@@ -11,7 +11,11 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 	tinyxml2::XMLDocument doc;
 
 	doc.LoadFile(xmlFile);
-
+	if(doc.ErrorID() != 0)
+	{
+		mapFile = NULL;
+		return;
+	}
 	// Set initial room dimensions
 	width = -100.0f;
 	depth = -100.0f;
@@ -433,32 +437,33 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 		case MEDUSA:
 			crestObj = new Crest("medusacrest", "MedusaCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case LEAP:
 			crestObj = new Crest("medusacrest", "LeapCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case MOBILITY:
 			crestObj = new Crest("medusacrest", "MobilityCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case UNLOCK:
 			crestObj = new Crest("unlockcrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case HADES:
 			crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->scale(crestVector[i]->xLength, crestVector[i]->yLength, crestVector[i]->zLength);
+			//crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			break;
 		case WIN:
 			crestObj = new Crest("boat", "WinCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		}
@@ -505,44 +510,50 @@ void Room::loadNeighbors(vector<Room*> loadedRooms)
 			Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
 			Wall* roomEntrance;
 
-			for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+			if(tmpRoom->getFile() == NULL)
 			{
-				if (tmpRoom->getExits()[j]->file == mapFile)
-					roomEntrance = tmpRoom->getExits()[j];
+				delete tmpRoom;
 			}
-
-			if (exitVector[i]->row == 0)
+			else
 			{
-				offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-				offsetZ -= tmpRoom->depth;
+				for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+				{
+					if (tmpRoom->getExits()[j]->file == mapFile)
+						roomEntrance = tmpRoom->getExits()[j];
+				}
+
+				if (exitVector[i]->row == 0)
+				{
+					offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+					offsetZ -= tmpRoom->depth;
+				}
+
+				if (exitVector[i]->row == depth - 1)
+				{
+					offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+					offsetZ += depth;
+				}
+
+				if (exitVector[i]->col == 0)
+				{
+					offsetX -= tmpRoom->width;
+					offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+				}
+
+				if (exitVector[i]->col == width - 1)
+				{
+					offsetX += width;
+					offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+				}
+
+				tmpRoom->setX(offsetX);
+				tmpRoom->setZ(offsetZ);
+
+				tmpRoom->loadRoom(offsetX, offsetZ);
+
+				neighbors.push_back(tmpRoom);
 			}
-
-			if (exitVector[i]->row == depth - 1)
-			{
-				offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-				offsetZ += depth;
-			}
-
-			if (exitVector[i]->col == 0)
-			{
-				offsetX -= tmpRoom->width;
-				offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-			}
-
-			if (exitVector[i]->col == width - 1)
-			{
-				offsetX += width;
-				offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-			}
-
-			tmpRoom->setX(offsetX);
-			tmpRoom->setZ(offsetZ);
-
-			tmpRoom->loadRoom(offsetX, offsetZ);
-
-			neighbors.push_back(tmpRoom);
 		}
-
 		else
 			neighbors.push_back(loadedRoom);
 	}

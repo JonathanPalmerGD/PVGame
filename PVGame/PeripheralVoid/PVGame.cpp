@@ -285,6 +285,9 @@ void PVGame::UpdateScene(float dt)
 
 		if (player->getWinPercent() >= 0.99f)
 		{
+			player->resetWinPercent();
+			currentRoom = loadedRooms[0];
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 			gameState = END;
 			return;
 		}

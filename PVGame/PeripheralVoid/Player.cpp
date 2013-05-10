@@ -342,7 +342,6 @@ Camera* Player::GetRightCamera()
 	return rightCamera;
 }
 
-
 void Player::resetStatuses() 
 {	
 	if(!medusaStatus)
@@ -370,6 +369,11 @@ void Player::increaseWinPercent()
 	{
 		winPercent += 0.005;
 	}
+}
+
+void Player::resetWinPercent()
+{
+	winPercent = 0.0f;
 }
 
 void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
