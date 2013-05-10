@@ -342,6 +342,7 @@ Camera* Player::GetRightCamera()
 	return rightCamera;
 }
 
+
 void Player::resetStatuses() 
 {	
 	if(!medusaStatus)

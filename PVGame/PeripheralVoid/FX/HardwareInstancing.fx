@@ -8,6 +8,7 @@
  
 #define MAX_LIGHTS 10
 #define MAX_GLOW_RANGE 27 // How many "units" away from the eye an object must be to achieve full glow.
+#define MAX_ENVIRONMENTS 1 // How many different texture atlas's we are using.
 #define GLOW_RANGE_POWER (0.000000000)
 #define GLOW_ANGLE_POWER (1.000000000)
 
@@ -56,6 +57,7 @@ cbuffer cbPerObject
 
 // Nonnumeric values cannot be added to a cbuffer.
 Texture2D gDiffuseMap;
+Texture2D environmentAtlas[MAX_ENVIRONMENTS];
 
 SamplerState samAnisotropic
 {
@@ -98,12 +100,13 @@ struct VertexIn
 struct VertexOut
 {
 	float4 PosH			: SV_POSITION;
+	float4 GlowColor	: GLOWCOLOR;
+	Material Material	: MATERIAL;
+	float2 Tex			: TEXCOORD;
+	float2 AtlasCoord	: ATLASCOORD;
+	float AtlasIndex	: ATLASINDEX;
     float3 PosW			: POSITION;
     float3 NormalW		: NORMAL;
-	float2 Tex			: TEXCOORD;
-	Material Material	: MATERIAL;
-	float2 AtlasCoord	: ATLASCOORD;
-	float4 GlowColor	: GLOWCOLOR;
 };
 
 struct BlurVertexOut
@@ -133,6 +136,9 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
 	vout.GlowColor = vin.GlowColor;
+
+	if (isUsingAtlas)
+		vout.AtlasIndex = vin.TexScale.z;
 	return vout;
 }
 
@@ -208,7 +214,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 		// Sample texture.
 		//float2 texCoord = (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f); // Original
 		float2 texCoord = (frac(pin.Tex) * 0.125f) + (pin.AtlasCoord * 0.25f) + float2(0.0625f, 0.0625f);
-		texColor = gDiffuseMap.Sample( samAnisotropic, texCoord);
+		texColor = environmentAtlas[pin.AtlasIndex].Sample( samAnisotropic, texCoord);
 	}
 	 
 	//

@@ -340,7 +340,13 @@ class RenderManager
 			TexTransform->SetMatrix(reinterpret_cast<const float*>(&mTexTransform));
 			// Bind the render target view and depth/stencil view to the pipeline.
 			
-			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]); // Set texture atlas once for now.
+			//mfxTextureAtlasVar->SetResourceArray(&shaderResourceViewsMap["BasicAtlas"], 0, 1); // Set texture atlas once for now.
+			if (totalTextureAtlas == 0)
+			{
+				mfxTextureAtlasVar->SetResourceArray(&shaderResourceViewsMap["BasicAtlas"], 0, 1); // Set texture atlas once for now.
+				++totalTextureAtlas;
+			}
+
 			md3dImmediateContext->IASetInputLayout(mInputLayout);
 			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			
@@ -352,7 +358,7 @@ class RenderManager
 				RenderToEye(riftMan->getLeftEyeParams(), aCamera, leftCamera, rightCamera);
 
 				md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Distortion Texture"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
-				mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
+				//mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["BasicAtlas"]);
 				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
 				RenderToEye(riftMan->getRightEyeParams(), aCamera, leftCamera, rightCamera);
 				TexTransform->SetMatrix(reinterpret_cast<const float*>(&XMMatrixIdentity()));
@@ -693,6 +699,7 @@ class RenderManager
 			mfxSpotLight			= mFX->GetVariableByName("gSpotLight");
 			mfxMaterial				= mFX->GetVariableByName("gMaterial");
 			mfxDiffuseMapVar		= mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+			mfxTextureAtlasVar		= mFX->GetVariableByName("environmentAtlas")->AsShaderResource();
 			mfxSpecMapVar			= mFX->GetVariableByName("gSpecMap")->AsShaderResource();
 			mfxNumLights			= mFX->GetVariableByName("numLights");
 			mfxBlurColor			= mFX->GetVariableByName("gBlurColor")->AsVector();
@@ -1009,6 +1016,7 @@ class RenderManager
 		map<std::string, unsigned int> instanceCounts;
 
 		ID3DX11EffectShaderResourceVariable* mfxDiffuseMapVar;
+		ID3DX11EffectShaderResourceVariable* mfxTextureAtlasVar;
 		ID3DX11EffectShaderResourceVariable* mfxSpecMapVar;
 
 		ID3D11InputLayout* mInputLayout;
@@ -1028,6 +1036,7 @@ class RenderManager
 		int mClientWidth;
 		int mClientHeight;
 		int blurCount;
+		int totalTextureAtlas;
 
 		bool mEnable4xMsaa;
 		bool usingDX11; // If false, we're using DX10 for now.
@@ -1078,6 +1087,7 @@ class RenderManager
 			mfxHmdWarpParam = nullptr;
 			mfxChromAbParam = nullptr;
 			CurDepthState = nullptr;
+			mfxTextureAtlasVar = nullptr;
 			sky = nullptr;
 
 			md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
@@ -1087,6 +1097,7 @@ class RenderManager
 			
 			m4xMsaaQuality = 0;
 			mEnable4xMsaa = 0;
+			totalTextureAtlas = 0;
 			blurCount = 1; // Set default to 1 blur when blurring.
 
 			// Set world-view-projection matrix pieces to the identity matrix.
