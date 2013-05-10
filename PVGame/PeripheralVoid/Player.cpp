@@ -313,10 +313,13 @@ void Player::OnResize(float aspectRatio)
 	if(riftMan->isUsingRift())
 	{
 		riftMan->calcStereo(); //Poll for rift
-		playerCamera->SetLens(riftMan->getStereo().GetYFOVRadians(), riftMan->getStereo().GetAspect(), 0.01f, 1000.0f);
+		playerCamera->SetLens(riftMan->getStereo().GetYFOVRadians(), riftMan->getStereo().GetAspect(), 0.01f, 100.0f);
 	}
 	else
-		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 1000.0f);
+	{
+		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 100.0f);
+		playerCamera->setRotation(EyeYaw-yaw, EyePitch, 0);
+	}
 	
 	playerCamera->UpdateViewMatrix();
 }

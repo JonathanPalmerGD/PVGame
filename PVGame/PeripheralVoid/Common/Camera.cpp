@@ -14,7 +14,7 @@ Camera::Camera(PhysicsManager* pM, RiftManager* rm, float aspect)
 	physicsMan = pM;
 	frustumBody = NULL;
 	body = NULL;
-	SetLens(0.25f*MathHelper::Pi, aspect, 0.01f, 1000.0f);
+	SetLens(0.25f*MathHelper::Pi, aspect, 0.01f, 100.0f);
 }
 
 Camera::~Camera()
