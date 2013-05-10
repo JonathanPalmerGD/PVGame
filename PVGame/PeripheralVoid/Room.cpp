@@ -309,13 +309,13 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->centerY = (float)atof(centerY);
 		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->xRotation = 0.0f;
-		tempWall->yRotation = 3.14f;
+		tempWall->yRotation = 0.0f;
 		tempWall->zRotation = 0.0f;
 		tempWall->direction = dir;
 		tempWall->file = "";
 		tempWall->effect = static_cast<CREST_TYPE>(atoi(effect));
 		tempWall->target = target;
-	
+
 		if (strcmp(placement, "platform") == 0)
 			tempWall->yLength *= 0.1f;
 
@@ -457,7 +457,7 @@ void Room::loadRoom(float xPos, float zPos)
 			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			break;
 		case WIN:
-			crestObj = new Crest("Cube", "Snow", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj = new Crest("boat", "WinCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;

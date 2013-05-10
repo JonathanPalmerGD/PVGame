@@ -97,7 +97,7 @@ bool FileLoader::LoadFile( ID3D11Device* device,
                     float vtcu, vtcv;
                     fileIn >> vtcu >> vtcv;     // Store next two types
 
-                    if(isRHCoordSys)            // If model is from an RH Coord System
+                    if(!isRHCoordSys)            // If model is from an RH Coord System
                         vertTexCoord.push_back(XMFLOAT2(vtcu, 1.0f-vtcv));  // Reverse the "v" axis
                     else
                         vertTexCoord.push_back(XMFLOAT2(vtcu, vtcv));   

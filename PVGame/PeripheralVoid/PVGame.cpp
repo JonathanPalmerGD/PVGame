@@ -79,6 +79,7 @@ bool PVGame::Init()
 	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
 	renderMan->LoadFile(L"unlockcrest.obj", "unlockcrest");
 	//renderMan->LoadFile(L"caelhammer.obj", "caelhammer");
+	renderMan->LoadFile(L"boat.obj", "boat");
 
 	renderMan->BuildBuffers();
 	renderMan->SetRiftMan(riftMan);
@@ -345,7 +346,7 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		//If the player falls of the edge of the world, respawn in current room
-		if (player->getPosition().y < -160)
+		if (player->getPosition().y < -20)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		#pragma endregion
 		#pragma region Player Statuses and Vision Affected Object Updating

@@ -343,7 +343,7 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(0, 5, 0));
-//btCapsuleShape* capsule = new btCapsuleShape(radius, height);
+	//btCapsuleShape* capsule = new btCapsuleShape(radius, height);
 	btCylinderShape* capsule = new btCylinderShape(btVector3(radius, height/2.0f, radius));
 	btPairCachingGhostObject* ghost = new btPairCachingGhostObject();
 	ghost->setCollisionShape(capsule);

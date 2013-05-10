@@ -33,6 +33,11 @@
 		<DiffuseMap>unlockcrest</DiffuseMap>
 		<Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
 	</Material>
+  <Material name="WinCrest">
+    <SurfaceMaterial>Basic</SurfaceMaterial>
+    <DiffuseMap>boat</DiffuseMap>
+    <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
+  </Material>
 	<Material name="Snow">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>snow</DiffuseMap>
@@ -91,6 +96,12 @@
   <Material name="Unlock Crest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>WoodCrate01</DiffuseMap>
+    <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
+  </Material>
+
+  <Material name="Win Crest">
+    <SurfaceMaterial>Basic</SurfaceMaterial>
+    <DiffuseMap>boat</DiffuseMap>
     <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
   </Material>
 
