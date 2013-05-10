@@ -261,8 +261,9 @@ struct InstancedData
 {
 	XMFLOAT4X4 World;
 	SurfaceMaterial SurfMaterial;
-	XMFLOAT2 AtlasC;
 	XMFLOAT4 GlowColor;
+	XMFLOAT4 TexScale;
+	XMFLOAT2 AtlasC;
 	bool isRendered;
 };
 

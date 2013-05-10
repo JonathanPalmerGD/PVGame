@@ -416,5 +416,7 @@ Player::~Player(void)
 	physicsMan->removeCharacterController(controller);
 	delete listener;
 	delete playerCamera;
+	//delete leftCamera;
+	//delete rightCamera;
 	delete audioSource;
 }

@@ -90,8 +90,9 @@ struct VertexIn
 	row_major float4x4 World	: WORLD;
 	Material Material			: MATERIAL;
 	uint InstanceId				: SV_InstanceID;
-	float2 AtlasCoord			: ATLASCOORD;
 	float4 GlowColor			: GLOWCOLOR;
+	float4 TexScale				: TEXSCALE;
+	float2 AtlasCoord			: ATLASCOORD;
 };
 
 struct VertexOut
@@ -121,12 +122,14 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 		
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
-	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.x),
-							(vin.Tex.y / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.y))
-							: vin.Tex;
 
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex   = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+	if (vin.TexScale.w == 1.0f)
+	{
+		vout.Tex.x *= vin.TexScale.x;
+		vout.Tex.y *= vin.TexScale.y;
+	}
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
 	vout.GlowColor = vin.GlowColor;
@@ -203,7 +206,9 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     if(gUseTexure)
 	{
 		// Sample texture.
-		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f));
+		//float2 texCoord = (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f); // Original
+		float2 texCoord = (frac(pin.Tex) * 0.125f) + (pin.AtlasCoord * 0.25f) + float2(0.0625f, 0.0625f);
+		texColor = gDiffuseMap.Sample( samAnisotropic, texCoord);
 	}
 	 
 	//

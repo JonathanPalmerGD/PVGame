@@ -103,6 +103,11 @@ void GameObject::scale(float x, float y, float z)
 	}
 }
 
+void GameObject::SetTexScale(float x, float y, float z, float w)
+{
+	texScale = XMFLOAT4(x, y, z, w);
+}
+
 void GameObject::rotate(float x, float y, float z, float w)
 {
 	if(rigidBody!= NULL)
@@ -174,7 +179,7 @@ void GameObject::changeCollisionLayer(short layer)
 		btVector3 position = t.getOrigin();
 
 		physicsMan->removeRigidBodyFromWorld(rigidBody);
-		rigidBody = physicsMan->createRigidBody(meshKey, position.getX(), position.getY(), position.getZ(), localScale.x,		         localScale.y, localScale.z, mass);
+		rigidBody = physicsMan->createRigidBody(meshKey, position.getX(), position.getY(), position.getZ(), localScale.x, localScale.y, localScale.z, mass);
 		rigidBody->setUserPointer(this);
 		physicsMan->addRigidBodyToWorld(rigidBody, layer);
 	}

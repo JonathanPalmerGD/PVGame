@@ -384,6 +384,7 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 			GameObject* wallObj = new GameObject("Cube", "Hedge", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
+			wallObj->SetTexScale(max(wallRowCol[i][j]->xLength, wallRowCol[i][j]->zLength), wallRowCol[i][j]->yLength, 0.0f, 1.0f);
 			gameObjs.push_back(wallObj);
 		}
 	}
@@ -392,6 +393,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		GameObject* floorObj = new GameObject("Cube", "Floor", physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, WORLD);
 		floorObj->scale(floorVector[i]->xLength, 1.0f, floorVector[i]->zLength);
+		floorObj->SetTexScale(floorVector[i]->xLength, floorVector[i]->zLength, 0.0f, 1.0f);
 		gameObjs.push_back(floorObj);
 	}
 
@@ -399,6 +401,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		MovingObject* cubeObj = new MovingObject("Cube", "Rock", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
 		cubeObj->scale(cubeVector[i]->xLength, cubeVector[i]->yLength, cubeVector[i]->zLength);
+		cubeObj->SetTexScale(cubeVector[i]->xLength, cubeVector[i]->zLength, 0.0f, 1.0f);
 		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos));
 		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, (cubeVector[i]->yLength / 2) + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
@@ -431,26 +434,32 @@ void Room::loadRoom(float xPos, float zPos)
 		case MEDUSA:
 			crestObj = new Crest("medusacrest", "MedusaCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case LEAP:
 			crestObj = new Crest("medusacrest", "LeapCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case MOBILITY:
 			crestObj = new Crest("medusacrest", "MobilityCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case UNLOCK:
 			crestObj = new Crest("unlockcrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case HADES:
 			crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->scale(crestVector[i]->xLength, crestVector[i]->yLength, crestVector[i]->zLength);
+			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			break;
 		case WIN:
 			crestObj = new Crest("Cube", "Snow", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		}
 

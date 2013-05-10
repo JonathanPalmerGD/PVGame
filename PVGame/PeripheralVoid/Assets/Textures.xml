@@ -1,5 +1,5 @@
 <TextureList>
-  <Atlas name="BasicAtlas" filename="Textures/TextureAtlas01.dds" type="Diffuse">
+  <Atlas name="BasicAtlas" filename="Textures/TextureAtlas01Super.dds" type="Diffuse">
 	  <Texture name="Wall01">
       <OffsetU>0</OffsetU>
       <OffsetV>0</OffsetV>
