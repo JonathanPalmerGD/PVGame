@@ -564,25 +564,25 @@ bool Input::isPlayerRightKeyDown() const
 // True if the player hits right arrow or right on the right joystick on gamepad.
 bool Input::isCameraRightKeyDown() const
 {
-	return (isKeyDown(VK_RIGHT) || (getGamepadThumbRX(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );  
+	return (isKeyDown(VK_RIGHT) );  
 }
 
 // True if the player hits left arrow or left on the right joystick on gamepad.
 bool Input::isCameraLeftKeyDown() const
 {
-	return (isKeyDown(VK_LEFT) || (getGamepadThumbRX(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown(VK_LEFT)  );
 }
 
 // True if the player hits up arrow or up on the right joystick on gamepad.
 bool Input::isCameraUpKeyDown() const
 {
-	return (isKeyDown(VK_UP) || (getGamepadThumbRY(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown(VK_UP) );
 }
 
 // True if the player hits down arrow or down on the right joystick on gamepad.
 bool Input::isCameraDownKeyDown() const
 {
-	return (isKeyDown(VK_DOWN) ||  (getGamepadThumbRY(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown(VK_DOWN));
 }
 
 

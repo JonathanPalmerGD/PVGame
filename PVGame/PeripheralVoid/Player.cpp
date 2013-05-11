@@ -116,13 +116,11 @@ void Player::HandleInput(Input* input)
 		//(its much nicer than having to turn your body when trying to play)
 		if (input->isCameraRightKeyDown())
 		{
-			float angle = camLookSpeed / 2;
-			yaw += angle;
+			yaw += camLookSpeed / 2;
 		}
 		if (input->isCameraLeftKeyDown())
 		{
-			float angle = -camLookSpeed / 2;
-			yaw += angle;
+			yaw += -camLookSpeed / 2;
 		}
 
 		//Set the rotation of the player
@@ -170,29 +168,20 @@ void Player::HandleInput(Input* input)
 		mLastMousePos.y = input->getMouseY();
 		#pragma endregion
 
+		#pragma region Keyboard
 		// Now check for keyboard/gamepad input.
 		if (input->isCameraUpKeyDown())
 		{
-			float angle = -camLookSpeed/2;
-			if(input->getGamepadThumbRY(0) > GAMEPAD_THUMBSTICK_DEADZONE)
-				angle *= ((float)(input->getGamepadThumbRY(0)) / 30000.0f);
-
-			playerCamera->Pitch(angle);
+			playerCamera->Pitch( -camLookSpeed/2);
 		}
 		if (input->isCameraDownKeyDown())
 		{
-			float angle = camLookSpeed/2;
-			if(input->getGamepadThumbRY(0) > GAMEPAD_THUMBSTICK_DEADZONE)
-				angle *= -((float)(input->getGamepadThumbRY(0)) / 30000.0f);
-
-			playerCamera->Pitch(angle);
+			playerCamera->Pitch(camLookSpeed/2);
 		}
 
 		if (input->isCameraLeftKeyDown())
 		{
 			float angle = -camLookSpeed / 2;
-			if(input->getGamepadThumbRX(0) > GAMEPAD_THUMBSTICK_DEADZONE)
-				angle *= -((float)(input->getGamepadThumbRX(0)) / 30000.0f);
 			playerCamera->RotateY(angle);
 			XMMATRIX R = XMMatrixRotationY(angle);
 
@@ -203,8 +192,6 @@ void Player::HandleInput(Input* input)
 		if (input->isCameraRightKeyDown())
 		{
 			float angle = camLookSpeed / 2;
-			if(input->getGamepadThumbRX(0) > GAMEPAD_THUMBSTICK_DEADZONE)
-				angle *= ((float)(input->getGamepadThumbRX(0)) / 30000.0f);
 			playerCamera->RotateY(angle);
 			XMMATRIX R = XMMatrixRotationY(angle);
 
@@ -213,15 +200,47 @@ void Player::HandleInput(Input* input)
 			XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
 		}
 		#pragma endregion
+
+		#pragma region Gamepad
+		btVector3 direction(0,0,0);
+		btVector3 pitch(0.0f, 1.0f, 0.0f);
+		btVector3 yaw(1.0f, 0.0f, 0.0f);
+		float xScale = 1.0f;
+		float zScale = 1.0f;
+		if(input->gamepadConnected(0))
+		{
+			float lX = (float)input->getGamepadThumbRX(0);
+			float lY = (float)input->getGamepadThumbRY(0);
+			if(lX > GAMEPAD_THUMBSTICK_DEADZONE || lX < -GAMEPAD_THUMBSTICK_DEADZONE)
+				direction += yaw * (lX / 30000.0f) * camLookSpeed/2;
+			if(lY > GAMEPAD_THUMBSTICK_DEADZONE || lY < -GAMEPAD_THUMBSTICK_DEADZONE)
+				direction += pitch * (lY/ 30000.0f) * camLookSpeed/2;
+		
+			////Scale speed of player look based on thumbsticks
+			//if(lX > GAMEPAD_THUMBSTICK_DEADZONE || lX < -GAMEPAD_THUMBSTICK_DEADZONE)
+			//	xScale = ((float)(input->getGamepadThumbLX(0)) / 30000.0f);
+			//if(lY > GAMEPAD_THUMBSTICK_DEADZONE || lY < -GAMEPAD_THUMBSTICK_DEADZONE)
+			//	zScale = ((float)(input->getGamepadThumbLY(0)) / 30000.0f);
+		}
+
+		playerCamera->Pitch(-direction.getY());
+		playerCamera->RotateY(direction.getX());
+		XMMATRIX rot = XMMatrixRotationY(direction.getX());
+
+		XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), rot));
+		XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), rot));
+		XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), rot));
+		#pragma endregion
 	}
 	#pragma endregion
 
 	#pragma region Player Movement
+	
 	btVector3 direction(0,0,0);
 	btVector3 forward(fwd.x, fwd.y, fwd.z);
 	btVector3 r(right.x, right.y, right.z);
 
-	//Keyboard
+	#pragma region Keyboard
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
 		direction += forward;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
@@ -230,8 +249,9 @@ void Player::HandleInput(Input* input)
 		direction += r;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
-
-	//Gamepad
+	#pragma endregion
+	
+	#pragma region Gamepad
 	float xScale = 1.0f;
 	float zScale = 1.0f;
 	if(input->gamepadConnected(0))
@@ -255,7 +275,9 @@ void Player::HandleInput(Input* input)
 	}
 	else if(direction.length2() > 0)
 		direction = direction.normalize();
+	#pragma endregion
 
+	#pragma region Jump
 	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
 		if(audioSource != NULL && !audioSource->isPlaying() && controller->canJump())
@@ -278,8 +300,9 @@ void Player::HandleInput(Input* input)
 	{
 		currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus))) * (1.0f - medusaPercent);
 	}
-
+	#pragma endregion
 	
+	#pragma region Final Calculation and Movement
 	//calculate final speed
 	currentPlayerSpeed = currentPlayerSpeed * sqrt((xScale * xScale) + (zScale * zScale));
 	//if(currentPlayerSpeed > .18203889f)//clamp speed
@@ -292,13 +315,14 @@ void Player::HandleInput(Input* input)
 	XMFLOAT3 cPos(pos.getX(), pos.getY() + 0.737, pos.getZ());
 	playerCamera->SetPosition(cPos);
 	#pragma endregion
+	#pragma endregion
 	
 	#pragma region Audio
 	listener->setPosition(cPos.x, cPos.y, cPos.z);
 	listener->setOrientation(-playerCamera->GetLook().x, -playerCamera->GetLook().y, -playerCamera->GetLook().z, playerCamera->GetUp().x, playerCamera->GetUp().y, playerCamera->GetUp().z);
 	#pragma endregion
 
-#pragma region HEAD MODELING
+	#pragma region HEAD MODELING
 	if(riftMan->isUsingRift() && riftMan->isRiftConnected())
 	{
 		// Rotate and position View Camera, using YawPitchRoll in BodyFrame coordinates
