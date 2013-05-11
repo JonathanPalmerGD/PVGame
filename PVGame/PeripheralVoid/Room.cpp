@@ -321,7 +321,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->target = target;
 
 		if (strcmp(placement, "platform") == 0)
-			tempWall->yLength *= 0.1f;
+			tempWall->yLength *= 0.5f;
 
 		if (strcmp(dir, "up") == 0)
 		{
@@ -458,7 +458,7 @@ void Room::loadRoom(float xPos, float zPos)
 		case HADES:
 			crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->scale(crestVector[i]->xLength, crestVector[i]->yLength, crestVector[i]->zLength);
-			//crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
+			//crestObj->translate(0.0f, 1.0f, 0.0f);
 			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			break;
 		case WIN:

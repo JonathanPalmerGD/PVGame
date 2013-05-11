@@ -44,6 +44,11 @@ float PhysicsManager::getStepSize()
 	return pStepSize;
 }
 
+btDynamicsWorld* PhysicsManager::getWorld()
+{
+	return world;
+}
+
 /* update()
  *
  * steps the simulation at a rate of 60 fps

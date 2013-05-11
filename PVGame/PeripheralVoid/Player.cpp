@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM) 
-	: PIXELS_PER_SEC(3.5f), LOOK_SPEED(3.5f)
+	: PIXELS_PER_SEC(2.0f), LOOK_SPEED(3.5f)
 {
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
@@ -25,7 +25,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera->UpdateViewMatrix();
 
 	//Set up the character controller
-	controller = physicsMan->createCharacterController( 1.0f, 1.0f, .1f);
+	controller = physicsMan->createCharacterController( .4f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(9.0f);
@@ -77,7 +77,10 @@ void Player::Update(float dt, Input* input)
 	
 	//playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	playerSpeed = dt * PIXELS_PER_SEC;
+	//controller->setGravity(1750.0f*dt);
+	controller->setGravity(1000.0f * physicsMan->getStepSize());
 	camLookSpeed = dt * LOOK_SPEED;
+	controller->updateAction(physicsMan->getWorld(), dt);
 	this->HandleInput(input);
 }
 
