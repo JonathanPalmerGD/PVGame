@@ -240,7 +240,13 @@ void PVGame::UpdateScene(float dt)
 {
 	#pragma region General Controls
 	if (input->isQuitPressed())
-		PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+	{		
+		//PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+		player->resetWinPercent();
+		currentRoom = loadedRooms[0];
+		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		gameState = END;	
+	}
 	if(input->wasKeyPressed('M'))
 	{
 		if(player->getListener()->isMuted())
@@ -349,7 +355,7 @@ void PVGame::UpdateScene(float dt)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		#endif
 		#if !DEV_MODE
-		if (player->getPosition().y < -10)
+		if (player->getPosition().y < -5)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		#endif
 			
@@ -740,12 +746,12 @@ void PVGame::ListenSelectorChange()
 		#pragma region END
 		if(gameState == END)
 		{
-			if(selector == 0)
-			{
+			//if(selector == 0 || selector == 1)
+			//{
 				selector = 3;
 				gameState = MENU;
 				return;
-			}
+			//}
 		}
 		#pragma endregion
 		#pragma region INSTRUCTIONS
@@ -965,6 +971,7 @@ void PVGame::DrawScene()
 			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .58f, color4);
 		
 		renderMan->EndDrawMenu();
+
 		break;
 	#pragma endregion
 	#pragma region END
@@ -974,9 +981,14 @@ void PVGame::DrawScene()
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
 		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .25f, color1);
-		if(selector == 5)
+		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .32f, color4);
+		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .36f, color4);
+		
+		renderMan->DrawString("  Made by Jon Palmer, Jason Mandelbaum,", smlSize, cWidth * .20f, cHeight * .44f, color4);
+		renderMan->DrawString("        Mike St. Pierre, and Drew Diamantoukos", smlSize, cWidth * .20f, cHeight * .48f, color4);
+		/*if(selector == 5)
 		{
-			renderMan->DrawString(">Thanks Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color2);
+			renderMan->DrawString(">-Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color2);
 		}
 		else
 			renderMan->DrawString("  Thanks Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color4);
@@ -997,13 +1009,13 @@ void PVGame::DrawScene()
 			renderMan->DrawString(">Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color2);
 		}
 		else
-			renderMan->DrawString("  Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color4);
-		if(selector == 0 || selector == 1)
-		{
+			renderMan->DrawString("  Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color4);*/
+		//if(selector == 0 || selector == 1)
+		//{
 			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .52f, color2);
-		}
-		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .52f, color4);
+		//}
+		//else
+		//	renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .52f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
