@@ -92,6 +92,6 @@
 <crest row="12" col="12" xLength="1" yLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="12.5" effect="0" target="" dir="up" placement=""/>
 <crest row="19" col="22" xLength="1" yLength="2" zLength="1" centerX="22.5" centerY="0" centerZ="19.5" effect="5" target="" dir="right" placement=""/>
 <crest row="22" col="8" xLength="4" yLength="1" zLength="2" centerX="10" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
-<crest row="22" col="13" xLength="4" yLength="10" zLength="2" centerX="15" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
+<crest row="22" col="13" xLength="4" yLength="-1" zLength="2" centerX="15" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
 </crests>
 </level>
