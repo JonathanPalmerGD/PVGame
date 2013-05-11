@@ -79,6 +79,7 @@ void Player::Update(float dt, Input* input)
 	playerSpeed = dt * PIXELS_PER_SEC;
 	//controller->setGravity(1750.0f*dt);
 	controller->setGravity(650.0f * physicsMan->getStepSize());
+	controller->setFallSpeed(250.0f * dt);
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
 	controller->updateAction(physicsMan->getWorld(), dt);
