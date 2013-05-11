@@ -578,8 +578,6 @@ class RenderManager
 				theData.GlowColor = aGameMaterial.GlowColor;
 				theData.TexScale = aObject->GetTexScale();
 
-				if (theData.GlowColor.w == 1.0f)
-					int a = 3;
 				mInstancedDataMap[bufferKey].push_back(theData);
 			}
 				
@@ -711,7 +709,7 @@ class RenderManager
 			mfxScaleIn				= mFX->GetVariableByName("ScaleIn")->AsVector();
 			mfxHmdWarpParam			= mFX->GetVariableByName("HmdWarpParam")->AsVector();
 			mfxChromAbParam			= mFX->GetVariableByName("ChromAbParam")->AsVector();
-			mfxScreenSize			= mFX->GetVariableByName("ScreenSize")->AsVector();
+			mfxScreenSize			= mFX->GetVariableByName("gScreenSize")->AsVector();
 
 			TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
 			texelWidth				= mFX->GetVariableByName("gTexelWidth")->AsScalar();

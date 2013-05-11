@@ -1314,39 +1314,27 @@ fxgroup
                 
                 #line 263
                 lt r0.w, l(0.000000), v1.w
-                ge r1.x, v0.x, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].z, v0.x
-                and r0.w, r0.w, r1.x
-                ge r1.x, v0.y, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].w, v0.y
-                and r0.w, r0.w, r1.x
                 if_nz r0.w
-                  mov r0.w, v0.x  // pin<0:[-0f,3.40282e+038f]>
-                  mov r1.x, cb0[80].z  // gScreenSize<0:[-0f,3.40282e+038f]>
-                  mov r1.y, v0.y  // pin<1:[-0f,3.40282e+038f]>
-                  mov r1.z, cb0[80].w  // gScreenSize<1:[-0f,3.40282e+038f]>
                   add r0.xyz, r0.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
-                  div r1.x, r1.x, l(2.000000)  // halfWidth<0:[-0f,1.70141e+038f]>
-                  div r1.z, r1.z, l(2.000000)  // halfHeight<0:[-0f,1.70141e+038f]>
-                  mov r1.w, -r1.x
-                  add r0.w, r0.w, r1.w  // xDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mov r1.w, -r1.z
-                  add r1.y, r1.w, r1.y  // yDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mul r0.w, r0.w, r0.w
+                  div r0.w, cb0[80].z, l(2.000000)  // halfWidth<0:[-1.70141e+038f,1.70141e+038f]>
+                  div r1.x, cb0[80].w, l(2.000000)  // halfHeight<0:[-1.70141e+038f,1.70141e+038f]>
+                  mov r1.y, -r0.w
+                  add r1.y, r1.y, v0.x  // xDif<0:Inf>
+                  mov r1.z, -r1.x
+                  add r1.z, r1.z, v0.y  // yDif<0:Inf>
                   mul r1.y, r1.y, r1.y
-                  add r0.w, r0.w, r1.y  // dist<0:NaN:Inf>
+                  mul r1.z, r1.z, r1.z
+                  add r1.y, r1.z, r1.y  // dist<0:NaN:Inf>
+                  mul r0.w, r0.w, r0.w
                   mul r1.x, r1.x, r1.x
-                  mul r1.y, r1.z, r1.z
-                  add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
+                  add r0.w, r0.w, r1.x  // range<0:NaN:Inf>
                 
                 #line 274
-                  ge r1.y, r1.x, r0.w
-                  if_nz r1.y
-                    mul r1.yzw, v1.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
-                    mul r1.yzw, r0.wwww, r1.yyzw
-                    div r1.xyz, r1.yzwy, r1.xxxx
+                  ge r1.x, r0.w, r1.y
+                  if_nz r1.x
+                    mul r1.xzw, v1.xxyz, l(1.000000, 0.000000, 1.000000, 1.000000)
+                    mul r1.xyz, r1.yyyy, r1.xzwx
+                    div r1.xyz, r1.xyzx, r0.wwww
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
@@ -1358,7 +1346,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 711 instruction slots used
+                // Approximately 699 instruction slots used
                             
             };
         }
@@ -2602,39 +2590,27 @@ fxgroup
                 
                 #line 263
                 lt r0.w, l(0.000000), v1.w
-                ge r1.x, v0.x, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].z, v0.x
-                and r0.w, r0.w, r1.x
-                ge r1.x, v0.y, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].w, v0.y
-                and r0.w, r0.w, r1.x
                 if_nz r0.w
-                  mov r0.w, v0.x  // pin<0:[-0f,3.40282e+038f]>
-                  mov r1.x, cb0[80].z  // gScreenSize<0:[-0f,3.40282e+038f]>
-                  mov r1.y, v0.y  // pin<1:[-0f,3.40282e+038f]>
-                  mov r1.z, cb0[80].w  // gScreenSize<1:[-0f,3.40282e+038f]>
                   add r0.xyz, r0.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
-                  div r1.x, r1.x, l(2.000000)  // halfWidth<0:[-0f,1.70141e+038f]>
-                  div r1.z, r1.z, l(2.000000)  // halfHeight<0:[-0f,1.70141e+038f]>
-                  mov r1.w, -r1.x
-                  add r0.w, r0.w, r1.w  // xDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mov r1.w, -r1.z
-                  add r1.y, r1.w, r1.y  // yDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mul r0.w, r0.w, r0.w
+                  div r0.w, cb0[80].z, l(2.000000)  // halfWidth<0:[-1.70141e+038f,1.70141e+038f]>
+                  div r1.x, cb0[80].w, l(2.000000)  // halfHeight<0:[-1.70141e+038f,1.70141e+038f]>
+                  mov r1.y, -r0.w
+                  add r1.y, r1.y, v0.x  // xDif<0:Inf>
+                  mov r1.z, -r1.x
+                  add r1.z, r1.z, v0.y  // yDif<0:Inf>
                   mul r1.y, r1.y, r1.y
-                  add r0.w, r0.w, r1.y  // dist<0:NaN:Inf>
+                  mul r1.z, r1.z, r1.z
+                  add r1.y, r1.z, r1.y  // dist<0:NaN:Inf>
+                  mul r0.w, r0.w, r0.w
                   mul r1.x, r1.x, r1.x
-                  mul r1.y, r1.z, r1.z
-                  add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
+                  add r0.w, r0.w, r1.x  // range<0:NaN:Inf>
                 
                 #line 274
-                  ge r1.y, r1.x, r0.w
-                  if_nz r1.y
-                    mul r1.yzw, v1.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
-                    mul r1.yzw, r0.wwww, r1.yyzw
-                    div r1.xyz, r1.yzwy, r1.xxxx
+                  ge r1.x, r0.w, r1.y
+                  if_nz r1.x
+                    mul r1.xzw, v1.xxyz, l(1.000000, 0.000000, 1.000000, 1.000000)
+                    mul r1.xyz, r1.yyyy, r1.xzwx
+                    div r1.xyz, r1.xyzx, r0.wwww
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
@@ -2646,7 +2622,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 711 instruction slots used
+                // Approximately 699 instruction slots used
                             
             };
         }
@@ -5539,39 +5515,27 @@ fxgroup
                 
                 #line 263
                 lt r0.w, l(0.000000), v1.w
-                ge r1.x, v0.x, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].z, v0.x
-                and r0.w, r0.w, r1.x
-                ge r1.x, v0.y, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].w, v0.y
-                and r0.w, r0.w, r1.x
                 if_nz r0.w
-                  mov r0.w, v0.x  // pin<0:[-0f,3.40282e+038f]>
-                  mov r1.x, cb0[80].z  // gScreenSize<0:[-0f,3.40282e+038f]>
-                  mov r1.y, v0.y  // pin<1:[-0f,3.40282e+038f]>
-                  mov r1.z, cb0[80].w  // gScreenSize<1:[-0f,3.40282e+038f]>
                   add r0.xyz, r0.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
-                  div r1.x, r1.x, l(2.000000)  // halfWidth<0:[-0f,1.70141e+038f]>
-                  div r1.z, r1.z, l(2.000000)  // halfHeight<0:[-0f,1.70141e+038f]>
-                  mov r1.w, -r1.x
-                  add r0.w, r0.w, r1.w  // xDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mov r1.w, -r1.z
-                  add r1.y, r1.w, r1.y  // yDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mul r0.w, r0.w, r0.w
+                  div r0.w, cb0[80].z, l(2.000000)  // halfWidth<0:[-1.70141e+038f,1.70141e+038f]>
+                  div r1.x, cb0[80].w, l(2.000000)  // halfHeight<0:[-1.70141e+038f,1.70141e+038f]>
+                  mov r1.y, -r0.w
+                  add r1.y, r1.y, v0.x  // xDif<0:Inf>
+                  mov r1.z, -r1.x
+                  add r1.z, r1.z, v0.y  // yDif<0:Inf>
                   mul r1.y, r1.y, r1.y
-                  add r0.w, r0.w, r1.y  // dist<0:NaN:Inf>
+                  mul r1.z, r1.z, r1.z
+                  add r1.y, r1.z, r1.y  // dist<0:NaN:Inf>
+                  mul r0.w, r0.w, r0.w
                   mul r1.x, r1.x, r1.x
-                  mul r1.y, r1.z, r1.z
-                  add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
+                  add r0.w, r0.w, r1.x  // range<0:NaN:Inf>
                 
                 #line 274
-                  ge r1.y, r1.x, r0.w
-                  if_nz r1.y
-                    mul r1.yzw, v1.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
-                    mul r1.yzw, r0.wwww, r1.yyzw
-                    div r1.xyz, r1.yzwy, r1.xxxx
+                  ge r1.x, r0.w, r1.y
+                  if_nz r1.x
+                    mul r1.xzw, v1.xxyz, l(1.000000, 0.000000, 1.000000, 1.000000)
+                    mul r1.xyz, r1.yyyy, r1.xzwx
+                    div r1.xyz, r1.xyzx, r0.wwww
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
@@ -5583,7 +5547,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 711 instruction slots used
+                // Approximately 699 instruction slots used
                             
             };
         }
@@ -6825,39 +6789,27 @@ fxgroup
                 
                 #line 263
                 lt r0.w, l(0.000000), v1.w
-                ge r1.x, v0.x, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].z, v0.x
-                and r0.w, r0.w, r1.x
-                ge r1.x, v0.y, l(0.000000)
-                and r0.w, r0.w, r1.x
-                ge r1.x, cb0[80].w, v0.y
-                and r0.w, r0.w, r1.x
                 if_nz r0.w
-                  mov r0.w, v0.x  // pin<0:[-0f,3.40282e+038f]>
-                  mov r1.x, cb0[80].z  // gScreenSize<0:[-0f,3.40282e+038f]>
-                  mov r1.y, v0.y  // pin<1:[-0f,3.40282e+038f]>
-                  mov r1.z, cb0[80].w  // gScreenSize<1:[-0f,3.40282e+038f]>
                   add r0.xyz, r0.xyzx, l(0.000000, 0.000000, 0.000000, 0.000000)  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
-                  div r1.x, r1.x, l(2.000000)  // halfWidth<0:[-0f,1.70141e+038f]>
-                  div r1.z, r1.z, l(2.000000)  // halfHeight<0:[-0f,1.70141e+038f]>
-                  mov r1.w, -r1.x
-                  add r0.w, r0.w, r1.w  // xDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mov r1.w, -r1.z
-                  add r1.y, r1.w, r1.y  // yDif<0:[-1.70141e+038f,3.40282e+038f]>
-                  mul r0.w, r0.w, r0.w
+                  div r0.w, cb0[80].z, l(2.000000)  // halfWidth<0:[-1.70141e+038f,1.70141e+038f]>
+                  div r1.x, cb0[80].w, l(2.000000)  // halfHeight<0:[-1.70141e+038f,1.70141e+038f]>
+                  mov r1.y, -r0.w
+                  add r1.y, r1.y, v0.x  // xDif<0:Inf>
+                  mov r1.z, -r1.x
+                  add r1.z, r1.z, v0.y  // yDif<0:Inf>
                   mul r1.y, r1.y, r1.y
-                  add r0.w, r0.w, r1.y  // dist<0:NaN:Inf>
+                  mul r1.z, r1.z, r1.z
+                  add r1.y, r1.z, r1.y  // dist<0:NaN:Inf>
+                  mul r0.w, r0.w, r0.w
                   mul r1.x, r1.x, r1.x
-                  mul r1.y, r1.z, r1.z
-                  add r1.x, r1.y, r1.x  // range<0:NaN:Inf>
+                  add r0.w, r0.w, r1.x  // range<0:NaN:Inf>
                 
                 #line 274
-                  ge r1.y, r1.x, r0.w
-                  if_nz r1.y
-                    mul r1.yzw, v1.xxyz, l(0.000000, 1.000000, 1.000000, 1.000000)
-                    mul r1.yzw, r0.wwww, r1.yyzw
-                    div r1.xyz, r1.yzwy, r1.xxxx
+                  ge r1.x, r0.w, r1.y
+                  if_nz r1.x
+                    mul r1.xzw, v1.xxyz, l(1.000000, 0.000000, 1.000000, 1.000000)
+                    mul r1.xyz, r1.yyyy, r1.xzwx
+                    div r1.xyz, r1.xyzx, r0.wwww
                     add r0.xyz, r0.xyzx, r1.xyzx  // litColor<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   endif 
                 
@@ -6869,7 +6821,7 @@ fxgroup
                 mov o0.xyz, r0.xyzx  // PS<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 mov o0.w, r0.w  // PS<3:NaN:Inf>
                 ret 
-                // Approximately 711 instruction slots used
+                // Approximately 699 instruction slots used
                             
             };
         }

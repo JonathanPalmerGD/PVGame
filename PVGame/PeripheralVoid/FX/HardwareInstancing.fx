@@ -245,7 +245,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	for (int i = 0; i < 2; ++i)
 	{
 		float4 A, D, S;
-		ComputeDirectionalLight(pin.Material, gDirLights[0], pin.NormalW, toEye, 
+		ComputeDirectionalLight(pin.Material, gDirLights[i], pin.NormalW, toEye, 
 					A, D, S);
 
 		ambient += A;
@@ -260,7 +260,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	distToEye = clamp(distToEye, 0.1f, MAX_GLOW_RANGE);
 
 	// Only glow if certain conditions met. Position check is to discard pixels not on screen.
-	if (pin.GlowColor[3] > 0.0f && pin.PosH.x >= 0 && pin.PosH.x <= gScreenSize.x && pin.PosH.y >= 0 && pin.PosH.y <= gScreenSize.y)
+	if (pin.GlowColor[3] > 0.0f)
 	{
 		litColor += (pin.GlowColor * GLOW_RANGE_POWER / (MAX_GLOW_RANGE / distToEye));
 

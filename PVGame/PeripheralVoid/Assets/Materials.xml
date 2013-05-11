@@ -6,12 +6,12 @@
   <Material name="Wall">
     <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>Wall01</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
   </Material>
 	<Material name="Floor">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>floor</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="LeapCrest">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
@@ -41,37 +41,37 @@
 	<Material name="Snow">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>snow</DiffuseMap>
-		<Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
+		<Glow r="0.7" g="0.7" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Hedge">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>hedge</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Gravel">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>gravel</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Sand">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>sand</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Rock">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>rock</DiffuseMap>
-		<Glow r="0.4" g="0.2" b="0.0" a="1.0"></Glow>
+		<Glow r="0.4" g="0.2" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Grass">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>grass</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Brick">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>brick</DiffuseMap>
-		<Glow r="0.0" g="0.0" b="0.0" a="1.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	
 	
