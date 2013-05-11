@@ -221,6 +221,7 @@ void Player::HandleInput(Input* input)
 	btVector3 forward(fwd.x, fwd.y, fwd.z);
 	btVector3 r(right.x, right.y, right.z);
 
+	//Keyboard
 	if(input->isPlayerUpKeyDown()) //if(input->isPlayerUpKeyDown() && !medusaStatus)
 		direction += forward;
 	if(input->isPlayerDownKeyDown()) //if(input->isPlayerDownKeyDown() && !medusaStatus)
@@ -229,6 +230,31 @@ void Player::HandleInput(Input* input)
 		direction += r;
 	if(input->isPlayerLeftKeyDown()) //if(input->isPlayerLeftKeyDown() && !medusaStatus)
 		direction -= r;
+
+	//Gamepad
+	float xScale = 1.0f;
+	float zScale = 1.0f;
+	if(input->gamepadConnected(0))
+	{
+		float lX = (float)input->getGamepadThumbLX(0);
+		float lY = (float)input->getGamepadThumbLY(0);
+		if(lX > GAMEPAD_THUMBSTICK_DEADZONE || lX < -GAMEPAD_THUMBSTICK_DEADZONE)
+			direction += r * (lX / 30000.0f);
+		if(lY > GAMEPAD_THUMBSTICK_DEADZONE || lY < -GAMEPAD_THUMBSTICK_DEADZONE)
+			direction += forward * (lY/ 30000.0f);
+		
+		if(direction.length2() > 0)
+			direction = direction.normalize();
+
+		//Scale speed of player based on thumbsticks
+		if(lX > GAMEPAD_THUMBSTICK_DEADZONE || lX < -GAMEPAD_THUMBSTICK_DEADZONE)
+			xScale = ((float)(input->getGamepadThumbLX(0)) / 30000.0f);
+		if(lY > GAMEPAD_THUMBSTICK_DEADZONE || lY < -GAMEPAD_THUMBSTICK_DEADZONE)
+			zScale = ((float)(input->getGamepadThumbLY(0)) / 30000.0f);
+
+	}
+	else if(direction.length2() > 0)
+		direction = direction.normalize();
 
 	if(input->wasJumpKeyPressed() && !medusaStatus)
 	{
@@ -253,14 +279,7 @@ void Player::HandleInput(Input* input)
 		currentPlayerSpeed = (playerSpeed + (playerSpeed * (MOBILITY_MULTIPLIER * mobilityStatus))) * (1.0f - medusaPercent);
 	}
 
-	//Scale speed of player based on thumbsticks
-	float xScale = 1.0f;
-	float zScale = 1.0f;
-	if(input->getGamepadThumbLX(0) > GAMEPAD_THUMBSTICK_DEADZONE)
-		xScale = ((float)(input->getGamepadThumbLX(0)) / 30000.0f);
-	if(input->getGamepadThumbLY(0) > GAMEPAD_THUMBSTICK_DEADZONE)
-		zScale = ((float)(input->getGamepadThumbLY(0)) / 30000.0f);
-
+	
 	//calculate final speed
 	currentPlayerSpeed = currentPlayerSpeed * sqrt((xScale * xScale) + (zScale * zScale));
 	//if(currentPlayerSpeed > .18203889f)//clamp speed

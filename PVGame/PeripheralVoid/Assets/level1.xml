@@ -1,20 +1,16 @@
 <level>
 <walls>
 <wall row="0" col="0" xLength="11" yLength="6" zLength="1" centerX="5.5" centerY="0" centerZ="0.5"/>
-<wall row="0" col="11" xLength="3" yLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="0.5"/>
 <wall row="0" col="14" xLength="11" yLength="6" zLength="1" centerX="19.5" centerY="0" centerZ="0.5"/>
 <wall row="1" col="0" xLength="1" yLength="6" zLength="10" centerX="0.5" centerY="0" centerZ="6"/>
 <wall row="1" col="24" xLength="1" yLength="6" zLength="10" centerX="24.5" centerY="0" centerZ="6"/>
-<wall row="11" col="0" xLength="1" yLength="7" zLength="3" centerX="0.5" centerY="0" centerZ="12.5"/>
 <wall row="14" col="0" xLength="1" yLength="6" zLength="10" centerX="0.5" centerY="0" centerZ="19"/>
-<wall row="14" col="24" xLength="1" yLength="6" zLength="9" centerX="24.5" centerY="0" centerZ="18.5"/>
-<wall row="23" col="8" xLength="1" yLength="7" zLength="1" centerX="8.5" centerY="0" centerZ="23.5"/>
-<wall row="23" col="16" xLength="1" yLength="7" zLength="1" centerX="16.5" centerY="0" centerZ="23.5"/>
-<wall row="23" col="24" xLength="1" yLength="6" zLength="1" centerX="24.5" centerY="0" centerZ="23.5"/>
+<wall row="14" col="24" xLength="1" yLength="6" zLength="10" centerX="24.5" centerY="0" centerZ="19"/>
 <wall row="24" col="0" xLength="9" yLength="6" zLength="1" centerX="4.5" centerY="0" centerZ="24.5"/>
 <wall row="24" col="16" xLength="9" yLength="6" zLength="1" centerX="20.5" centerY="0" centerZ="24.5"/>
 </walls>
 <floors>
+<floor row="0" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="0.5"/>
 <floor row="1" col="1" xLength="23" zLength="2" centerX="12.5" centerY="0" centerZ="2"/>
 <floor row="3" col="1" xLength="2" zLength="8" centerX="2" centerY="0" centerZ="7"/>
 <floor row="3" col="11" xLength="3" zLength="2" centerX="12.5" centerY="0" centerZ="4"/>
@@ -25,7 +21,7 @@
 <floor row="7" col="18" xLength="2" zLength="4" centerX="19" centerY="0" centerZ="9"/>
 <floor row="7" col="22" xLength="2" zLength="4" centerX="23" centerY="0" centerZ="9"/>
 <floor row="9" col="9" xLength="7" zLength="2" centerX="12.5" centerY="0" centerZ="10"/>
-<floor row="11" col="1" xLength="24" zLength="3" centerX="13" centerY="0" centerZ="12.5"/>
+<floor row="11" col="0" xLength="25" zLength="3" centerX="12.5" centerY="0" centerZ="12.5"/>
 <floor row="14" col="1" xLength="2" zLength="8" centerX="2" centerY="0" centerZ="18"/>
 <floor row="14" col="5" xLength="2" zLength="4" centerX="6" centerY="0" centerZ="16"/>
 <floor row="14" col="9" xLength="7" zLength="2" centerX="12.5" centerY="0" centerZ="15"/>
@@ -34,10 +30,8 @@
 <floor row="16" col="11" xLength="3" zLength="2" centerX="12.5" centerY="0" centerZ="17"/>
 <floor row="18" col="5" xLength="15" zLength="2" centerX="12.5" centerY="0" centerZ="19"/>
 <floor row="20" col="11" xLength="3" zLength="2" centerX="12.5" centerY="0" centerZ="21"/>
-<floor row="22" col="1" xLength="23" zLength="1" centerX="12.5" centerY="0" centerZ="22.5"/>
-<floor row="23" col="1" xLength="7" zLength="1" centerX="4.5" centerY="0" centerZ="23.5"/>
-<floor row="23" col="9" xLength="7" zLength="2" centerX="12.5" centerY="0" centerZ="24"/>
-<floor row="23" col="17" xLength="7" zLength="1" centerX="20.5" centerY="0" centerZ="23.5"/>
+<floor row="22" col="1" xLength="23" zLength="2" centerX="12.5" centerY="0" centerZ="23"/>
+<floor row="24" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="24.5"/>
 </floors>
 <spawns>
 <spawn row="12" col="12" xLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="12.5" dir="up"/>
@@ -49,6 +43,5 @@
 <cubes>
 </cubes>
 <crests>
-<crest row="23" col="9" xLength="7" yLength="6" zLength="1" centerX="12.5" centerY="0" centerZ="23.5" effect="4" target="" dir="down" placement="wall"/>
 </crests>
 </level>

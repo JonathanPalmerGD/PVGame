@@ -36,7 +36,7 @@ namespace inputNS
     const UCHAR KEYS_MOUSE_TEXT = KEYS_DOWN + KEYS_PRESSED + MOUSE + TEXT_IN;
 }
 
-const DWORD GAMEPAD_THUMBSTICK_DEADZONE = (DWORD)(0.19f * 0X7FFF); // default to 60% of range as deadzone
+const float GAMEPAD_THUMBSTICK_DEADZONE = (float)(0.19f * 0X7FFF); // default to 60% of range as deadzone
 const DWORD GAMEPAD_TRIGGER_DEADZONE = 30;                         // trigger range 0-255
 const DWORD MAX_CONTROLLERS = 4;                                   // Maximum number of controllers supported by XInput
 

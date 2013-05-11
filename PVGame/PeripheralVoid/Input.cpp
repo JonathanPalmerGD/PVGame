@@ -538,25 +538,25 @@ bool Input::isStartPressed() const
 // True if the player hits W or up on the left joystick on gamepad.
 bool Input::isPlayerUpKeyDown() const
 {
-	return (isKeyDown('W') || (getGamepadThumbLY(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('W') );
 }
 
 // True if the player hits S or down on the left joystick on gamepad.
 bool Input::isPlayerDownKeyDown() const
 {
-	return (isKeyDown('S') || (getGamepadThumbLY(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('S') );
 }
 
 // True if the player hits A or left on the left joystick on gamepad.
 bool Input::isPlayerLeftKeyDown() const
 {
-	return (isKeyDown('A') || (getGamepadThumbLX(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('A'));
 }
 
 // True if the player hits D or right on the left joystick on gamepad.
 bool Input::isPlayerRightKeyDown() const
 {
-	return (isKeyDown('D') || (getGamepadThumbLX(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('D'));
 }
 
 
