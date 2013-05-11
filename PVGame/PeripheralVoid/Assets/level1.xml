@@ -29,7 +29,7 @@
 <floor row="14" col="22" xLength="2" zLength="8" centerX="23" centerY="0" centerZ="18"/>
 <floor row="16" col="11" xLength="3" zLength="2" centerX="12.5" centerY="0" centerZ="17"/>
 <floor row="18" col="5" xLength="15" zLength="2" centerX="12.5" centerY="0" centerZ="19"/>
-<floor row="20" col="10" xLength="4" zLength="2" centerX="12" centerY="0" centerZ="21"/>
+<floor row="20" col="11" xLength="3" zLength="2" centerX="12.5" centerY="0" centerZ="21"/>
 <floor row="22" col="1" xLength="23" zLength="2" centerX="12.5" centerY="0" centerZ="23"/>
 <floor row="24" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="24.5"/>
 </floors>
@@ -37,6 +37,7 @@
 <spawn row="12" col="12" xLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="12.5" dir="up"/>
 </spawns>
 <exits>
+<exit row="11" col="24" xLength="1" zLength="3" centerX="24.5" centerY="0" centerZ="12.5" file="level3.xml"/>
 <exit row="24" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="24.5" file="level2.xml"/>
 </exits>
 <cubes>

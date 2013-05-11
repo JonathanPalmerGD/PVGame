@@ -25,7 +25,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	playerCamera->UpdateViewMatrix();
 
 	//Set up the character controller
-	controller = physicsMan->createCharacterController( 0.2f, 1.0f, .1f);
+	controller = physicsMan->createCharacterController( 1.0f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
 	controller->setGravity(30.0f);
 	controller->setJumpSpeed(9.0f);
@@ -318,7 +318,10 @@ void Player::OnResize(float aspectRatio)
 	else
 	{
 		playerCamera->SetLens(0.25f*MathHelper::Pi, aspectRatio, 0.01f, 100.0f);
-		playerCamera->setRotation(EyeYaw-yaw, EyePitch, 0);
+		if(EyeRoll != 0)
+		{
+			playerCamera->setRotation(EyeYaw-yaw, EyePitch, 0);
+		}
 	}
 	
 	playerCamera->UpdateViewMatrix();
