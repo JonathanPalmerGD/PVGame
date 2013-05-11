@@ -241,14 +241,18 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 			spec    += S;
 		}
 	}
+	
+	for (int i = 0; i < 2; ++i)
+	{
+		float4 A, D, S;
+		ComputeDirectionalLight(pin.Material, gDirLights[0], pin.NormalW, toEye, 
+					A, D, S);
 
-	float4 A, D, S;
-	ComputeDirectionalLight(pin.Material, gDirLights[0], pin.NormalW, toEye, 
-				A, D, S);
-
-	ambient += A;
-	diffuse += D;
-	spec    += S;
+		ambient += A;
+		diffuse += D;
+		spec    += S;
+	}
+	
 
 	// Modulate with late add.
 	litColor = texColor*(ambient + diffuse) + spec;

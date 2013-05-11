@@ -1114,10 +1114,10 @@ class RenderManager
 			mDirLights[0].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 			mDirLights[0].Direction = XMFLOAT3(0.707f, -0.5f, 0.0f);
 			mDirLights.push_back(DirectionalLight());
-// 			mDirLights[1].Ambient  = XMFLOAT4(0.5f, 0.6f, 0.6f, 1.0f);
-// 			mDirLights[1].Diffuse  = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-// 			mDirLights[1].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
-// 			mDirLights[1].Direction = XMFLOAT3(-0.5f, 0.60f, 0.0f);
+ 			mDirLights[1].Ambient  = XMFLOAT4(0.5f, 0.6f, 0.6f, 1.0f);
+ 			mDirLights[1].Diffuse  = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+			mDirLights[1].Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
+ 			mDirLights[1].Direction = XMFLOAT3(-0.5f, 0.60f, 0.0f);
 		}
 
 		~RenderManager()
