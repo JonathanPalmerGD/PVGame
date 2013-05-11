@@ -344,8 +344,15 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		//If the player falls of the edge of the world, respawn in current room
+		#if DEV_MODE
+		if (player->getPosition().y < -100)
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		#endif
+		#if !DEV_MODE
 		if (player->getPosition().y < -10)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		#endif
+			
 		#pragma endregion
 		#pragma region Player Statuses and Vision Affected Object Updating
 		player->resetStatuses();
