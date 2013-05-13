@@ -14,7 +14,7 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
-#define DEV_MODE 0
+#define DEV_MODE 1
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
@@ -202,6 +202,7 @@ struct Wall
 	string file;
 	CREST_TYPE effect;
 	string target;
+	string texture;
 };
 
 struct Cube : public Wall

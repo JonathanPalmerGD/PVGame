@@ -2,7 +2,7 @@
 <walls>
 </walls>
 <floors>
-<floor row="0" col="0" xLength="25" zLength="25" centerX="12.5" centerY="0" centerZ="12.5"/>
+<floor row="0" col="0" xLength="25" zLength="25" centerX="12.5" centerY="0" centerZ="12.5" texture="Floor"/>
 </floors>
 <spawns>
 </spawns>

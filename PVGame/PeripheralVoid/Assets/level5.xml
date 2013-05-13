@@ -1,10 +1,10 @@
 <level>
 <walls>
-<wall row="0" col="19" xLength="1" yLength="5" zLength="3" centerX="19.5" centerY="0" centerZ="1.5"/>
-<wall row="0" col="23" xLength="1" yLength="5" zLength="3" centerX="23.5" centerY="0" centerZ="1.5"/>
+<wall row="0" col="19" xLength="1" yLength="5" zLength="3" centerX="19.5" centerY="0" centerZ="1.5" texture="Hedge"/>
+<wall row="0" col="23" xLength="1" yLength="5" zLength="3" centerX="23.5" centerY="0" centerZ="1.5" texture="Hedge"/>
 </walls>
 <floors>
-<floor row="0" col="20" xLength="3" zLength="3" centerX="21.5" centerY="0" centerZ="1.5"/>
+<floor row="0" col="20" xLength="3" zLength="3" centerX="21.5" centerY="0" centerZ="1.5" texture="Floor"/>
 </floors>
 <spawns>
 </spawns>

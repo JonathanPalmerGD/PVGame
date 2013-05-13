@@ -74,6 +74,7 @@ function init()
 			td.setAttribute("class", "gridElement");
 			td.setAttribute("style", "background-color: #452000; color: #FFFFFF;");
 			td.appendChild(document.createTextNode("F"));
+			td.appendChild(document.createComment("F|Floor"));
 			td.addEventListener("mousedown", onTileClick);
 			td.addEventListener("mouseover", onTileClick);
 			td.addEventListener("mouseover", displayInfo);
@@ -173,11 +174,12 @@ function onTileClick(evt)
 		case "wall":
 			this.setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
 			this.appendChild(document.createTextNode("W|" + document.getElementById("wallHeight").value));
-			this.appendChild(document.createComment("W|" + document.getElementById("wallHeight").value));
+			this.appendChild(document.createComment("W|" + document.getElementById("wallHeight").value + "|" + document.getElementById("textureType").value));
 			break;
 		case "floor":
 			this.setAttribute("style", "background-color: #452000; color: #FFFFFF;");
 			this.appendChild(document.createTextNode("F"));
+			this.appendChild(document.createComment("F|" + document.getElementById("textureType").value));
 			break;
 		case "spawn":
 			this.setAttribute("style", "background-color: #0000FF; color: #FFFFFF;");
@@ -194,7 +196,7 @@ function onTileClick(evt)
 			this.appendChild(document.createTextNode("c" + document.getElementById("cubeHeight").value));
 			this.appendChild(document.createComment("c|" + document.getElementById("cubeHeight").value + "|" + document.getElementById("ucTranslateX").value +
 								  "|" + document.getElementById("ucTranslateY").value + "|" + document.getElementById("ucTranslateZ").value +
-								  "|" + document.getElementById("cubeFloor").checked));
+								  "|" + document.getElementById("cubeFloor").checked + "|" + document.getElementById("textureType").value));
 			break;
 		case "crest":
 			this.setAttribute("style", "background-color: #42CD76; color: #000000;");
@@ -250,16 +252,19 @@ function loadXML()
 		var centerX = parseFloat(floors[i].getAttribute("centerX"));
 		var centerY = parseFloat(floors[i].getAttribute("centerY"));
 		var centerZ = parseFloat(floors[i].getAttribute("centerZ"));
+		var texture = floors[i].getAttribute("texture");
 		
 		for (var j = 0; j < xLength; j++)
 		{
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #452000; color: #FFFFFF;");
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("F"));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("F|" + texture));
 			
 			for (var k = 1; k < zLength; k++)
 			{
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #452000; color: #FFFFFF;");
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("F"));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("F|" + texture));
 			}
 		}	
 	}
@@ -271,20 +276,21 @@ function loadXML()
 		var xLength = parseInt(walls[i].getAttribute("xLength"));
 		var yLength = parseInt(walls[i].getAttribute("yLength"));
 		var zLength = parseInt(walls[i].getAttribute("zLength"));
+		var texture = walls[i].getAttribute("texture");
 	
 		for (var j = 0; j < xLength; j++)
 		{
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].innerHTML = "";
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("W|" + yLength));
-			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("W|" + yLength));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("W|" + yLength + "|" + texture));
 			
 			for (var k = 1; k < zLength; k++)
 			{
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].innerHTML = "";
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #FF0000; color: #FFFFFF;");
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("W|" + yLength));
-				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("W|" + yLength));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("W|" + yLength + "|" + texture));
 			}
 		}	
 	}
@@ -351,6 +357,7 @@ function loadXML()
 		var translateX = parseInt(cubes[i].getAttribute("translateX"));
 		var translateY = parseInt(cubes[i].getAttribute("translateY"));
 		var translateZ = parseInt(cubes[i].getAttribute("translateZ"));
+		var texture = cubes[i].getAttribute("texture");
 		var cubeFloor;
 
 		cubeObjs.push({row: row, col: col, yLength: yLength, translateX: translateX, translateY: translateY, translateZ: translateZ});
@@ -365,7 +372,8 @@ function loadXML()
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].innerHTML = "";
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].setAttribute("style", "background-color: #862125; color: #FFFFFF;");
 			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createTextNode("c" + yLength));
-			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("c|" + yLength + "|" + translateX + "|" + translateY + "|" + translateZ + "|" + cubeFloor));
+			gridElements[((ROWS - row - 1) * ROWS) + (col + j)].appendChild(document.createComment("c|" + yLength + "|" + translateX + "|" + translateY + "|" + translateZ +
+														"|" + cubeFloor + "|" + texture));
 			
 			for (var k = 1; k < zLength; k++)
 			{
@@ -377,7 +385,8 @@ function loadXML()
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].innerHTML = "";
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].setAttribute("style", "background-color: #862125; color: #FFFFFF;");
 				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createTextNode("c" + yLength));
-				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("c|" + yLength + "|" + translateX + "|" + translateY + "|" + translateZ + "|" + cubeFloor));
+				gridElements[(((ROWS - row - 1) - k) * ROWS) + (col + j)].appendChild(document.createComment("c|" + yLength + "|" + translateX + "|" + translateY + "|" + translateZ +
+															     "|" + cubeFloor + "|" + texture));
 			}
 		}	
 	}
@@ -445,31 +454,56 @@ function createXML()
 			if (grid.childNodes[i].childNodes[j].lastChild)
 			{	
 				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue[0] == "W")
-					walls.push({row: ((ROWS - i) - 1), col: j, yLength: grid.childNodes[i].childNodes[j].lastChild.nodeValue.substr(2)});
+				{
+					var strArray = grid.childNodes[i].childNodes[j].lastChild.nodeValue.split("|");
 					
-				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue == "F")
-					floors.push({row: ((ROWS - i) - 1), col: j});
+					walls.push({row: ((ROWS - i) - 1), col: j, yLength: strArray[1], texture: strArray[2]});
+				}
+				
+				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue[0] == "F")
+				{
+					var strArray = grid.childNodes[i].childNodes[j].lastChild.nodeValue.split("|");
+					
+					floors.push({row: ((ROWS - i) - 1), col: j, texture: strArray[1]});
+				}
 				
 				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue[0] == "S")
 				{
 					spawns.push({row: ((ROWS - i) - 1), col: j, dir: grid.childNodes[i].childNodes[j].lastChild.nodeValue.substr(6)});
-					floors.push({row: ((ROWS - i) - 1), col: j});
+					
+					var floorTexture = "Floor";
+					
+					if (floors.length > 0)
+						floorTexture = floors[floors.length - 1].texture;
+					
+					floors.push({row: ((ROWS - i) - 1), col: j, texture: floorTexture});
 				}
 				
 				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue[0] == "l")
 				{
+					var floorTexture = "Floor";
+					
+					if (floors.length > 0)
+						floorTexture = floors[floors.length - 1].texture;
+					
+					
 					exits.push({row: ((ROWS - i) - 1), col: j, file: grid.childNodes[i].childNodes[j].lastChild.nodeValue});
-					floors.push({row: ((ROWS - i) - 1), col: j});
+					floors.push({row: ((ROWS - i) - 1), col: j, texture: floorTexture});
 				}
 				
 				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue[0] == "c")
 				{
 					var strArray = grid.childNodes[i].childNodes[j].lastChild.nodeValue.split("|");
 					
-					cubes.push({row: ((ROWS - i) - 1), col: j, yLength: strArray[1], translateX: strArray[2], translateY: strArray[3], translateZ: strArray[4]});
+					cubes.push({row: ((ROWS - i) - 1), col: j, yLength: strArray[1], translateX: strArray[2], translateY: strArray[3], translateZ: strArray[4], texture: strArray[6]});
+					
+					var floorTexture = "Floor";
+					
+					if (floors.length > 0)
+						floorTexture = floors[floors.length - 1].texture;
 					
 					if (strArray[5] == "true")
-						floors.push({row: ((ROWS - i) - 1), col: j});
+						floors.push({row: ((ROWS - i) - 1), col: j, texture: floorTexture});
 				}
 					
 				if (grid.childNodes[i].childNodes[j].lastChild.nodeValue[0] == "C")
@@ -494,11 +528,15 @@ function createXML()
 						placementType = "";
 					}	
 					
+					var floorTexture = "Floor";
+					
+					if (floors.length > 0)
+						floorTexture = floors[floors.length - 1].texture;
 					
 					crests.push({row: ((ROWS - i) - 1), col: j, effect: strArray[1], target: targetCube, dir: strArray[3], placement: placementType, yLength: strArray[6]});
 					
 					if (strArray[4] == "true")
-						floors.push({row: ((ROWS - i) - 1), col: j});
+						floors.push({row: ((ROWS - i) - 1), col: j, texture: floorTexture});
 				}
 			}
 		}
@@ -530,7 +568,7 @@ function combineElements (elementArray)
 	for (var i = 0; i < elementArray.length; i++)
 	{		
 		var tempWall = {row: 0.0, col: -1.0, xLength: 1.0, yLength: 1.0, zLength: 1.0, centerX: 0.0, centerY: 0.0, centerZ: 0.0, translateX: 0.0, translateY: 0.0, translateZ: 0.0,
-				dir: undefined, file: undefined, effect: undefined, target: undefined, placement: undefined};
+				dir: undefined, file: undefined, effect: undefined, target: undefined, placement: undefined, texture: undefined};
 
 		tempWall.row = elementArray[i].row;
 		tempWall.col = elementArray[i].col;
@@ -545,6 +583,7 @@ function combineElements (elementArray)
 		tempWall.translateX = elementArray[i].translateX;
 		tempWall.translateY = elementArray[i].translateY;
 		tempWall.translateZ = elementArray[i].translateZ;
+		tempWall.texture = elementArray[i].texture;
 		
 		wallRowCol[elementArray[i].row].push(tempWall);
 	}
@@ -561,6 +600,7 @@ function combineElements (elementArray)
 				   ((wallRowCol[i][j].file == undefined) || (((wallRowCol[i][j].file != undefined) && (wallRowCol[i][j].file == wallRowCol[i][j + 1].file)))) &&
 				   ((wallRowCol[i][j].effect == undefined) || (((wallRowCol[i][j].effect == 4 && wallRowCol[i][j + 1].effect == 4)))) &&
 				   ((wallRowCol[i][j].placement == undefined) || (((wallRowCol[i][j].placement != undefined) && (wallRowCol[i][j].placement == wallRowCol[i][j + 1].placement)))) &&
+				   ((wallRowCol[i][j].texture == undefined) || (((wallRowCol[i][j].texture != undefined) && (wallRowCol[i][j].texture == wallRowCol[i][j + 1].texture)))) &&
 				   (wallRowCol[i][j].yLength == wallRowCol[i][j + 1].yLength) && ((wallRowCol[i][j].translateX == wallRowCol[i][j + 1].translateX) &&
 				   (wallRowCol[i][j].translateY == wallRowCol[i][j + 1].translateY) && (wallRowCol[i][j].translateZ == wallRowCol[i][j + 1].translateZ)))
 				{	
@@ -603,6 +643,7 @@ function combineElements (elementArray)
 						   ((wallRowCol[i][l].file == undefined) || (((wallRowCol[i][l].file != undefined) && (wallRowCol[i][l].file == wallRowCol[i + j][k].file)))) &&
 						   ((wallRowCol[i][l].effect == undefined) || (((wallRowCol[i][l].effect == 4 && wallRowCol[i + j][k].effect == 4)))) &&
 						   ((wallRowCol[i][l].placement == undefined) || (((wallRowCol[i][l].placement != undefined) && (wallRowCol[i][l].placement == wallRowCol[i + j][k].placement)))) &&
+						   ((wallRowCol[i][l].texture == undefined) || (((wallRowCol[i][l].texture != undefined) && (wallRowCol[i][l].texture == wallRowCol[i + j][k].texture)))) &&
 						   (wallRowCol[i][l].yLength == wallRowCol[i + j][k].yLength) && ((wallRowCol[i][l].translateX == wallRowCol[i + j][k].translateX) &&
 						   (wallRowCol[i][l].translateY == wallRowCol[i + j][k].translateY) && (wallRowCol[i][l].translateZ == wallRowCol[i + j][k].translateZ)))
 						{
@@ -660,7 +701,7 @@ function writeXML(walls, floors, spawns, exits, cubes, crests)
 		{
 			xmlString += "\n<wall row=\"" + walls[i][j].row + "\" col=\"" + walls[i][j].col + "\" xLength=\"" + walls[i][j].xLength +  "\" yLength=\"" + walls[i][j].yLength +
 				     "\" zLength=\"" + walls[i][j].zLength + "\" centerX=\"" + walls[i][j].centerX + "\" centerY=\"" + walls[i][j].centerY +
-				     "\" centerZ=\"" + walls[i][j].centerZ + "\"/>";
+				     "\" centerZ=\"" + walls[i][j].centerZ + "\" texture=\"" + walls[i][j].texture + "\"/>";
 		}
 	}
 	
@@ -671,7 +712,8 @@ function writeXML(walls, floors, spawns, exits, cubes, crests)
 		for (var j = 0; j < floors[i].length; j++)
 		{
 			xmlString += "\n<floor row=\"" + floors[i][j].row + "\" col=\"" + floors[i][j].col + "\" xLength=\"" + floors[i][j].xLength + "\" zLength=\"" + floors[i][j].zLength +
-				     "\" centerX=\"" + floors[i][j].centerX + "\" centerY=\"" + floors[i][j].centerY + "\" centerZ=\"" + floors[i][j].centerZ + "\"/>";
+				     "\" centerX=\"" + floors[i][j].centerX + "\" centerY=\"" + floors[i][j].centerY + "\" centerZ=\"" + floors[i][j].centerZ +
+				     "\" texture=\"" + floors[i][j].texture + "\"/>";
 		}
 	}
 	
@@ -709,7 +751,7 @@ function writeXML(walls, floors, spawns, exits, cubes, crests)
 			xmlString += "\n<cube row=\"" + cubes[i][j].row + "\" col=\"" + cubes[i][j].col + "\" xLength=\"" + cubes[i][j].xLength + "\" yLength=\"" + cubes[i][j].yLength +
 				     "\" zLength=\"" + cubes[i][j].zLength + "\" centerX=\"" + cubes[i][j].centerX + "\" centerY=\"" + cubes[i][j].centerY +
 				     "\" centerZ=\"" + cubes[i][j].centerZ + "\" translateX=\"" + cubes[i][j].translateX + "\" translateY=\"" + cubes[i][j].translateY +
-				     "\" translateZ=\"" + cubes[i][j].translateZ + "\"/>";
+				     "\" translateZ=\"" + cubes[i][j].translateZ + "\" texture=\"" + cubes[i][j].texture + "\"/>";
 		}
 	}
 	

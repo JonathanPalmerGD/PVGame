@@ -41,7 +41,7 @@
 	<Material name="Snow">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>snow</DiffuseMap>
-		<Glow r="0.7" g="0.7" b="0.0" a="0.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Hedge">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
@@ -61,7 +61,7 @@
 	<Material name="Rock">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>rock</DiffuseMap>
-		<Glow r="0.4" g="0.2" b="0.0" a="0.0"></Glow>
+		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Grass">
 		<SurfaceMaterial>Basic</SurfaceMaterial>

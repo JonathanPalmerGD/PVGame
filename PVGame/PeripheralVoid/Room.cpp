@@ -187,6 +187,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerX = wall->Attribute("centerX");
 		const char* centerY = wall->Attribute("centerY");
 		const char* centerZ = wall->Attribute("centerZ");
+		const char* texture = wall->Attribute("texture");
 
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
@@ -198,6 +199,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->direction = "";
 		tempWall->file = "";
+		tempWall->texture = texture;
 	
 		wallRowCol[(unsigned int)atof(row) + (unsigned int)mapOffsetZ].push_back(tempWall);
 	}
@@ -214,6 +216,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerX = floor->Attribute("centerX");
 		const char* centerY = floor->Attribute("centerY");
 		const char* centerZ = floor->Attribute("centerZ");
+		const char* texture = floor->Attribute("texture");
 
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
@@ -224,6 +227,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->direction = "";
 		tempWall->file = "";
+		tempWall->texture = texture;
 	
 		floorVector.push_back(tempWall);
 	}
@@ -269,6 +273,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* translateX = cube->Attribute("translateX");
 		const char* translateY = cube->Attribute("translateY");
 		const char* translateZ = cube->Attribute("translateZ");
+		const char* texture = cube->Attribute("texture");
 
 		tempCube->row = (float)atof(row) + mapOffsetZ;
 		tempCube->col = (float)atof(col) + mapOffsetX;
@@ -283,6 +288,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempCube->translateZ = (float)atof(translateZ);
 		tempCube->direction = "";
 		tempCube->file = "";
+		tempCube->texture = texture;
 	
 		cubeVector.push_back(tempCube);
 	}
@@ -386,7 +392,7 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Hedge", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
+			GameObject* wallObj = new GameObject("Cube", wallRowCol[i][j]->texture, physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
 			wallObj->SetTexScale(max(wallRowCol[i][j]->xLength, wallRowCol[i][j]->zLength), wallRowCol[i][j]->yLength, 0.0f, 1.0f);
 			gameObjs.push_back(wallObj);
@@ -395,7 +401,7 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < floorVector.size(); i++)
 	{
-		GameObject* floorObj = new GameObject("Cube", "Floor", physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, WORLD);
+		GameObject* floorObj = new GameObject("Cube", floorVector[i]->texture, physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, WORLD);
 		floorObj->scale(floorVector[i]->xLength, 1.0f, floorVector[i]->zLength);
 		floorObj->SetTexScale(floorVector[i]->xLength, floorVector[i]->zLength, 0.0f, 1.0f);
 		gameObjs.push_back(floorObj);
@@ -403,7 +409,7 @@ void Room::loadRoom(float xPos, float zPos)
 
 	for (unsigned int i = 0; i < cubeVector.size(); i++)
 	{
-		MovingObject* cubeObj = new MovingObject("Cube", "Rock", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
+		MovingObject* cubeObj = new MovingObject("Cube", cubeVector[i]->texture, physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
 		cubeObj->scale(cubeVector[i]->xLength, cubeVector[i]->yLength, cubeVector[i]->zLength);
 		cubeObj->SetTexScale(cubeVector[i]->xLength, cubeVector[i]->zLength, 0.0f, 1.0f);
 		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);

@@ -240,12 +240,16 @@ void PVGame::UpdateScene(float dt)
 {
 	#pragma region General Controls
 	if (input->isQuitPressed())
-	{		
-		//PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+	{
+		#if DEV_MODE
+		PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+		#endif
+		#if !DEV_MODE
 		player->resetWinPercent();
 		currentRoom = loadedRooms[0];
 		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		gameState = END;	
+		gameState = END;
+		#endif
 	}
 	if(input->wasKeyPressed('M'))
 	{
