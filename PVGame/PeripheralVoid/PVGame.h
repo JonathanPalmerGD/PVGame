@@ -32,6 +32,8 @@ public:
 		void ListenSelectorChange();
 		void DrawScene();
 		void OnMouseMove(WPARAM btnState, int x, int y);
+		void ToggleDevMode();
+		bool getDevMode();
 
 	private:
 		void BuildFX();
@@ -40,6 +42,7 @@ public:
 		void ClearRooms();
 		void SortGameObjects();
 
+		bool devMode;
 		Player*	player;
 		Room* currentRoom;
 		int selector;

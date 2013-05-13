@@ -87,10 +87,10 @@ bool PVGame::Init(char * args)
 
 	//OnResize();
 
-#if DRAW_FRUSTUM
-		gameObjects.push_back(player->GetCamera()->frustumBody);
-		proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
-#endif
+	#if DRAW_FRUSTUM
+	gameObjects.push_back(player->GetCamera()->frustumBody);
+	proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
+	#endif
 
 	mPhi = 1.5f*MathHelper::Pi;
 	mTheta = 0.25f*MathHelper::Pi;
@@ -239,17 +239,22 @@ bool isEUp = true;
 void PVGame::UpdateScene(float dt)
 {
 	#pragma region General Controls
+	if(input->wasKeyPressed('P') || input->wasKeyPressed('p'))
+	{
+		ToggleDevMode();
+	}
+
 	if (input->isQuitPressed())
 	{
-		#if DEV_MODE
-		PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
-		#endif
-		#if !DEV_MODE
-		player->resetWinPercent();
-		currentRoom = loadedRooms[0];
-		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		gameState = END;
-		#endif
+		if(devMode)
+			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+		else
+		{
+			player->resetWinPercent();
+			currentRoom = loadedRooms[0];
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			gameState = END;
+		}
 	}
 	if(input->wasKeyPressed('M'))
 	{
@@ -295,23 +300,24 @@ void PVGame::UpdateScene(float dt)
 
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
-		#if DEV_MODE == 1
-		if (input->wasKeyPressed('R'))
-			renderMan->AddPostProcessingEffect(WireframeEffect);
-		if (input->wasKeyPressed('N'))
-			renderMan->RemovePostProcessingEffect(WireframeEffect);
+		if(devMode)
+		{
+			if (input->wasKeyPressed('R'))
+				renderMan->AddPostProcessingEffect(WireframeEffect);
+			if (input->wasKeyPressed('N'))
+				renderMan->RemovePostProcessingEffect(WireframeEffect);
 
-		if (input->wasKeyPressed('B'))
-			renderMan->AddPostProcessingEffect(BlurEffect);
-		if (input->wasKeyPressed('V'))
-			renderMan->RemovePostProcessingEffect(BlurEffect);
+			if (input->wasKeyPressed('B'))
+				renderMan->AddPostProcessingEffect(BlurEffect);
+			if (input->wasKeyPressed('V'))
+				renderMan->RemovePostProcessingEffect(BlurEffect);
 
-		// Brackets.
-		if (input->wasKeyPressed(VK_OEM_6))
-			renderMan->ChangeBlurCount(1);
-		if (input->wasKeyPressed(VK_OEM_4))
-			renderMan->ChangeBlurCount(-1);
-		#endif
+			// Brackets.
+			if (input->wasKeyPressed(VK_OEM_6))
+				renderMan->ChangeBlurCount(1);
+			if (input->wasKeyPressed(VK_OEM_4))
+				renderMan->ChangeBlurCount(-1);
+		}
 
 		if ( /*riftMan->isRiftConnected() &&*/  input->isOculusButtonPressed())
 		{
@@ -354,14 +360,16 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		//If the player falls of the edge of the world, respawn in current room
-		#if DEV_MODE
-		if (player->getPosition().y < -100)
+		if(devMode)
+		{
+			if (player->getPosition().y < -100)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		#endif
-		#if !DEV_MODE
-		if (player->getPosition().y < -5)
+		}
+		else
+		{
+			if (player->getPosition().y < -5)
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		#endif
+		}
 			
 		#pragma endregion
 		#pragma region Player Statuses and Vision Affected Object Updating
@@ -439,190 +447,191 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-		#if DEV_MODE == 1
-		#pragma region Throwing Crests
-		if(input->wasKeyPressed('3'))
+		if(devMode)
 		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			gameObjects.push_back(crestObj);
-			proceduralGameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		if(input->wasKeyPressed('4'))
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(LEAP), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			gameObjects.push_back(crestObj);
-			proceduralGameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		if(input->wasKeyPressed('5'))
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
-			crestObj->scale(2.0f, .1f, 2.0f);
-			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			gameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		if(input->wasKeyPressed('9'))
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			gameObjects.push_back(crestObj);
-			proceduralGameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		#pragma endregion
+			#pragma region Throwing Crests
+			if(input->wasKeyPressed('3'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				gameObjects.push_back(crestObj);
+				proceduralGameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			if(input->wasKeyPressed('4'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(LEAP), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				gameObjects.push_back(crestObj);
+				proceduralGameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			if(input->wasKeyPressed('5'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
+				crestObj->scale(2.0f, .1f, 2.0f);
+				crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				gameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			if(input->wasKeyPressed('9'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				gameObjects.push_back(crestObj);
+				proceduralGameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			#pragma endregion
 
-		#pragma region 1: Slow Sphere
-		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 10;
+			#pragma region 1: Slow Sphere
+			if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 10;
 
-			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->initAudio("Audio\\shot.wav");
+				GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->initAudio("Audio\\shot.wav");
 			
-			testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			is1Up = false;
-		}
-		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
-			is1Up = true;
-		#pragma endregion
-		#pragma region 2: Slow Cube
-		if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 20;
-
-			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			//testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			is2Up = false;
-		}
-		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
-			is2Up = true;
-		#pragma endregion
-		#pragma region 8: Speedless Cube
-		if((input->wasKeyPressed('8'))  && is8Up)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 0;
-
-			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			//testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			is8Up = false;
-		}
-		else if(!input->isKeyDown('8'))
-			is8Up = true;
-		#pragma endregion
-		#pragma region E: Fast Sphere
-		if((input->wasKeyPressed('E'))  && isEUp)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 90;
-
-			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\shot.wav");
-			testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			isEUp = false;
-		}
-		else if(!input->isKeyDown('E'))
-			isEUp = true;
-		#pragma endregion
-
-		#pragma region Level Controls U and I
-		if (input->wasKeyPressed('U'))
-		{
-			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+				testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				is1Up = false;
+			}
+			else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
+				is1Up = true;
+			#pragma endregion
+			#pragma region 2: Slow Cube
+			if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
 			{
-				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
-				{
-					if (i > 0)
-						currentRoom = loadedRooms[i - 1];
-					else
-						currentRoom = loadedRooms[loadedRooms.size() - 1];
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 20;
 
-					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-					break;
+				GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+				//testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				is2Up = false;
+			}
+			else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
+				is2Up = true;
+			#pragma endregion
+			#pragma region 8: Speedless Cube
+			if((input->wasKeyPressed('8'))  && is8Up)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 0;
+
+				GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+				//testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				is8Up = false;
+			}
+			else if(!input->isKeyDown('8'))
+				is8Up = true;
+			#pragma endregion
+			#pragma region E: Fast Sphere
+			if((input->wasKeyPressed('E'))  && isEUp)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 90;
+
+				GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->initAudio("Audio\\shot.wav");
+				testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				isEUp = false;
+			}
+			else if(!input->isKeyDown('E'))
+				isEUp = true;
+			#pragma endregion
+
+			#pragma region Level Controls U and I
+			if (input->wasKeyPressed('U'))
+			{
+				for (unsigned int i = 0; i < loadedRooms.size(); i++)
+				{
+					if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+					{
+						if (i > 0)
+							currentRoom = loadedRooms[i - 1];
+						else
+							currentRoom = loadedRooms[loadedRooms.size() - 1];
+
+						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						break;
+					}
 				}
 			}
-		}
-		if (input->wasKeyPressed('I'))
-		{
-			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+			if (input->wasKeyPressed('I'))
 			{
-				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+				for (unsigned int i = 0; i < loadedRooms.size(); i++)
 				{
-					if (i < (loadedRooms.size() - 1))
-						currentRoom = loadedRooms[i + 1];
-					else
-						currentRoom = loadedRooms[0];
+					if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+					{
+						if (i < (loadedRooms.size() - 1))
+							currentRoom = loadedRooms[i + 1];
+						else
+							currentRoom = loadedRooms[0];
 
-					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-					break;
+						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						break;
+					}
 				}
 			}
+			#pragma endregion
 		}
-		#pragma endregion
-		#endif
 		#if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 		#endif
@@ -1028,6 +1037,16 @@ void PVGame::DrawScene()
 	}
 }
  
+void PVGame::ToggleDevMode()
+{
+	devMode = !devMode;
+}
+
+bool PVGame::getDevMode()
+{
+	return devMode;
+}
+
 void PVGame::BuildFX()
 {
 	renderMan->BuildFX();
