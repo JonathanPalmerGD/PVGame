@@ -4,16 +4,17 @@
 
 #include "Camera.h"
 
-Camera::Camera(PhysicsManager* pM, float aspect)
+Camera::Camera(PhysicsManager* pM, RiftManager* rm, float aspect)
 	: mPosition(0.0f, 0.0f, 0.0f), 
 	  mRight(1.0f, 0.0f, 0.0f),
 	  mUp(0.0f, 1.0f, 0.0f),
 	  mLook(0.0f, 0.0f, 1.0f)
 {
+	riftMan = rm;
 	physicsMan = pM;
 	frustumBody = NULL;
 	body = NULL;
-	SetLens(0.25f*MathHelper::Pi, aspect, 0.01f, 1000.0f);
+	SetLens(0.25f*MathHelper::Pi, aspect, 0.01f, 100.0f);
 }
 
 Camera::~Camera()
@@ -141,22 +142,35 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	XMStoreFloat4x4(&mProj, P);
 
 #if USE_FRUSTUM_CULLING
-		float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect ) * 0.7f;
-		float mFarWindowWidth  = 2.0f * mFarZ * tanf( 0.5f*mAspect )  * 0.7f;
-
+	float mNearWindowWidth = 2.0f * mNearZ * tanf( 0.5f*mAspect );
+	float mFarWindowWidth  = 2.0f * mFarZ  * tanf( 0.5f*mAspect );
+	float nearHeight = mNearWindowHeight/2;
+	float farHeight  = mFarWindowHeight /2;
+	if(riftMan->isUsingRift())
+	{
+		//mNearWindowWidth *= 1.0f;
+		mFarWindowWidth  *= 2.03f;
+		//nearHeight = mNearWindowHeight/2 * 1.0f;
+		farHeight  = mFarWindowHeight /2 * 1.3f;
+	}
+	else
+	{
+	//	mNearWindowWidth *= 1f;
+		mFarWindowWidth  *= aspect * .3;
+	//	nearHeight = mNearWindowHeight/2 ;
+		farHeight  *= fovY * 1.55;
+	}
 		btVector3* points = new btVector3[8];
-		float tempNearHeight = (mNearWindowHeight / 2.0f) * 1.07f;
-		float tempFarHeight  = (mFarWindowHeight  / 2.0f) * 1.07f;
 		//NearPlane
-		points[0] = btVector3( mNearWindowWidth/2,  tempNearHeight, mNearZ);
-		points[1] = btVector3(-mNearWindowWidth/2,  tempNearHeight, mNearZ);
-		points[2] = btVector3( mNearWindowWidth/2, -tempNearHeight, mNearZ);
-		points[3] = btVector3(-mNearWindowWidth/2, -tempNearHeight, mNearZ);
+		points[0] = btVector3( mNearWindowWidth,  nearHeight, mNearZ);
+		points[1] = btVector3(-mNearWindowWidth,  nearHeight, mNearZ);
+		points[2] = btVector3( mNearWindowWidth, -nearHeight, mNearZ);
+		points[3] = btVector3(-mNearWindowWidth, -nearHeight, mNearZ);
 
-		points[4] = btVector3( mFarWindowWidth/2,  tempFarHeight, mFarZ);
-		points[5] = btVector3(-mFarWindowWidth/2,  tempFarHeight, mFarZ);
-		points[6] = btVector3( mFarWindowWidth/2, -tempFarHeight, mFarZ);
-		points[7] = btVector3(-mFarWindowWidth/2, -tempFarHeight, mFarZ);
+		points[4] = btVector3( mFarWindowWidth,  farHeight, mFarZ);
+		points[5] = btVector3(-mFarWindowWidth,  farHeight, mFarZ);
+		points[6] = btVector3( mFarWindowWidth, -farHeight, mFarZ);
+		points[7] = btVector3(-mFarWindowWidth, -farHeight, mFarZ);
 
 		if(body != NULL)
 		{

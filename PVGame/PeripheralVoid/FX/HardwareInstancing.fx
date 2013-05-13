@@ -8,6 +8,7 @@
  
 #define MAX_LIGHTS 10
 #define MAX_GLOW_RANGE 27 // How many "units" away from the eye an object must be to achieve full glow.
+#define MAX_ENVIRONMENTS 1 // How many different texture atlas's we are using.
 #define GLOW_RANGE_POWER (0.000000000)
 #define GLOW_ANGLE_POWER (1.000000000)
 
@@ -56,6 +57,7 @@ cbuffer cbPerObject
 
 // Nonnumeric values cannot be added to a cbuffer.
 Texture2D gDiffuseMap;
+Texture2D environmentAtlas[MAX_ENVIRONMENTS];
 
 SamplerState samAnisotropic
 {
@@ -66,12 +68,12 @@ SamplerState samAnisotropic
 	AddressV = WRAP;
 };
 
-SamplerState Linear : register(s0)
+SamplerState Linear
 {
 	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = BORDER;
-	AddressV = BORDER;
-	AddressW = BORDER;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+	AddressW = CLAMP;
 };
 
 SamplerState samInputImage
@@ -90,19 +92,21 @@ struct VertexIn
 	row_major float4x4 World	: WORLD;
 	Material Material			: MATERIAL;
 	uint InstanceId				: SV_InstanceID;
-	float2 AtlasCoord			: ATLASCOORD;
 	float4 GlowColor			: GLOWCOLOR;
+	float4 TexScale				: TEXSCALE;
+	float2 AtlasCoord			: ATLASCOORD;
 };
 
 struct VertexOut
 {
 	float4 PosH			: SV_POSITION;
+	float4 GlowColor	: GLOWCOLOR;
+	Material Material	: MATERIAL;
+	float2 Tex			: TEXCOORD;
+	float2 AtlasCoord	: ATLASCOORD;
+	float AtlasIndex	: ATLASINDEX;
     float3 PosW			: POSITION;
     float3 NormalW		: NORMAL;
-	float2 Tex			: TEXCOORD;
-	Material Material	: MATERIAL;
-	float2 AtlasCoord	: ATLASCOORD;
-	float4 GlowColor	: GLOWCOLOR;
 };
 
 struct BlurVertexOut
@@ -121,15 +125,20 @@ VertexOut VS(VertexIn vin, uniform bool isUsingAtlas)
 		
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
-	float2 texCoord = (isUsingAtlas) ? float2((vin.Tex.x / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.x),
-							(vin.Tex.y / 4.0f) + (1.0f / 4.0f * vin.AtlasCoord.y))
-							: vin.Tex;
 
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex   = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+	if (vin.TexScale.w == 1.0f)
+	{
+		vout.Tex.x *= vin.TexScale.x;
+		vout.Tex.y *= vin.TexScale.y;
+	}
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
 	vout.GlowColor = vin.GlowColor;
+
+	if (isUsingAtlas)
+		vout.AtlasIndex = vin.TexScale.z;
 	return vout;
 }
 
@@ -170,9 +179,12 @@ float4x4 gOcView;
 VertexOut OculusVS(VertexIn vin)
 {
 	VertexOut vout;
-	vout.PosH = mul(gOcView, float4(vin.PosL, 1.0f));
-	vout.PosW = mul(gOcView, float4(vin.PosL, 1.0f));
-	vout.Tex = mul(gTexTransform, float4(vin.Tex, 0, 1)).xy;
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gOcView);
+	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+
+	//vout.PosH = mul(gOcView, float4(vin.PosL, 1.0f));
+	//vout.PosW = mul(gOcView, float4(vin.PosL, 1.0f));
+	//vout.Tex = mul(gTexTransform, float4(vin.Tex, 0, 1)).xy;
 
 	vout.Material = vin.Material;
 	vout.AtlasCoord = vin.AtlasCoord;
@@ -200,7 +212,9 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
     if(gUseTexure)
 	{
 		// Sample texture.
-		texColor = gDiffuseMap.Sample( samAnisotropic, (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f));
+		//float2 texCoord = (frac(pin.Tex) * 0.25f) + (pin.AtlasCoord * 0.25f); // Original
+		float2 texCoord = (frac(pin.Tex) * 0.125f) + (pin.AtlasCoord * 0.25f) + float2(0.0625f, 0.0625f);
+		texColor = environmentAtlas[pin.AtlasIndex].Sample( samAnisotropic, texCoord);
 	}
 	 
 	//
@@ -227,14 +241,18 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 			spec    += S;
 		}
 	}
+	
+	for (int i = 0; i < 2; ++i)
+	{
+		float4 A, D, S;
+		ComputeDirectionalLight(pin.Material, gDirLights[i], pin.NormalW, toEye, 
+					A, D, S);
 
-	float4 A, D, S;
-	ComputeDirectionalLight(pin.Material, gDirLights[0], pin.NormalW, toEye, 
-				A, D, S);
-
-	ambient += A;
-	diffuse += D;
-	spec    += S;
+		ambient += A;
+		diffuse += D;
+		spec    += S;
+	}
+	
 
 	// Modulate with late add.
 	litColor = texColor*(ambient + diffuse) + spec;
@@ -242,7 +260,7 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	distToEye = clamp(distToEye, 0.1f, MAX_GLOW_RANGE);
 
 	// Only glow if certain conditions met. Position check is to discard pixels not on screen.
-	if (pin.GlowColor[3] > 0.0f && pin.PosH.x >= 0 && pin.PosH.x <= gScreenSize.x && pin.PosH.y >= 0 && pin.PosH.y <= gScreenSize.y)
+	if (pin.GlowColor[3] > 0.0f)
 	{
 		litColor += (pin.GlowColor * GLOW_RANGE_POWER / (MAX_GLOW_RANGE / distToEye));
 

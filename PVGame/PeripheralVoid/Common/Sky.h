@@ -18,7 +18,8 @@ public:
 	~Sky();
 
 	ID3D11ShaderResourceView* CubeMapSRV();
-
+	
+	void Draw(ID3D11DeviceContext* dc, const Camera& camera, const float* viewproj);
 	void Draw(ID3D11DeviceContext* dc, const Camera& camera);
 
 private:

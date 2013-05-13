@@ -11,7 +11,11 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 	tinyxml2::XMLDocument doc;
 
 	doc.LoadFile(xmlFile);
-
+	if(doc.ErrorID() != 0)
+	{
+		mapFile = NULL;
+		return;
+	}
 	// Set initial room dimensions
 	width = -100.0f;
 	depth = -100.0f;
@@ -183,6 +187,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerX = wall->Attribute("centerX");
 		const char* centerY = wall->Attribute("centerY");
 		const char* centerZ = wall->Attribute("centerZ");
+		const char* texture = wall->Attribute("texture");
 
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
@@ -194,6 +199,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->direction = "";
 		tempWall->file = "";
+		tempWall->texture = texture;
 	
 		wallRowCol[(unsigned int)atof(row) + (unsigned int)mapOffsetZ].push_back(tempWall);
 	}
@@ -210,6 +216,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* centerX = floor->Attribute("centerX");
 		const char* centerY = floor->Attribute("centerY");
 		const char* centerZ = floor->Attribute("centerZ");
+		const char* texture = floor->Attribute("texture");
 
 		tempWall->row = (float)atof(row) + mapOffsetZ;
 		tempWall->col = (float)atof(col) + mapOffsetX;
@@ -220,6 +227,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
 		tempWall->direction = "";
 		tempWall->file = "";
+		tempWall->texture = texture;
 	
 		floorVector.push_back(tempWall);
 	}
@@ -265,6 +273,7 @@ void Room::loadRoom(float xPos, float zPos)
 		const char* translateX = cube->Attribute("translateX");
 		const char* translateY = cube->Attribute("translateY");
 		const char* translateZ = cube->Attribute("translateZ");
+		const char* texture = cube->Attribute("texture");
 
 		tempCube->row = (float)atof(row) + mapOffsetZ;
 		tempCube->col = (float)atof(col) + mapOffsetX;
@@ -279,6 +288,7 @@ void Room::loadRoom(float xPos, float zPos)
 		tempCube->translateZ = (float)atof(translateZ);
 		tempCube->direction = "";
 		tempCube->file = "";
+		tempCube->texture = texture;
 	
 		cubeVector.push_back(tempCube);
 	}
@@ -317,12 +327,12 @@ void Room::loadRoom(float xPos, float zPos)
 		tempWall->target = target;
 
 		if (strcmp(placement, "platform") == 0)
-			tempWall->yLength *= 0.1f;
+			tempWall->yLength *= 0.5f;
 
 		if (strcmp(dir, "up") == 0)
 		{
 			if (strcmp(placement, "") == 0)
-				tempWall->centerZ -= 0.4;
+				tempWall->centerZ -= 0.4f;
 
 			if (strcmp(placement, "wall") == 0)
 			{
@@ -334,7 +344,7 @@ void Room::loadRoom(float xPos, float zPos)
 		if (strcmp(dir, "down") == 0)
 		{
 			if (strcmp(placement, "") == 0)
-				tempWall->centerZ += 0.4;
+				tempWall->centerZ += 0.4f;
 
 			if (strcmp(placement, "wall") == 0)
 			{
@@ -347,7 +357,7 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 			if (strcmp(placement, "") == 0)
 			{
-				tempWall->centerX -= 0.4;
+				tempWall->centerX -= 0.4f;
 				tempWall->xRotation = 3.14f / 2.0f;
 			}
 
@@ -361,7 +371,7 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 			if (strcmp(placement, "") == 0)
 			{
-				tempWall->centerX += 0.4;
+				tempWall->centerX += 0.4f;
 				tempWall->xRotation = -3.14f / 2.0f;
 			}
 
@@ -382,23 +392,26 @@ void Room::loadRoom(float xPos, float zPos)
 	{
 		for (unsigned int j = 0; j < wallRowCol[i].size(); j++)
 		{
-			GameObject* wallObj = new GameObject("Cube", "Hedge", physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
+			GameObject* wallObj = new GameObject("Cube", wallRowCol[i][j]->texture, physicsMan->createRigidBody("Cube", wallRowCol[i][j]->centerX + xPos, wallRowCol[i][j]->yLength / 2, wallRowCol[i][j]->centerZ + zPos), physicsMan, WORLD);
 			wallObj->scale(wallRowCol[i][j]->xLength, wallRowCol[i][j]->yLength, wallRowCol[i][j]->zLength);
+			wallObj->SetTexScale(max(wallRowCol[i][j]->xLength, wallRowCol[i][j]->zLength), wallRowCol[i][j]->yLength, 0.0f, 1.0f);
 			gameObjs.push_back(wallObj);
 		}
 	}
 
 	for (unsigned int i = 0; i < floorVector.size(); i++)
 	{
-		GameObject* floorObj = new GameObject("Cube", "Floor", physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, ObjectType::WORLD);
+		GameObject* floorObj = new GameObject("Cube", floorVector[i]->texture, physicsMan->createRigidBody("Cube", floorVector[i]->centerX + xPos, -0.5f, floorVector[i]->centerZ + zPos), physicsMan, WORLD);
 		floorObj->scale(floorVector[i]->xLength, 1.0f, floorVector[i]->zLength);
+		floorObj->SetTexScale(floorVector[i]->xLength, floorVector[i]->zLength, 0.0f, 1.0f);
 		gameObjs.push_back(floorObj);
 	}
 
 	for (unsigned int i = 0; i < cubeVector.size(); i++)
 	{
-		MovingObject* cubeObj = new MovingObject("Cube", "Rock", physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
+		MovingObject* cubeObj = new MovingObject("Cube", cubeVector[i]->texture, physicsMan->createRigidBody("Cube", cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos), physicsMan);
 		cubeObj->scale(cubeVector[i]->xLength, cubeVector[i]->yLength, cubeVector[i]->zLength);
+		cubeObj->SetTexScale(cubeVector[i]->xLength, cubeVector[i]->zLength, 0.0f, 1.0f);
 		//cubeObj->addCollisionFlags(btCollisionObject::CollisionFlags::CF_KINEMATIC_OBJECT|btCollisionObject::CollisionFlags::CF_STATIC_OBJECT);
 		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos, cubeVector[i]->yLength / 2, cubeVector[i]->centerZ + zPos));
 		cubeObj->AddPosition(XMFLOAT3(cubeVector[i]->centerX + xPos + cubeVector[i]->translateX, (cubeVector[i]->yLength / 2) + cubeVector[i]->translateY, cubeVector[i]->centerZ + zPos + cubeVector[i]->translateZ));
@@ -430,27 +443,34 @@ void Room::loadRoom(float xPos, float zPos)
 		{
 		case MEDUSA:
 			crestObj = new Crest("medusacrest", "MedusaCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case LEAP:
 			crestObj = new Crest("medusacrest", "LeapCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case MOBILITY:
 			crestObj = new Crest("medusacrest", "MobilityCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case UNLOCK:
-			crestObj = new Crest("medusacrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj = new Crest("unlockcrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case HADES:
 			crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->scale(crestVector[i]->xLength, crestVector[i]->yLength, crestVector[i]->zLength);
+			//crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			break;
 		case WIN:
 			crestObj = new Crest("boat", "WinCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
-			crestObj->translate(0.0f, 1.0f, 0.0f);
+			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
+			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		}
 
@@ -496,44 +516,50 @@ void Room::loadNeighbors(vector<Room*> loadedRooms)
 			Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
 			Wall* roomEntrance;
 
-			for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+			if(tmpRoom->getFile() == NULL)
 			{
-				if (tmpRoom->getExits()[j]->file == mapFile)
-					roomEntrance = tmpRoom->getExits()[j];
+				delete tmpRoom;
 			}
-
-			if (exitVector[i]->row == 0)
+			else
 			{
-				offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-				offsetZ -= tmpRoom->depth;
+				for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+				{
+					if (tmpRoom->getExits()[j]->file == mapFile)
+						roomEntrance = tmpRoom->getExits()[j];
+				}
+
+				if (exitVector[i]->row == 0)
+				{
+					offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+					offsetZ -= tmpRoom->depth;
+				}
+
+				if (exitVector[i]->row == depth - 1)
+				{
+					offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+					offsetZ += depth;
+				}
+
+				if (exitVector[i]->col == 0)
+				{
+					offsetX -= tmpRoom->width;
+					offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+				}
+
+				if (exitVector[i]->col == width - 1)
+				{
+					offsetX += width;
+					offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+				}
+
+				tmpRoom->setX(offsetX);
+				tmpRoom->setZ(offsetZ);
+
+				tmpRoom->loadRoom(offsetX, offsetZ);
+
+				neighbors.push_back(tmpRoom);
 			}
-
-			if (exitVector[i]->row == depth - 1)
-			{
-				offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-				offsetZ += depth;
-			}
-
-			if (exitVector[i]->col == 0)
-			{
-				offsetX -= tmpRoom->width;
-				offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-			}
-
-			if (exitVector[i]->col == width - 1)
-			{
-				offsetX += width;
-				offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-			}
-
-			tmpRoom->setX(offsetX);
-			tmpRoom->setZ(offsetZ);
-
-			tmpRoom->loadRoom(offsetX, offsetZ);
-
-			neighbors.push_back(tmpRoom);
 		}
-
 		else
 			neighbors.push_back(loadedRoom);
 	}

@@ -50,8 +50,8 @@ Input::Input()
         controllers[i].vibrateTimeRight = 0;
     }
 
-	screenWidth = 800;
-	screenHeight = 600;
+	screenWidth = 1280;
+	screenHeight = 800;
 }
 
 //=============================================================================
@@ -395,6 +395,21 @@ void Input::vibrateControllers(float frameTime)
 	/*
 	/* ****************************************************************************************************/
 
+
+//If the index game pad is connected.
+bool Input::gamepadConnected(int i)
+{
+	// make sure key code is within buffer range
+	if (controllers[i].connected)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // Set that the corresponding gamepad button is down.
 void Input::gamepadButtonDown(int buttonIndex)
 {
@@ -523,25 +538,25 @@ bool Input::isStartPressed() const
 // True if the player hits W or up on the left joystick on gamepad.
 bool Input::isPlayerUpKeyDown() const
 {
-	return (isKeyDown('W') || (getGamepadThumbLY(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('W') );
 }
 
 // True if the player hits S or down on the left joystick on gamepad.
 bool Input::isPlayerDownKeyDown() const
 {
-	return (isKeyDown('S') || (getGamepadThumbLY(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('S') );
 }
 
 // True if the player hits A or left on the left joystick on gamepad.
 bool Input::isPlayerLeftKeyDown() const
 {
-	return (isKeyDown('A') || (getGamepadThumbLX(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('A'));
 }
 
 // True if the player hits D or right on the left joystick on gamepad.
 bool Input::isPlayerRightKeyDown() const
 {
-	return (isKeyDown('D') || (getGamepadThumbLX(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown('D'));
 }
 
 
@@ -549,25 +564,25 @@ bool Input::isPlayerRightKeyDown() const
 // True if the player hits right arrow or right on the right joystick on gamepad.
 bool Input::isCameraRightKeyDown() const
 {
-	return (isKeyDown(VK_RIGHT) || (getGamepadThumbRX(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );  
+	return (isKeyDown(VK_RIGHT) );  
 }
 
 // True if the player hits left arrow or left on the right joystick on gamepad.
 bool Input::isCameraLeftKeyDown() const
 {
-	return (isKeyDown(VK_LEFT) || (getGamepadThumbRX(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown(VK_LEFT)  );
 }
 
 // True if the player hits up arrow or up on the right joystick on gamepad.
 bool Input::isCameraUpKeyDown() const
 {
-	return (isKeyDown(VK_UP) || (getGamepadThumbRY(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown(VK_UP) );
 }
 
 // True if the player hits down arrow or down on the right joystick on gamepad.
 bool Input::isCameraDownKeyDown() const
 {
-	return (isKeyDown(VK_DOWN) ||  (getGamepadThumbRY(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)) );
+	return (isKeyDown(VK_DOWN));
 }
 
 

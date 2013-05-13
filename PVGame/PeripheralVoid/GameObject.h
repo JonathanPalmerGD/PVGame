@@ -19,6 +19,7 @@ class GameObject
 		void translate(float x, float y, float z);
 		void setPosition(float x, float y, float z);
 		void scale(float x, float y, float z);
+		void SetTexScale(float x, float y, float z, float w);
 		void rotate(float x, float y, float z, float w);
 		void rotate(float yaw, float pitch, float roll);
 		void setLinearVelocity(float x, float y, float z);
@@ -35,6 +36,8 @@ class GameObject
 
 		void CalculateWorldMatrix();
 		XMFLOAT4X4 GetWorldMatrix() const;
+		XMFLOAT3 GetLocalScale() const { return localScale; }
+		XMFLOAT4 GetTexScale() const { return texScale; }
 
 		void SetRigidBody(btRigidBody* rBody, short layer);
 		btRigidBody* getRigidBody() const;
@@ -63,6 +66,7 @@ class GameObject
 		btRigidBody* rigidBody;
 		XMFLOAT4X4 worldMatrix;
 		XMFLOAT3 localScale;
+		XMFLOAT4 texScale;
 		PhysicsManager* physicsMan; //Don't use for anything but adding to and deleting the rigid body from the world.
 		float mass;
 		short collisionLayer;

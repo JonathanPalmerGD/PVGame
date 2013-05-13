@@ -24,7 +24,7 @@ public:
 		PVGame(HINSTANCE hInstance);
 		virtual ~PVGame(void);
 
-		bool Init();
+		bool Init(char* args);
 		bool LoadContent();
 		bool LoadXML();
 		void OnResize();
@@ -34,7 +34,6 @@ public:
 		void OnMouseMove(WPARAM btnState, int x, int y);
 
 	private:
-		void BuildGeometryBuffers();
 		void BuildFX();
 		void BuildVertexLayout();
 		void BuildRooms(Room* startRoom);

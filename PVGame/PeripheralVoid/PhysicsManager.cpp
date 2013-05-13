@@ -44,6 +44,11 @@ float PhysicsManager::getStepSize()
 	return pStepSize;
 }
 
+btDynamicsWorld* PhysicsManager::getWorld()
+{
+	return world;
+}
+
 /* update()
  *
  * steps the simulation at a rate of 60 fps
@@ -203,6 +208,12 @@ btRigidBody* PhysicsManager::createRigidBody(string handle, float xPos, float yP
 	return NULL;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+// makeCameraFrustumObject()
+//
+// makes a frustum shaped physics object from a triangle mesh represting the
+// camera frustum and adds it to the world
+////////////////////////////////////////////////////////////////////////////////////////
 btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btTriangleMesh* tMesh)
 {
 	btCollisionShape* ConvexShape = new btConvexTriangleMeshShape(tMesh);
@@ -220,6 +231,12 @@ btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btTriangleMesh
     return frustum;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+// makeCameraFrustumObject()
+//
+// makes a frustum shaped physics object from a series of points represting the
+// camera frustum and adds it to the world
+////////////////////////////////////////////////////////////////////////////////////////
 btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btVector3* points, int numPoints)
 {
 	btConvexHullShape* ConvexShape = new btConvexHullShape();
@@ -238,12 +255,22 @@ btPairCachingGhostObject* PhysicsManager::makeCameraFrustumObject(btVector3* poi
     return frustum;
 }
 
+////////////////////////////////////////////////////
+// addGhostObjectToWorld()
+//
+// adds a btPairCachingGhostOject to the world if it is not null
+////////////////////////////////////////////////////
 void PhysicsManager::addGhostObjectToWorld(btPairCachingGhostObject* ghost)
 {
 	if(ghost != NULL)
 		world->addCollisionObject(ghost, FRUSTUM, FRUSTUM);
 }
 
+//////////////////////////////////////////////////////
+// removeGhostObjectFromWorld()
+//
+// removes a ghost object from the world and deletes it in memory
+//////////////////////////////////////////////////////
 void PhysicsManager::removeGhostObjectFromWorld(btPairCachingGhostObject* ghost)
 {
 	if(ghost != NULL)
@@ -255,11 +282,12 @@ void PhysicsManager::removeGhostObjectFromWorld(btPairCachingGhostObject* ghost)
 	}
 }
 
-/* frustumCulling()
- *
- * checks to see which objects the camera's frustum is colliding with
- * sets those objects to be seen
- */
+/////////////////////////////////////////////////////////////////////////
+//frustumCulling()
+//
+// checks to see which objects the camera's frustum is colliding with
+// sets those objects to be seen
+/////////////////////////////////////////////////////////////////////////
 void PhysicsManager::frustumCulling(btPairCachingGhostObject* ghost)
 {
    world->getDispatcher()->dispatchAllCollisionPairs(ghost->getOverlappingPairCache(), world->getDispatchInfo(), world->getDispatcher());
@@ -285,15 +313,16 @@ void PhysicsManager::frustumCulling(btPairCachingGhostObject* ghost)
    }
 }
 
-/* addTriangleMesh
- *
- * Cooks a btTriangleMesh from a bunch of MeshData. This
- * does not add it to the world, it just makes a kind of prefab
- * that can be used to build rigid bodies later much much faster.
- *
- * params: handle   - the string that will be used to access the rigid body later
- *         meshData - the data that will be used to create the btTriangleMesh
- */
+////////////////////////////////////////////////////////////////////////////////////
+//	addTriangleMesh()
+//
+// Cooks a btTriangleMesh from a bunch of MeshData. This
+// does not add it to the world, it just makes a kind of prefab
+// that can be used to build rigid bodies later much much faster.
+//
+// params: handle   - the string that will be used to access the rigid body later
+//         meshData - the data that will be used to create the btTriangleMesh
+///////////////////////////////////////////////////////////////////////////////////
 void PhysicsManager::addTriangleMesh(string handle, MeshData meshData)
 {
 	btTriangleMesh* tMesh = new btTriangleMesh();
@@ -343,7 +372,7 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	btTransform t;
 	t.setIdentity();
 	t.setOrigin(btVector3(0, 5, 0));
-	//btCapsuleShape* capsule = new btCapsuleShape(radius, height);
+//btCapsuleShape* capsule = new btCapsuleShape(radius, height);
 	btCylinderShape* capsule = new btCylinderShape(btVector3(radius, height/2.0f, radius));
 	btPairCachingGhostObject* ghost = new btPairCachingGhostObject();
 	ghost->setCollisionShape(capsule);
@@ -356,6 +385,11 @@ btKinematicCharacterController* PhysicsManager::createCharacterController(float 
 	return cc;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+// removeCharacterController()
+//
+// removes a character controller from the physics world and deletes it from memory
+///////////////////////////////////////////////////////////////////////////////////
 void PhysicsManager::removeCharacterController(btKinematicCharacterController* cc)
 {
 	world->removeCollisionObject(cc->getGhostObject());
@@ -375,6 +409,7 @@ bool PhysicsManager::broadPhase(Camera* playCamera, GameObject* target)
 #if USE_FRUSTUM_CULLING
 	return target->isSeen();
 #else
+	//Code to check to see if the center of the target is drawn to the screen
 	XMMATRIX matrix = XMMatrixIdentity() * XMMatrixTranslation(target->getRigidBody()->getWorldTransform().getOrigin().getX(), 
 		                                                       target->getRigidBody()->getWorldTransform().getOrigin().getY(),
 															   target->getRigidBody()->getWorldTransform().getOrigin().getZ())
@@ -397,19 +432,6 @@ bool PhysicsManager::broadPhase(Camera* playCamera, GameObject* target)
 
 	return true;
 #endif
-	/*btVector3* playerV3 = new btVector3(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
-	btVector3* playerV3 = new btVector3(playCamera->GetLook().x, playCamera->GetLook().y, playCamera->GetLook().z);
-	btVector3 targetRelPosV3 = *targetV3 - *playerV3;
-	btScalar pDT= playerV3->dot(targetRelPosV3);
-	float angle = acos( pDT / (playerV3->length() * targetRelPosV3.length()));
-	playCamera->GetLook();
-	angle = angle * 180 / 3.14;
-	DBOUT(angle);
-
-	if(angle < 120 && angle > 30 )
-	return true;
-	else
-	return false;*/
 }
 
 /* narrowPhase()
@@ -420,9 +442,11 @@ bool PhysicsManager::broadPhase(Camera* playCamera, GameObject* target)
  */
 bool PhysicsManager::narrowPhase(Camera* playCamera, GameObject* target)
 {
+	//Set ray
 	btVector3 rayFrom(playCamera->GetPosition().x, playCamera->GetPosition().y, playCamera->GetPosition().z);
 	btVector3 rayTo(target->getRigidBody()->getWorldTransform().getOrigin());
 
+	//Check for raycast from camera to center of target
 	btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
 	callback.m_collisionFilterGroup = COL_RAYCAST;
 	callback.m_collisionFilterMask = COL_RAYCAST;

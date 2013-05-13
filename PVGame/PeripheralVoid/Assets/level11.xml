@@ -1,23 +1,16 @@
-﻿<level>
+<level>
 <walls>
-<wall row="13" col="4" xLength="17" yLength="6" zLength="1" centerX="12.5" centerY="0" centerZ="13.5"/>
-<wall row="13" col="24" xLength="1" yLength="6" zLength="4" centerX="24.5" centerY="0" centerZ="15"/>
-<wall row="14" col="4" xLength="1" yLength="6" zLength="3" centerX="4.5" centerY="0" centerZ="15.5"/>
-<wall row="17" col="4" xLength="21" yLength="6" zLength="1" centerX="14.5" centerY="0" centerZ="17.5"/>
 </walls>
 <floors>
-<floor row="13" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="13.5"/>
-<floor row="14" col="5" xLength="19" zLength="3" centerX="14.5" centerY="0" centerZ="15.5"/>
+<floor row="0" col="0" xLength="25" zLength="25" centerX="12.5" centerY="0" centerZ="12.5" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="14" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="14.5" dir="up"/>
 </spawns>
 <exits>
-<exit row="13" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="13.5" file="level10.xml"/>
+<exit row="24" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="24.5" file="level9.xml"/>
 </exits>
 <cubes>
 </cubes>
 <crests>
-<crest row="15" col="6" xLength="1" yLength="1" zLength="1" centerX="6.5" centerY="0" centerZ="15.5" effect="5" target="" dir="right" placement=""/>
 </crests>
 </level>

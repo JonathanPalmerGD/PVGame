@@ -12,6 +12,7 @@
 #define CAMERA_H
 
 #include "d3dUtil.h"
+#include "../RiftManager.h"
 #include "../PhysicsManager.h"
 #include "../GameObject.h"
 #include "../Constants.h"
@@ -22,7 +23,7 @@ class GameObject;
 class Camera
 {
 public:
-	Camera(PhysicsManager* pm, float aspect);
+	Camera(PhysicsManager* pm, RiftManager* rm, float aspect);
 	~Camera();
 
 	// Get/Set world camera position.
@@ -84,7 +85,8 @@ public:
 private:
 	PhysicsManager* physicsMan;
 	btPairCachingGhostObject* body;
-	
+	RiftManager* riftMan;
+
 	void transformBody();
 
 	// Camera coordinate system with coordinates relative to world space.

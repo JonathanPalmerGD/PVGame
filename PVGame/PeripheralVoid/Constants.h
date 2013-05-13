@@ -14,10 +14,11 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
+#define DEV_MODE 0
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
-#define MOBILITY_MULTIPLIER 0.60f
+#define MOBILITY_MULTIPLIER 0.75f
 
 #define USINGVLD 0
 #if USINGVLD 
@@ -201,6 +202,7 @@ struct Wall
 	string file;
 	CREST_TYPE effect;
 	string target;
+	string texture;
 };
 
 struct Cube : public Wall
@@ -261,8 +263,9 @@ struct InstancedData
 {
 	XMFLOAT4X4 World;
 	SurfaceMaterial SurfMaterial;
-	XMFLOAT2 AtlasC;
 	XMFLOAT4 GlowColor;
+	XMFLOAT4 TexScale;
+	XMFLOAT2 AtlasC;
 	bool isRendered;
 };
 

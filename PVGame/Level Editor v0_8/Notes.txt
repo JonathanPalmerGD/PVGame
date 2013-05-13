@@ -1,5 +1,0 @@
-﻿**If using IE, open developer tools (F12) and make sure Document Mode is set to IE9 Standards or higher.
-
-Create rooms by selecting a tile type and dragging across tiles to place them.  
-
-IMPORTANT: Keep exits on the "outer" walls (walls that are on the first row/col being used or the last row/col) and only use one side per exit.

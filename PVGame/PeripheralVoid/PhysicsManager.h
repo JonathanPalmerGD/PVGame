@@ -68,6 +68,8 @@ public:
 	btRigidBody* createRigidBody(string handle, float xPos, float yPos, float zPos, float mass = 0.0);
 	btRigidBody* createRigidBody(string handle, float xPos, float yPos, float zPos, float xScale, float yScale, float zScale, float mass = 0.0);
 
+	btDynamicsWorld* getWorld();
+
 	btPairCachingGhostObject* makeCameraFrustumObject(btTriangleMesh* tMesh);
 	btPairCachingGhostObject* makeCameraFrustumObject(btVector3* points, int numPoints);
 
