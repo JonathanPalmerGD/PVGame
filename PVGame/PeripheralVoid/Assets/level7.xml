@@ -13,8 +13,8 @@
 <wall row="3" col="0" xLength="1" yLength="4" zLength="6" centerX="0.5" centerY="0" centerZ="6" texture="Hedge"/>
 <wall row="3" col="10" xLength="1" yLength="4" zLength="1" centerX="10.5" centerY="0" centerZ="3.5" texture="Hedge"/>
 <wall row="4" col="10" xLength="1" yLength="5" zLength="3" centerX="10.5" centerY="0" centerZ="5.5" texture="Hedge"/>
-<wall row="4" col="15" xLength="1" yLength="1" zLength="3" centerX="15.5" centerY="0" centerZ="5.5" texture="Hedge"/>
-<wall row="4" col="16" xLength="1" yLength="2" zLength="3" centerX="16.5" centerY="0" centerZ="5.5" texture="Hedge"/>
+<wall row="4" col="15" xLength="1" yLength="1" zLength="3" centerX="15.5" centerY="0" centerZ="5.5" texture="Snow"/>
+<wall row="4" col="16" xLength="1" yLength="2" zLength="3" centerX="16.5" centerY="0" centerZ="5.5" texture="Snow"/>
 <wall row="7" col="10" xLength="1" yLength="4" zLength="12" centerX="10.5" centerY="0" centerZ="13" texture="Hedge"/>
 <wall row="7" col="16" xLength="1" yLength="5" zLength="15" centerX="16.5" centerY="0" centerZ="14.5" texture="Hedge"/>
 <wall row="9" col="0" xLength="1" yLength="5" zLength="1" centerX="0.5" centerY="0" centerZ="9.5" texture="Hedge"/>

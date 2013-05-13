@@ -85,6 +85,12 @@ bool PVGame::Init(char * args)
 	
 	LoadContent();
 
+	#if DEV_MODE
+	devMode = true;
+	#endif
+	#if !DEV_MODE
+	devMode = false;
+	#endif
 	//OnResize();
 
 	#if DRAW_FRUSTUM
