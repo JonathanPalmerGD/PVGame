@@ -218,6 +218,11 @@ void Crest::Update(Player* player)
 			player->setMobilityStatus(true);
 			break;
 		case UNLOCK:
+			//if(targetObject != NULL)
+			//{
+			//	//Change the targetObject to the unlocked state.
+			//	targetObject->SetTargetPosition(1);
+			//}
 			if(targetObject != NULL && canChange)
 			{
 				if(index == 0)
@@ -232,22 +237,26 @@ void Crest::Update(Player* player)
 					targetObject->SetTargetPosition(index);
 					canChange = false;
 				}
-				//Change the targetObject to the unlocked state.
-				//targetObject->SetTargetPosition(1);
 			}
 			break;
 		case HADES:
 				//Hi
 			break;
 		case HEPHAESTUS:
-			if(targetObject != NULL)
+			if(targetObject != NULL && canChange)
 			{
 				if(index == 0)
 				{
-					targetObject->SetTargetPosition(++index);
+					index = 1;
+					targetObject->SetTargetPosition(index);
+					canChange = false;
 				}
 				else if(index == 1)
-					targetObject->SetTargetPosition(--index);
+				{
+					index = 0;
+					targetObject->SetTargetPosition(index);
+					canChange = false;
+				}
 			}
 			break;
 		case WIN:
@@ -264,13 +273,17 @@ void Crest::Update(Player* player)
 			{
 				canChange = true;
 				//Change the targetObject to the locked state.
-			//	targetObject->SetTargetPosition(0);
+				//	targetObject->SetTargetPosition(0);
 			}
 		}
 		if(crestType == HADES)
 		{
 			//Hi
 			//Howdy there, partner
+		}
+		if(crestType == HEPHAESTUS)
+		{
+			canChange = true;
 		}
 	}
 }
