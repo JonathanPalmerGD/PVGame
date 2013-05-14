@@ -61,5 +61,9 @@
 			<OffsetU>3</OffsetU>
 			<OffsetV>2</OffsetV>
 		</Texture>
+		<Texture name="tiles">
+			<OffsetU>3</OffsetU>
+			<OffsetV>3</OffsetV>
+		</Texture>
   </Atlas>
 </TextureList>

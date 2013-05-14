@@ -109,6 +109,8 @@ bool PVGame::Init(char * args)
 
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\HomeSweetHome.wav", AudioSource::WAV);
+	audioWin = new AudioSource();
+	audioWin->initialize("Audio\\test_mono_8000Hz_8bit_PCM.wav", AudioSource::WAV);
 
 	return true;
 }
@@ -276,7 +278,7 @@ void PVGame::UpdateScene(float dt)
 	case MENU:
 		if(!audioSource->isPlaying())
 		{
-			audioSource->play();
+			audioSource->restartAndPlay();
 		}
 		ListenSelectorChange();
 		break;
@@ -290,7 +292,7 @@ void PVGame::UpdateScene(float dt)
 	case PLAYING:
 		if(audioSource->isPlaying())
 		{
-			audioSource->pause();
+			audioSource->stop();
 		}
 		if (input->isQuitPressed())
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
@@ -379,6 +381,11 @@ void PVGame::UpdateScene(float dt)
 			
 		#pragma endregion
 		#pragma region Player Statuses and Vision Affected Object Updating
+		if(!player->getWinStatus())
+		{
+			if(audioWin->isPlaying())
+				audioWin->stop();
+		}
 		player->resetStatuses();
 
 		// Reset blur, we only do it if a single Medusa is in sight.
@@ -412,6 +419,9 @@ void PVGame::UpdateScene(float dt)
 
 						if (currentCrest->GetCrestType() == WIN)
 						{
+							audioWin->setPosition(player->getPosition().x, player->getPosition().y, player->getPosition().z);
+							if(!audioWin->isPlaying())
+								audioWin->play();
 							renderMan->SetBlurColor(XMFLOAT4(0.99f * player->getWinPercent(), 0.99f * player->getWinPercent(), 0.0f, 1.0f));
 							renderMan->AddPostProcessingEffect(BlurEffect);
 						}
@@ -435,7 +445,7 @@ void PVGame::UpdateScene(float dt)
 					currentCrest->Update(player);
 				}
 
-				if(Turret* currentTurret = dynamic_cast<Turret*>(gameObjects[i]))
+				/*if(Turret* currentTurret = dynamic_cast<Turret*>(gameObjects[i]))
 				{
 					//btVector3 turretPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
 
@@ -448,7 +458,7 @@ void PVGame::UpdateScene(float dt)
 						currentTurret->ChangeView(false);
 					}
 					currentTurret->Update(player);
-				}
+				}*/
 			}
 		}
 		#pragma endregion
@@ -767,6 +777,10 @@ void PVGame::ListenSelectorChange()
 		{
 			//if(selector == 0 || selector == 1)
 			//{
+				if(audioWin->isPlaying())
+				{
+					audioWin->stop();
+				}
 				selector = 3;
 				gameState = MENU;
 				return;

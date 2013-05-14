@@ -61,6 +61,7 @@ public:
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;
 		AudioSource* audioSource;
+		AudioSource* audioWin;
 
 		/////////////////////////////////////////////////////////////////////
 		//Oculus Rift

@@ -40,7 +40,7 @@
   </Material>
 	<Material name="Snow">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
-		<DiffuseMap>snow</DiffuseMap>
+		<DiffuseMap>tiles</DiffuseMap>
 		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
 	</Material>
 	<Material name="Hedge">
