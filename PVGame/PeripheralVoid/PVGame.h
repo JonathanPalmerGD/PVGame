@@ -67,4 +67,9 @@ public:
 		//Oculus Rift
 		RiftManager* riftMan;
 		/////////////////////////////////////////////////////////////////////
+
+		long double VOLUME;
+		bool FULLSCREEN;
+		bool OCULUS;
+		bool VSYNC;
 };

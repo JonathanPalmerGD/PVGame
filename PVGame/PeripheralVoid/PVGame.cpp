@@ -5,6 +5,11 @@ map<string, MeshData>MeshMaps::MESH_MAPS = MeshMaps::create_map();
 PVGame::PVGame(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	VOLUME = 100;
+	FULLSCREEN = false;
+	OCULUS = false;
+	VSYNC = true;
+
 	input = new Input();
 	gameState = MENU;
 }
@@ -915,28 +920,62 @@ void PVGame::DrawScene()
 		renderMan->DrawString("Options!", medSize, cWidth * .20f, cHeight * .25f, color1);
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Option 1", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 1", smlSize, cWidth * .20f, cHeight * .30f, color4);
+		{
+			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color4);
+		}
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Option 2", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 2", smlSize, cWidth * .20f, cHeight * .35f, color4);
+		{
+			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color4);
+		}
 		if(selector == 2)
 		{
-			renderMan->DrawString(">Option 3", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			if(OCULUS)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 3", smlSize, cWidth * .20f, cHeight * .40f, color4);
+		{
+			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color4);
+		}
 		if(selector == 3)
 		{
-			renderMan->DrawString(">Option 4", smlSize, cWidth * .20f, cHeight * .45f, color2);
+			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
+			if(VSYNC)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 4", smlSize, cWidth * .20f, cHeight * .45f, color4);
+		{
+			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
+			if(VSYNC)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color4);
+		}
 		if(selector == 4)
 		{
 			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .50f, color2);
