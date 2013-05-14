@@ -35,6 +35,11 @@ public:
 		void ToggleDevMode();
 		bool getDevMode();
 
+		void HandleOptions();
+		void WriteOptions();
+		void ReadOptions();
+		void ApplyOptions();
+
 	private:
 		void BuildFX();
 		void BuildVertexLayout();

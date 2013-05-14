@@ -36,5 +36,7 @@ public:
 	void mute();
 	void unmute();
 	bool isMuted();
+
+	void setGain(float gain);
 };
 

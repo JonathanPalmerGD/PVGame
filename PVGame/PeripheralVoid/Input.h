@@ -492,6 +492,12 @@ public:
 	// True if the player hits up arrow key or down on the DPad or down on Left thumbstick.
 	bool wasMenuDownPressed() const;
 
+	// True if the player hits the left arrow key or left on the DPad or left on the left thumbstick
+	bool wasMenuLeftKeyPressed() const;
+	
+	// True if the player hits the right arrow key or right on the DPad or right on the left thumbstick 
+	bool wasMenuRightKeyPressed() const;
+
 	// True if return or A button on gamepad is pressed.
 	bool wasMenuSelectPressed() const;
 

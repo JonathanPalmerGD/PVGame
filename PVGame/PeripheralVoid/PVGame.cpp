@@ -291,6 +291,7 @@ void PVGame::UpdateScene(float dt)
 	#pragma region Option
 	case OPTION:
 		ListenSelectorChange();
+		HandleOptions();
 		break;
 	#pragma endregion
 	#pragma region Playing
@@ -772,6 +773,7 @@ void PVGame::ListenSelectorChange()
 			if(selector == 4)
 			{
 				selector = 2;
+				ApplyOptions();
 				gameState = MENU;
 				return;
 			}
@@ -819,6 +821,65 @@ void PVGame::ListenSelectorChange()
 		#pragma endregion
 	}
 	#pragma endregion
+}
+
+void PVGame::HandleOptions()
+{
+	if(input->wasMenuLeftKeyPressed())
+	{
+		switch(selector)
+		{
+		case 0:
+			VOLUME--;
+			if(VOLUME < 0)
+				VOLUME = 0;
+			break;
+		case 1:
+			FULLSCREEN = !FULLSCREEN;
+			break;
+		case 2:
+			OCULUS = !OCULUS;
+			break;
+		case 3:
+			VSYNC = !VSYNC;
+			break;
+		}
+	}
+	
+	if(input->wasMenuRightKeyPressed())
+	{
+		switch(selector)
+		{
+		case 0:
+			VOLUME++;
+			if(VOLUME > 100)
+				VOLUME = 100;
+			break;
+		case 1:
+			FULLSCREEN = !FULLSCREEN;
+			break;
+		case 2:
+			OCULUS = !OCULUS;
+			break;
+		case 3:
+			VSYNC = !VSYNC;
+			break;
+		}
+	}
+}
+
+void PVGame::ApplyOptions()
+{
+	player->getListener()->setGain((float)VOLUME/100.0f);
+	renderMan->setVSYNC(VSYNC);
+	renderMan->setFullScreen(FULLSCREEN);
+
+	if((renderMan->hasOculusEffect() && !OCULUS) || (!renderMan->hasOculusEffect() && OCULUS))
+	{
+		renderMan->ToggleOculusEffect();
+		riftMan->setUsingRift(OCULUS);
+		player->OnResize(renderMan->AspectRatio());
+	}
 }
 
 void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
@@ -955,7 +1016,7 @@ void PVGame::DrawScene()
 		else
 		{
 			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
-			if(FULLSCREEN)
+			if(OCULUS)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color4);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color4);
