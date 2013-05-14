@@ -64,6 +64,7 @@ static XMFLOAT3 Interpolate(XMFLOAT3 startPos, XMFLOAT3 targPos)
 bool MovingObject::InView() { return inVision; }
 int MovingObject::GetTargetPosition() { return targetPosition; }
 float MovingObject::GetRateOfChange() { return rateOfChange; }
+
 XMFLOAT3 MovingObject::GetPosition(int index) 
 { 
 	if(index < (int)positions.size())

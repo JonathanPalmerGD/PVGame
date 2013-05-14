@@ -30,5 +30,6 @@ protected:
 	MovingObject *targetObject;
 	bool inVision;
 	RenderManager *renderMan;
+	int index;
 };
 
