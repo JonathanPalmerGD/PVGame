@@ -11,6 +11,7 @@ Crest::Crest(void)
 		CreateLightAndIndex();
 	}
 	index = 0;
+	canChange = true;
 }
 
 Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, CREST_TYPE aCrestType) : GameObject(aMeshKey, aMaterialKey, aWorldMatrix, physicsMan, true)
@@ -23,6 +24,8 @@ Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, Physi
 	{
 		CreateLightAndIndex();
 	}
+		index = 0;
+	canChange = true;
 }
 
 Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED_NOCOLLISION, mass, true)
@@ -35,6 +38,8 @@ Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManag
 	{
 		CreateLightAndIndex();
 	}
+		index = 0;
+	canChange = true;
 }
 
 Crest::~Crest(void)
@@ -213,20 +218,37 @@ void Crest::Update(Player* player)
 			player->setMobilityStatus(true);
 			break;
 		case UNLOCK:
-			if(targetObject != NULL)
+			if(targetObject != NULL && canChange)
 			{
+				if(index == 0)
+				{
+					index = 1;
+					targetObject->SetTargetPosition(index);
+					canChange = false;
+				}
+				else if(index == 1)
+				{
+					index = 0;
+					targetObject->SetTargetPosition(index);
+					canChange = false;
+				}
 				//Change the targetObject to the unlocked state.
-				targetObject->SetTargetPosition(1);
+				//targetObject->SetTargetPosition(1);
 			}
 			break;
 		case HADES:
 				//Hi
 			break;
 		case HEPHAESTUS:
-			if(index == 0)
-				targetObject->SetTargetPosition(++index);
-			else if(index == 1)
-				targetObject->SetTargetPosition(--index);
+			if(targetObject != NULL)
+			{
+				if(index == 0)
+				{
+					targetObject->SetTargetPosition(++index);
+				}
+				else if(index == 1)
+					targetObject->SetTargetPosition(--index);
+			}
 			break;
 		case WIN:
 			player->setWinStatus(true);
@@ -240,8 +262,9 @@ void Crest::Update(Player* player)
 		{
 			if(targetObject != NULL)
 			{
+				canChange = true;
 				//Change the targetObject to the locked state.
-				targetObject->SetTargetPosition(0);
+			//	targetObject->SetTargetPosition(0);
 			}
 		}
 		if(crestType == HADES)

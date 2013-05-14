@@ -31,5 +31,6 @@ protected:
 	bool inVision;
 	RenderManager *renderMan;
 	int index;
+	bool canChange;
 };
 
