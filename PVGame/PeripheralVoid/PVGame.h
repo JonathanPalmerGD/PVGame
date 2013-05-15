@@ -78,5 +78,5 @@ public:
 		bool OCULUS;
 		bool VSYNC;
 		bool LOOKINVERSION;
-		float MOUSESENSITIVITY;
+		long double MOUSESENSITIVITY;
 };

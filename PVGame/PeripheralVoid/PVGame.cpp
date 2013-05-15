@@ -863,7 +863,7 @@ void PVGame::HandleOptions()
 			VSYNC = !VSYNC;
 			break;
 		case 4:
-			MOUSESENSITIVTY--;
+			MOUSESENSITIVITY--;
 			if(MOUSESENSITIVITY < 1)
 				MOUSESENSITIVITY = 1;
 			break;
@@ -892,7 +892,7 @@ void PVGame::HandleOptions()
 			VSYNC = !VSYNC;
 			break;
 		case 4:
-			MOUSESENSITIVTY++;
+			MOUSESENSITIVITY++;
 			if(MOUSESENSITIVITY > 100)
 				MOUSESENSITIVITY = 100;
 			break;
@@ -1170,20 +1170,30 @@ void PVGame::DrawScene()
 		if(selector == 4)
 		{
 			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color2);
 		}
 		else
+		{
 			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color4);
+		}
 
 		if(selector == 5)
 		{
 			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color2);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .55f, color2);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color2);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .55f, color2);
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color2);
 		}
 		else
+		{
 			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color4);
+			if(LOOKINVERSION)
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color4);		
+		}
 
 		if(selector == 6)
 		{
