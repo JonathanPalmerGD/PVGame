@@ -5,7 +5,7 @@ map<string, MeshData>MeshMaps::MESH_MAPS = MeshMaps::create_map();
 PVGame::PVGame(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
-	VOLUME = 100;
+	VOLUME = 10;
 	MOUSESENSITIVITY = 32;
 	FULLSCREEN = false;
 	OCULUS = false;
@@ -382,12 +382,32 @@ void PVGame::UpdateScene(float dt)
 		if(devMode)
 		{
 			if (player->getPosition().y < -100)
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			{
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				if(currentRoom->getSpawn()->direction.compare("up") == 0)
+					player->setRotation(3.14/2);
+				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
+					player->setRotation(3.14);
+				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
+					player->setRotation((3*3.14)/2);
+				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
+					player->setRotation(3.14 *2);
+			}
 		}
 		else
 		{
 			if (player->getPosition().y < -5)
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			{
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				if(currentRoom->getSpawn()->direction.compare("up") == 0)
+					player->setRotation(3.14/2);
+				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
+					player->setRotation(3.14);
+				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
+					player->setRotation((3*3.14)/2);
+				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
+					player->setRotation(3.14 *2);
+			}
 		}
 			
 		#pragma endregion
@@ -879,8 +899,8 @@ void PVGame::HandleOptions()
 		{
 		case 0:
 			VOLUME++;
-			if(VOLUME > 100)
-				VOLUME = 100;
+			if(VOLUME > 10)
+				VOLUME = 10;
 			break;
 		case 1:
 			FULLSCREEN = !FULLSCREEN;
@@ -998,7 +1018,7 @@ void PVGame::ReadOptions()
 
 void PVGame::ApplyOptions()
 {
-	player->getListener()->setGain((float)VOLUME/100.0f);
+	player->getListener()->setGain(((float)VOLUME/10.0f));
 	player->setMouseSensitivity(MOUSESENSITIVITY);
 	player->setInverted(LOOKINVERSION);
 	renderMan->setVSYNC(VSYNC);

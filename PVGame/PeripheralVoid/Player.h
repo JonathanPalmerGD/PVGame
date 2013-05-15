@@ -49,6 +49,8 @@ class Player
 
 		void setMouseSensitivity(float ms);
 		void setInverted(bool i);
+
+		void setRotation(float rotRad);
 	private:
 		bool leapStatus;
 		bool mobilityStatus;

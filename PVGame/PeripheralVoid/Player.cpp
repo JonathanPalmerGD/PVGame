@@ -66,6 +66,22 @@ void Player::setInverted(bool i)
 	INVERTED = i;
 }
 
+void Player::setRotation(float rotRad)
+{
+	EyeYaw = EyePitch = EyeRoll = 0.0f;
+	yaw = rotRad;
+	XMMATRIX R = XMMatrixRotationY(-EyeYaw + yaw);
+	up    = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	fwd   = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+
+	//Set the rotation of the camera
+	playerCamera->setRotation(EyeYaw-yaw, EyePitch, EyeRoll);
+}
+
 ///////////////////////////////////////////////////
 // Update()
 //

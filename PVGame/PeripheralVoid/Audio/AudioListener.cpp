@@ -218,6 +218,6 @@ bool AudioListener::isMuted()
 
 void AudioListener::setGain(float ngain)
 {
-	alGetListenerf(AL_GAIN, &ngain);
 	this->gain = ngain;
+	alListenerf(AL_GAIN, gain);
 }
