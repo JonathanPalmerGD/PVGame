@@ -63,7 +63,7 @@ bool PVGame::Init(char * args)
 	selector = 0;
 
 	SELECTOR_MAP[MENU]			=  5;
-	SELECTOR_MAP[OPTION]		=  5;
+	SELECTOR_MAP[OPTION]		=  7;
 	SELECTOR_MAP[INSTRUCTIONS]	=  3;
 	SELECTOR_MAP[END]			=  2;
 
@@ -774,8 +774,20 @@ void PVGame::ListenSelectorChange()
 
 				return;
 			}
-			//Option 5
+			//Option 4
 			if(selector == 4)
+			{
+
+				return;
+			}
+			//Option 5
+			if(selector == 5)
+			{
+
+				return;
+			}
+			//Menu
+			if(selector == 6)
 			{
 				selector = 2;
 				WriteOptions();
@@ -850,6 +862,14 @@ void PVGame::HandleOptions()
 		case 3:
 			VSYNC = !VSYNC;
 			break;
+		case 4:
+			MOUSESENSITIVTY--;
+			if(MOUSESENSITIVITY < 1)
+				MOUSESENSITIVITY = 1;
+			break;
+		case 5:
+			LOOKINVERSION = !LOOKINVERSION;
+			break;
 		}
 	}
 	
@@ -870,6 +890,14 @@ void PVGame::HandleOptions()
 			break;
 		case 3:
 			VSYNC = !VSYNC;
+			break;
+		case 4:
+			MOUSESENSITIVTY++;
+			if(MOUSESENSITIVITY > 100)
+				MOUSESENSITIVITY = 100;
+			break;
+		case 5:
+			LOOKINVERSION = !LOOKINVERSION;
 			break;
 		}
 	}
@@ -912,6 +940,12 @@ void PVGame::ReadOptions()
 		WriteOptions();
 	}
 	XMLElement* options = doc.FirstChildElement("options");
+
+	if(!options)
+	{
+		WriteOptions();
+		options = doc.FirstChildElement("options");
+	}
 
 	if(options->Attribute("volume") == NULL)
 	{
@@ -1135,10 +1169,28 @@ void PVGame::DrawScene()
 		}
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
+
+		if(selector == 5)
+		{
+			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color2);
+			if(LOOKINVERSION)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .55f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .55f, color2);
+		}
+		else
+			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color4);
+
+		if(selector == 6)
+		{
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .60f, color2);
+		}
+		else
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .60f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
