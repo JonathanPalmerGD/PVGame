@@ -77,4 +77,6 @@ public:
 		bool FULLSCREEN;
 		bool OCULUS;
 		bool VSYNC;
+		bool LOOKINVERSION;
+		float MOUSESENSITIVITY;
 };

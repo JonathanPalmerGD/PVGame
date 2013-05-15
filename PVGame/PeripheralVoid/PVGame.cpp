@@ -6,9 +6,11 @@ PVGame::PVGame(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
 	VOLUME = 100;
+	MOUSESENSITIVITY = 32;
 	FULLSCREEN = false;
 	OCULUS = false;
 	VSYNC = true;
+	LOOKINVERSION = false;
 
 	input = new Input();
 	gameState = MENU;
@@ -116,6 +118,9 @@ bool PVGame::Init(char * args)
 	audioSource->initialize("Audio\\HomeSweetHome.wav", AudioSource::WAV);
 	audioWin = new AudioSource();
 	audioWin->initialize("Audio\\test_mono_8000Hz_8bit_PCM.wav", AudioSource::WAV);
+
+	ReadOptions();
+	ApplyOptions();
 
 	return true;
 }
@@ -773,6 +778,8 @@ void PVGame::ListenSelectorChange()
 			if(selector == 4)
 			{
 				selector = 2;
+				WriteOptions();
+				ReadOptions();
 				ApplyOptions();
 				gameState = MENU;
 				return;
@@ -868,9 +875,40 @@ void PVGame::HandleOptions()
 	}
 }
 
+void PVGame::WriteOptions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile(OPTIONS_FILE);
+	XMLElement* options = doc.FirstChildElement("options");
+	
+	options->SetAttribute("volume",(double)VOLUME);
+	options->SetAttribute("mousesensitivity", (double)MOUSESENSITIVITY);
+	options->SetAttribute("fullscreen", FULLSCREEN);
+	options->SetAttribute("oculus", OCULUS);
+	options->SetAttribute("vsync", VSYNC);
+	options->SetAttribute("lookinversion", LOOKINVERSION);
+	doc.SaveFile(OPTIONS_FILE);
+}
+
+void PVGame::ReadOptions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile(OPTIONS_FILE);
+	XMLElement* options = doc.FirstChildElement("options");
+	
+	VOLUME = (float)atof(options->Attribute("volume"));
+	MOUSESENSITIVITY = (float)atof(options->Attribute("mousesensitivity"));
+	FULLSCREEN = (bool)atoi(options->Attribute("fullscreen"));
+	OCULUS = (bool)atoi(options->Attribute("oculus"));
+	VSYNC = (bool)atoi(options->Attribute("vsync"));
+	LOOKINVERSION = (bool)atoi(options->Attribute("lookinversion"));
+}
+
 void PVGame::ApplyOptions()
 {
 	player->getListener()->setGain((float)VOLUME/100.0f);
+	player->setMouseSensitivity(MOUSESENSITIVITY);
+	player->setInverted(LOOKINVERSION);
 	renderMan->setVSYNC(VSYNC);
 	renderMan->setFullScreen(FULLSCREEN);
 

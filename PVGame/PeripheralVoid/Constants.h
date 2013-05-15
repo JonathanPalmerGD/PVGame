@@ -27,7 +27,7 @@ using std::string;
 
 #define MAX_LIGHTS 10
 #define MAX_BLURS 2
-const float MOUSESENSITIVITY = 32;
+
 const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
 const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES, WIN};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
@@ -274,6 +274,7 @@ const char MAP_LEVEL_1[] = "Assets/level1.xml";
 const char TEXTURES_FILE[] = "Assets/Textures.xml";
 const char SURFACE_MATERIALS_FILE[] = "Assets/SurfaceMaterials.xml";
 const char MATERIALS_FILE[] = "Assets/Materials.xml";
+const char OPTIONS_FILE[] = "Config/options.xml";
 
 const enum PostProcessingEffects
 {

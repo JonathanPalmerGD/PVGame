@@ -3,6 +3,8 @@
 Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM) 
 	: PIXELS_PER_SEC(1.4f), LOOK_SPEED(3.5f)
 {
+	MOUSESENSITIVITY = 32;
+	INVERTED = false;
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
 	XMVECTOR aUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -52,6 +54,16 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	EyePitch = 0;
 	EyeRoll = 0;
 	yaw = 0;
+}
+
+void Player::setMouseSensitivity(float ms)
+{
+	MOUSESENSITIVITY = ms;
+}
+
+void Player::setInverted(bool i)
+{
+	INVERTED = i;
 }
 
 ///////////////////////////////////////////////////
@@ -146,6 +158,7 @@ void Player::HandleInput(Input* input)
 		// Update angles based on input
 		mTheta += dx/MOUSESENSITIVITY;
 		mPhi   += dy/MOUSESENSITIVITY;
+
 		playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
 
 		playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
@@ -205,6 +218,7 @@ void Player::HandleInput(Input* input)
 		btVector3 direction(0,0,0);
 		btVector3 pitch(0.0f, 1.0f, 0.0f);
 		btVector3 yaw(1.0f, 0.0f, 0.0f);
+
 		float xScale = 1.0f;
 		float zScale = 1.0f;
 		if(input->gamepadConnected(0))
@@ -223,7 +237,10 @@ void Player::HandleInput(Input* input)
 			//	zScale = ((float)(input->getGamepadThumbLY(0)) / 30000.0f);
 		}
 
-		playerCamera->Pitch(-direction.getY());
+		if(INVERTED)
+			playerCamera->Pitch(direction.getY());
+		else
+			playerCamera->Pitch(-direction.getY());
 		playerCamera->RotateY(direction.getX());
 		XMMATRIX rot = XMMatrixRotationY(direction.getX());
 
