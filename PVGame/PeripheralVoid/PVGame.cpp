@@ -878,30 +878,88 @@ void PVGame::HandleOptions()
 void PVGame::WriteOptions()
 {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile(OPTIONS_FILE);
-	XMLElement* options = doc.FirstChildElement("options");
-	
-	options->SetAttribute("volume",(double)VOLUME);
-	options->SetAttribute("mousesensitivity", (double)MOUSESENSITIVITY);
-	options->SetAttribute("fullscreen", FULLSCREEN);
-	options->SetAttribute("oculus", OCULUS);
-	options->SetAttribute("vsync", VSYNC);
-	options->SetAttribute("lookinversion", LOOKINVERSION);
+	if(doc.LoadFile(OPTIONS_FILE) != XMLError::XML_NO_ERROR)
+	{
+		XMLElement* options = doc.NewElement("options");
+		options->SetAttribute("volume",(double)VOLUME);
+		options->SetAttribute("mousesensitivity", (double)MOUSESENSITIVITY);
+		options->SetAttribute("fullscreen", FULLSCREEN);
+		options->SetAttribute("oculus", OCULUS);
+		options->SetAttribute("vsync", VSYNC);
+		options->SetAttribute("lookinversion", LOOKINVERSION);
+		doc.InsertFirstChild(options);
+	}
+	else
+	{
+		XMLElement* options = doc.FirstChildElement("options");
+
+		options->SetAttribute("volume",(double)VOLUME);
+		options->SetAttribute("mousesensitivity", (double)MOUSESENSITIVITY);
+		options->SetAttribute("fullscreen", FULLSCREEN);
+		options->SetAttribute("oculus", OCULUS);
+		options->SetAttribute("vsync", VSYNC);
+		options->SetAttribute("lookinversion", LOOKINVERSION);
+	}
+
 	doc.SaveFile(OPTIONS_FILE);
 }
 
 void PVGame::ReadOptions()
 {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile(OPTIONS_FILE);
+	while(doc.LoadFile(OPTIONS_FILE) != XMLError::XML_NO_ERROR)
+	{
+		WriteOptions();
+	}
 	XMLElement* options = doc.FirstChildElement("options");
-	
-	VOLUME = (float)atof(options->Attribute("volume"));
-	MOUSESENSITIVITY = (float)atof(options->Attribute("mousesensitivity"));
-	FULLSCREEN = (bool)atoi(options->Attribute("fullscreen"));
-	OCULUS = (bool)atoi(options->Attribute("oculus"));
-	VSYNC = (bool)atoi(options->Attribute("vsync"));
-	LOOKINVERSION = (bool)atoi(options->Attribute("lookinversion"));
+
+	if(options->Attribute("volume") == NULL)
+	{
+		VOLUME = 10;
+		WriteOptions();
+	}
+	else
+		VOLUME = (float)atof(options->Attribute("volume"));
+
+	if(options->Attribute("mousesensitivity") == NULL)
+	{
+		MOUSESENSITIVITY = 32;
+		WriteOptions();
+	}
+	else
+		MOUSESENSITIVITY = (float)atof(options->Attribute("mousesensitivity"));
+
+	if(options->Attribute("fullscreen") == NULL)
+	{
+		FULLSCREEN = false;
+		WriteOptions();
+	}
+	else
+		FULLSCREEN = (bool)atoi(options->Attribute("fullscreen"));
+
+	if(options->Attribute("oculus") == NULL)
+	{
+		OCULUS = false;
+		WriteOptions();
+	}
+	else
+		OCULUS = (bool)atoi(options->Attribute("oculus"));
+		
+	if(options->Attribute("vsync") == NULL)
+	{
+		VSYNC = true;
+		WriteOptions();
+	}
+	else
+		VSYNC = (bool)atoi(options->Attribute("vsync")); 
+
+	if(options->Attribute("lookinversion") == NULL)
+	{
+		LOOKINVERSION = false;
+		WriteOptions();
+	}
+	else
+		LOOKINVERSION = (bool)atoi(options->Attribute("lookinversion"));
 }
 
 void PVGame::ApplyOptions()
