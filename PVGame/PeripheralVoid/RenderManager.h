@@ -256,6 +256,27 @@ class RenderManager
 				);
 		}
 
+		void DrawMenuBackground()
+		{
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
+		
+			md3dImmediateContext->IASetInputLayout(mInputLayout);
+			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Menu Background"]);
+			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+
+			// Need to set matrices to identity to make sure it draws a 1-to-1 ratio.
+			const float* identity = reinterpret_cast<const float*>(&XMMatrixIdentity());
+			TexTransform->SetMatrix(identity);
+			mfxWorld->SetMatrix(identity);
+			mfxWorldInvTranspose->SetMatrix(identity);
+			mfxViewProj->SetMatrix(identity);
+
+			DrawQuad("TexturePassThrough");
+		}
+
 		void EndDrawMenu()
 		{	
 			HR(mSwapChain->Present(vsync, 0));

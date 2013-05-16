@@ -127,7 +127,7 @@ void Player::HandleInput(Input* input)
 	{
 		//Get head orientation from rift
 		Quatf hmdOrient = riftMan->getOrientation();
-		hmdOrient.GetEulerAngles<Axis_Y, Axis_Z, Axis_X, OVR::RotateDirection::Rotate_CCW, OVR::HandedSystem::Handed_R>(&EyeYaw, &EyeRoll, &EyePitch);
+		hmdOrient.GetEulerAngles<Axis_Y, Axis_Z, Axis_X, Rotate_CCW, Handed_R>(&EyeYaw, &EyeRoll, &EyePitch);
 		//DBOUT(EyeYaw);
 		//DBOUT(EyePitch);
 		//DBOUT(EyeRoll);
@@ -345,7 +345,7 @@ void Player::HandleInput(Input* input)
 
 	//Set the camera's position
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
-	XMFLOAT3 cPos(pos.getX(), pos.getY() + 0.737, pos.getZ());
+	XMFLOAT3 cPos(pos.getX(), pos.getY() + 0.737f, pos.getZ());
 	playerCamera->SetPosition(cPos);
 	#pragma endregion
 	#pragma endregion
@@ -453,7 +453,7 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
-		winPercent += 0.005;
+		winPercent += 0.005f;
 	}
 }
 

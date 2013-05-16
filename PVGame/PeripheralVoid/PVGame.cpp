@@ -34,6 +34,7 @@ PVGame::~PVGame(void)
     alcCloseDevice(audioDevice);
 	delete physicsMan;
 	delete audioSource;
+	delete audioWin;
 	//OCULUS RIFT
 	delete riftMan;
 }
@@ -176,6 +177,9 @@ bool PVGame::LoadXML()
 			renderMan->LoadTextureAtlasCoord(texture->Attribute("name"), aCoord);
 		}
 	}
+
+	// Explictitly load menu background texture for now.
+	renderMan->LoadTexture("Menu Background", "Textures/MenuBackground.dds", "Diffuse");
 	#pragma endregion
 
 	#pragma region Surface Materials
@@ -385,13 +389,13 @@ void PVGame::UpdateScene(float dt)
 			{
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				if(currentRoom->getSpawn()->direction.compare("up") == 0)
-					player->setRotation(3.14/2);
+					player->setRotation(3.14f/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
-					player->setRotation(3.14);
+					player->setRotation(3.14f);
 				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
-					player->setRotation((3*3.14)/2);
+					player->setRotation((3.0f*3.14f)/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
-					player->setRotation(3.14 *2);
+					player->setRotation(3.14f *2.0f);
 			}
 		}
 		else
@@ -400,13 +404,13 @@ void PVGame::UpdateScene(float dt)
 			{
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				if(currentRoom->getSpawn()->direction.compare("up") == 0)
-					player->setRotation(3.14/2);
+					player->setRotation(3.14f/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
-					player->setRotation(3.14);
+					player->setRotation(3.14f);
 				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
-					player->setRotation((3*3.14)/2);
+					player->setRotation((3*3.14f)/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
-					player->setRotation(3.14 *2);
+					player->setRotation(3.14f *2.0f);
 			}
 		}
 			
@@ -926,7 +930,7 @@ void PVGame::HandleOptions()
 void PVGame::WriteOptions()
 {
 	tinyxml2::XMLDocument doc;
-	if(doc.LoadFile(OPTIONS_FILE) != XMLError::XML_NO_ERROR)
+	if(doc.LoadFile(OPTIONS_FILE) != XML_NO_ERROR)
 	{
 		XMLElement* options = doc.NewElement("options");
 		options->SetAttribute("volume",(double)VOLUME);
@@ -955,7 +959,7 @@ void PVGame::WriteOptions()
 void PVGame::ReadOptions()
 {
 	tinyxml2::XMLDocument doc;
-	while(doc.LoadFile(OPTIONS_FILE) != XMLError::XML_NO_ERROR)
+	while(doc.LoadFile(OPTIONS_FILE) != XML_NO_ERROR)
 	{
 		WriteOptions();
 	}
@@ -989,7 +993,7 @@ void PVGame::ReadOptions()
 		WriteOptions();
 	}
 	else
-		FULLSCREEN = (bool)atoi(options->Attribute("fullscreen"));
+		FULLSCREEN = atoi(options->Attribute("fullscreen")) != 0; // Fix warning C4800 by converting to bool this way.
 
 	if(options->Attribute("oculus") == NULL)
 	{
@@ -997,7 +1001,7 @@ void PVGame::ReadOptions()
 		WriteOptions();
 	}
 	else
-		OCULUS = (bool)atoi(options->Attribute("oculus"));
+		OCULUS = atoi(options->Attribute("oculus")) != 0; // Fix warning C4800 by converting to bool this way.
 		
 	if(options->Attribute("vsync") == NULL)
 	{
@@ -1005,7 +1009,7 @@ void PVGame::ReadOptions()
 		WriteOptions();
 	}
 	else
-		VSYNC = (bool)atoi(options->Attribute("vsync")); 
+		VSYNC = atoi(options->Attribute("vsync")) != 0; // Fix warning C4800 by converting to bool this way.
 
 	if(options->Attribute("lookinversion") == NULL)
 	{
@@ -1013,13 +1017,13 @@ void PVGame::ReadOptions()
 		WriteOptions();
 	}
 	else
-		LOOKINVERSION = (bool)atoi(options->Attribute("lookinversion"));
+		LOOKINVERSION = atoi(options->Attribute("lookinversion")) != 0; // Fix warning C4800 by converting to bool this way.
 }
 
 void PVGame::ApplyOptions()
 {
 	player->getListener()->setGain(((float)VOLUME/10.0f));
-	player->setMouseSensitivity(MOUSESENSITIVITY);
+	player->setMouseSensitivity((float)MOUSESENSITIVITY);
 	player->setInverted(LOOKINVERSION);
 	renderMan->setVSYNC(VSYNC);
 	renderMan->setFullScreen(FULLSCREEN);
@@ -1073,7 +1077,8 @@ void PVGame::DrawScene()
 	{
 	#pragma region MENU
 	case MENU:
-		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		//renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
