@@ -47,7 +47,6 @@ bool PVGame::Init(char * args)
 	if (!D3DApp::Init())
 		return false;
 
-	renderMan->BuildBuffers();
 	renderMan->SetRiftMan(riftMan);
 
 	BuildFX();
