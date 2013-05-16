@@ -2,7 +2,7 @@
 <walls>
 <wall row="0" col="13" xLength="12" yLength="6" zLength="1" centerX="19" centerY="0" centerZ="0.5" texture="Hedge"/>
 <wall row="1" col="13" xLength="1" yLength="6" zLength="23" centerX="13.5" centerY="0" centerZ="12.5" texture="Hedge"/>
-<wall row="4" col="20" xLength="1" yLength="6" zLength="17" centerX="20.5" centerY="0" centerZ="12.5" texture="Rock"/>
+<wall row="4" col="20" xLength="1" yLength="6" zLength="17" centerX="20.5" centerY="0" centerZ="12.5" texture="Hedge"/>
 <wall row="4" col="21" xLength="3" yLength="1" zLength="1" centerX="22.5" centerY="0" centerZ="4.5" texture="Rock"/>
 <wall row="4" col="24" xLength="1" yLength="6" zLength="21" centerX="24.5" centerY="0" centerZ="14.5" texture="Hedge"/>
 <wall row="7" col="14" xLength="6" yLength="2" zLength="1" centerX="17" centerY="0" centerZ="7.5" texture="Rock"/>
