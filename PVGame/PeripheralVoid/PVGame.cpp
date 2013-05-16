@@ -1508,7 +1508,7 @@ void PVGame::BuildRooms(Room* startRoom)
 
 	for (unsigned int i = 0; i < loadedRooms.size(); i++)
 	{
-		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0 || startRoom->hasWinCrest())
+		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
 			isLoaded = true;
 	}
 
