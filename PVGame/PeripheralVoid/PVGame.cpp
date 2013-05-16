@@ -316,24 +316,27 @@ void PVGame::UpdateScene(float dt)
 		{
 			player->resetWinPercent();
 			
-			currentRoom->loadNeighbors(loadedRooms);
+			//currentRoom->loadNeighbors(loadedRooms);
 		
-			if(currentRoom->getNumNeighbors() == 1)
+			if(currentRoom->getExits().size() == 1)
 			{
 				currentRoom = loadedRooms[0];
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				gameState = END;
 			}
-			else if(currentRoom->getNumNeighbors() == 2) //Go to Next Area
+			else if(currentRoom->getExits().size() == 2) //Go to Next Area
 			{
 				//Load Last room possible
-				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
-				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
-				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
+				char* map    = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
+				strcpy(map, currentRoom->getExits()[0]->file.c_str());
+				for(int i = 0; i < currentRoom->getExits().size(); i++)
 				{
-					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
-						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
+					if(strcmp(map, currentRoom->getExits()[i]->file.c_str()) < 0)
+						strcpy(map, currentRoom->getExits()[i]->file.c_str());
 				}
+
+				ClearRooms();	
+				loadedRooms.clear();
 
 				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
 				{
@@ -343,8 +346,7 @@ void PVGame::UpdateScene(float dt)
 				gameObjects.clear();
 				proceduralGameObjects.clear();
 	
-				ClearRooms();	
-				loadedRooms.clear();
+				
 
 //				delete currentRoom;
 				Room* startRoom = new Room(map, physicsMan, 0, 0);
@@ -358,6 +360,42 @@ void PVGame::UpdateScene(float dt)
 				renderMan->BuildInstancedBuffer(gameObjects);
 			}
 			return;
+		}
+
+		if(input->wasKeyPressed('K'))
+		{
+			//Load Last room possible
+				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
+				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
+				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
+				{
+					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
+						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
+				}
+
+				ClearRooms();	
+				loadedRooms.clear();
+
+				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+				{
+					delete proceduralGameObjects[i];
+				}
+
+				gameObjects.clear();
+				proceduralGameObjects.clear();
+	
+				
+
+//				delete currentRoom;
+				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				startRoom->loadRoom();
+				currentRoom = startRoom;
+				BuildRooms(currentRoom);
+				
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				delete[] map;
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
 		}
 
 		player->Update(dt, input);

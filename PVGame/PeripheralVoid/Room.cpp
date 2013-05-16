@@ -98,6 +98,17 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 
 Room::~Room(void)
 {
+	/*for (unsigned int i = 0; i < neighbors.size(); ++i)
+	{
+		Room* temp = neighbors[neighbors.size() - 1];
+		temp = NULL;
+		neighbors.pop_back();
+		delete temp;
+		--i;
+	}
+	//neighbors.clear();
+	*/
+
 	for (unsigned int i = 0; i < floorVector.size(); ++i)
 	{
 		Wall* temp = floorVector[floorVector.size() - 1];
@@ -562,6 +573,7 @@ void Room::loadNeighbors(vector<Room*> loadedRooms)
 				neighbors.push_back(tmpRoom);
 			}
 		}
+
 		else
 			neighbors.push_back(loadedRoom);
 	}
