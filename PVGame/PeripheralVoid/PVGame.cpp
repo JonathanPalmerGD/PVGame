@@ -322,6 +322,7 @@ void PVGame::UpdateScene(float dt)
 		if (input->isQuitPressed())
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
+		#pragma region Win Checking
 		if (player->getWinPercent() >= 0.99f)
 		{
 			player->resetWinPercent();
@@ -330,6 +331,7 @@ void PVGame::UpdateScene(float dt)
 			gameState = END;
 			return;
 		}
+		#pragma endregion
 
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
@@ -360,6 +362,15 @@ void PVGame::UpdateScene(float dt)
 		}
 
 		#pragma endregion
+
+		#pragma region Check Hephaestus Triggering
+		if(input->isActivateKeyDown())
+		{
+			player->setHephStatus(true);
+		}
+		#pragma endregion
+
+
 		#pragma region Physics for Worlds Game Objects
 		// If physics updated, tell the game objects to update their world matrix.
 		if (physicsMan->update(dt))
@@ -431,7 +442,8 @@ void PVGame::UpdateScene(float dt)
 			if(audioWin->isPlaying())
 				audioWin->stop();
 		}
-		player->resetStatuses();
+		//Handing it the one bool from input is to control the 
+		player->resetStatuses(input->isActivateKeyDown());
 
 		// Reset blur, we only do it if a single Medusa is in sight.
 		renderMan->RemovePostProcessingEffect(BlurEffect);
@@ -449,8 +461,6 @@ void PVGame::UpdateScene(float dt)
 
 				if(Crest* currentCrest = dynamic_cast<Crest*>(gameObjects[i]))
 				{
-					//btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
-					
 					if(physicsMan->broadPhase(player->GetCamera(), gameObjects[i]) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 					{
 						currentCrest->ChangeView(true);

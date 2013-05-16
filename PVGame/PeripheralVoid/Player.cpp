@@ -38,6 +38,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	leapStatus = false;
 	mobilityStatus = false;
 	winStatus = false;
+	hephStatus = false;
 	medusaPercent = 0.0f;
 	winPercent = 0.0f;
 
@@ -416,13 +417,14 @@ Camera* Player::GetCamera()
 //
 // Set crest effects to their default state
 //////////////////////////////////////////////
-void Player::resetStatuses() 
+void Player::resetStatuses(bool leaveHeph) 
 {	
 	if(!medusaStatus)
 		medusaPercent = 0;
 	if(!winStatus)
 		winPercent = 0;
-
+	if(!leaveHeph)
+		hephStatus = false;
 	medusaStatus = false;
 	mobilityStatus = false;
 	leapStatus = false; 
@@ -466,11 +468,13 @@ void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
 void Player::setMedusaStatus(bool newStatus) { medusaStatus = newStatus; }
 void Player::setLeapStatus(bool newStatus) { leapStatus = newStatus; }
 void Player::setWinStatus(bool newStatus) { winStatus = newStatus; }
+void Player::setHephStatus(bool newStatus) { hephStatus = newStatus; }
 
 bool Player::getMobilityStatus() { return mobilityStatus; }
 bool Player::getMedusaStatus() { return medusaStatus; }
 bool Player::getLeapStatus() { return leapStatus; }
 bool Player::getWinStatus() { return winStatus; }
+bool Player::getHephStatus() { return hephStatus; }
 
 XMFLOAT4 Player::getPosition()
 {

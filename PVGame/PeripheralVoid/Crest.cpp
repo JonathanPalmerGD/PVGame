@@ -10,6 +10,8 @@ Crest::Crest(void)
 	{
 		CreateLightAndIndex();
 	}
+	index = 0;
+	canChange = true;
 }
 
 Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, PhysicsManager* physicsMan, CREST_TYPE aCrestType) : GameObject(aMeshKey, aMaterialKey, aWorldMatrix, physicsMan, true)
@@ -22,6 +24,8 @@ Crest::Crest(string aMeshKey, string aMaterialKey, XMMATRIX* aWorldMatrix, Physi
 	{
 		CreateLightAndIndex();
 	}
+	index = 0;
+	canChange = true;
 }
 
 Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManager* physicsMan, CREST_TYPE aCrestType, float mass) : GameObject(aMeshKey, aMaterialKey, rB, physicsMan, VISION_AFFECTED_NOCOLLISION, mass, true)
@@ -34,6 +38,8 @@ Crest::Crest(string aMeshKey, string aMaterialKey, btRigidBody* rB, PhysicsManag
 	{
 		CreateLightAndIndex();
 	}
+	index = 0;
+	canChange = true;
 }
 
 Crest::~Crest(void)
@@ -60,7 +66,7 @@ void Crest::ChangeView(bool newVisionBool)
 		else
 		{
 			renderMan->EnableLight(lightIndex);
-		}	
+		}
 	}
 	if(!newVisionBool)
 	{
@@ -82,7 +88,7 @@ void Crest::ChangeView(bool newVisionBool)
 
 void Crest::SetTargetObject(MovingObject *newTargetObject)
 {
-	if(crestType == UNLOCK)
+	if(crestType == UNLOCK || crestType == HEPHAESTUS)
 	{
 		targetObject = newTargetObject;
 	}
@@ -113,6 +119,8 @@ string Crest::GetCrestTypeString(CREST_TYPE aType)
 			break;
 		case HADES:
 			return "Hades Crest";
+		case HEPHAESTUS:
+			return "Hephaestus Crest";
 			break;
 	}
 	return "Unknown Crest";
@@ -150,8 +158,11 @@ void Crest::SetupAudio()
 		initAudio("Audio\\YellowOn.wav");
 		//initAudio("Audio\\YellowOff.wav");
 		break;
+	case HEPHAESTUS:
+		initAudio("Audio\\anvil.wav");
+		break;
 	case WIN:
-		//initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+		initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 		//initAudio("Audio\\YellowOff.wav");
 		break;
 	}
@@ -175,6 +186,9 @@ void Crest::CreateLightAndIndex()
 		break;
 	case HADES:
 		//SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		break;
+	case HEPHAESTUS:
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case WIN:
 		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(10.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
@@ -214,6 +228,27 @@ void Crest::Update(Player* player)
 		case HADES:
 				//Hi
 			break;
+		case HEPHAESTUS:
+			canChange = targetObject->ReachedTargetPosition();
+			if(targetObject != NULL && canChange)
+			{
+				if(player->getHephStatus())
+				{
+					if(index == 0)
+					{
+						index = 1;
+						targetObject->SetTargetPosition(index);
+						canChange = false;
+					}
+					else if(index == 1)
+					{
+						index = 0;
+						targetObject->SetTargetPosition(index);
+						canChange = false;
+					}
+				}
+			}
+			break;
 		case WIN:
 			player->setWinStatus(true);
 			player->increaseWinPercent();
@@ -233,6 +268,14 @@ void Crest::Update(Player* player)
 		if(crestType == HADES)
 		{
 			//Hi
+			//Howdy there, partner
+		}
+		if(crestType == HEPHAESTUS)
+		{
+			if(targetObject != NULL)
+			{
+				//canChange = true;
+			}
 		}
 	}
 }
