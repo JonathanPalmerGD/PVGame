@@ -1130,6 +1130,7 @@ void PVGame::DrawScene()
 	#pragma region OPTION
 	case OPTION:
 		renderMan->ClearTargetToColor(colortwo); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
@@ -1232,6 +1233,7 @@ void PVGame::DrawScene()
 	#pragma region INSTRUCTIONS
 	case INSTRUCTIONS:
 		renderMan->ClearTargetToColor(color); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 /*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
 		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
 		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 20, color3);*/
@@ -1293,6 +1295,7 @@ void PVGame::DrawScene()
 	#pragma region END
 	case END:
 		renderMan->ClearTargetToColor(colorthree); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
