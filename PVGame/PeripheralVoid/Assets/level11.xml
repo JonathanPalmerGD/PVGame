@@ -56,8 +56,8 @@
 <exit row="17" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="18.5" file="level10.xml"/>
 </exits>
 <cubes>
-<cube row="2" col="20" xLength="2" yLength="3" zLength="3" centerX="21" centerY="0" centerZ="3.5" translateX="-1" translateY="5" translateZ="0" texture="Rock"/>
-<cube row="6" col="3" xLength="5" yLength="1" zLength="2" centerX="5.5" centerY="0" centerZ="7" translateX="0" translateY="1" translateZ="0" texture="Rock"/>
+<cube row="2" col="20" xLength="2" yLength="3" zLength="3" centerX="21" centerY="0" centerZ="3.5" translateX="-1" translateY="5" translateZ="0" texture="Gravel"/>
+<cube row="6" col="3" xLength="5" yLength="1" zLength="2" centerX="5.5" centerY="0" centerZ="7" translateX="0" translateY="1" translateZ="0" texture="Gravel"/>
 <cube row="14" col="13" xLength="2" yLength="7" zLength="3" centerX="14" centerY="0" centerZ="15.5" translateX="0" translateY="-6" translateZ="0" texture="Gravel"/>
 </cubes>
 <crests>
