@@ -134,13 +134,16 @@ void Player::HandleInput(Input* input)
 		//DBOUT(EyeRoll);
 		//DBOUT("");
 
+		#pragma region Mouse
 		//Get extra orientation abilities from mouse, only yaw
 		//(its much nicer than having to turn your body when trying to play)
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
 		yaw += dx/MOUSESENSITIVITY;
 		input->centerMouse();
 		mLastMousePos.x = input->getMouseX();
+		#pragma endregion
 
+		#pragma region Keyboard
 		//Get extra orientation abilities from keyboard/gamepad, only yaw
 		//(its much nicer than having to turn your body when trying to play)
 		if (input->isCameraRightKeyDown())
@@ -151,6 +154,17 @@ void Player::HandleInput(Input* input)
 		{
 			yaw += -camLookSpeed / 2;
 		}
+		#pragma endregion
+
+		#pragma region Gamepad
+		float xScale = 1.0f;
+		if(input->gamepadConnected(0))
+		{
+			float rX = (float)input->getGamepadThumbRX(0);
+			if(rX > GAMEPAD_THUMBSTICK_DEADZONE || rX < -GAMEPAD_THUMBSTICK_DEADZONE)
+				yaw += (rX / 30000.0f) * camLookSpeed/2 ;
+		}
+		#pragma endregion
 
 		//Set the rotation of the player
 		XMMATRIX R = XMMatrixRotationY(-EyeYaw+yaw);
