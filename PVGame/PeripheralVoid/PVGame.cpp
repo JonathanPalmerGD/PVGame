@@ -44,8 +44,19 @@ bool PVGame::Init(char * args)
 	//OCULUS RIFT
 	riftMan = new RiftManager(args);
 	renderMan->SetRiftMan(riftMan);
+
 	if (!D3DApp::Init())
 		return false;
+
+	renderMan->BuildBuffers();
+	renderMan->SetRiftMan(riftMan);
+
+	BuildFX();
+	BuildVertexLayout();
+	
+	renderMan->LoadTexture("Loading Screen", "Textures/LoadingScreen.dds", "Diffuse");
+	renderMan->DrawLoadingScreen();
+	renderMan->EndDrawMenu();
 
 	audioDevice=alcOpenDevice(NULL);
     if(audioDevice==NULL)
@@ -87,9 +98,6 @@ bool PVGame::Init(char * args)
 	map<string, MeshData>::const_iterator itr;
 	for(itr = MeshMaps::MESH_MAPS.begin(); itr != MeshMaps::MESH_MAPS.end(); itr++)
 		physicsMan->addTriangleMesh((*itr).first, (*itr).second);
-
-	BuildFX();
-	BuildVertexLayout();
 	
 	LoadContent();
 
@@ -141,25 +149,6 @@ bool PVGame::LoadXML()
 
 	tinyxml2::XMLDocument doc;
 
-	#pragma region Materials
-	doc.LoadFile(MATERIALS_FILE);
-	for (XMLElement* material = doc.FirstChildElement("MaterialsList")->FirstChildElement("Material"); 
-				material != NULL; material = material->NextSiblingElement("Material"))
-	{
-		// Loop through all the materials, setting appropriate attributes.
-		GameMaterial aMaterial;
-		aMaterial.Name = material->Attribute("name");
-		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
-		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
-
-		XMLElement* glow = material->FirstChildElement("Glow");
-		if (glow)
-			aMaterial.GlowColor = XMFLOAT4((float)atof(glow->Attribute("r")), (float)atof(glow->Attribute("g")), 
-									 (float)atof(glow->Attribute("b")), (float)atof(glow->Attribute("a")));
-		GAME_MATERIALS[aMaterial.Name] = aMaterial;
-	}
-	#pragma endregion
-
 	#pragma region Textures
 	doc.LoadFile(TEXTURES_FILE);
 	for (XMLElement* atlas = doc.FirstChildElement("TextureList")->FirstChildElement("Atlas"); 
@@ -180,6 +169,26 @@ bool PVGame::LoadXML()
 
 	// Explictitly load menu background texture for now.
 	renderMan->LoadTexture("Menu Background", "Textures/MenuBackground.dds", "Diffuse");
+	
+	#pragma endregion
+
+	#pragma region Materials
+	doc.LoadFile(MATERIALS_FILE);
+	for (XMLElement* material = doc.FirstChildElement("MaterialsList")->FirstChildElement("Material"); 
+				material != NULL; material = material->NextSiblingElement("Material"))
+	{
+		// Loop through all the materials, setting appropriate attributes.
+		GameMaterial aMaterial;
+		aMaterial.Name = material->Attribute("name");
+		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
+		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
+
+		XMLElement* glow = material->FirstChildElement("Glow");
+		if (glow)
+			aMaterial.GlowColor = XMFLOAT4((float)atof(glow->Attribute("r")), (float)atof(glow->Attribute("g")), 
+									 (float)atof(glow->Attribute("b")), (float)atof(glow->Attribute("a")));
+		GAME_MATERIALS[aMaterial.Name] = aMaterial;
+	}
 	#pragma endregion
 
 	#pragma region Surface Materials

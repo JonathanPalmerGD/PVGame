@@ -243,6 +243,25 @@ class RenderManager
 									);
 		}
 
+		void DrawString(const char *text, float fontSize, float xPos, float yPos, const float* clearColor)
+		{	
+			std::wstring s = s2ws(text);
+			const wchar_t *str = s.c_str();
+
+			UINT32 textColor;// = clearColor[1] * 0x1000000 + clearColor[2] * 0x10000 + clearColor[3] * 0x100 + clearColor[4];
+			//memcpy(textColor, clearColor, sizeof(float));
+			//UINT32 textColor = {clearColor[0], clearColor[1], clearColor[2], clearColor[3]};
+
+			pFontWrapper->DrawString(	md3dImmediateContext,
+				str,// String
+				fontSize,// Font size
+				xPos,// X position
+				yPos,// Y position
+				textColor,
+				FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+				);
+		}
+
 		//I really hope you don't have to do wstrings
 		void DrawString(const WCHAR *text, float fontSize, float xPos, float yPos, UINT32 textColor)
 		{	
@@ -258,13 +277,23 @@ class RenderManager
 
 		void DrawMenuBackground()
 		{
+			DrawFullscreenImage("Menu Background");
+		}
+
+		void DrawLoadingScreen()
+		{
+			DrawFullscreenImage("Loading Screen");
+		}
+
+		void DrawFullscreenImage(string aTextureKey)
+		{
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
 		
 			md3dImmediateContext->IASetInputLayout(mInputLayout);
 			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Menu Background"]);
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap[aTextureKey]);
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
 
 			// Need to set matrices to identity to make sure it draws a 1-to-1 ratio.

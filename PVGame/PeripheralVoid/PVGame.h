@@ -46,7 +46,6 @@ public:
 		void BuildRooms(Room* startRoom);
 		void ClearRooms();
 		void SortGameObjects();
-
 		bool devMode;
 		Player*	player;
 		Room* currentRoom;
