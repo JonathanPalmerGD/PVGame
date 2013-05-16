@@ -32,6 +32,13 @@ public:
 		void ListenSelectorChange();
 		void DrawScene();
 		void OnMouseMove(WPARAM btnState, int x, int y);
+		void ToggleDevMode();
+		bool getDevMode();
+
+		void HandleOptions();
+		void WriteOptions();
+		void ReadOptions();
+		void ApplyOptions();
 
 	private:
 		void BuildFX();
@@ -40,6 +47,7 @@ public:
 		void ClearRooms();
 		void SortGameObjects();
 
+		bool devMode;
 		Player*	player;
 		Room* currentRoom;
 		int selector;
@@ -58,9 +66,17 @@ public:
 		ALCdevice* audioDevice;
 		ALCcontext* audioContext;
 		AudioSource* audioSource;
+		AudioSource* audioWin;
 
 		/////////////////////////////////////////////////////////////////////
 		//Oculus Rift
 		RiftManager* riftMan;
 		/////////////////////////////////////////////////////////////////////
+
+		long double VOLUME;
+		bool FULLSCREEN;
+		bool OCULUS;
+		bool VSYNC;
+		bool LOOKINVERSION;
+		long double MOUSESENSITIVITY;
 };

@@ -5,6 +5,13 @@ map<string, MeshData>MeshMaps::MESH_MAPS = MeshMaps::create_map();
 PVGame::PVGame(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
+	VOLUME = 10;
+	MOUSESENSITIVITY = 32;
+	FULLSCREEN = false;
+	OCULUS = false;
+	VSYNC = true;
+	LOOKINVERSION = false;
+
 	input = new Input();
 	gameState = MENU;
 }
@@ -27,6 +34,7 @@ PVGame::~PVGame(void)
     alcCloseDevice(audioDevice);
 	delete physicsMan;
 	delete audioSource;
+	delete audioWin;
 	//OCULUS RIFT
 	delete riftMan;
 }
@@ -56,7 +64,7 @@ bool PVGame::Init(char * args)
 	selector = 0;
 
 	SELECTOR_MAP[MENU]			=  5;
-	SELECTOR_MAP[OPTION]		=  5;
+	SELECTOR_MAP[OPTION]		=  7;
 	SELECTOR_MAP[INSTRUCTIONS]	=  3;
 	SELECTOR_MAP[END]			=  2;
 
@@ -85,12 +93,18 @@ bool PVGame::Init(char * args)
 	
 	LoadContent();
 
+	#if DEV_MODE
+	devMode = true;
+	#endif
+	#if !DEV_MODE
+	devMode = false;
+	#endif
 	//OnResize();
 
-#if DRAW_FRUSTUM
-		gameObjects.push_back(player->GetCamera()->frustumBody);
-		proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
-#endif
+	#if DRAW_FRUSTUM
+	gameObjects.push_back(player->GetCamera()->frustumBody);
+	proceduralGameObjects.push_back(player->GetCamera()->frustumBody);
+	#endif
 
 	mPhi = 1.5f*MathHelper::Pi;
 	mTheta = 0.25f*MathHelper::Pi;
@@ -103,6 +117,11 @@ bool PVGame::Init(char * args)
 
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\HomeSweetHome.wav", AudioSource::WAV);
+	audioWin = new AudioSource();
+	audioWin->initialize("Audio\\test_mono_8000Hz_8bit_PCM.wav", AudioSource::WAV);
+
+	ReadOptions();
+	ApplyOptions();
 
 	return true;
 }
@@ -158,6 +177,9 @@ bool PVGame::LoadXML()
 			renderMan->LoadTextureAtlasCoord(texture->Attribute("name"), aCoord);
 		}
 	}
+
+	// Explictitly load menu background texture for now.
+	renderMan->LoadTexture("Menu Background", "Textures/MenuBackground.dds", "Diffuse");
 	#pragma endregion
 
 	#pragma region Surface Materials
@@ -239,13 +261,22 @@ bool isEUp = true;
 void PVGame::UpdateScene(float dt)
 {
 	#pragma region General Controls
+	if(input->wasKeyPressed('P') || input->wasKeyPressed('p'))
+	{
+		ToggleDevMode();
+	}
+
 	if (input->isQuitPressed())
-	{		
-		//PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
-		player->resetWinPercent();
-		currentRoom = loadedRooms[0];
-		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		gameState = END;	
+	{
+		if(devMode)
+			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
+		else
+		{
+			player->resetWinPercent();
+			currentRoom = loadedRooms[0];
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			gameState = END;
+		}
 	}
 	if(input->wasKeyPressed('M'))
 	{
@@ -261,7 +292,7 @@ void PVGame::UpdateScene(float dt)
 	case MENU:
 		if(!audioSource->isPlaying())
 		{
-			audioSource->play();
+			audioSource->restartAndPlay();
 		}
 		ListenSelectorChange();
 		break;
@@ -269,13 +300,14 @@ void PVGame::UpdateScene(float dt)
 	#pragma region Option
 	case OPTION:
 		ListenSelectorChange();
+		HandleOptions();
 		break;
 	#pragma endregion
 	#pragma region Playing
 	case PLAYING:
 		if(audioSource->isPlaying())
 		{
-			audioSource->pause();
+			audioSource->stop();
 		}
 		if (input->isQuitPressed())
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
@@ -283,31 +315,109 @@ void PVGame::UpdateScene(float dt)
 		if (player->getWinPercent() >= 0.99f)
 		{
 			player->resetWinPercent();
-			currentRoom = loadedRooms[0];
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-			gameState = END;
+			
+			//currentRoom->loadNeighbors(loadedRooms);
+		
+			if(currentRoom->getExits().size() == 1)
+			{
+				currentRoom = loadedRooms[0];
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				gameState = END;
+			}
+			else if(currentRoom->getExits().size() == 2) //Go to Next Area
+			{
+				//Load Last room possible
+				char* map    = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
+				strcpy(map, currentRoom->getExits()[0]->file.c_str());
+				for(int i = 0; i < currentRoom->getExits().size(); i++)
+				{
+					if(strcmp(map, currentRoom->getExits()[i]->file.c_str()) < 0)
+						strcpy(map, currentRoom->getExits()[i]->file.c_str());
+				}
+
+				ClearRooms();	
+				loadedRooms.clear();
+
+				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+				{
+					delete proceduralGameObjects[i];
+				}
+
+				gameObjects.clear();
+				proceduralGameObjects.clear();
+	
+				
+
+//				delete currentRoom;
+				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				startRoom->loadRoom();
+				currentRoom = startRoom;
+				BuildRooms(currentRoom);
+				
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				delete[] map;
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
 			return;
+		}
+
+		if(input->wasKeyPressed('K'))
+		{
+			//Load Last room possible
+				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
+				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
+				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
+				{
+					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
+						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
+				}
+
+				ClearRooms();	
+				loadedRooms.clear();
+
+				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+				{
+					delete proceduralGameObjects[i];
+				}
+
+				gameObjects.clear();
+				proceduralGameObjects.clear();
+	
+				
+
+//				delete currentRoom;
+				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				startRoom->loadRoom();
+				currentRoom = startRoom;
+				BuildRooms(currentRoom);
+				
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				delete[] map;
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
 		}
 
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
-		#if DEV_MODE == 1
-		if (input->wasKeyPressed('R'))
-			renderMan->AddPostProcessingEffect(WireframeEffect);
-		if (input->wasKeyPressed('N'))
-			renderMan->RemovePostProcessingEffect(WireframeEffect);
+		if(devMode)
+		{
+			if (input->wasKeyPressed('R'))
+				renderMan->AddPostProcessingEffect(WireframeEffect);
+			if (input->wasKeyPressed('N'))
+				renderMan->RemovePostProcessingEffect(WireframeEffect);
 
-		if (input->wasKeyPressed('B'))
-			renderMan->AddPostProcessingEffect(BlurEffect);
-		if (input->wasKeyPressed('V'))
-			renderMan->RemovePostProcessingEffect(BlurEffect);
+			if (input->wasKeyPressed('B'))
+				renderMan->AddPostProcessingEffect(BlurEffect);
+			if (input->wasKeyPressed('V'))
+				renderMan->RemovePostProcessingEffect(BlurEffect);
 
-		// Brackets.
-		if (input->wasKeyPressed(VK_OEM_6))
-			renderMan->ChangeBlurCount(1);
-		if (input->wasKeyPressed(VK_OEM_4))
-			renderMan->ChangeBlurCount(-1);
-		#endif
+			// Brackets.
+			if (input->wasKeyPressed(VK_OEM_6))
+				renderMan->ChangeBlurCount(1);
+			if (input->wasKeyPressed(VK_OEM_4))
+				renderMan->ChangeBlurCount(-1);
+		}
 
 		if ( /*riftMan->isRiftConnected() &&*/  input->isOculusButtonPressed())
 		{
@@ -350,17 +460,44 @@ void PVGame::UpdateScene(float dt)
 			}
 		}
 		//If the player falls of the edge of the world, respawn in current room
-		#if DEV_MODE
-		if (player->getPosition().y < -100)
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		#endif
-		#if !DEV_MODE
-		if (player->getPosition().y < -5)
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-		#endif
+		if(devMode)
+		{
+			if (player->getPosition().y < -100)
+			{
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				if(currentRoom->getSpawn()->direction.compare("up") == 0)
+					player->setRotation(3.14f/2.0f);
+				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
+					player->setRotation(3.14f);
+				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
+					player->setRotation((3.0f*3.14f)/2.0f);
+				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
+					player->setRotation(3.14f *2.0f);
+			}
+		}
+		else
+		{
+			if (player->getPosition().y < -5)
+			{
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				if(currentRoom->getSpawn()->direction.compare("up") == 0)
+					player->setRotation(3.14f/2.0f);
+				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
+					player->setRotation(3.14f);
+				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
+					player->setRotation((3*3.14f)/2.0f);
+				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
+					player->setRotation(3.14f *2.0f);
+			}
+		}
 			
 		#pragma endregion
 		#pragma region Player Statuses and Vision Affected Object Updating
+		if(!player->getWinStatus())
+		{
+			if(audioWin->isPlaying())
+				audioWin->stop();
+		}
 		player->resetStatuses();
 
 		// Reset blur, we only do it if a single Medusa is in sight.
@@ -394,6 +531,9 @@ void PVGame::UpdateScene(float dt)
 
 						if (currentCrest->GetCrestType() == WIN)
 						{
+							audioWin->setPosition(player->getPosition().x, player->getPosition().y, player->getPosition().z);
+							if(!audioWin->isPlaying())
+								audioWin->play();
 							renderMan->SetBlurColor(XMFLOAT4(0.99f * player->getWinPercent(), 0.99f * player->getWinPercent(), 0.0f, 1.0f));
 							renderMan->AddPostProcessingEffect(BlurEffect);
 						}
@@ -417,7 +557,7 @@ void PVGame::UpdateScene(float dt)
 					currentCrest->Update(player);
 				}
 
-				if(Turret* currentTurret = dynamic_cast<Turret*>(gameObjects[i]))
+				/*if(Turret* currentTurret = dynamic_cast<Turret*>(gameObjects[i]))
 				{
 					//btVector3 turretPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
 
@@ -430,195 +570,196 @@ void PVGame::UpdateScene(float dt)
 						currentTurret->ChangeView(false);
 					}
 					currentTurret->Update(player);
-				}
+				}*/
 			}
 		}
 		#pragma endregion
 
-		#if DEV_MODE == 1
-		#pragma region Throwing Crests
-		if(input->wasKeyPressed('3'))
+		if(devMode)
 		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			gameObjects.push_back(crestObj);
-			proceduralGameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		if(input->wasKeyPressed('4'))
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(LEAP), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			gameObjects.push_back(crestObj);
-			proceduralGameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		if(input->wasKeyPressed('5'))
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
-			crestObj->scale(2.0f, .1f, 2.0f);
-			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			gameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		if(input->wasKeyPressed('9'))
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 15;
-			GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
-			crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			gameObjects.push_back(crestObj);
-			proceduralGameObjects.push_back(crestObj);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-		}
-		#pragma endregion
+			#pragma region Throwing Crests
+			if(input->wasKeyPressed('3'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MOBILITY), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MOBILITY, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				gameObjects.push_back(crestObj);
+				proceduralGameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			if(input->wasKeyPressed('4'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(LEAP), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, LEAP, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				gameObjects.push_back(crestObj);
+				proceduralGameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			if(input->wasKeyPressed('5'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, HADES, 0.0f);
+				crestObj->scale(2.0f, .1f, 2.0f);
+				crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				gameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			if(input->wasKeyPressed('9'))
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 15;
+				GameObject* crestObj = new Crest("Cube", Crest::GetCrestTypeString(MEDUSA), physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0f), physicsMan, MEDUSA, 1.0f);
+				crestObj->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				gameObjects.push_back(crestObj);
+				proceduralGameObjects.push_back(crestObj);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
+			#pragma endregion
 
-		#pragma region 1: Slow Sphere
-		if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 10;
+			#pragma region 1: Slow Sphere
+			if((input->wasKeyPressed('1') || input->getGamepadLeftTrigger(0)) && is1Up)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 10;
 
-			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->initAudio("Audio\\shot.wav");
+				GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 1.0f), physicsMan, WORLD, 1.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->initAudio("Audio\\shot.wav");
 			
-			testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			is1Up = false;
-		}
-		else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
-			is1Up = true;
-		#pragma endregion
-		#pragma region 2: Slow Cube
-		if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 20;
-
-			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			//testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			is2Up = false;
-		}
-		else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
-			is2Up = true;
-		#pragma endregion
-		#pragma region 8: Speedless Cube
-		if((input->wasKeyPressed('8'))  && is8Up)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 0;
-
-			GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
-			//testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			is8Up = false;
-		}
-		else if(!input->isKeyDown('8'))
-			is8Up = true;
-		#pragma endregion
-		#pragma region E: Fast Sphere
-		if((input->wasKeyPressed('E'))  && isEUp)
-		{
-			XMFLOAT4 p = player->getPosition();
-			XMFLOAT3 look = player->GetCamera()->GetLook();
-			XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
-			float speed = 90;
-
-			GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
-			testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
-			testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
-			testSphere->initAudio("Audio\\shot.wav");
-			testSphere->playAudio();
-			gameObjects.push_back(testSphere);
-			proceduralGameObjects.push_back(testSphere);
-			SortGameObjects();
-			renderMan->BuildInstancedBuffer(gameObjects);
-			isEUp = false;
-		}
-		else if(!input->isKeyDown('E'))
-			isEUp = true;
-		#pragma endregion
-
-		#pragma region Level Controls U and I
-		if (input->wasKeyPressed('U'))
-		{
-			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+				testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				is1Up = false;
+			}
+			else if(!input->isKeyDown('1') && !input->getGamepadLeftTrigger(0))
+				is1Up = true;
+			#pragma endregion
+			#pragma region 2: Slow Cube
+			if((input->wasKeyPressed('2') || input->getGamepadRightTrigger(0))  && is2Up)
 			{
-				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
-				{
-					if (i > 0)
-						currentRoom = loadedRooms[i - 1];
-					else
-						currentRoom = loadedRooms[loadedRooms.size() - 1];
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 20;
 
-					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-					break;
+				GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+				//testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				is2Up = false;
+			}
+			else if(!input->isKeyDown('2') && !input->getGamepadRightTrigger(0))
+				is2Up = true;
+			#pragma endregion
+			#pragma region 8: Speedless Cube
+			if((input->wasKeyPressed('8'))  && is8Up)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 0;
+
+				GameObject* testSphere = new GameObject("Cube", "Wood", physicsMan->createRigidBody("Cube", pos.x, pos.y, pos.z, 1.0), physicsMan, WORLD, 1.0);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+				//testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				is8Up = false;
+			}
+			else if(!input->isKeyDown('8'))
+				is8Up = true;
+			#pragma endregion
+			#pragma region E: Fast Sphere
+			if((input->wasKeyPressed('E'))  && isEUp)
+			{
+				XMFLOAT4 p = player->getPosition();
+				XMFLOAT3 look = player->GetCamera()->GetLook();
+				XMFLOAT3 pos(p.x + (look.x * 2),p.y + (look.y * 2),p.z + (look.z * 2));
+				float speed = 90;
+
+				GameObject* testSphere = new GameObject("Sphere", "Wood", physicsMan->createRigidBody("Sphere", pos.x, pos.y, pos.z, 0.3f, 0.3f, 0.3f, 90.0f), physicsMan, WORLD, 90.0f);
+				testSphere->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+				testSphere->setLinearVelocity(look.x * speed, look.y * speed, look.z * speed);
+				testSphere->initAudio("Audio\\shot.wav");
+				testSphere->playAudio();
+				gameObjects.push_back(testSphere);
+				proceduralGameObjects.push_back(testSphere);
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+				isEUp = false;
+			}
+			else if(!input->isKeyDown('E'))
+				isEUp = true;
+			#pragma endregion
+
+			#pragma region Level Controls U and I
+			if (input->wasKeyPressed('U'))
+			{
+				for (unsigned int i = 0; i < loadedRooms.size(); i++)
+				{
+					if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+					{
+						if (i > 0)
+							currentRoom = loadedRooms[i - 1];
+						else
+							currentRoom = loadedRooms[loadedRooms.size() - 1];
+
+						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						break;
+					}
 				}
 			}
-		}
-		if (input->wasKeyPressed('I'))
-		{
-			for (unsigned int i = 0; i < loadedRooms.size(); i++)
+			if (input->wasKeyPressed('I'))
 			{
-				if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+				for (unsigned int i = 0; i < loadedRooms.size(); i++)
 				{
-					if (i < (loadedRooms.size() - 1))
-						currentRoom = loadedRooms[i + 1];
-					else
-						currentRoom = loadedRooms[0];
+					if (strcmp(currentRoom->getFile(), loadedRooms[i]->getFile()) == 0)
+					{
+						if (i < (loadedRooms.size() - 1))
+							currentRoom = loadedRooms[i + 1];
+						else
+							currentRoom = loadedRooms[0];
 
-					player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-					break;
+						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						break;
+					}
 				}
 			}
+			#pragma endregion
 		}
-		#pragma endregion
-		#endif
 		#if USE_FRUSTUM_CULLING
 		player->GetCamera()->frustumCull();
 		#endif
@@ -734,10 +875,25 @@ void PVGame::ListenSelectorChange()
 
 				return;
 			}
-			//Option 5
+			//Option 4
 			if(selector == 4)
 			{
+
+				return;
+			}
+			//Option 5
+			if(selector == 5)
+			{
+
+				return;
+			}
+			//Menu
+			if(selector == 6)
+			{
 				selector = 2;
+				WriteOptions();
+				ReadOptions();
+				ApplyOptions();
 				gameState = MENU;
 				return;
 			}
@@ -748,6 +904,10 @@ void PVGame::ListenSelectorChange()
 		{
 			//if(selector == 0 || selector == 1)
 			//{
+				if(audioWin->isPlaying())
+				{
+					audioWin->stop();
+				}
 				selector = 3;
 				gameState = MENU;
 				return;
@@ -781,6 +941,196 @@ void PVGame::ListenSelectorChange()
 		#pragma endregion
 	}
 	#pragma endregion
+}
+
+void PVGame::HandleOptions()
+{
+	if(input->wasMenuLeftKeyPressed())
+	{
+		switch(selector)
+		{
+		case 0:
+			VOLUME--;
+			if(VOLUME < 0)
+				VOLUME = 0;
+			break;
+		case 1:
+			FULLSCREEN = !FULLSCREEN;
+			break;
+		case 2:
+			OCULUS = !OCULUS;
+			break;
+		case 3:
+			VSYNC = !VSYNC;
+			break;
+		case 4:
+			MOUSESENSITIVITY--;
+			if(MOUSESENSITIVITY < 1)
+				MOUSESENSITIVITY = 1;
+			break;
+		case 5:
+			LOOKINVERSION = !LOOKINVERSION;
+			break;
+		}
+	}
+	
+	if(input->wasMenuRightKeyPressed())
+	{
+		switch(selector)
+		{
+		case 0:
+			VOLUME++;
+			if(VOLUME > 10)
+				VOLUME = 10;
+			break;
+		case 1:
+			FULLSCREEN = !FULLSCREEN;
+			break;
+		case 2:
+			OCULUS = !OCULUS;
+			break;
+		case 3:
+			VSYNC = !VSYNC;
+			break;
+		case 4:
+			MOUSESENSITIVITY++;
+			if(MOUSESENSITIVITY > 100)
+				MOUSESENSITIVITY = 100;
+			break;
+		case 5:
+			LOOKINVERSION = !LOOKINVERSION;
+			break;
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////
+// WriteOptions()
+//
+// Overwrites the current options.xml file with Options in
+// their current state or creates a new options.xml if one
+// is not found.
+////////////////////////////////////////////////////////////
+void PVGame::WriteOptions()
+{
+	tinyxml2::XMLDocument doc;
+	if(doc.LoadFile(OPTIONS_FILE) != XML_NO_ERROR)
+	{
+		XMLElement* options = doc.NewElement("options");
+		options->SetAttribute("volume",(double)VOLUME);
+		options->SetAttribute("mousesensitivity", (double)MOUSESENSITIVITY);
+		options->SetAttribute("fullscreen", FULLSCREEN);
+		options->SetAttribute("oculus", OCULUS);
+		options->SetAttribute("vsync", VSYNC);
+		options->SetAttribute("lookinversion", LOOKINVERSION);
+		doc.InsertFirstChild(options);
+	}
+	else
+	{
+		XMLElement* options = doc.FirstChildElement("options");
+
+		options->SetAttribute("volume",(double)VOLUME);
+		options->SetAttribute("mousesensitivity", (double)MOUSESENSITIVITY);
+		options->SetAttribute("fullscreen", FULLSCREEN);
+		options->SetAttribute("oculus", OCULUS);
+		options->SetAttribute("vsync", VSYNC);
+		options->SetAttribute("lookinversion", LOOKINVERSION);
+	}
+
+	doc.SaveFile(OPTIONS_FILE);
+}
+
+////////////////////////////////////////////////////////
+// ReadOptions()
+//
+// Sets the Options to the value stored in options.xml
+// Will use default values and rewrite options.xml with default
+// values if it is corrupted.
+////////////////////////////////////////////////////////////
+void PVGame::ReadOptions()
+{
+	tinyxml2::XMLDocument doc;
+	while(doc.LoadFile(OPTIONS_FILE) != XML_NO_ERROR)
+	{
+		WriteOptions();
+	}
+	XMLElement* options = doc.FirstChildElement("options");
+
+	if(!options)
+	{
+		WriteOptions();
+		options = doc.FirstChildElement("options");
+	}
+
+	if(options->Attribute("volume") == NULL)
+	{
+		VOLUME = 10;
+		WriteOptions();
+	}
+	else
+		VOLUME = (float)atof(options->Attribute("volume"));
+
+	if(options->Attribute("mousesensitivity") == NULL)
+	{
+		MOUSESENSITIVITY = 32;
+		WriteOptions();
+	}
+	else
+		MOUSESENSITIVITY = (float)atof(options->Attribute("mousesensitivity"));
+
+	if(options->Attribute("fullscreen") == NULL)
+	{
+		FULLSCREEN = false;
+		WriteOptions();
+	}
+	else
+		FULLSCREEN = atoi(options->Attribute("fullscreen")) != 0; // Fix warning C4800 by converting to bool this way.
+
+	if(options->Attribute("oculus") == NULL)
+	{
+		OCULUS = false;
+		WriteOptions();
+	}
+	else
+		OCULUS = atoi(options->Attribute("oculus")) != 0; // Fix warning C4800 by converting to bool this way.
+		
+	if(options->Attribute("vsync") == NULL)
+	{
+		VSYNC = true;
+		WriteOptions();
+	}
+	else
+		VSYNC = atoi(options->Attribute("vsync")) != 0; // Fix warning C4800 by converting to bool this way.
+
+	if(options->Attribute("lookinversion") == NULL)
+	{
+		LOOKINVERSION = false;
+		WriteOptions();
+	}
+	else
+		LOOKINVERSION = atoi(options->Attribute("lookinversion")) != 0; // Fix warning C4800 by converting to bool this way.
+}
+
+///////////////////////////////////////////////////
+// ApplyOptions()
+//
+// Applies the Options in their current state to
+// the game where applicable
+///////////////////////////////////////////////////
+void PVGame::ApplyOptions()
+{
+	player->getListener()->setGain(((float)VOLUME/10.0f));
+	player->setMouseSensitivity((float)MOUSESENSITIVITY);
+	player->setInverted(LOOKINVERSION);
+	renderMan->setVSYNC(VSYNC);
+	renderMan->setFullScreen(FULLSCREEN);
+
+	if((renderMan->hasOculusEffect() && !OCULUS) || (!renderMan->hasOculusEffect() && OCULUS))
+	{
+		renderMan->ToggleOculusEffect();
+		riftMan->setUsingRift(OCULUS);
+		player->OnResize(renderMan->AspectRatio());
+	}
 }
 
 void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
@@ -824,7 +1174,8 @@ void PVGame::DrawScene()
 	{
 	#pragma region MENU
 	case MENU:
-		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		//renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
@@ -876,46 +1227,110 @@ void PVGame::DrawScene()
 	#pragma region OPTION
 	case OPTION:
 		renderMan->ClearTargetToColor(colortwo); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
 		renderMan->DrawString("Options!", medSize, cWidth * .20f, cHeight * .25f, color1);
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Option 1", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 1", smlSize, cWidth * .20f, cHeight * .30f, color4);
+		{
+			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color4);
+		}
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Option 2", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 2", smlSize, cWidth * .20f, cHeight * .35f, color4);
+		{
+			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color4);
+		}
 		if(selector == 2)
 		{
-			renderMan->DrawString(">Option 3", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			if(OCULUS)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 3", smlSize, cWidth * .20f, cHeight * .40f, color4);
+		{
+			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
+			if(OCULUS)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color4);
+		}
 		if(selector == 3)
 		{
-			renderMan->DrawString(">Option 4", smlSize, cWidth * .20f, cHeight * .45f, color2);
+			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
+			if(VSYNC)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color2);
 		}
 		else
-			renderMan->DrawString("  Option 4", smlSize, cWidth * .20f, cHeight * .45f, color4);
+		{
+			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
+			if(VSYNC)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color4);
+		}
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .50f, color4);
+		{
+			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color4);
+		}
+
+		if(selector == 5)
+		{
+			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color2);
+			if(LOOKINVERSION)
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color4);
+			if(LOOKINVERSION)
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color4);		
+		}
+
+		if(selector == 6)
+		{
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .60f, color2);
+		}
+		else
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .60f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
 	#pragma region INSTRUCTIONS
 	case INSTRUCTIONS:
 		renderMan->ClearTargetToColor(color); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 /*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
 		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
 		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 20, color3);*/
@@ -977,6 +1392,7 @@ void PVGame::DrawScene()
 	#pragma region END
 	case END:
 		renderMan->ClearTargetToColor(colorthree); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->DrawMenuBackground();
 		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
 		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
 		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
@@ -1024,6 +1440,16 @@ void PVGame::DrawScene()
 	}
 }
  
+void PVGame::ToggleDevMode()
+{
+	devMode = !devMode;
+}
+
+bool PVGame::getDevMode()
+{
+	return devMode;
+}
+
 void PVGame::BuildFX()
 {
 	renderMan->BuildFX();
@@ -1050,8 +1476,10 @@ void PVGame::BuildRooms(Room* startRoom)
 		{
 			gameObjects.push_back(startRoom->getGameObjs()[i]);
 		}
-
-		startRoom->loadNeighbors(loadedRooms);
+		
+		if(!startRoom->hasWinCrest())
+			startRoom->loadNeighbors(loadedRooms);
+		
 		loadedRooms.push_back(startRoom);
 
 		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)

@@ -3,6 +3,8 @@
 Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM) 
 	: PIXELS_PER_SEC(1.4f), LOOK_SPEED(3.5f)
 {
+	MOUSESENSITIVITY = 32;
+	INVERTED = false;
 	// Build the view matrix. Now done in init because we only need to set it once.
 	XMVECTOR aPos = XMVectorSet(0.0f, 1.727f, 0.0f, 1.0f);
 	XMVECTOR aUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -54,6 +56,32 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	yaw = 0;
 }
 
+void Player::setMouseSensitivity(float ms)
+{
+	MOUSESENSITIVITY = ms;
+}
+
+void Player::setInverted(bool i)
+{
+	INVERTED = i;
+}
+
+void Player::setRotation(float rotRad)
+{
+	EyeYaw = EyePitch = EyeRoll = 0.0f;
+	yaw = rotRad;
+	XMMATRIX R = XMMatrixRotationY(-EyeYaw + yaw);
+	up    = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	fwd   = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	XMStoreFloat3(&right, XMVector3TransformNormal(XMLoadFloat3(&right), R));
+	XMStoreFloat3(&up, XMVector3TransformNormal(XMLoadFloat3(&up), R));
+	XMStoreFloat3(&fwd, XMVector3TransformNormal(XMLoadFloat3(&fwd), R));
+
+	//Set the rotation of the camera
+	playerCamera->setRotation(EyeYaw-yaw, EyePitch, EyeRoll);
+}
+
 ///////////////////////////////////////////////////
 // Update()
 //
@@ -99,7 +127,7 @@ void Player::HandleInput(Input* input)
 	{
 		//Get head orientation from rift
 		Quatf hmdOrient = riftMan->getOrientation();
-		hmdOrient.GetEulerAngles<Axis_Y, Axis_Z, Axis_X, OVR::RotateDirection::Rotate_CCW, OVR::HandedSystem::Handed_R>(&EyeYaw, &EyeRoll, &EyePitch);
+		hmdOrient.GetEulerAngles<Axis_Y, Axis_Z, Axis_X, Rotate_CCW, Handed_R>(&EyeYaw, &EyeRoll, &EyePitch);
 		//DBOUT(EyeYaw);
 		//DBOUT(EyePitch);
 		//DBOUT(EyeRoll);
@@ -146,6 +174,7 @@ void Player::HandleInput(Input* input)
 		// Update angles based on input
 		mTheta += dx/MOUSESENSITIVITY;
 		mPhi   += dy/MOUSESENSITIVITY;
+
 		playerCamera->Pitch(mPhi); // Rotate the camera  up/down.
 
 		playerCamera->RotateY(mTheta); // Rotate ABOUT the y-axis. So really turning left/right.
@@ -205,6 +234,7 @@ void Player::HandleInput(Input* input)
 		btVector3 direction(0,0,0);
 		btVector3 pitch(0.0f, 1.0f, 0.0f);
 		btVector3 yaw(1.0f, 0.0f, 0.0f);
+
 		float xScale = 1.0f;
 		float zScale = 1.0f;
 		if(input->gamepadConnected(0))
@@ -223,7 +253,10 @@ void Player::HandleInput(Input* input)
 			//	zScale = ((float)(input->getGamepadThumbLY(0)) / 30000.0f);
 		}
 
-		playerCamera->Pitch(-direction.getY());
+		if(INVERTED)
+			playerCamera->Pitch(direction.getY());
+		else
+			playerCamera->Pitch(-direction.getY());
 		playerCamera->RotateY(direction.getX());
 		XMMATRIX rot = XMMatrixRotationY(direction.getX());
 
@@ -312,7 +345,7 @@ void Player::HandleInput(Input* input)
 
 	//Set the camera's position
 	btVector3 pos = controller->getGhostObject()->getWorldTransform().getOrigin();
-	XMFLOAT3 cPos(pos.getX(), pos.getY() + 0.737, pos.getZ());
+	XMFLOAT3 cPos(pos.getX(), pos.getY() + 0.737f, pos.getZ());
 	playerCamera->SetPosition(cPos);
 	#pragma endregion
 	#pragma endregion
@@ -420,7 +453,7 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
-		winPercent += 0.005;
+		winPercent += 0.005f;
 	}
 }
 

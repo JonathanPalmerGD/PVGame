@@ -150,6 +150,10 @@ void Crest::SetupAudio()
 		initAudio("Audio\\YellowOn.wav");
 		//initAudio("Audio\\YellowOff.wav");
 		break;
+	case WIN:
+		//initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+		//initAudio("Audio\\YellowOff.wav");
+		break;
 	}
 }
 

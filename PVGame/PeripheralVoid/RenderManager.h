@@ -46,12 +46,27 @@ class RenderManager
 			return static_cast<float>(mClientWidth) / mClientHeight;
 		}
 
+		void setVSYNC(bool on)
+		{
+			if(on)
+				vsync = 1;
+			else
+				vsync = 0;
+		}
+
 		void ToggleOculusEffect()
 		{
 			if (postProcessingFlags & OculusEffect)
 				RemovePostProcessingEffect(OculusEffect);
 			else
 				AddPostProcessingEffect(OculusEffect);
+		}
+	
+		bool hasOculusEffect()
+		{
+			if(postProcessingFlags & OculusEffect)
+				return true;
+			return false;
 		}
 
 		//Returns the index of the newly created light for crests to manage.
@@ -171,7 +186,7 @@ class RenderManager
 			HR(dxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&dxgiFactory));
 
 			HR(dxgiFactory->CreateSwapChain(md3dDevice, &sd, &mSwapChain));
-	
+
 			ReleaseCOM(dxgiDevice);
 			ReleaseCOM(dxgiAdapter);
 			ReleaseCOM(dxgiFactory);
@@ -190,6 +205,11 @@ class RenderManager
 			
 			sky = new Sky(md3dDevice, L"Textures/grasscube1024.dds", 5000.0f, usingDX11);
 			return true;
+		}
+
+		void setFullScreen(bool fs)
+		{
+			mSwapChain->SetFullscreenState(fs, NULL);
 		}
 
 		int GetClientWidth() { return mClientWidth; }
@@ -236,9 +256,30 @@ class RenderManager
 				);
 		}
 
+		void DrawMenuBackground()
+		{
+			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
+			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
+		
+			md3dImmediateContext->IASetInputLayout(mInputLayout);
+			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Menu Background"]);
+			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+
+			// Need to set matrices to identity to make sure it draws a 1-to-1 ratio.
+			const float* identity = reinterpret_cast<const float*>(&XMMatrixIdentity());
+			TexTransform->SetMatrix(identity);
+			mfxWorld->SetMatrix(identity);
+			mfxWorldInvTranspose->SetMatrix(identity);
+			mfxViewProj->SetMatrix(identity);
+
+			DrawQuad("TexturePassThrough");
+		}
+
 		void EndDrawMenu()
 		{	
-			HR(mSwapChain->Present(1, 0));
+			HR(mSwapChain->Present(vsync, 0));
 		}
 
 		// Loop through all the buffers, drawing each instance for the game objects.
@@ -490,7 +531,7 @@ class RenderManager
 				DrawQuad("TexturePassThroughWithCursor");
 			}
 
-			HR(mSwapChain->Present(1, 0));
+			HR(mSwapChain->Present(vsync, 0));
 			
 			// Set shader view to null to prevent warnings.
 			mfxDiffuseMapVar->SetResource(NULL);
@@ -964,6 +1005,8 @@ class RenderManager
 		ID3D11Device* GetDevice() { return md3dDevice; }
 
 	private:
+		int vsync;
+
 		//2D Text variables
 		IFW1Factory* pFW1Factory;
 		IFW1FontWrapper *pFontWrapper;
@@ -1059,6 +1102,7 @@ class RenderManager
 
 		RenderManager() 
 		{ 
+			vsync = 1;
 			md3dDevice = nullptr;
 			md3dImmediateContext = nullptr;
 			mSwapChain = nullptr;

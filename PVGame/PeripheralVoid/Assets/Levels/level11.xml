@@ -1,0 +1,16 @@
+<level>
+<walls>
+</walls>
+<floors>
+<floor row="0" col="0" xLength="25" zLength="25" centerX="12.5" centerY="0" centerZ="12.5" texture="Floor"/>
+</floors>
+<spawns>
+</spawns>
+<exits>
+<exit row="24" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="24.5" file="level9.xml"/>
+</exits>
+<cubes>
+</cubes>
+<crests>
+</crests>
+</level>

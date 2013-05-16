@@ -4,8 +4,8 @@
 <wall row="1" col="14" xLength="10" yLength="8" zLength="1" centerX="19" centerY="0" centerZ="1.5" texture="Hedge"/>
 <wall row="1" col="24" xLength="1" yLength="5" zLength="1" centerX="24.5" centerY="0" centerZ="1.5" texture="Hedge"/>
 <wall row="2" col="3" xLength="1" yLength="5" zLength="3" centerX="3.5" centerY="0" centerZ="3.5" texture="Hedge"/>
-<wall row="2" col="4" xLength="3" yLength="2" zLength="3" centerX="5.5" centerY="0" centerZ="3.5" texture="Hedge"/>
-<wall row="2" col="7" xLength="2" yLength="1" zLength="3" centerX="8" centerY="0" centerZ="3.5" texture="Hedge"/>
+<wall row="2" col="4" xLength="3" yLength="2" zLength="3" centerX="5.5" centerY="0" centerZ="3.5" texture="Snow"/>
+<wall row="2" col="7" xLength="2" yLength="1" zLength="3" centerX="8" centerY="0" centerZ="3.5" texture="Snow"/>
 <wall row="5" col="2" xLength="2" yLength="5" zLength="1" centerX="3" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="5" col="4" xLength="3" yLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="5" col="7" xLength="7" yLength="5" zLength="1" centerX="10.5" centerY="0" centerZ="5.5" texture="Hedge"/>
@@ -49,6 +49,7 @@
 <floor row="21" col="13" xLength="11" zLength="1" centerX="18.5" centerY="0" centerZ="21.5" texture="Floor"/>
 </floors>
 <spawns>
+<spawn row="11" col="18" xLength="1" zLength="1" centerX="18.5" centerY="0" centerZ="11.5" dir="left"/>
 </spawns>
 <exits>
 <exit row="2" col="24" xLength="1" zLength="3" centerX="24.5" centerY="0" centerZ="3.5" file="level9.xml"/>

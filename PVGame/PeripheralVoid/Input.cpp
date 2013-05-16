@@ -599,6 +599,18 @@ bool Input::wasMenuDownPressed() const
 	return (wasKeyPressed(VK_DOWN) || wasGamepadButtonPressed(DPadDown) || (getGamepadThumbLY(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)));
 }
 
+// True if the player hits the left arrow key or left on the DPad or left on the left thumbstick
+bool Input::wasMenuLeftKeyPressed() const
+{
+	return (wasKeyPressed(VK_LEFT) || wasGamepadButtonPressed(DPadLeft) || (getGamepadThumbLX(0) < -(int)(GAMEPAD_THUMBSTICK_DEADZONE)));
+}
+
+// True if the player hits the right arrow key or right on the DPad or right on the left thumbstick 
+bool Input::wasMenuRightKeyPressed() const
+{
+	return (wasKeyPressed(VK_RIGHT) || wasGamepadButtonPressed(DPadRight) || (getGamepadThumbLX(0) > (int)(GAMEPAD_THUMBSTICK_DEADZONE)));
+}
+
 // True if return or A button on gamepad is pressed.
 bool Input::wasMenuSelectPressed() const
 {

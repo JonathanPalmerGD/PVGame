@@ -46,6 +46,11 @@ class Player
 
 		AudioListener* getListener();
 		btVector3 getCameraPosition();
+
+		void setMouseSensitivity(float ms);
+		void setInverted(bool i);
+
+		void setRotation(float rotRad);
 	private:
 		bool leapStatus;
 		bool mobilityStatus;
@@ -79,5 +84,7 @@ class Player
 		RiftManager* riftMan;
 
 		float EyeYaw, EyePitch, EyeRoll, yaw;
+		float MOUSESENSITIVITY;
+		bool INVERTED;
 };
 

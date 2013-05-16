@@ -20,6 +20,7 @@
 <floor row="12" col="0" xLength="25" zLength="11" centerX="12.5" centerY="0" centerZ="17.5" texture="Floor"/>
 </floors>
 <spawns>
+<spawn row="3" col="2" xLength="1" zLength="1" centerX="2.5" centerY="0" centerZ="3.5" dir="right"/>
 </spawns>
 <exits>
 <exit row="2" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="3.5" file="level9.xml"/>

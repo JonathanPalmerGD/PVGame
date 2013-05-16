@@ -24,7 +24,7 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 :	mhAppInst(hInstance),
-	mMainWndCaption(L"D3D11 Application"),
+	mMainWndCaption(L"Peripheral Void"),
 	mhMainWnd(0),
 	mAppPaused(false),
 	mMinimized(false),
@@ -101,7 +101,7 @@ int D3DApp::Run()
 			}
 			else
 			{
-				Sleep(100);
+				Sleep(1);
 			}
         }
     }

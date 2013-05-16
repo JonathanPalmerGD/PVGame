@@ -3,6 +3,7 @@
 
 Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 {
+	winRoom = false;
 	mapFile = xmlFile;
 	physicsMan = pm;
 	x = xPos;
@@ -97,6 +98,17 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 
 Room::~Room(void)
 {
+	/*for (unsigned int i = 0; i < neighbors.size(); ++i)
+	{
+		Room* temp = neighbors[neighbors.size() - 1];
+		temp = NULL;
+		neighbors.pop_back();
+		delete temp;
+		--i;
+	}
+	//neighbors.clear();
+	*/
+
 	for (unsigned int i = 0; i < floorVector.size(); ++i)
 	{
 		Wall* temp = floorVector[floorVector.size() - 1];
@@ -471,6 +483,7 @@ void Room::loadRoom(float xPos, float zPos)
 			crestObj = new Crest("boat", "WinCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
+			winRoom = true;
 			break;
 		}
 
@@ -560,7 +573,23 @@ void Room::loadNeighbors(vector<Room*> loadedRooms)
 				neighbors.push_back(tmpRoom);
 			}
 		}
+
 		else
 			neighbors.push_back(loadedRoom);
 	}
+}
+
+bool Room::hasWinCrest()
+{
+	return winRoom;
+}
+
+int Room::getNumNeighbors()
+{
+	return neighbors.size();
+}
+
+const char* Room::getMapFile()
+{
+	return mapFile;
 }

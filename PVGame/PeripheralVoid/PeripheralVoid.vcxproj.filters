@@ -319,6 +319,9 @@
     <None Include="Assets\Textures.xml">
       <Filter>XML</Filter>
     </None>
+    <None Include="Config\options.xml">
+      <Filter>XML</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Common\Effects11d.lib">
