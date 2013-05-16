@@ -66,7 +66,7 @@ void Crest::ChangeView(bool newVisionBool)
 		else
 		{
 			renderMan->EnableLight(lightIndex);
-		}	
+		}
 	}
 	if(!newVisionBool)
 	{
@@ -88,7 +88,7 @@ void Crest::ChangeView(bool newVisionBool)
 
 void Crest::SetTargetObject(MovingObject *newTargetObject)
 {
-	if(crestType == UNLOCK)
+	if(crestType == UNLOCK || crestType == HEPHAESTUS)
 	{
 		targetObject = newTargetObject;
 	}
@@ -160,8 +160,9 @@ void Crest::SetupAudio()
 		break;
 	case HEPHAESTUS:
 		initAudio("Audio\\anvil.wav");
+		break;
 	case WIN:
-		//initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
+		initAudio("Audio\\test_mono_8000Hz_8bit_PCM.wav");
 		//initAudio("Audio\\YellowOff.wav");
 		break;
 	}
@@ -218,44 +219,48 @@ void Crest::Update(Player* player)
 			player->setMobilityStatus(true);
 			break;
 		case UNLOCK:
-			//if(targetObject != NULL)
-			//{
-			//	//Change the targetObject to the unlocked state.
-			//	targetObject->SetTargetPosition(1);
-			//}
-			if(targetObject != NULL && canChange)
+			if(targetObject != NULL)
 			{
-				if(index == 0)
-				{
-					index = 1;
-					targetObject->SetTargetPosition(index);
-					canChange = false;
-				}
-				else if(index == 1)
-				{
-					index = 0;
-					targetObject->SetTargetPosition(index);
-					canChange = false;
-				}
+				//Change the targetObject to the unlocked state.
+				targetObject->SetTargetPosition(1);
 			}
+			/*if(targetObject != NULL && canChange)
+			{
+			if(index == 0)
+			{
+			index = 1;
+			targetObject->SetTargetPosition(index);
+			canChange = false;
+			}
+			else if(index == 1)
+			{
+			index = 0;
+			targetObject->SetTargetPosition(index);
+			canChange = false;
+			}
+			}*/
 			break;
 		case HADES:
 				//Hi
 			break;
 		case HEPHAESTUS:
+			canChange = targetObject->ReachedTargetPosition();
 			if(targetObject != NULL && canChange)
 			{
-				if(index == 0)
+				if(player->getHephStatus())
 				{
-					index = 1;
-					targetObject->SetTargetPosition(index);
-					canChange = false;
-				}
-				else if(index == 1)
-				{
-					index = 0;
-					targetObject->SetTargetPosition(index);
-					canChange = false;
+					if(index == 0)
+					{
+						index = 1;
+						targetObject->SetTargetPosition(index);
+						canChange = false;
+					}
+					else if(index == 1)
+					{
+						index = 0;
+						targetObject->SetTargetPosition(index);
+						canChange = false;
+					}
 				}
 			}
 			break;
@@ -271,9 +276,8 @@ void Crest::Update(Player* player)
 		{
 			if(targetObject != NULL)
 			{
-				canChange = true;
 				//Change the targetObject to the locked state.
-				//	targetObject->SetTargetPosition(0);
+				targetObject->SetTargetPosition(0);
 			}
 		}
 		if(crestType == HADES)
@@ -283,7 +287,10 @@ void Crest::Update(Player* player)
 		}
 		if(crestType == HEPHAESTUS)
 		{
-			canChange = true;
+			if(targetObject != NULL)
+			{
+				//canChange = true;
+			}
 		}
 	}
 }

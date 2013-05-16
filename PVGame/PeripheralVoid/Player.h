@@ -22,7 +22,7 @@ class Player
 		void Update(float dt, Input* aInput);
 		XMMATRIX ViewProj() const;
 		
-		void resetStatuses();
+		void resetStatuses(bool resetHeph);
 		void increaseMedusaPercent();
 		void increaseWinPercent();
 		void resetWinPercent();
@@ -31,6 +31,7 @@ class Player
 		void setMedusaStatus(bool newStatus);
 		void setLeapStatus(bool newStatus);
 		void setWinStatus(bool newStatus);
+		void setHephStatus(bool newStatus);
 		void setPosition(float setX, float setY, float setZ);
 
 		Camera* GetCamera();
@@ -39,6 +40,7 @@ class Player
 		bool getMedusaStatus();
 		bool getLeapStatus();
 		bool getWinStatus();
+		bool getHephStatus();
 
 		float getWinPercent() {return winPercent;}
 
@@ -51,6 +53,7 @@ class Player
 		bool mobilityStatus;
 		bool medusaStatus;
 		bool winStatus;
+		bool hephStatus;
 		float medusaPercent;
 		float winPercent;
 		float playerSpeed;

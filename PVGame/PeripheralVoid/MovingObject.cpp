@@ -5,6 +5,16 @@ void MovingObject::activateCollidingObjects()
 	
 }
 
+bool MovingObject::ReachedTargetPosition()
+{
+	btVector3 movingObjPos = getRigidBody()->getCenterOfMassPosition();
+	if(movingObjPos.getX() == positions[targetPosition].x && movingObjPos.getY() == positions[targetPosition].y && movingObjPos.getZ() == positions[targetPosition].z)
+	{
+		return true;
+	}
+	return false;
+}
+
 void MovingObject::Update()
 {
 	GameObject::Update();
@@ -36,6 +46,7 @@ void MovingObject::StepPosition()
 		(1.0f - rateOfChange) * movingObjPos.getY() + (positions[targetPosition].y * rateOfChange),
 		(1.0f - rateOfChange) * movingObjPos.getZ() + (positions[targetPosition].z * rateOfChange));
 	//btVector3 newPosition = btVector3(positions[targetPosition].x, positions[targetPosition].y, positions[targetPosition].z);
+	
 	setPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
 	//translate(newPosition.getX() - movingObjPos.getX(), newPosition.getY() - movingObjPos.getY(), newPosition.getZ() - movingObjPos.getZ());
 	//getRigidBody()->translate(positions[targetPosition]));

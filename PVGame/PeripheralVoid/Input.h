@@ -494,8 +494,10 @@ public:
 
 	// True if return or A button on gamepad is pressed.
 	bool wasMenuSelectPressed() const;
-
+	
 	bool wasJumpKeyPressed() const;
+	
+	bool isActivateKeyDown() const;
 
 	// Returns true if 'o' or a TBD gamepad button is pressed.
 	bool isOculusButtonPressed() const;

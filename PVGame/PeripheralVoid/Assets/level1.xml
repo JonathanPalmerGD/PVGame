@@ -42,7 +42,9 @@
 <exit row="24" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="24.5" file="level2.xml"/>
 </exits>
 <cubes>
+<cube row="20" col="14" xLength="6" yLength="1" zLength="2" centerX="17" centerY="0" centerZ="21" translateX="3" translateY="0" translateZ="0" texture="Snow"/>
 </cubes>
 <crests>
+<crest row="20" col="23" xLength="1" yLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="20.5" effect="5" target="20|14" dir="left" placement=""/>
 </crests>
 </level>

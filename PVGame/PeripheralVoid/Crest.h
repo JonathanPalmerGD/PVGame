@@ -17,6 +17,7 @@ public:
 	bool InView();
 	void SetLightIndex(int newLightIndex);
 	void ChangeView(bool newVisionBool);
+	void NeedToChange();
 	void SetTargetObject(MovingObject *newTargetObject);
 	CREST_TYPE GetCrestType();
 	static string GetCrestTypeString(CREST_TYPE aType);
