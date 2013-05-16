@@ -90,6 +90,8 @@ bool PVGame::Init(char * args)
 	//renderMan->LoadFile(L"caelhammer.obj", "caelhammer");
 	renderMan->LoadFile(L"boat.obj", "boat");
 
+	renderMan->BuildBuffers();
+
 	//Cook Rigid Bodies from the meshes
 	map<string, MeshData>::const_iterator itr;
 	for(itr = MeshMaps::MESH_MAPS.begin(); itr != MeshMaps::MESH_MAPS.end(); itr++)
