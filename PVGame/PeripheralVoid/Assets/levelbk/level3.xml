@@ -1,0 +1,41 @@
+<level>
+<walls>
+<wall row="10" col="7" xLength="10" yLength="10" zLength="1" centerX="12" centerY="0" centerZ="10.5" texture="Hedge"/>
+<wall row="11" col="7" xLength="1" yLength="10" zLength="9" centerX="7.5" centerY="0" centerZ="15.5" texture="Hedge"/>
+<wall row="11" col="16" xLength="1" yLength="10" zLength="3" centerX="16.5" centerY="0" centerZ="12.5" texture="Hedge"/>
+<wall row="17" col="16" xLength="1" yLength="10" zLength="3" centerX="16.5" centerY="0" centerZ="18.5" texture="Hedge"/>
+<wall row="20" col="7" xLength="10" yLength="10" zLength="1" centerX="12" centerY="0" centerZ="20.5" texture="Hedge"/>
+</walls>
+<floors>
+<floor row="0" col="0" xLength="25" zLength="10" centerX="12.5" centerY="0" centerZ="5" texture="Floor"/>
+<floor row="10" col="0" xLength="7" zLength="11" centerX="3.5" centerY="0" centerZ="15.5" texture="Floor"/>
+<floor row="10" col="17" xLength="8" zLength="1" centerX="21" centerY="0" centerZ="10.5" texture="Floor"/>
+<floor row="11" col="8" xLength="1" zLength="1" centerX="8.5" centerY="0" centerZ="11.5" texture="Hedge"/>
+<floor row="11" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="11.5" texture="Floor"/>
+<floor row="11" col="17" xLength="8" zLength="3" centerX="21" centerY="0" centerZ="12.5" texture="Floor"/>
+<floor row="12" col="8" xLength="8" zLength="1" centerX="12" centerY="0" centerZ="12.5" texture="Floor"/>
+<floor row="13" col="8" xLength="2" zLength="1" centerX="9" centerY="0" centerZ="13.5" texture="Hedge"/>
+<floor row="13" col="10" xLength="6" zLength="1" centerX="13" centerY="0" centerZ="13.5" texture="Floor"/>
+<floor row="14" col="8" xLength="3" zLength="1" centerX="9.5" centerY="0" centerZ="14.5" texture="Floor"/>
+<floor row="14" col="11" xLength="2" zLength="1" centerX="12" centerY="0" centerZ="14.5" texture="Hedge"/>
+<floor row="14" col="13" xLength="12" zLength="1" centerX="19" centerY="0" centerZ="14.5" texture="Floor"/>
+<floor row="15" col="8" xLength="17" zLength="2" centerX="16.5" centerY="0" centerZ="16" texture="Floor"/>
+<floor row="17" col="8" xLength="8" zLength="3" centerX="12" centerY="0" centerZ="18.5" texture="Floor"/>
+<floor row="17" col="17" xLength="8" zLength="4" centerX="21" centerY="0" centerZ="19" texture="Floor"/>
+<floor row="21" col="0" xLength="25" zLength="4" centerX="12.5" centerY="0" centerZ="23" texture="Floor"/>
+</floors>
+<spawns>
+<spawn row="14" col="12" xLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="14.5" dir="up"/>
+</spawns>
+<exits>
+<exit row="14" col="6" xLength="1" zLength="3" centerX="6.5" centerY="0" centerZ="15.5" file="level4.xml"/>
+<exit row="14" col="16" xLength="1" zLength="3" centerX="16.5" centerY="0" centerZ="15.5" file="level1.xml"/>
+</exits>
+<cubes>
+<cube row="13" col="9" xLength="1" yLength="1" zLength="3" centerX="9.5" centerY="0" centerZ="14.5" translateX="-49" translateY="-9" translateZ="-49" texture="Hedge"/>
+<cube row="18" col="12" xLength="2" yLength="1" zLength="1" centerX="13" centerY="0" centerZ="18.5" translateX="-49" translateY="-9" translateZ="-49" texture="Hedge"/>
+</cubes>
+<crests>
+<crest row="19" col="11" xLength="1" yLength="1" zLength="1" centerX="11.5" centerY="0" centerZ="19.5" effect="5" target="" dir="up" placement=""/>
+</crests>
+</level>
