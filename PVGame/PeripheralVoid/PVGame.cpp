@@ -326,8 +326,15 @@ void PVGame::UpdateScene(float dt)
 			}
 			else if(currentRoom->getNumNeighbors() == 2) //Go to Next Area
 			{
-				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[currentRoom->getNumNeighbors() -1]->getMapFile())) + 1);
-				strcpy(map, currentRoom->getNeighbors()[currentRoom->getNumNeighbors() -1]->getMapFile());
+				//Load Last room possible
+				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
+				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
+				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
+				{
+					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
+						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
+				}
+
 				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
 				{
 					delete proceduralGameObjects[i];
