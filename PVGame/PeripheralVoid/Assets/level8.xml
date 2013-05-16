@@ -49,6 +49,7 @@
 <floor row="21" col="13" xLength="11" zLength="1" centerX="18.5" centerY="0" centerZ="21.5" texture="Floor"/>
 </floors>
 <spawns>
+<spawn row="11" col="18" xLength="1" zLength="1" centerX="18.5" centerY="0" centerZ="11.5" dir="left"/>
 </spawns>
 <exits>
 <exit row="2" col="24" xLength="1" zLength="3" centerX="24.5" centerY="0" centerZ="3.5" file="level9.xml"/>

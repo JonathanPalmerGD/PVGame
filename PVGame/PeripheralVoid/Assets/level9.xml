@@ -35,7 +35,6 @@
 <wall row="22" col="2" xLength="23" yLength="8" zLength="1" centerX="13.5" centerY="0" centerZ="22.5" texture="Hedge"/>
 </walls>
 <floors>
-<floor row="0" col="0" xLength="25" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" texture="Floor"/>
 <floor row="1" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="1.5" texture="Floor"/>
 <floor row="2" col="0" xLength="25" zLength="3" centerX="12.5" centerY="0" centerZ="3.5" texture="Floor"/>
 <floor row="5" col="3" xLength="14" zLength="1" centerX="10" centerY="0" centerZ="5.5" texture="Floor"/>

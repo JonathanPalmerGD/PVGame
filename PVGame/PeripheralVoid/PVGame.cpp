@@ -47,6 +47,16 @@ bool PVGame::Init(char * args)
 	if (!D3DApp::Init())
 		return false;
 
+	renderMan->BuildBuffers();
+	renderMan->SetRiftMan(riftMan);
+
+	BuildFX();
+	BuildVertexLayout();
+	
+	renderMan->LoadTexture("Loading Screen", "Textures/LoadingScreen.dds", "Diffuse");
+	renderMan->DrawLoadingScreen();
+	renderMan->EndDrawMenu();
+
 	audioDevice=alcOpenDevice(NULL);
     if(audioDevice==NULL)
 	{
@@ -87,10 +97,6 @@ bool PVGame::Init(char * args)
 	map<string, MeshData>::const_iterator itr;
 	for(itr = MeshMaps::MESH_MAPS.begin(); itr != MeshMaps::MESH_MAPS.end(); itr++)
 		physicsMan->addTriangleMesh((*itr).first, (*itr).second);
-
-	SetMenuColors();
-	BuildFX();
-	BuildVertexLayout();
 	
 	LoadContent();
 
@@ -121,6 +127,8 @@ bool PVGame::Init(char * args)
 	audioWin = new AudioSource();
 	audioWin->initialize("Audio\\test_mono_8000Hz_8bit_PCM.wav", AudioSource::WAV);
 
+	SetMenuColors();
+
 	ReadOptions();
 	ApplyOptions();
 
@@ -142,25 +150,6 @@ bool PVGame::LoadXML()
 
 	tinyxml2::XMLDocument doc;
 
-	#pragma region Materials
-	doc.LoadFile(MATERIALS_FILE);
-	for (XMLElement* material = doc.FirstChildElement("MaterialsList")->FirstChildElement("Material"); 
-				material != NULL; material = material->NextSiblingElement("Material"))
-	{
-		// Loop through all the materials, setting appropriate attributes.
-		GameMaterial aMaterial;
-		aMaterial.Name = material->Attribute("name");
-		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
-		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
-
-		XMLElement* glow = material->FirstChildElement("Glow");
-		if (glow)
-			aMaterial.GlowColor = XMFLOAT4((float)atof(glow->Attribute("r")), (float)atof(glow->Attribute("g")), 
-									 (float)atof(glow->Attribute("b")), (float)atof(glow->Attribute("a")));
-		GAME_MATERIALS[aMaterial.Name] = aMaterial;
-	}
-	#pragma endregion
-
 	#pragma region Textures
 	doc.LoadFile(TEXTURES_FILE);
 	for (XMLElement* atlas = doc.FirstChildElement("TextureList")->FirstChildElement("Atlas"); 
@@ -181,6 +170,26 @@ bool PVGame::LoadXML()
 
 	// Explictitly load menu background texture for now.
 	renderMan->LoadTexture("Menu Background", "Textures/MenuBackground.dds", "Diffuse");
+	
+	#pragma endregion
+
+	#pragma region Materials
+	doc.LoadFile(MATERIALS_FILE);
+	for (XMLElement* material = doc.FirstChildElement("MaterialsList")->FirstChildElement("Material"); 
+				material != NULL; material = material->NextSiblingElement("Material"))
+	{
+		// Loop through all the materials, setting appropriate attributes.
+		GameMaterial aMaterial;
+		aMaterial.Name = material->Attribute("name");
+		aMaterial.SurfaceKey = material->FirstChildElement("SurfaceMaterial")->FirstChild()->Value();
+		aMaterial.DiffuseKey = material->FirstChildElement("DiffuseMap")->FirstChild()->Value();
+
+		XMLElement* glow = material->FirstChildElement("Glow");
+		if (glow)
+			aMaterial.GlowColor = XMFLOAT4((float)atof(glow->Attribute("r")), (float)atof(glow->Attribute("g")), 
+									 (float)atof(glow->Attribute("b")), (float)atof(glow->Attribute("a")));
+		GAME_MATERIALS[aMaterial.Name] = aMaterial;
+	}
 	#pragma endregion
 
 	#pragma region Surface Materials
@@ -326,12 +335,86 @@ void PVGame::UpdateScene(float dt)
 		if (player->getWinPercent() >= 0.99f)
 		{
 			player->resetWinPercent();
-			currentRoom = loadedRooms[0];
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-			gameState = END;
+			
+			if(currentRoom->getExits().size() == 1)
+			{
+				currentRoom = loadedRooms[0];
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				gameState = END;
+			}
+			else if(currentRoom->getExits().size() == 2) //Go to Next Area
+			{
+				//Load Last room possible
+				char* map    = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
+				strcpy(map, currentRoom->getExits()[0]->file.c_str());
+				for(int i = 0; i < currentRoom->getExits().size(); i++)
+				{
+					if(strcmp(map, currentRoom->getExits()[i]->file.c_str()) < 0)
+						strcpy(map, currentRoom->getExits()[i]->file.c_str());
+				}
+
+				ClearRooms();	
+				loadedRooms.clear();
+
+				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+				{
+					delete proceduralGameObjects[i];
+				}
+
+				gameObjects.clear();
+				proceduralGameObjects.clear();
+	
+				
+
+//				delete currentRoom;
+				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				startRoom->loadRoom();
+				currentRoom = startRoom;
+				BuildRooms(currentRoom);
+				
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				delete[] map;
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
 			return;
 		}
-		#pragma endregion
+
+		if(input->wasKeyPressed('K'))
+		{
+			//Load Last room possible
+				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
+				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
+				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
+				{
+					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
+						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
+				}
+
+				ClearRooms();	
+				loadedRooms.clear();
+
+				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+				{
+					delete proceduralGameObjects[i];
+				}
+
+				gameObjects.clear();
+				proceduralGameObjects.clear();
+	
+				
+
+//				delete currentRoom;
+				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				startRoom->loadRoom();
+				currentRoom = startRoom;
+				BuildRooms(currentRoom);
+				
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				delete[] map;
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+		}
 
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
@@ -949,6 +1032,13 @@ void PVGame::HandleOptions()
 	}
 }
 
+////////////////////////////////////////////////////////////
+// WriteOptions()
+//
+// Overwrites the current options.xml file with Options in
+// their current state or creates a new options.xml if one
+// is not found.
+////////////////////////////////////////////////////////////
 void PVGame::WriteOptions()
 {
 	tinyxml2::XMLDocument doc;
@@ -978,6 +1068,13 @@ void PVGame::WriteOptions()
 	doc.SaveFile(OPTIONS_FILE);
 }
 
+////////////////////////////////////////////////////////
+// ReadOptions()
+//
+// Sets the Options to the value stored in options.xml
+// Will use default values and rewrite options.xml with default
+// values if it is corrupted.
+////////////////////////////////////////////////////////////
 void PVGame::ReadOptions()
 {
 	tinyxml2::XMLDocument doc;
@@ -1042,6 +1139,12 @@ void PVGame::ReadOptions()
 		LOOKINVERSION = atoi(options->Attribute("lookinversion")) != 0; // Fix warning C4800 by converting to bool this way.
 }
 
+///////////////////////////////////////////////////
+// ApplyOptions()
+//
+// Applies the Options in their current state to
+// the game where applicable
+///////////////////////////////////////////////////
 void PVGame::ApplyOptions()
 {
 	player->getListener()->setGain(((float)VOLUME/10.0f));
@@ -1179,96 +1282,96 @@ void PVGame::DrawScene()
 		}
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .25f, color2);
-			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .25f, color2);
+			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .20f, color2);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .20f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .25f, color4);
-			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .25f, color4);
+			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .20f, color4);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .20f, color4);
 		}
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .25f, color2);
 			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .25f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .25f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .25f, color4);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .25f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .25f, color4);
+		}
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			if(OCULUS)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .30f, color2);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .30f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .30f, color4);
-			if(FULLSCREEN)
+			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			if(OCULUS)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .30f, color4);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .30f, color4);
 		}
-		if(selector == 2)
+		if(selector == 3)
 		{
-			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
-			if(OCULUS)
+			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			if(VSYNC)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color2);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
-			if(OCULUS)
+			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
+			if(VSYNC)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color4);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color4);
 		}
-		if(selector == 3)
-		{
-			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
-			if(VSYNC)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color2);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color2);
-		}
-		else
-		{
-			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
-			if(VSYNC)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color4);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color4);
-		}
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
-			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .45f, color2);
+			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .40f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
-			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .45f, color4);
+			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .40f, color4);
 		}
 
 		if(selector == 5)
 		{
-			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .50f, color2);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .45f, color2);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .50f, color2);
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .45f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .50f, color4);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .45f, color4);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .50f, color4);		
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .45f, color4);		
 		}
 
 		if(selector == 6)
 		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .55f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .55f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
@@ -1406,7 +1509,7 @@ void PVGame::BuildRooms(Room* startRoom)
 
 	for (unsigned int i = 0; i < loadedRooms.size(); i++)
 	{
-		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
+		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0 || startRoom->hasWinCrest())
 			isLoaded = true;
 	}
 
@@ -1416,8 +1519,10 @@ void PVGame::BuildRooms(Room* startRoom)
 		{
 			gameObjects.push_back(startRoom->getGameObjs()[i]);
 		}
-
-		startRoom->loadNeighbors(loadedRooms);
+		
+		if(!startRoom->hasWinCrest())
+			startRoom->loadNeighbors(loadedRooms);
+		
 		loadedRooms.push_back(startRoom);
 
 		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)

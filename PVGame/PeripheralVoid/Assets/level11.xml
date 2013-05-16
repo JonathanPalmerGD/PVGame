@@ -5,6 +5,7 @@
 <floor row="0" col="0" xLength="25" zLength="25" centerX="12.5" centerY="0" centerZ="12.5" texture="Floor"/>
 </floors>
 <spawns>
+<spawn row="22" col="20" xLength="1" zLength="1" centerX="20.5" centerY="0" centerZ="22.5" dir="down"/>
 </spawns>
 <exits>
 <exit row="24" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="24.5" file="level9.xml"/>

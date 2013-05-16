@@ -277,13 +277,23 @@ class RenderManager
 
 		void DrawMenuBackground()
 		{
+			DrawFullscreenImage("Menu Background");
+		}
+
+		void DrawLoadingScreen()
+		{
+			DrawFullscreenImage("Loading Screen");
+		}
+
+		void DrawFullscreenImage(string aTextureKey)
+		{
 			md3dImmediateContext->ClearRenderTargetView(renderTargetViewsMap["Back Buffer"], reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 			md3dImmediateContext->ClearDepthStencilView(depthStencilViewsMap["Default"], D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 			md3dImmediateContext->OMSetRenderTargets(1, &renderTargetViewsMap["Back Buffer"], depthStencilViewsMap["Default"]);
 		
 			md3dImmediateContext->IASetInputLayout(mInputLayout);
 			md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap["Menu Background"]);
+			mfxDiffuseMapVar->SetResource(shaderResourceViewsMap[aTextureKey]);
 			md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
 
 			// Need to set matrices to identity to make sure it draws a 1-to-1 ratio.

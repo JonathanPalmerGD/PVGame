@@ -26,6 +26,9 @@ class Room
 		vector<Room*> getNeighbors(void){return neighbors;};
 		void setX(float xPos){x = xPos;};
 		void setZ(float zPos){z = zPos;};
+		bool hasWinCrest();
+		int getNumNeighbors();
+		const char* getMapFile();
 	private:
 		PhysicsManager* physicsMan;
 		vector<GameObject*> gameObjs;
@@ -44,5 +47,6 @@ class Room
 		float mapOffsetX;
 		float mapOffsetZ;
 		void loadRoom(float xPos, float zPos);
+		bool winRoom;
 };
 
