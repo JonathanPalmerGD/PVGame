@@ -47,6 +47,7 @@ bool PVGame::Init(char * args)
 	if (!D3DApp::Init())
 		return false;
 
+	renderMan->BuildBuffers();
 	renderMan->SetRiftMan(riftMan);
 
 	BuildFX();
@@ -88,9 +89,6 @@ bool PVGame::Init(char * args)
 	renderMan->LoadFile(L"unlockcrest.obj", "unlockcrest");
 	//renderMan->LoadFile(L"caelhammer.obj", "caelhammer");
 	renderMan->LoadFile(L"boat.obj", "boat");
-
-	renderMan->BuildBuffers();
-	renderMan->SetRiftMan(riftMan);
 
 	//Cook Rigid Bodies from the meshes
 	map<string, MeshData>::const_iterator itr;
