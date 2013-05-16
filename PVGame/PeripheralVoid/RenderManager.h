@@ -243,6 +243,25 @@ class RenderManager
 									);
 		}
 
+		void DrawString(const char *text, float fontSize, float xPos, float yPos, const float* clearColor)
+		{	
+			std::wstring s = s2ws(text);
+			const wchar_t *str = s.c_str();
+
+			UINT32 textColor;// = clearColor[1] * 0x1000000 + clearColor[2] * 0x10000 + clearColor[3] * 0x100 + clearColor[4];
+			//memcpy(textColor, clearColor, sizeof(float));
+			//UINT32 textColor = {clearColor[0], clearColor[1], clearColor[2], clearColor[3]};
+
+			pFontWrapper->DrawString(	md3dImmediateContext,
+				str,// String
+				fontSize,// Font size
+				xPos,// X position
+				yPos,// Y position
+				textColor,
+				FW1_NOGEOMETRYSHADER | FW1_RESTORESTATE// Flags (for example FW1_RESTORESTATE to keep context states unchanged)
+				);
+		}
+
 		//I really hope you don't have to do wstrings
 		void DrawString(const WCHAR *text, float fontSize, float xPos, float yPos, UINT32 textColor)
 		{	

@@ -65,8 +65,8 @@ bool PVGame::Init(char * args)
 
 	SELECTOR_MAP[MENU]			=  5;
 	SELECTOR_MAP[OPTION]		=  7;
-	SELECTOR_MAP[INSTRUCTIONS]	=  3;
-	SELECTOR_MAP[END]			=  2;
+	SELECTOR_MAP[INSTRUCTIONS]	=  2;
+	SELECTOR_MAP[END]			=  1;
 
 	const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
 
@@ -88,6 +88,7 @@ bool PVGame::Init(char * args)
 	for(itr = MeshMaps::MESH_MAPS.begin(); itr != MeshMaps::MESH_MAPS.end(); itr++)
 		physicsMan->addTriangleMesh((*itr).first, (*itr).second);
 
+	SetMenuColors();
 	BuildFX();
 	BuildVertexLayout();
 	
@@ -246,6 +247,15 @@ void PVGame::OnResize()
 {
 	D3DApp::OnResize();
 	player->OnResize(AspectRatio());
+
+	//For menu stuff
+	cWidth = (float)renderMan->GetClientHeight();
+	cHeight = (float)renderMan->GetClientWidth();
+	/*if(FULLSCREEN)
+	{
+		cWidth = cWidth * 2;
+		cHeight = cWidth * 2;
+	}*/
 
 	// The window resized, so update the aspect ratio and recompute the projection matrix.
 	//XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
@@ -840,26 +850,28 @@ void PVGame::ListenSelectorChange()
 		#pragma region INSTRUCTIONS
 		if(gameState == INSTRUCTIONS)
 		{
-			//NEXT
-			if(selector == 0)
-			{
-				
-				return;
-			}
 			//PLAY
-			if(selector == 1)
+			if(selector == 0)
 			{
 				ShowCursor(false);
 				gameState = PLAYING;
 				return;
 			}
 			//MENU
-			if(selector == 2)
+			if(selector == 1)
 			{
 				selector = 1;
 				gameState = MENU;
 				return;
+				return;
 			}
+			////NEXT
+			//if(selector == 2)
+			//{
+			//	
+			//	
+			//	return;
+			//}
 		}
 		#pragma endregion
 	}
@@ -1056,33 +1068,46 @@ void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void PVGame::DrawScene()
+void PVGame::SetMenuColors()
 {
-	float cWidth = (float)renderMan->GetClientHeight();
-	float cHeight = (float)renderMan->GetClientWidth();
-	UINT32 color1 = 0xff0000ff;
-	UINT32 color2 = 0xffff0000;
-	UINT32 color3 = 0xff00ff00;
-	UINT32 color4 = 0xff000000;
-	float lgSize = .10f * cHeight;
-	float xmdSize = .05f * cHeight;
-	float medSize = .04f * cHeight;
-	float smlSize = .03f * cHeight;
-	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-	float colortwo[4] = {0.2f, 0.7f, 0.7f, 1.0f};
-	float colorthree[4] = {0.4f, 0.3f, 0.1f, 1.0f};
-	std::string cStats = "cHeight: " + (int)cHeight;
-	
+	cWidth = (float)renderMan->GetClientHeight();
+	cHeight = (float)renderMan->GetClientWidth();
+	if(FULLSCREEN)
+	{
+		cWidth = cWidth * 2;
+		cHeight = cWidth * 2;
+	}
+
+	//UINT32 colors
+	color1 = 0xff0000ff;
+	color2 = 0xffff0000;
+	color3 = 0xff00ff00;
+	color4 = 0xff000000;
+
+	//Float[4] colors
+	//color = {1.0f, 1.0f, 1.0f, 1.0f};
+	//colortwo = {0.2f, 0.7f, 0.7f, 1.0f};
+	//colorthree = {0.4f, 0.3f, 0.1f, 1.0f};
+
+	//Font sizes
+	lgSize = .10f * cHeight;
+	xmdSize = .05f * cHeight;
+	medSize = .04f * cHeight;
+	smlSize = .03f * cHeight;
+}
+
+void PVGame::DrawScene()
+{	
 	switch(gameState)
 	{
 	#pragma region MENU
 	case MENU:
-		//renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .25f, color1);
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
 		if(selector == 0)
 		{
 			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .30f, color2);
@@ -1129,110 +1154,117 @@ void PVGame::DrawScene()
 	#pragma endregion
 	#pragma region OPTION
 	case OPTION:
-		renderMan->ClearTargetToColor(colortwo); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Options!", medSize, cWidth * .20f, cHeight * .25f, color1);
-		if(selector == 0)
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		if(!FULLSCREEN)
 		{
-			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
-			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color2);
+			renderMan->DrawString("Options", medSize, cWidth * .20f, cHeight * .15f, color1);
 		}
 		else
 		{
-			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .30f, color4);
-			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color4);
+			renderMan->DrawString("Options", medSize, cWidth * .20f, cHeight * .15f, color1);
+		}
+		if(selector == 0)
+		{
+			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .25f, color2);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .25f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .25f, color4);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .25f, color4);
 		}
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
 			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .30f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .30f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .30f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .30f, color4);
+		}
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			if(OCULUS)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color2);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
-			if(FULLSCREEN)
+			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
+			if(OCULUS)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color4);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color4);
 		}
-		if(selector == 2)
+		if(selector == 3)
 		{
-			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
-			if(OCULUS)
+			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			if(VSYNC)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color2);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
-			if(OCULUS)
+			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
+			if(VSYNC)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color4);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color4);
 		}
-		if(selector == 3)
-		{
-			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
-			if(VSYNC)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color2);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color2);
-		}
-		else
-		{
-			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
-			if(VSYNC)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color4);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color4);
-		}
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
-			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color2);
+			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .45f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
-			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color4);
+			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .45f, color4);
 		}
 
 		if(selector == 5)
 		{
-			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color2);
+			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color2);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .50f, color2);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color2);
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .50f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color4);
+			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color4);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .50f, color4);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color4);		
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .50f, color4);		
 		}
 
 		if(selector == 6)
 		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .60f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .55f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .60f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .55f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
 	#pragma region INSTRUCTIONS
 	case INSTRUCTIONS:
-		renderMan->ClearTargetToColor(color); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
 /*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
 		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
@@ -1240,7 +1272,7 @@ void PVGame::DrawScene()
 		renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
 		renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
 		renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
-		renderMan->DrawString("Instructions", medSize, cWidth * .20f, cHeight * .07f, color1);
+		renderMan->DrawString("Game Instructions", medSize, cWidth * .20f, cHeight * .06f, color1);
 		//If controller is connected
 		if(input->gamepadConnected(0))
 		{
@@ -1263,30 +1295,24 @@ void PVGame::DrawScene()
 		renderMan->DrawString("    Where things existed whether or not", medSize, cWidth * .20f, cHeight * .40f, color4);
 		renderMan->DrawString("      they were being directly observed", medSize, cWidth * .20f, cHeight * .45f, color4);
 
-
-		//renderMan->DrawString("Object Permanence is a psychology concept", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
-		//renderMan->DrawString("Babies do not know that objects continue to exist when not directly observed", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
-		//renderMan->DrawString("Imagine what it would be like if parts of the world", medSize, cWidth * .20f, cHeight * .40f, color4);
-		//renderMan->DrawString("stopped existing when you weren't looking at them", medSize, cWidth * .20f, cHeight * .45f, color4);
-
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Next", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Next", smlSize, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .54f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .54f, color2);
 		}
 		else
-			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .54f, color4);
-		if(selector == 2)
-		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .58f, color2);
-		}
-		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .58f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .54f, color4);
+		//if(selector == 2)
+		//{
+		//	renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .58f, color2);
+		//}
+		//else
+		//	renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .58f, color4);
 		
 		renderMan->EndDrawMenu();
 
@@ -1294,17 +1320,18 @@ void PVGame::DrawScene()
 	#pragma endregion
 	#pragma region END
 	case END:
-		renderMan->ClearTargetToColor(colorthree); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .25f, color1);
-		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .32f, color4);
-		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .36f, color4);
-		
-		renderMan->DrawString("  Made by Jon Palmer, Jason Mandelbaum,", smlSize, cWidth * .20f, cHeight * .44f, color4);
-		renderMan->DrawString("        Mike St. Pierre, and Drew Diamantoukos", smlSize, cWidth * .20f, cHeight * .48f, color4);
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .15f, color1);
+		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .28f, color4);
+		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .32f, color4);
+		renderMan->DrawString("        Bullet, Filterforge, ", smlSize, cWidth * .20f, cHeight * .36f, color4);
+
+		renderMan->DrawString("  Made by Jon Palmer, Jason Mandelbaum,", smlSize, cWidth * .20f, cHeight * .40f, color4);
+		renderMan->DrawString("        Mike St. Pierre, and Drew Diamantoukos", smlSize, cWidth * .20f, cHeight * .44f, color4);
 		/*if(selector == 5)
 		{
 			renderMan->DrawString(">-Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color2);
@@ -1331,7 +1358,7 @@ void PVGame::DrawScene()
 			renderMan->DrawString("  Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color4);*/
 		//if(selector == 0 || selector == 1)
 		//{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .52f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .48f, color2);
 		//}
 		//else
 		//	renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .52f, color4);

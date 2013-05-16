@@ -234,7 +234,6 @@ void Player::HandleInput(Input* input)
 		btVector3 direction(0,0,0);
 		btVector3 pitch(0.0f, 1.0f, 0.0f);
 		btVector3 yaw(1.0f, 0.0f, 0.0f);
-
 		float xScale = 1.0f;
 		float zScale = 1.0f;
 		if(input->gamepadConnected(0))
@@ -453,7 +452,7 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
-		winPercent += 0.005f;
+		winPercent += 0.008f;
 	}
 }
 

@@ -20,7 +20,7 @@ using std::string;
 #define FINE_PHASE 0
 #define MOBILITY_MULTIPLIER 0.75f
 
-#define USINGVLD 1
+#define USINGVLD 0
 #if USINGVLD 
 #include <vld.h>
 #endif
