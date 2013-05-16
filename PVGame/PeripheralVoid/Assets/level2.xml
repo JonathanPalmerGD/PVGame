@@ -1,97 +1,38 @@
 <level>
 <walls>
-<wall row="0" col="0" xLength="2" yLength="10" zLength="1" centerX="1" centerY="0" centerZ="0.5" texture="Hedge"/>
-<wall row="0" col="7" xLength="2" yLength="6" zLength="1" centerX="8" centerY="0" centerZ="0.5" texture="Hedge"/>
-<wall row="0" col="16" xLength="2" yLength="6" zLength="1" centerX="17" centerY="0" centerZ="0.5" texture="Hedge"/>
-<wall row="0" col="23" xLength="2" yLength="10" zLength="1" centerX="24" centerY="0" centerZ="0.5" texture="Hedge"/>
-<wall row="1" col="0" xLength="1" yLength="10" zLength="1" centerX="0.5" centerY="0" centerZ="1.5" texture="Hedge"/>
-<wall row="1" col="24" xLength="1" yLength="10" zLength="1" centerX="24.5" centerY="0" centerZ="1.5" texture="Hedge"/>
-<wall row="3" col="3" xLength="3" yLength="6" zLength="1" centerX="4.5" centerY="0" centerZ="3.5" texture="Hedge"/>
-<wall row="3" col="19" xLength="3" yLength="6" zLength="1" centerX="20.5" centerY="0" centerZ="3.5" texture="Hedge"/>
-<wall row="4" col="3" xLength="1" yLength="6" zLength="1" centerX="3.5" centerY="0" centerZ="4.5" texture="Hedge"/>
-<wall row="4" col="4" xLength="1" yLength="9" zLength="1" centerX="4.5" centerY="0" centerZ="4.5" texture="Hedge"/>
-<wall row="4" col="5" xLength="1" yLength="6" zLength="1" centerX="5.5" centerY="0" centerZ="4.5" texture="Hedge"/>
-<wall row="4" col="19" xLength="1" yLength="6" zLength="1" centerX="19.5" centerY="0" centerZ="4.5" texture="Hedge"/>
-<wall row="4" col="20" xLength="1" yLength="9" zLength="1" centerX="20.5" centerY="0" centerZ="4.5" texture="Hedge"/>
-<wall row="4" col="21" xLength="1" yLength="6" zLength="1" centerX="21.5" centerY="0" centerZ="4.5" texture="Hedge"/>
-<wall row="5" col="3" xLength="3" yLength="6" zLength="1" centerX="4.5" centerY="0" centerZ="5.5" texture="Hedge"/>
-<wall row="5" col="19" xLength="3" yLength="6" zLength="1" centerX="20.5" centerY="0" centerZ="5.5" texture="Hedge"/>
-<wall row="10" col="2" xLength="2" yLength="6" zLength="1" centerX="3" centerY="0" centerZ="10.5" texture="Hedge"/>
-<wall row="10" col="9" xLength="7" yLength="6" zLength="2" centerX="12.5" centerY="0" centerZ="11" texture="Hedge"/>
-<wall row="10" col="21" xLength="2" yLength="6" zLength="1" centerX="22" centerY="0" centerZ="10.5" texture="Hedge"/>
-<wall row="12" col="9" xLength="2" yLength="6" zLength="1" centerX="10" centerY="0" centerZ="12.5" texture="Hedge"/>
-<wall row="12" col="14" xLength="2" yLength="6" zLength="1" centerX="15" centerY="0" centerZ="12.5" texture="Hedge"/>
-<wall row="13" col="9" xLength="1" yLength="6" zLength="3" centerX="9.5" centerY="0" centerZ="14.5" texture="Hedge"/>
-<wall row="13" col="15" xLength="1" yLength="6" zLength="3" centerX="15.5" centerY="0" centerZ="14.5" texture="Hedge"/>
-<wall row="14" col="2" xLength="2" yLength="6" zLength="1" centerX="3" centerY="0" centerZ="14.5" texture="Hedge"/>
-<wall row="14" col="21" xLength="2" yLength="6" zLength="1" centerX="22" centerY="0" centerZ="14.5" texture="Hedge"/>
-<wall row="17" col="9" xLength="7" yLength="6" zLength="1" centerX="12.5" centerY="0" centerZ="17.5" texture="Hedge"/>
-<wall row="17" col="21" xLength="4" yLength="5" zLength="1" centerX="23" centerY="0" centerZ="17.5" texture="Hedge"/>
-<wall row="18" col="21" xLength="1" yLength="5" zLength="3" centerX="21.5" centerY="0" centerZ="19.5" texture="Hedge"/>
-<wall row="21" col="21" xLength="3" yLength="5" zLength="1" centerX="22.5" centerY="0" centerZ="21.5" texture="Hedge"/>
-<wall row="22" col="7" xLength="1" yLength="1" zLength="2" centerX="7.5" centerY="0" centerZ="23" texture="Hedge"/>
-<wall row="22" col="12" xLength="1" yLength="1" zLength="2" centerX="12.5" centerY="0" centerZ="23" texture="Hedge"/>
-<wall row="22" col="17" xLength="1" yLength="1" zLength="2" centerX="17.5" centerY="0" centerZ="23" texture="Hedge"/>
-<wall row="23" col="0" xLength="1" yLength="10" zLength="1" centerX="0.5" centerY="0" centerZ="23.5" texture="Hedge"/>
-<wall row="23" col="24" xLength="1" yLength="10" zLength="1" centerX="24.5" centerY="0" centerZ="23.5" texture="Hedge"/>
-<wall row="24" col="0" xLength="2" yLength="10" zLength="1" centerX="1" centerY="0" centerZ="24.5" texture="Hedge"/>
-<wall row="24" col="23" xLength="2" yLength="10" zLength="1" centerX="24" centerY="0" centerZ="24.5" texture="Hedge"/>
+<wall row="10" col="7" xLength="4" yLength="2" zLength="1" centerX="9" centerY="0" centerZ="10.5" texture="Hedge"/>
+<wall row="10" col="14" xLength="3" yLength="2" zLength="1" centerX="15.5" centerY="0" centerZ="10.5" texture="Hedge"/>
+<wall row="11" col="7" xLength="1" yLength="2" zLength="9" centerX="7.5" centerY="0" centerZ="15.5" texture="Hedge"/>
+<wall row="11" col="16" xLength="1" yLength="2" zLength="9" centerX="16.5" centerY="0" centerZ="15.5" texture="Hedge"/>
+<wall row="20" col="7" xLength="10" yLength="2" zLength="1" centerX="12" centerY="0" centerZ="20.5" texture="Hedge"/>
 </walls>
 <floors>
-<floor row="0" col="2" xLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="0.5" texture="Floor"/>
-<floor row="0" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" texture="Floor"/>
-<floor row="0" col="18" xLength="5" zLength="1" centerX="20.5" centerY="0" centerZ="0.5" texture="Floor"/>
-<floor row="1" col="1" xLength="23" zLength="1" centerX="12.5" centerY="0" centerZ="1.5" texture="Floor"/>
-<floor row="2" col="0" xLength="25" zLength="1" centerX="12.5" centerY="0" centerZ="2.5" texture="Floor"/>
-<floor row="3" col="0" xLength="3" zLength="3" centerX="1.5" centerY="0" centerZ="4.5" texture="Floor"/>
-<floor row="3" col="8" xLength="9" zLength="1" centerX="12.5" centerY="0" centerZ="3.5" texture="Floor"/>
-<floor row="3" col="22" xLength="3" zLength="3" centerX="23.5" centerY="0" centerZ="4.5" texture="Floor"/>
-<floor row="4" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="4.5" texture="Floor"/>
-<floor row="5" col="8" xLength="9" zLength="1" centerX="12.5" centerY="0" centerZ="5.5" texture="Floor"/>
-<floor row="6" col="0" xLength="25" zLength="4" centerX="12.5" centerY="0" centerZ="8" texture="Floor"/>
-<floor row="10" col="0" xLength="2" zLength="1" centerX="1" centerY="0" centerZ="10.5" texture="Floor"/>
-<floor row="10" col="4" xLength="5" zLength="1" centerX="6.5" centerY="0" centerZ="10.5" texture="Floor"/>
-<floor row="10" col="16" xLength="5" zLength="1" centerX="18.5" centerY="0" centerZ="10.5" texture="Floor"/>
-<floor row="10" col="23" xLength="2" zLength="1" centerX="24" centerY="0" centerZ="10.5" texture="Floor"/>
-<floor row="11" col="0" xLength="9" zLength="3" centerX="4.5" centerY="0" centerZ="12.5" texture="Floor"/>
-<floor row="11" col="16" xLength="9" zLength="3" centerX="20.5" centerY="0" centerZ="12.5" texture="Floor"/>
-<floor row="12" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="12.5" texture="Floor"/>
-<floor row="13" col="10" xLength="5" zLength="1" centerX="12.5" centerY="0" centerZ="13.5" texture="Floor"/>
-<floor row="14" col="0" xLength="2" zLength="1" centerX="1" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="14" col="4" xLength="5" zLength="1" centerX="6.5" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="14" col="10" xLength="5" zLength="2" centerX="12.5" centerY="0" centerZ="15" texture="Floor"/>
-<floor row="14" col="16" xLength="5" zLength="1" centerX="18.5" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="14" col="23" xLength="2" zLength="1" centerX="24" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="15" col="0" xLength="9" zLength="1" centerX="4.5" centerY="0" centerZ="15.5" texture="Floor"/>
-<floor row="15" col="16" xLength="9" zLength="1" centerX="20.5" centerY="0" centerZ="15.5" texture="Floor"/>
-<floor row="16" col="0" xLength="25" zLength="1" centerX="12.5" centerY="0" centerZ="16.5" texture="Floor"/>
-<floor row="17" col="0" xLength="9" zLength="1" centerX="4.5" centerY="0" centerZ="17.5" texture="Floor"/>
-<floor row="17" col="16" xLength="5" zLength="1" centerX="18.5" centerY="0" centerZ="17.5" texture="Floor"/>
-<floor row="18" col="0" xLength="21" zLength="4" centerX="10.5" centerY="0" centerZ="20" texture="Floor"/>
-<floor row="18" col="22" xLength="3" zLength="3" centerX="23.5" centerY="0" centerZ="19.5" texture="Floor"/>
-<floor row="21" col="24" xLength="1" zLength="1" centerX="24.5" centerY="0" centerZ="21.5" texture="Floor"/>
-<floor row="22" col="0" xLength="7" zLength="1" centerX="3.5" centerY="0" centerZ="22.5" texture="Floor"/>
-<floor row="22" col="18" xLength="7" zLength="1" centerX="21.5" centerY="0" centerZ="22.5" texture="Floor"/>
-<floor row="23" col="1" xLength="6" zLength="1" centerX="4" centerY="0" centerZ="23.5" texture="Floor"/>
-<floor row="23" col="18" xLength="6" zLength="1" centerX="21" centerY="0" centerZ="23.5" texture="Floor"/>
-<floor row="24" col="2" xLength="21" zLength="1" centerX="12.5" centerY="0" centerZ="24.5" texture="Floor"/>
+<floor row="10" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="10.5" texture="Floor"/>
+<floor row="11" col="8" xLength="1" zLength="1" centerX="8.5" centerY="0" centerZ="11.5" texture="Hedge"/>
+<floor row="11" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="11.5" texture="Floor"/>
+<floor row="12" col="8" xLength="8" zLength="1" centerX="12" centerY="0" centerZ="12.5" texture="Floor"/>
+<floor row="13" col="8" xLength="2" zLength="1" centerX="9" centerY="0" centerZ="13.5" texture="Hedge"/>
+<floor row="13" col="10" xLength="6" zLength="1" centerX="13" centerY="0" centerZ="13.5" texture="Floor"/>
+<floor row="14" col="8" xLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="15" texture="Floor"/>
+<floor row="14" col="9" xLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="15" texture="Hedge"/>
+<floor row="14" col="10" xLength="6" zLength="2" centerX="13" centerY="0" centerZ="15" texture="Floor"/>
+<floor row="16" col="8" xLength="8" zLength="2" centerX="12" centerY="0" centerZ="17" texture="Floor"/>
+<floor row="18" col="8" xLength="4" zLength="1" centerX="10" centerY="0" centerZ="18.5" texture="Floor"/>
+<floor row="18" col="12" xLength="2" zLength="1" centerX="13" centerY="0" centerZ="18.5" texture="Hedge"/>
+<floor row="18" col="14" xLength="2" zLength="1" centerX="15" centerY="0" centerZ="18.5" texture="Floor"/>
+<floor row="19" col="8" xLength="8" zLength="1" centerX="12" centerY="0" centerZ="19.5" texture="Floor"/>
+<floor row="21" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="21.5" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="1" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="1.5" dir="up"/>
+<spawn row="14" col="12" xLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="14.5" dir="up"/>
 </spawns>
 <exits>
-<exit row="0" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" file="level1.xml"/>
+<exit row="10" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="10.5" file="level1.xml"/>
+<exit row="21" col="11" xLength="3" zLength="1" centerX="12.5" centerY="0" centerZ="21.5" file="level3.xml"/>
 </exits>
 <cubes>
 </cubes>
 <crests>
-<crest row="9" col="10" xLength="1" yLength="1" zLength="1" centerX="10.5" centerY="0" centerZ="9.5" effect="2" target="" dir="down" placement=""/>
-<crest row="9" col="14" xLength="1" yLength="1" zLength="1" centerX="14.5" centerY="0" centerZ="9.5" effect="1" target="" dir="down" placement=""/>
-<crest row="11" col="3" xLength="1" yLength="6" zLength="3" centerX="3.5" centerY="0" centerZ="12.5" effect="4" target="" dir="left" placement="wall"/>
-<crest row="11" col="21" xLength="1" yLength="6" zLength="3" centerX="21.5" centerY="0" centerZ="12.5" effect="4" target="" dir="right" placement="wall"/>
-<crest row="12" col="12" xLength="1" yLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="12.5" effect="0" target="" dir="up" placement=""/>
-<crest row="19" col="22" xLength="1" yLength="2" zLength="1" centerX="22.5" centerY="0" centerZ="19.5" effect="5" target="" dir="right" placement=""/>
-<crest row="22" col="8" xLength="4" yLength="1" zLength="2" centerX="10" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
-<crest row="22" col="13" xLength="4" yLength="1" zLength="2" centerX="15" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
+<crest row="15" col="8" xLength="1" yLength="1" zLength="1" centerX="8.5" centerY="0" centerZ="15.5" effect="5" target="" dir="up" placement=""/>
 </crests>
 </level>

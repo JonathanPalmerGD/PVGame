@@ -315,9 +315,41 @@ void PVGame::UpdateScene(float dt)
 		if (player->getWinPercent() >= 0.99f)
 		{
 			player->resetWinPercent();
-			currentRoom = loadedRooms[0];
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-			gameState = END;
+			
+			currentRoom->loadNeighbors(loadedRooms);
+		
+			if(currentRoom->getNumNeighbors() == 1)
+			{
+				currentRoom = loadedRooms[0];
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				gameState = END;
+			}
+			else if(currentRoom->getNumNeighbors() == 2) //Go to Next Area
+			{
+				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[currentRoom->getNumNeighbors() -1]->getMapFile())) + 1);
+				strcpy(map, currentRoom->getNeighbors()[currentRoom->getNumNeighbors() -1]->getMapFile());
+				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+				{
+					delete proceduralGameObjects[i];
+				}
+
+				gameObjects.clear();
+				proceduralGameObjects.clear();
+	
+				ClearRooms();	
+				loadedRooms.clear();
+
+//				delete currentRoom;
+				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				startRoom->loadRoom();
+				currentRoom = startRoom;
+				BuildRooms(currentRoom);
+				
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				delete[] map;
+				SortGameObjects();
+				renderMan->BuildInstancedBuffer(gameObjects);
+			}
 			return;
 		}
 
@@ -927,6 +959,13 @@ void PVGame::HandleOptions()
 	}
 }
 
+////////////////////////////////////////////////////////////
+// WriteOptions()
+//
+// Overwrites the current options.xml file with Options in
+// their current state or creates a new options.xml if one
+// is not found.
+////////////////////////////////////////////////////////////
 void PVGame::WriteOptions()
 {
 	tinyxml2::XMLDocument doc;
@@ -956,6 +995,13 @@ void PVGame::WriteOptions()
 	doc.SaveFile(OPTIONS_FILE);
 }
 
+////////////////////////////////////////////////////////
+// ReadOptions()
+//
+// Sets the Options to the value stored in options.xml
+// Will use default values and rewrite options.xml with default
+// values if it is corrupted.
+////////////////////////////////////////////////////////////
 void PVGame::ReadOptions()
 {
 	tinyxml2::XMLDocument doc;
@@ -1020,6 +1066,12 @@ void PVGame::ReadOptions()
 		LOOKINVERSION = atoi(options->Attribute("lookinversion")) != 0; // Fix warning C4800 by converting to bool this way.
 }
 
+///////////////////////////////////////////////////
+// ApplyOptions()
+//
+// Applies the Options in their current state to
+// the game where applicable
+///////////////////////////////////////////////////
 void PVGame::ApplyOptions()
 {
 	player->getListener()->setGain(((float)VOLUME/10.0f));
@@ -1369,7 +1421,7 @@ void PVGame::BuildRooms(Room* startRoom)
 
 	for (unsigned int i = 0; i < loadedRooms.size(); i++)
 	{
-		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
+		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0 || loadedRooms[i]->hasWinCrest())
 			isLoaded = true;
 	}
 
@@ -1379,8 +1431,10 @@ void PVGame::BuildRooms(Room* startRoom)
 		{
 			gameObjects.push_back(startRoom->getGameObjs()[i]);
 		}
-
-		startRoom->loadNeighbors(loadedRooms);
+		
+		if(!startRoom->hasWinCrest())
+			startRoom->loadNeighbors(loadedRooms);
+		
 		loadedRooms.push_back(startRoom);
 
 		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)
