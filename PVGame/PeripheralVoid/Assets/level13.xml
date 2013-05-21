@@ -5,8 +5,7 @@
 <wall row="5" col="0" xLength="5" yLength="5" zLength="1" centerX="2.5" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="5" col="10" xLength="1" yLength="5" zLength="1" centerX="10.5" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="6" col="4" xLength="1" yLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="6.5" texture="Hedge"/>
-<wall row="6" col="5" xLength="4" yLength="1" zLength="2" centerX="7" centerY="0" centerZ="7" texture="Snow"/>
-<wall row="6" col="9" xLength="1" yLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="7" texture="Floor"/>
+<wall row="6" col="5" xLength="5" yLength="1" zLength="2" centerX="7.5" centerY="0" centerZ="7" texture="Snow"/>
 <wall row="6" col="10" xLength="1" yLength="5" zLength="1" centerX="10.5" centerY="0" centerZ="6.5" texture="Hedge"/>
 <wall row="7" col="4" xLength="1" yLength="8" zLength="3" centerX="4.5" centerY="0" centerZ="8.5" texture="Hedge"/>
 <wall row="7" col="10" xLength="1" yLength="8" zLength="3" centerX="10.5" centerY="0" centerZ="8.5" texture="Hedge"/>
