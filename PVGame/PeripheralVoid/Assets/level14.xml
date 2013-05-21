@@ -20,15 +20,12 @@
 <floor row="13" col="4" xLength="2" zLength="1" centerX="5" centerY="0" centerZ="13.5" texture="Floor"/>
 <floor row="13" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="13.5" texture="Floor"/>
 <floor row="13" col="23" xLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="13.5" texture="Floor"/>
-<floor row="14" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="15.5" texture="Floor"/>
 <floor row="14" col="2" xLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="14" col="18" xLength="4" zLength="1" centerX="20" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="14" col="22" xLength="1" zLength="3" centerX="22.5" centerY="0" centerZ="15.5" texture="null"/>
-<floor row="14" col="23" xLength="2" zLength="3" centerX="24" centerY="0" centerZ="15.5" texture="Floor"/>
+<floor row="14" col="18" xLength="7" zLength="1" centerX="21.5" centerY="0" centerZ="14.5" texture="Floor"/>
 <floor row="15" col="2" xLength="4" zLength="1" centerX="4" centerY="0" centerZ="15.5" texture="Floor"/>
-<floor row="15" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="15.5" texture="Floor"/>
+<floor row="15" col="19" xLength="6" zLength="1" centerX="22" centerY="0" centerZ="15.5" texture="Floor"/>
 <floor row="16" col="2" xLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="16.5" texture="Floor"/>
-<floor row="16" col="18" xLength="4" zLength="1" centerX="20" centerY="0" centerZ="16.5" texture="Floor"/>
+<floor row="16" col="18" xLength="7" zLength="1" centerX="21.5" centerY="0" centerZ="16.5" texture="Floor"/>
 <floor row="17" col="4" xLength="2" zLength="1" centerX="5" centerY="0" centerZ="17.5" texture="Floor"/>
 <floor row="17" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="17.5" texture="Floor"/>
 <floor row="17" col="23" xLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="17.5" texture="Floor"/>
@@ -37,18 +34,11 @@
 <spawn row="14" col="2" xLength="1" zLength="3" centerX="2.5" centerY="0" centerZ="15.5" dir="right"/>
 </spawns>
 <exits>
-<exit row="14" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="15.5" file="level13.xml"/>
 <exit row="14" col="24" xLength="1" zLength="3" centerX="24.5" centerY="0" centerZ="15.5" file="level15.xml"/>
 </exits>
 <cubes>
 </cubes>
 <crests>
-<crest row="13" col="9" xLength="1" yLength="4" zLength="1" centerX="9.5" centerY="0" centerZ="13.5" effect="2" target="" dir="up" placement=""/>
-<crest row="13" col="12" xLength="1" yLength="4" zLength="1" centerX="12.5" centerY="0" centerZ="13.5" effect="0" target="" dir="up" placement=""/>
-<crest row="13" col="15" xLength="1" yLength="4" zLength="1" centerX="15.5" centerY="0" centerZ="13.5" effect="1" target="" dir="up" placement=""/>
 <crest row="15" col="6" xLength="13" yLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="15.5" effect="4" target="" dir="up" placement="platform"/>
-<crest row="17" col="9" xLength="1" yLength="4" zLength="1" centerX="9.5" centerY="0" centerZ="17.5" effect="2" target="" dir="down" placement=""/>
-<crest row="17" col="12" xLength="1" yLength="4" zLength="1" centerX="12.5" centerY="0" centerZ="17.5" effect="0" target="" dir="down" placement=""/>
-<crest row="17" col="15" xLength="1" yLength="4" zLength="1" centerX="15.5" centerY="0" centerZ="17.5" effect="1" target="" dir="down" placement=""/>
 </crests>
 </level>

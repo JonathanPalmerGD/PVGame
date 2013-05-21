@@ -44,7 +44,7 @@ public:
 	private:
 		void BuildFX();
 		void BuildVertexLayout();
-		void BuildRooms(Room* startRoom);
+		void BuildRooms(Room* startRoom, const char* dontLoadRoom);
 		void ClearRooms();
 		void SortGameObjects();
 

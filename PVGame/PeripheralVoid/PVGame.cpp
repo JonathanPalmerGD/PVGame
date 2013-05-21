@@ -217,7 +217,7 @@ bool PVGame::LoadXML()
 
 	#pragma region Map Loading
 	//Get the filename from constants, hand it into tinyxml
-	BuildRooms(currentRoom);
+	BuildRooms(currentRoom, "NOLOAD");
 
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 	#pragma endregion
@@ -343,18 +343,28 @@ void PVGame::UpdateScene(float dt)
 			}
 			else if(currentRoom->getExits().size() == 2) //Go to Next Area
 			{
-				//Load Last room possible
-				char* map    = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
+				//Load Last room
+				char* map = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
 				strcpy(map, currentRoom->getExits()[0]->file.c_str());
+				int index = 0;
 				for(int i = 0; i < currentRoom->getExits().size(); i++)
 				{
 					if(strcmp(map, currentRoom->getExits()[i]->file.c_str()) < 0)
+					{
 						strcpy(map, currentRoom->getExits()[i]->file.c_str());
+						index = i;
+					}
 				}
+				
+				char* curRoom = (char*)malloc(sizeof(char) * (strlen(currentRoom->getMapFile()) + 1));
+				strcpy(curRoom, currentRoom->getMapFile());
+
+				int xOffset = currentRoom->getExits()[index]->centerX;
+				int zOffset = currentRoom->getExits()[index]->centerZ;
 
 				ClearRooms();	
 				loadedRooms.clear();
-
+	
 				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
 				{
 					delete proceduralGameObjects[i];
@@ -362,57 +372,19 @@ void PVGame::UpdateScene(float dt)
 
 				gameObjects.clear();
 				proceduralGameObjects.clear();
-	
 				
-
-//				delete currentRoom;
-				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				Room* startRoom = new Room(map, physicsMan, xOffset, zOffset);
 				startRoom->loadRoom();
 				currentRoom = startRoom;
-				BuildRooms(currentRoom);
+				BuildRooms(currentRoom, curRoom);
 				
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				delete[] map;
+				delete[] curRoom;
 				SortGameObjects();
 				renderMan->BuildInstancedBuffer(gameObjects);
 			}
 			return;
-		}
-
-		if(input->wasKeyPressed('K'))
-		{
-			//Load Last room possible
-				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
-				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
-				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
-				{
-					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
-						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
-				}
-
-				ClearRooms();	
-				loadedRooms.clear();
-
-				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
-				{
-					delete proceduralGameObjects[i];
-				}
-
-				gameObjects.clear();
-				proceduralGameObjects.clear();
-	
-				
-
-//				delete currentRoom;
-				Room* startRoom = new Room(map, physicsMan, 0, 0);
-				startRoom->loadRoom();
-				currentRoom = startRoom;
-				BuildRooms(currentRoom);
-				
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-				delete[] map;
-				SortGameObjects();
-				renderMan->BuildInstancedBuffer(gameObjects);
 		}
 
 		player->Update(dt, input);
@@ -1502,17 +1474,19 @@ void PVGame::BuildVertexLayout()
 	renderMan->BuildVertexLayout();
 }
 
-void PVGame::BuildRooms(Room* startRoom)
+void PVGame::BuildRooms(Room* startRoom, const char* dontLoadRoom)
 {
 	bool isLoaded = false;
 
 	for (unsigned int i = 0; i < loadedRooms.size(); i++)
 	{
-		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
+		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0 || loadedRooms[i]->hasWinCrest())
+		{
 			isLoaded = true;
+		}
 	}
 
-	if (!isLoaded)
+	if (!isLoaded && strcmp(startRoom->getMapFile(), dontLoadRoom) != 0)
 	{
 		for (unsigned int i = 0; i < startRoom->getGameObjs().size(); i++)
 		{
@@ -1521,12 +1495,12 @@ void PVGame::BuildRooms(Room* startRoom)
 		
 		if(!startRoom->hasWinCrest())
 			startRoom->loadNeighbors(loadedRooms);
-		
+
 		loadedRooms.push_back(startRoom);
 
 		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)
 		{
-			BuildRooms(startRoom->getNeighbors()[i]);
+			BuildRooms(startRoom->getNeighbors()[i], dontLoadRoom);
 		}
 	}
 }

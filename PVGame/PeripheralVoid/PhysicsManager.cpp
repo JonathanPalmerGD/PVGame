@@ -358,12 +358,13 @@ void PhysicsManager::addRigidBodyToWorld(btRigidBody* rigidBody, short collision
  */
 void PhysicsManager::removeRigidBodyFromWorld(btRigidBody* rigidBody)
 {
-	if(rigidBody != nullptr)
+	if(rigidBody != NULL)
 	{
 		world->removeRigidBody(rigidBody);
 		delete rigidBody->getCollisionShape();
 		delete rigidBody->getMotionState();
 		delete rigidBody;
+		rigidBody = NULL;
 	}
 }
 
