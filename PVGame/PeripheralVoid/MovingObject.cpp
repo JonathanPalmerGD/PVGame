@@ -39,7 +39,7 @@ void MovingObject::Update()
 void MovingObject::StepPosition()
 {
 	if(rateOfChange < 1.0f)
-		rateOfChange += .01f;
+		rateOfChange += .004f;
 	btVector3 movingObjPos = getRigidBody()->getCenterOfMassPosition();
 	btVector3 newPosition = btVector3(
 		(1.0f - rateOfChange) * movingObjPos.getX() + (positions[targetPosition].x * rateOfChange),
