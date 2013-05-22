@@ -14,13 +14,13 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
-#define DEV_MODE 1
+#define DEV_MODE 0
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
 #define MOBILITY_MULTIPLIER 0.75f
 
-#define USINGVLD 0
+#define USINGVLD 1
 #if USINGVLD 
 #include <vld.h>
 #endif
@@ -29,7 +29,7 @@ using std::string;
 #define MAX_BLURS 2
 
 const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
-const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES, WIN};
+const enum CREST_TYPE { MEDUSA, MOBILITY, LEAP, UNLOCK, HADES, WIN, HEPHAESTUS};
 const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds

@@ -10,6 +10,7 @@ public:
 	void StepPosition();
 	//static bool CompareBtV3AndXM3(btVector3 btV3, XMFLOAT3 xmV3);
 	bool InView();
+	bool ReachedTargetPosition();
 	int GetTargetPosition();
 	float GetRateOfChange();
 	XMFLOAT3 GetPosition(int index);

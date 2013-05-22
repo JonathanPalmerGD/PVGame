@@ -38,6 +38,7 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	leapStatus = false;
 	mobilityStatus = false;
 	winStatus = false;
+	hephStatus = false;
 	medusaPercent = 0.0f;
 	winPercent = 0.0f;
 
@@ -133,13 +134,16 @@ void Player::HandleInput(Input* input)
 		//DBOUT(EyeRoll);
 		//DBOUT("");
 
+		#pragma region Mouse
 		//Get extra orientation abilities from mouse, only yaw
 		//(its much nicer than having to turn your body when trying to play)
 		float dx = XMConvertToRadians(0.25f*static_cast<float>(input->getMouseX() - mLastMousePos.x));
 		yaw += dx/MOUSESENSITIVITY;
 		input->centerMouse();
 		mLastMousePos.x = input->getMouseX();
+		#pragma endregion
 
+		#pragma region Keyboard
 		//Get extra orientation abilities from keyboard/gamepad, only yaw
 		//(its much nicer than having to turn your body when trying to play)
 		if (input->isCameraRightKeyDown())
@@ -150,6 +154,17 @@ void Player::HandleInput(Input* input)
 		{
 			yaw += -camLookSpeed / 2;
 		}
+		#pragma endregion
+
+		#pragma region Gamepad
+		float xScale = 1.0f;
+		if(input->gamepadConnected(0))
+		{
+			float rX = (float)input->getGamepadThumbRX(0);
+			if(rX > GAMEPAD_THUMBSTICK_DEADZONE || rX < -GAMEPAD_THUMBSTICK_DEADZONE)
+				yaw += (rX / 30000.0f) * camLookSpeed/2 ;
+		}
+		#pragma endregion
 
 		//Set the rotation of the player
 		XMMATRIX R = XMMatrixRotationY(-EyeYaw+yaw);
@@ -234,7 +249,6 @@ void Player::HandleInput(Input* input)
 		btVector3 direction(0,0,0);
 		btVector3 pitch(0.0f, 1.0f, 0.0f);
 		btVector3 yaw(1.0f, 0.0f, 0.0f);
-
 		float xScale = 1.0f;
 		float zScale = 1.0f;
 		if(input->gamepadConnected(0))
@@ -417,13 +431,14 @@ Camera* Player::GetCamera()
 //
 // Set crest effects to their default state
 //////////////////////////////////////////////
-void Player::resetStatuses() 
+void Player::resetStatuses(bool leaveHeph) 
 {	
 	if(!medusaStatus)
 		medusaPercent = 0;
 	if(!winStatus)
 		winPercent = 0;
-
+	if(!leaveHeph)
+		hephStatus = false;
 	medusaStatus = false;
 	mobilityStatus = false;
 	leapStatus = false; 
@@ -453,7 +468,7 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
-		winPercent += 0.005f;
+		winPercent += 0.008f;
 	}
 }
 
@@ -467,11 +482,13 @@ void Player::setMobilityStatus(bool newStatus) { mobilityStatus = newStatus; }
 void Player::setMedusaStatus(bool newStatus) { medusaStatus = newStatus; }
 void Player::setLeapStatus(bool newStatus) { leapStatus = newStatus; }
 void Player::setWinStatus(bool newStatus) { winStatus = newStatus; }
+void Player::setHephStatus(bool newStatus) { hephStatus = newStatus; }
 
 bool Player::getMobilityStatus() { return mobilityStatus; }
 bool Player::getMedusaStatus() { return medusaStatus; }
 bool Player::getLeapStatus() { return leapStatus; }
 bool Player::getWinStatus() { return winStatus; }
+bool Player::getHephStatus() { return hephStatus; }
 
 XMFLOAT4 Player::getPosition()
 {

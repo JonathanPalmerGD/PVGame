@@ -179,7 +179,7 @@ function onTileClick(evt)
 		case "floor":
 			this.setAttribute("style", "background-color: #452000; color: #FFFFFF;");
 			this.appendChild(document.createTextNode("F"));
-			this.appendChild(document.createComment("F|" + document.getElementById("textureType").value));
+			this.appendChild(document.createComment("F|" + document.getElementById("floorTextureType").value));
 			break;
 		case "spawn":
 			this.setAttribute("style", "background-color: #0000FF; color: #FFFFFF;");
@@ -512,7 +512,7 @@ function createXML()
 					var targetCube;
 					var placementType;
 					
-					if (strArray[1] == 3)
+					if (strArray[1] == 3 || strArray[1] == 6)
 					{
 						targetCube = strArray[2];
 						placementType = "";

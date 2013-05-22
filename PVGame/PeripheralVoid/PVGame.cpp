@@ -44,7 +44,6 @@ bool PVGame::Init(char * args)
 	//OCULUS RIFT
 	riftMan = new RiftManager(args);
 	renderMan->SetRiftMan(riftMan);
-
 	if (!D3DApp::Init())
 		return false;
 
@@ -76,8 +75,8 @@ bool PVGame::Init(char * args)
 
 	SELECTOR_MAP[MENU]			=  5;
 	SELECTOR_MAP[OPTION]		=  7;
-	SELECTOR_MAP[INSTRUCTIONS]	=  3;
-	SELECTOR_MAP[END]			=  2;
+	SELECTOR_MAP[INSTRUCTIONS]	=  2;
+	SELECTOR_MAP[END]			=  1;
 
 	const enum GAME_STATE { MENU, OPTION, PLAYING, END, INSTRUCTIONS };
 
@@ -86,13 +85,12 @@ bool PVGame::Init(char * args)
 	
 	//Test load a cube.obj
 	//renderMan->LoadFile(L"crest.obj", "crest");
+	renderMan->LoadFile(L"column.obj", "column");
 	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
 	renderMan->LoadFile(L"unlockcrest.obj", "unlockcrest");
-	//renderMan->LoadFile(L"caelhammer.obj", "caelhammer");
 	renderMan->LoadFile(L"boat.obj", "boat");
 
 	renderMan->BuildBuffers();
-	renderMan->SetRiftMan(riftMan);
 
 	//Cook Rigid Bodies from the meshes
 	map<string, MeshData>::const_iterator itr;
@@ -127,6 +125,8 @@ bool PVGame::Init(char * args)
 	audioSource->initialize("Audio\\HomeSweetHome.wav", AudioSource::WAV);
 	audioWin = new AudioSource();
 	audioWin->initialize("Audio\\test_mono_8000Hz_8bit_PCM.wav", AudioSource::WAV);
+
+	SetMenuColors();
 
 	ReadOptions();
 	ApplyOptions();
@@ -217,23 +217,23 @@ bool PVGame::LoadXML()
 
 	#pragma region Map Loading
 	//Get the filename from constants, hand it into tinyxml
-	BuildRooms(currentRoom);
+	BuildRooms(currentRoom, "NOLOAD");
 
 	player->setPosition(currentRoom->getSpawn()->col, 2.0f, currentRoom->getSpawn()->row);
 	#pragma endregion
 
 	#pragma region Make Turrets
-	/*
-	GameObject* turretGOJ = new Turret("caelhammer", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	
+	GameObject* turretGOJ = new Turret("column", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 2.5f, 13.0f, 0.0f), physicsMan, ALPHA);
 	if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
 	{
 		//turretOJ->CreateProjectiles(gameObjects);
 	}
 	
-	turretGOJ->scale(1.5, 0.6, 0.6);
-	turretGOJ->rotate(1.0f, 0.0f, 0.0f);
+	//turretGOJ->scale(1.0f, 1.0f, 1.0f);
+	//turretGOJ->rotate(0.0f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ);
-	*/
+	
 	/*
 	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
 	turretGOJ2->scale(1.5, 0.6, 0.6);
@@ -255,6 +255,15 @@ void PVGame::OnResize()
 {
 	D3DApp::OnResize();
 	player->OnResize(AspectRatio());
+
+	//For menu stuff
+	cWidth = (float)renderMan->GetClientHeight();
+	cHeight = (float)renderMan->GetClientWidth();
+	/*if(FULLSCREEN)
+	{
+		cWidth = cWidth * 2;
+		cHeight = cWidth * 2;
+	}*/
 
 	// The window resized, so update the aspect ratio and recompute the projection matrix.
 	//XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
@@ -321,12 +330,11 @@ void PVGame::UpdateScene(float dt)
 		if (input->isQuitPressed())
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 
+		#pragma region Win Checking
 		if (player->getWinPercent() >= 0.99f)
 		{
 			player->resetWinPercent();
 			
-			//currentRoom->loadNeighbors(loadedRooms);
-		
 			if(currentRoom->getExits().size() == 1)
 			{
 				currentRoom = loadedRooms[0];
@@ -335,18 +343,28 @@ void PVGame::UpdateScene(float dt)
 			}
 			else if(currentRoom->getExits().size() == 2) //Go to Next Area
 			{
-				//Load Last room possible
-				char* map    = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
+				//Load Last room
+				char* map = (char*)malloc(sizeof(char) * (currentRoom->getExits()[0]->file.length()) + 1);
 				strcpy(map, currentRoom->getExits()[0]->file.c_str());
+				int index = 0;
 				for(int i = 0; i < currentRoom->getExits().size(); i++)
 				{
 					if(strcmp(map, currentRoom->getExits()[i]->file.c_str()) < 0)
+					{
 						strcpy(map, currentRoom->getExits()[i]->file.c_str());
+						index = i;
+					}
 				}
+				
+				char* curRoom = (char*)malloc(sizeof(char) * (strlen(currentRoom->getMapFile()) + 1));
+				strcpy(curRoom, currentRoom->getMapFile());
+
+				int xOffset = currentRoom->getExits()[index]->centerX;
+				int zOffset = currentRoom->getExits()[index]->centerZ;
 
 				ClearRooms();	
 				loadedRooms.clear();
-
+	
 				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
 				{
 					delete proceduralGameObjects[i];
@@ -354,57 +372,19 @@ void PVGame::UpdateScene(float dt)
 
 				gameObjects.clear();
 				proceduralGameObjects.clear();
-	
 				
-
-//				delete currentRoom;
-				Room* startRoom = new Room(map, physicsMan, 0, 0);
+				Room* startRoom = new Room(map, physicsMan, xOffset, zOffset);
 				startRoom->loadRoom();
 				currentRoom = startRoom;
-				BuildRooms(currentRoom);
+				BuildRooms(currentRoom, curRoom);
 				
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				delete[] map;
+				delete[] curRoom;
 				SortGameObjects();
 				renderMan->BuildInstancedBuffer(gameObjects);
 			}
 			return;
-		}
-
-		if(input->wasKeyPressed('K'))
-		{
-			//Load Last room possible
-				char* map    = (char*)malloc(sizeof(char) * (strlen(currentRoom->getNeighbors()[0]->getMapFile())) + 1);
-				strcpy(map, currentRoom->getNeighbors()[0]->getMapFile());
-				for(int i = 0; i < currentRoom->getNumNeighbors(); i++)
-				{
-					if(strcmp(map, currentRoom->getNeighbors()[i]->getMapFile()) < 0)
-						strcpy(map, currentRoom->getNeighbors()[i]->getMapFile());
-				}
-
-				ClearRooms();	
-				loadedRooms.clear();
-
-				for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
-				{
-					delete proceduralGameObjects[i];
-				}
-
-				gameObjects.clear();
-				proceduralGameObjects.clear();
-	
-				
-
-//				delete currentRoom;
-				Room* startRoom = new Room(map, physicsMan, 0, 0);
-				startRoom->loadRoom();
-				currentRoom = startRoom;
-				BuildRooms(currentRoom);
-				
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 2.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-				delete[] map;
-				SortGameObjects();
-				renderMan->BuildInstancedBuffer(gameObjects);
 		}
 
 		player->Update(dt, input);
@@ -436,6 +416,15 @@ void PVGame::UpdateScene(float dt)
 		}
 
 		#pragma endregion
+
+		#pragma region Check Hephaestus Triggering
+		if(input->isActivateKeyDown())
+		{
+			player->setHephStatus(true);
+		}
+		#pragma endregion
+
+
 		#pragma region Physics for Worlds Game Objects
 		// If physics updated, tell the game objects to update their world matrix.
 		if (physicsMan->update(dt))
@@ -507,7 +496,8 @@ void PVGame::UpdateScene(float dt)
 			if(audioWin->isPlaying())
 				audioWin->stop();
 		}
-		player->resetStatuses();
+		//Handing it the one bool from input is to control the 
+		player->resetStatuses(input->isActivateKeyDown());
 
 		// Reset blur, we only do it if a single Medusa is in sight.
 		renderMan->RemovePostProcessingEffect(BlurEffect);
@@ -525,8 +515,6 @@ void PVGame::UpdateScene(float dt)
 
 				if(Crest* currentCrest = dynamic_cast<Crest*>(gameObjects[i]))
 				{
-					//btVector3 crestPos = gameObjects[i]->getRigidBody()->getCenterOfMassPosition();
-					
 					if(physicsMan->broadPhase(player->GetCamera(), gameObjects[i]) && physicsMan->narrowPhase(player->GetCamera(), gameObjects[i]))
 					{
 						currentCrest->ChangeView(true);
@@ -926,26 +914,28 @@ void PVGame::ListenSelectorChange()
 		#pragma region INSTRUCTIONS
 		if(gameState == INSTRUCTIONS)
 		{
-			//NEXT
-			if(selector == 0)
-			{
-				
-				return;
-			}
 			//PLAY
-			if(selector == 1)
+			if(selector == 0)
 			{
 				ShowCursor(false);
 				gameState = PLAYING;
 				return;
 			}
 			//MENU
-			if(selector == 2)
+			if(selector == 1)
 			{
 				selector = 1;
 				gameState = MENU;
 				return;
+				return;
 			}
+			////NEXT
+			//if(selector == 2)
+			//{
+			//	
+			//	
+			//	return;
+			//}
 		}
 		#pragma endregion
 	}
@@ -954,6 +944,7 @@ void PVGame::ListenSelectorChange()
 
 void PVGame::HandleOptions()
 {
+	#pragma region Menu Left Key Checking
 	if(input->wasMenuLeftKeyPressed())
 	{
 		switch(selector)
@@ -982,7 +973,8 @@ void PVGame::HandleOptions()
 			break;
 		}
 	}
-	
+	#pragma endregion
+	#pragma region Menu Right Key Checking
 	if(input->wasMenuRightKeyPressed())
 	{
 		switch(selector)
@@ -1011,6 +1003,7 @@ void PVGame::HandleOptions()
 			break;
 		}
 	}
+	#pragma endregion
 }
 
 ////////////////////////////////////////////////////////////
@@ -1162,33 +1155,48 @@ void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void PVGame::DrawScene()
+//A bad method of storing menu color information. Consolidated into 1 method. 
+//Ideally should be moved to xml or assets should be made for the menu.
+void PVGame::SetMenuColors()
 {
-	float cWidth = (float)renderMan->GetClientHeight();
-	float cHeight = (float)renderMan->GetClientWidth();
-	UINT32 color1 = 0xff0000ff;
-	UINT32 color2 = 0xffff0000;
-	UINT32 color3 = 0xff00ff00;
-	UINT32 color4 = 0xff000000;
-	float lgSize = .10f * cHeight;
-	float xmdSize = .05f * cHeight;
-	float medSize = .04f * cHeight;
-	float smlSize = .03f * cHeight;
-	float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-	float colortwo[4] = {0.2f, 0.7f, 0.7f, 1.0f};
-	float colorthree[4] = {0.4f, 0.3f, 0.1f, 1.0f};
-	std::string cStats = "cHeight: " + (int)cHeight;
-	
+	cWidth = (float)renderMan->GetClientHeight();
+	cHeight = (float)renderMan->GetClientWidth();
+	if(FULLSCREEN)
+	{
+		cWidth = cWidth * 2;
+		cHeight = cWidth * 2;
+	}
+
+	//UINT32 colors
+	color1 = 0xff0000ff;
+	color2 = 0xffff0000;
+	color3 = 0xff00ff00;
+	color4 = 0xff000000;
+
+	//Float[4] colors
+	//color = {1.0f, 1.0f, 1.0f, 1.0f};
+	//colortwo = {0.2f, 0.7f, 0.7f, 1.0f};
+	//colorthree = {0.4f, 0.3f, 0.1f, 1.0f};
+
+	//Font sizes
+	lgSize = .10f * cHeight;
+	xmdSize = .05f * cHeight;
+	medSize = .04f * cHeight;
+	smlSize = .03f * cHeight;
+}
+
+void PVGame::DrawScene()
+{	
 	switch(gameState)
 	{
 	#pragma region MENU
 	case MENU:
-		//renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .25f, color1);
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
 		if(selector == 0)
 		{
 			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .30f, color2);
@@ -1235,110 +1243,117 @@ void PVGame::DrawScene()
 	#pragma endregion
 	#pragma region OPTION
 	case OPTION:
-		renderMan->ClearTargetToColor(colortwo); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Options!", medSize, cWidth * .20f, cHeight * .25f, color1);
-		if(selector == 0)
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		if(!FULLSCREEN)
 		{
-			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
-			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color2);
+			renderMan->DrawString("Options", medSize, cWidth * .20f, cHeight * .15f, color1);
 		}
 		else
 		{
-			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .30f, color4);
-			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .30f, color4);
+			renderMan->DrawString("Options", medSize, cWidth * .20f, cHeight * .15f, color1);
+		}
+		if(selector == 0)
+		{
+			renderMan->DrawString(">Volume: ", smlSize, cWidth * .20f, cHeight * .20f, color2);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .20f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Volume", smlSize, cWidth * .20f, cHeight * .20f, color4);
+			renderMan->DrawString(std::to_wstring(VOLUME).c_str(), smlSize, cWidth * .50f, cHeight * .20f, color4);
 		}
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			renderMan->DrawString(">Fullscreen: ", smlSize, cWidth * .20f, cHeight * .25f, color2);
 			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .25f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .25f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .25f, color4);
+			if(FULLSCREEN)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .25f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .25f, color4);
+		}
+		if(selector == 2)
+		{
+			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			if(OCULUS)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .30f, color2);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .30f, color2);
+		}
+		else
+		{
+			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			if(OCULUS)
+				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .30f, color4);
+			else
+				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .30f, color4);
+		}
+		if(selector == 3)
+		{
+			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .35f, color2);
+			if(VSYNC)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color2);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Fullscreen: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
-			if(FULLSCREEN)
+			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .35f, color4);
+			if(VSYNC)
 				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .35f, color4);
 			else
 				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .35f, color4);
 		}
-		if(selector == 2)
-		{
-			renderMan->DrawString(">Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
-			if(OCULUS)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color2);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color2);
-		}
-		else
-		{
-			renderMan->DrawString("  Oculus: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
-			if(OCULUS)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .40f, color4);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .40f, color4);
-		}
-		if(selector == 3)
-		{
-			renderMan->DrawString(">VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
-			if(VSYNC)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color2);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color2);
-		}
-		else
-		{
-			renderMan->DrawString("  VSync: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
-			if(VSYNC)
-				renderMan->DrawString("true", smlSize, cWidth * .50f, cHeight * .45f, color4);
-			else
-				renderMan->DrawString("false", smlSize, cWidth * .50f, cHeight * .45f, color4);
-		}
 		if(selector == 4)
 		{
-			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color2);
-			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color2);
+			renderMan->DrawString(">Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .40f, color2);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .40f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .50f, color4);
-			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .50f, color4);
+			renderMan->DrawString("  Mouse Sensitivity: ", smlSize, cWidth * .20f, cHeight * .40f, color4);
+			renderMan->DrawString(std::to_wstring(MOUSESENSITIVITY).c_str(), smlSize, cWidth * .80f, cHeight * .40f, color4);
 		}
 
 		if(selector == 5)
 		{
-			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color2);
+			renderMan->DrawString(">Look Inversion: ", smlSize, cWidth * .20f, cHeight * .45f, color2);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color2);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .45f, color2);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color2);
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .45f, color2);
 		}
 		else
 		{
-			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .55f, color4);
+			renderMan->DrawString("  Look Inversion: ", smlSize, cWidth * .20f, cHeight * .45f, color4);
 			if(LOOKINVERSION)
-				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .55f, color4);
+				renderMan->DrawString("true", smlSize, cWidth * .80f, cHeight * .45f, color4);
 			else
-				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .55f, color4);		
+				renderMan->DrawString("false", smlSize, cWidth * .80f, cHeight * .45f, color4);		
 		}
 
 		if(selector == 6)
 		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .60f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .60f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
 	#pragma region INSTRUCTIONS
 	case INSTRUCTIONS:
-		renderMan->ClearTargetToColor(color); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
 /*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
 		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
@@ -1346,7 +1361,7 @@ void PVGame::DrawScene()
 		renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
 		renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
 		renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
-		renderMan->DrawString("Instructions", medSize, cWidth * .20f, cHeight * .07f, color1);
+		renderMan->DrawString("Game Instructions", medSize, cWidth * .20f, cHeight * .06f, color1);
 		//If controller is connected
 		if(input->gamepadConnected(0))
 		{
@@ -1369,30 +1384,24 @@ void PVGame::DrawScene()
 		renderMan->DrawString("    Where things existed whether or not", medSize, cWidth * .20f, cHeight * .40f, color4);
 		renderMan->DrawString("      they were being directly observed", medSize, cWidth * .20f, cHeight * .45f, color4);
 
-
-		//renderMan->DrawString("Object Permanence is a psychology concept", cHeight * .04f, cWidth * .20f, cHeight * .30f, color4);
-		//renderMan->DrawString("Babies do not know that objects continue to exist when not directly observed", cHeight * .04f, cWidth * .20f, cHeight * .35f, color4);
-		//renderMan->DrawString("Imagine what it would be like if parts of the world", medSize, cWidth * .20f, cHeight * .40f, color4);
-		//renderMan->DrawString("stopped existing when you weren't looking at them", medSize, cWidth * .20f, cHeight * .45f, color4);
-
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Next", smlSize, cWidth * .20f, cHeight * .50f, color2);
+			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
 		else
-			renderMan->DrawString("  Next", smlSize, cWidth * .20f, cHeight * .50f, color4);
+			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .50f, color4);
 		if(selector == 1)
 		{
-			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .54f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .54f, color2);
 		}
 		else
-			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .54f, color4);
-		if(selector == 2)
-		{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .58f, color2);
-		}
-		else
-			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .58f, color4);
+			renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .54f, color4);
+		//if(selector == 2)
+		//{
+		//	renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .58f, color2);
+		//}
+		//else
+		//	renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .58f, color4);
 		
 		renderMan->EndDrawMenu();
 
@@ -1400,17 +1409,18 @@ void PVGame::DrawScene()
 	#pragma endregion
 	#pragma region END
 	case END:
-		renderMan->ClearTargetToColor(colorthree); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight / 10, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight / 10, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight / 10, color3);
-		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .25f, color1);
-		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .32f, color4);
-		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .36f, color4);
-		
-		renderMan->DrawString("  Made by Jon Palmer, Jason Mandelbaum,", smlSize, cWidth * .20f, cHeight * .44f, color4);
-		renderMan->DrawString("        Mike St. Pierre, and Drew Diamantoukos", smlSize, cWidth * .20f, cHeight * .48f, color4);
+		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .15f, color1);
+		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .28f, color4);
+		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .32f, color4);
+		renderMan->DrawString("        Bullet, Filterforge, ", smlSize, cWidth * .20f, cHeight * .36f, color4);
+
+		renderMan->DrawString("  Made by Jon Palmer, Jason Mandelbaum,", smlSize, cWidth * .20f, cHeight * .40f, color4);
+		renderMan->DrawString("        Mike St. Pierre, and Drew Diamantoukos", smlSize, cWidth * .20f, cHeight * .44f, color4);
 		/*if(selector == 5)
 		{
 			renderMan->DrawString(">-Chris Cascioli", smlSize, cWidth * .20f, cHeight * .36f, color2);
@@ -1437,7 +1447,7 @@ void PVGame::DrawScene()
 			renderMan->DrawString("  Thanks SFXR", smlSize, cWidth * .20f, cHeight * .48f, color4);*/
 		//if(selector == 0 || selector == 1)
 		//{
-			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .52f, color2);
+			renderMan->DrawString(">Menu", smlSize, cWidth * .20f, cHeight * .48f, color2);
 		//}
 		//else
 		//	renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .52f, color4);
@@ -1469,17 +1479,19 @@ void PVGame::BuildVertexLayout()
 	renderMan->BuildVertexLayout();
 }
 
-void PVGame::BuildRooms(Room* startRoom)
+void PVGame::BuildRooms(Room* startRoom, const char* dontLoadRoom)
 {
 	bool isLoaded = false;
 
 	for (unsigned int i = 0; i < loadedRooms.size(); i++)
 	{
 		if (strcmp(loadedRooms[i]->getFile(), startRoom->getFile()) == 0)
+		{
 			isLoaded = true;
+		}
 	}
 
-	if (!isLoaded)
+	if (!isLoaded && strcmp(startRoom->getMapFile(), dontLoadRoom) != 0)
 	{
 		for (unsigned int i = 0; i < startRoom->getGameObjs().size(); i++)
 		{
@@ -1488,12 +1500,12 @@ void PVGame::BuildRooms(Room* startRoom)
 		
 		if(!startRoom->hasWinCrest())
 			startRoom->loadNeighbors(loadedRooms);
-		
+
 		loadedRooms.push_back(startRoom);
 
 		for (unsigned int i = 0; i < startRoom->getNeighbors().size(); i++)
 		{
-			BuildRooms(startRoom->getNeighbors()[i]);
+			BuildRooms(startRoom->getNeighbors()[i], dontLoadRoom);
 		}
 	}
 }

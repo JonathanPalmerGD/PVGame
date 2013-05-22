@@ -71,16 +71,14 @@ bool FileLoader::LoadFile( ID3D11Device* device,
             switch (checkChar)
             {   
 			#pragma region '#' Case - Comments
-				// A comment. Skip rest of the line
-            case '#':
+            case '#': // A comment. Skip rest of the line
                 checkChar = fileIn.get();
                 while(checkChar != '\n')
                     checkChar = fileIn.get();
                 break;
 			#pragma endregion
 			#pragma region 'v' Case - Vertex Descriptions
-                    // Get Vertex Descriptions;
-            case 'v':
+            case 'v': // Get Vertex Descriptions;
                 checkChar = fileIn.get();
                 if(checkChar == ' ')  // v - vert position
                 {
@@ -499,7 +497,6 @@ bool FileLoader::LoadFile( ID3D11Device* device,
 	#pragma region MTL File Contents
 	// Open the mtl file
 	
-	
 	fileIn.open((L"Assets//" + meshMatLib).c_str());
 
     std::wstring lastStringRead;
@@ -659,7 +656,8 @@ bool FileLoader::LoadFile( ID3D11Device* device,
                                     if(!alreadyLoaded)
                                     {
                                         ID3D11ShaderResourceView* tempSRV;
-                                        hr = D3DX11CreateShaderResourceViewFromFile( device, fileNamePath.c_str(),
+										//renderMan->LoadTexture("d", fileNamePath.c_str())
+										hr = D3DX11CreateShaderResourceViewFromFile( device, fileNamePath.c_str(),
                                             NULL, NULL, &tempSRV, NULL );
                                         if(SUCCEEDED(hr))
                                         {

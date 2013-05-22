@@ -621,8 +621,14 @@ class RenderManager
 				indexData.pSysMem = &itr->second.indices[0];
 				HR(md3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &indexBuffer));
 				
+				if (bufferPairs[itr->first].vertexBuffer)
+					ReleaseCOM(bufferPairs[itr->first].vertexBuffer);
 				bufferPairs[itr->first].vertexBuffer = vertexBuffer;
+
+				if (bufferPairs[itr->first].indexBuffer)
+					ReleaseCOM(bufferPairs[itr->first].indexBuffer);
 				bufferPairs[itr->first].indexBuffer = indexBuffer;
+				
 				itr++;
 			}
 		}

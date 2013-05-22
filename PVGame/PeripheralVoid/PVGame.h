@@ -30,6 +30,7 @@ public:
 		void OnResize();
 		void UpdateScene(float dt);
 		void ListenSelectorChange();
+		void SetMenuColors();
 		void DrawScene();
 		void OnMouseMove(WPARAM btnState, int x, int y);
 		void ToggleDevMode();
@@ -43,9 +44,10 @@ public:
 	private:
 		void BuildFX();
 		void BuildVertexLayout();
-		void BuildRooms(Room* startRoom);
+		void BuildRooms(Room* startRoom, const char* dontLoadRoom);
 		void ClearRooms();
 		void SortGameObjects();
+
 		bool devMode;
 		Player*	player;
 		Room* currentRoom;
@@ -55,6 +57,20 @@ public:
 		float mPhi;
 		POINT mLastMousePos;
 		XMFLOAT3 playerPosition;
+
+		float cWidth;
+		float cHeight;
+		UINT32 color1;
+		UINT32 color2;
+		UINT32 color3;
+		UINT32 color4;
+		float lgSize;
+		float xmdSize;
+		float medSize;
+		float smlSize;
+		float color[4];
+		float colortwo[4];
+		float colorthree[4];
 
 		unsigned int gameState;
 		PhysicsManager* physicsMan;

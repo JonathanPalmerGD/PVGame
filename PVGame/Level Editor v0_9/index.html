@@ -18,7 +18,7 @@
 			<form id="menu">
 				
 				<div>
-					<span>Texture (for walls, floors, and cubes): </span><br/>
+					<span>Texture (for walls and cubes): </span><br/>
 					<select id="textureType">
 						<option value="Hedge">Hedge</option>
 						<option value="Floor">Floor</option>
@@ -37,7 +37,19 @@
 					<select id="wallHeight"></select>
 				</div>
 				
-				<div><input type="radio" id="floorType" name="tileType" value="floor"/><label for="floorType">Floor</label><br/></div>
+				<div>
+					<input type="radio" id="floorType" name="tileType" value="floor"/><label for="floorType">Floor</label><br/>
+					<span>Texture: </span><br/>
+					<select id="floorTextureType">
+						<option value="Floor">Floor</option>
+						<option value="Hedge">Hedge</option>
+						<option value="Rock">Rock</option>
+						<option value="Snow">Snow</option>
+						<option value="Brick">Brick</option>
+						<option value="Grass">Grass</option>
+						<option value="Gravel">Gravel</option>
+					</select>
+				</div>
 				
 				<div>
 					<input type="radio" id="spawnType" name="tileType" value="spawn"/><label for="spawnType">Spawn</label>
@@ -82,6 +94,7 @@
 						<option value="3">Unlock</option>
 						<option value="4">Hades</option>
 						<option value="5">Win</option>
+						<option value="6">Hephaestus</option>
 					</select>
 					<select id="unlockCube"></select><br/>
 					<span><input type="radio" id="plaftormHades" name="hadesType" value="platform" checked="true"/><label for="plaftormHades">Plaftorm</label></span>
