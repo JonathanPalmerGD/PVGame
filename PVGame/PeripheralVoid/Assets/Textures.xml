@@ -41,7 +41,7 @@
 			<OffsetU>2</OffsetU>
 			<OffsetV>1</OffsetV>
 		</Texture>
-		<Texture name="gravel">
+		<Texture name="slate">
 			<OffsetU>2</OffsetU>
 			<OffsetV>2</OffsetV>
 		</Texture>

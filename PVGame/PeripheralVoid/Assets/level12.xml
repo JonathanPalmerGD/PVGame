@@ -11,12 +11,12 @@
 <wall row="14" col="4" xLength="1" yLength="10" zLength="4" centerX="4.5" centerY="0" centerZ="16" texture="Rock"/>
 <wall row="14" col="13" xLength="3" yLength="10" zLength="1" centerX="14.5" centerY="0" centerZ="14.5" texture="Rock"/>
 <wall row="14" col="16" xLength="9" yLength="10" zLength="1" centerX="20.5" centerY="0" centerZ="14.5" texture="Hedge"/>
-<wall row="15" col="13" xLength="5" yLength="6" zLength="2" centerX="15.5" centerY="0" centerZ="16" texture="Snow"/>
-<wall row="15" col="18" xLength="1" yLength="5" zLength="2" centerX="18.5" centerY="0" centerZ="16" texture="Snow"/>
-<wall row="15" col="19" xLength="1" yLength="4" zLength="2" centerX="19.5" centerY="0" centerZ="16" texture="Snow"/>
-<wall row="15" col="20" xLength="1" yLength="3" zLength="2" centerX="20.5" centerY="0" centerZ="16" texture="Snow"/>
-<wall row="15" col="21" xLength="1" yLength="2" zLength="2" centerX="21.5" centerY="0" centerZ="16" texture="Snow"/>
-<wall row="15" col="22" xLength="1" yLength="1" zLength="2" centerX="22.5" centerY="0" centerZ="16" texture="Snow"/>
+<wall row="15" col="13" xLength="5" yLength="6" zLength="2" centerX="15.5" centerY="0" centerZ="16" texture="Tiles"/>
+<wall row="15" col="18" xLength="1" yLength="5" zLength="2" centerX="18.5" centerY="0" centerZ="16" texture="Tiles"/>
+<wall row="15" col="19" xLength="1" yLength="4" zLength="2" centerX="19.5" centerY="0" centerZ="16" texture="Tiles"/>
+<wall row="15" col="20" xLength="1" yLength="3" zLength="2" centerX="20.5" centerY="0" centerZ="16" texture="Tiles"/>
+<wall row="15" col="21" xLength="1" yLength="2" zLength="2" centerX="21.5" centerY="0" centerZ="16" texture="Tiles"/>
+<wall row="15" col="22" xLength="1" yLength="1" zLength="2" centerX="22.5" centerY="0" centerZ="16" texture="Tiles"/>
 <wall row="17" col="13" xLength="3" yLength="10" zLength="1" centerX="14.5" centerY="0" centerZ="17.5" texture="Rock"/>
 <wall row="17" col="16" xLength="7" yLength="10" zLength="1" centerX="19.5" centerY="0" centerZ="17.5" texture="Hedge"/>
 <wall row="18" col="0" xLength="1" yLength="10" zLength="2" centerX="0.5" centerY="0" centerZ="19" texture="Hedge"/>
@@ -46,12 +46,12 @@
 <exit row="15" col="24" xLength="1" zLength="3" centerX="24.5" centerY="0" centerZ="16.5" file="level13.xml"/>
 </exits>
 <cubes>
-<cube row="15" col="7" xLength="1" yLength="1" zLength="2" centerX="7.5" centerY="0" centerZ="16" translateX="0" translateY="0" translateZ="0" texture="Gravel"/>
-<cube row="15" col="8" xLength="1" yLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="16" translateX="0" translateY="1" translateZ="0" texture="Gravel"/>
-<cube row="15" col="9" xLength="1" yLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="16" translateX="0" translateY="2" translateZ="0" texture="Gravel"/>
-<cube row="15" col="10" xLength="1" yLength="1" zLength="2" centerX="10.5" centerY="0" centerZ="16" translateX="0" translateY="3" translateZ="0" texture="Gravel"/>
-<cube row="15" col="11" xLength="1" yLength="1" zLength="2" centerX="11.5" centerY="0" centerZ="16" translateX="0" translateY="4" translateZ="0" texture="Gravel"/>
-<cube row="15" col="12" xLength="1" yLength="1" zLength="2" centerX="12.5" centerY="0" centerZ="16" translateX="0" translateY="5" translateZ="0" texture="Gravel"/>
+<cube row="15" col="7" xLength="1" yLength="1" zLength="2" centerX="7.5" centerY="0" centerZ="16" translateX="0" translateY="0" translateZ="0" texture="Slate"/>
+<cube row="15" col="8" xLength="1" yLength="1" zLength="2" centerX="8.5" centerY="0" centerZ="16" translateX="0" translateY="1" translateZ="0" texture="Slate"/>
+<cube row="15" col="9" xLength="1" yLength="1" zLength="2" centerX="9.5" centerY="0" centerZ="16" translateX="0" translateY="2" translateZ="0" texture="Slate"/>
+<cube row="15" col="10" xLength="1" yLength="1" zLength="2" centerX="10.5" centerY="0" centerZ="16" translateX="0" translateY="3" translateZ="0" texture="Slate"/>
+<cube row="15" col="11" xLength="1" yLength="1" zLength="2" centerX="11.5" centerY="0" centerZ="16" translateX="0" translateY="4" translateZ="0" texture="Slate"/>
+<cube row="15" col="12" xLength="1" yLength="1" zLength="2" centerX="12.5" centerY="0" centerZ="16" translateX="0" translateY="5" translateZ="0" texture="Slate"/>
 </cubes>
 <crests>
 <crest row="13" col="8" xLength="1" yLength="1" zLength="1" centerX="8.5" centerY="0" centerZ="13.5" effect="3" target="15|8" dir="up" placement=""/>

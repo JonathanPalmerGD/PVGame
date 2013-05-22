@@ -4,8 +4,8 @@
 <wall row="1" col="14" xLength="10" yLength="8" zLength="1" centerX="19" centerY="0" centerZ="1.5" texture="Hedge"/>
 <wall row="1" col="24" xLength="1" yLength="5" zLength="1" centerX="24.5" centerY="0" centerZ="1.5" texture="Hedge"/>
 <wall row="2" col="3" xLength="1" yLength="5" zLength="3" centerX="3.5" centerY="0" centerZ="3.5" texture="Hedge"/>
-<wall row="2" col="4" xLength="3" yLength="2" zLength="3" centerX="5.5" centerY="0" centerZ="3.5" texture="Snow"/>
-<wall row="2" col="7" xLength="2" yLength="1" zLength="3" centerX="8" centerY="0" centerZ="3.5" texture="Snow"/>
+<wall row="2" col="4" xLength="3" yLength="2" zLength="3" centerX="5.5" centerY="0" centerZ="3.5" texture="Tiles"/>
+<wall row="2" col="7" xLength="2" yLength="1" zLength="3" centerX="8" centerY="0" centerZ="3.5" texture="Tiles"/>
 <wall row="5" col="2" xLength="2" yLength="5" zLength="1" centerX="3" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="5" col="4" xLength="3" yLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="5" col="7" xLength="7" yLength="5" zLength="1" centerX="10.5" centerY="0" centerZ="5.5" texture="Hedge"/>
@@ -56,9 +56,9 @@
 <exit row="17" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="18.5" file="level10.xml"/>
 </exits>
 <cubes>
-<cube row="2" col="20" xLength="2" yLength="3" zLength="3" centerX="21" centerY="0" centerZ="3.5" translateX="-1" translateY="5" translateZ="0" texture="Gravel"/>
-<cube row="6" col="3" xLength="5" yLength="1" zLength="2" centerX="5.5" centerY="0" centerZ="7" translateX="0" translateY="1" translateZ="0" texture="Gravel"/>
-<cube row="14" col="13" xLength="2" yLength="7" zLength="3" centerX="14" centerY="0" centerZ="15.5" translateX="0" translateY="-6" translateZ="0" texture="Gravel"/>
+<cube row="2" col="20" xLength="2" yLength="3" zLength="3" centerX="21" centerY="0" centerZ="3.5" translateX="-1" translateY="5" translateZ="0" texture="Slate"/>
+<cube row="6" col="3" xLength="5" yLength="1" zLength="2" centerX="5.5" centerY="0" centerZ="7" translateX="0" translateY="1" translateZ="0" texture="Slate"/>
+<cube row="14" col="13" xLength="2" yLength="7" zLength="3" centerX="14" centerY="0" centerZ="15.5" translateX="0" translateY="-6" translateZ="0" texture="Slate"/>
 </cubes>
 <crests>
 <crest row="5" col="17" xLength="1" yLength="4" zLength="1" centerX="17.5" centerY="0" centerZ="5.5" effect="3" target="2|20" dir="down" placement=""/>

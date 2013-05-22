@@ -19,8 +19,8 @@
 <wall row="4" col="9" xLength="1" yLength="5" zLength="1" centerX="9.5" centerY="0" centerZ="4.5" texture="Rock"/>
 <wall row="4" col="10" xLength="1" yLength="5" zLength="3" centerX="10.5" centerY="0" centerZ="5.5" texture="Hedge"/>
 <wall row="4" col="11" xLength="1" yLength="5" zLength="1" centerX="11.5" centerY="0" centerZ="4.5" texture="Rock"/>
-<wall row="4" col="15" xLength="1" yLength="1" zLength="3" centerX="15.5" centerY="0" centerZ="5.5" texture="Snow"/>
-<wall row="4" col="16" xLength="1" yLength="2" zLength="3" centerX="16.5" centerY="0" centerZ="5.5" texture="Snow"/>
+<wall row="4" col="15" xLength="1" yLength="1" zLength="3" centerX="15.5" centerY="0" centerZ="5.5" texture="Tiles"/>
+<wall row="4" col="16" xLength="1" yLength="2" zLength="3" centerX="16.5" centerY="0" centerZ="5.5" texture="Tiles"/>
 <wall row="4" col="23" xLength="1" yLength="5" zLength="1" centerX="23.5" centerY="0" centerZ="4.5" texture="Rock"/>
 <wall row="4" col="24" xLength="1" yLength="4" zLength="11" centerX="24.5" centerY="0" centerZ="9.5" texture="Hedge"/>
 <wall row="5" col="9" xLength="1" yLength="9" zLength="1" centerX="9.5" centerY="0" centerZ="5.5" texture="Brick"/>

@@ -17,9 +17,7 @@
 </walls>
 <floors>
 <floor row="1" col="14" xLength="11" zLength="3" centerX="19.5" centerY="0" centerZ="2.5" texture="Floor"/>
-<floor row="11" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="11.5" texture="Floor"/>
-<floor row="12" col="21" xLength="2" zLength="1" centerX="22" centerY="0" centerZ="12.5" texture="Floor"/>
-<floor row="13" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="13.5" texture="Floor"/>
+<floor row="11" col="21" xLength="3" zLength="3" centerX="22.5" centerY="0" centerZ="12.5" texture="Floor"/>
 <floor row="19" col="14" xLength="6" zLength="2" centerX="17" centerY="0" centerZ="20" texture="Floor"/>
 <floor row="21" col="14" xLength="10" zLength="3" centerX="19" centerY="0" centerZ="22.5" texture="Floor"/>
 <floor row="24" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="24.5" texture="Floor"/>
@@ -37,6 +35,6 @@
 <crest row="1" col="16" xLength="1" yLength="1" zLength="1" centerX="16.5" centerY="0" centerZ="1.5" effect="1" target="" dir="up" placement=""/>
 <crest row="1" col="22" xLength="1" yLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="1.5" effect="1" target="" dir="up" placement=""/>
 <crest row="6" col="21" xLength="1" yLength="2" zLength="1" centerX="21.5" centerY="0" centerZ="6.5" effect="2" target="" dir="right" placement=""/>
-<crest row="12" col="23" xLength="1" yLength="2" zLength="1" centerX="23.5" centerY="0" centerZ="12.5" effect="2" target="" dir="left" placement=""/>
+<crest row="12" col="23" xLength="1" yLength="2" zLength="1" centerX="23.5" centerY="0" centerZ="12.5" effect="1" target="" dir="left" placement=""/>
 </crests>
 </level>

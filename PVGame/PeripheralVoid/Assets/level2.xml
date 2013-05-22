@@ -43,7 +43,7 @@
 </walls>
 <floors>
 <floor row="0" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" texture="Floor"/>
-<floor row="1" col="1" xLength="2" zLength="9" centerX="2" centerY="0" centerZ="5.5" texture="Gravel"/>
+<floor row="1" col="1" xLength="2" zLength="9" centerX="2" centerY="0" centerZ="5.5" texture="Slate"/>
 <floor row="1" col="3" xLength="21" zLength="2" centerX="13.5" centerY="0" centerZ="2" texture="Floor"/>
 <floor row="3" col="8" xLength="9" zLength="1" centerX="12.5" centerY="0" centerZ="3.5" texture="Floor"/>
 <floor row="3" col="22" xLength="2" zLength="3" centerX="23" centerY="0" centerZ="4.5" texture="Floor"/>
@@ -83,7 +83,7 @@
 <exit row="0" col="9" xLength="7" zLength="1" centerX="12.5" centerY="0" centerZ="0.5" file="level1.xml"/>
 </exits>
 <cubes>
-<cube row="24" col="0" xLength="25" yLength="9" zLength="1" centerX="12.5" centerY="0" centerZ="24.5" translateX="25" translateY="0" translateZ="0" texture="Snow"/>
+<cube row="24" col="0" xLength="25" yLength="9" zLength="1" centerX="12.5" centerY="0" centerZ="24.5" translateX="25" translateY="0" translateZ="0" texture="Slate"/>
 </cubes>
 <crests>
 <crest row="10" col="10" xLength="1" yLength="1" zLength="1" centerX="10.5" centerY="0" centerZ="10.5" effect="2" target="" dir="down" placement=""/>
@@ -91,7 +91,7 @@
 <crest row="11" col="3" xLength="1" yLength="6" zLength="3" centerX="3.5" centerY="0" centerZ="12.5" effect="4" target="" dir="left" placement="wall"/>
 <crest row="11" col="21" xLength="1" yLength="6" zLength="3" centerX="21.5" centerY="0" centerZ="12.5" effect="4" target="" dir="right" placement="wall"/>
 <crest row="12" col="12" xLength="1" yLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="12.5" effect="0" target="" dir="up" placement=""/>
-<crest row="21" col="23" xLength="1" yLength="7" zLength="1" centerX="23.5" centerY="0" centerZ="21.5" effect="3" target="24|0" dir="up" placement=""/>
+<crest row="21" col="23" xLength="1" yLength="7" zLength="1" centerX="23.5" centerY="0" centerZ="21.5" effect="6" target="24|0" dir="up" placement=""/>
 <crest row="22" col="3" xLength="1" yLength="1" zLength="1" centerX="3.5" centerY="0" centerZ="22.5" effect="5" target="" dir="left" placement=""/>
 <crest row="22" col="8" xLength="4" yLength="1" zLength="2" centerX="10" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
 <crest row="22" col="13" xLength="4" yLength="1" zLength="2" centerX="15" centerY="0" centerZ="23" effect="4" target="" dir="down" placement="platform"/>
