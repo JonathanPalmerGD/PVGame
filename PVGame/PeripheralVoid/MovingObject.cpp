@@ -27,13 +27,7 @@ void MovingObject::Update()
 	else
 	{
 		StepPosition();
-	}
-	//if(CompareBtV3AndXM3(movingObjPos, positions[targetPosition]))
-	//{
-
-	//}
-
-	
+	}	
 }
 
 void MovingObject::StepPosition()
