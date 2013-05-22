@@ -85,9 +85,9 @@ bool PVGame::Init(char * args)
 	
 	//Test load a cube.obj
 	//renderMan->LoadFile(L"crest.obj", "crest");
+	renderMan->LoadFile(L"column.obj", "column");
 	renderMan->LoadFile(L"medusacrest.obj", "medusacrest");
 	renderMan->LoadFile(L"unlockcrest.obj", "unlockcrest");
-	//renderMan->LoadFile(L"caelhammer.obj", "caelhammer");
 	renderMan->LoadFile(L"boat.obj", "boat");
 
 	renderMan->BuildBuffers();
@@ -223,17 +223,17 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Make Turrets
-	/*
-	GameObject* turretGOJ = new Turret("caelhammer", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 0.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	
+	GameObject* turretGOJ = new Turret("column", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 2.5f, 13.0f, 0.0f), physicsMan, ALPHA);
 	if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
 	{
 		//turretOJ->CreateProjectiles(gameObjects);
 	}
 	
-	turretGOJ->scale(1.5, 0.6, 0.6);
-	turretGOJ->rotate(1.0f, 0.0f, 0.0f);
+	//turretGOJ->scale(1.0f, 1.0f, 1.0f);
+	//turretGOJ->rotate(0.0f, 0.0f, 0.0f);
 	gameObjects.push_back(turretGOJ);
-	*/
+	
 	/*
 	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
 	turretGOJ2->scale(1.5, 0.6, 0.6);
@@ -944,6 +944,7 @@ void PVGame::ListenSelectorChange()
 
 void PVGame::HandleOptions()
 {
+	#pragma region Menu Left Key Checking
 	if(input->wasMenuLeftKeyPressed())
 	{
 		switch(selector)
@@ -972,7 +973,8 @@ void PVGame::HandleOptions()
 			break;
 		}
 	}
-	
+	#pragma endregion
+	#pragma region Menu Right Key Checking
 	if(input->wasMenuRightKeyPressed())
 	{
 		switch(selector)
@@ -1001,6 +1003,7 @@ void PVGame::HandleOptions()
 			break;
 		}
 	}
+	#pragma endregion
 }
 
 ////////////////////////////////////////////////////////////
@@ -1152,6 +1155,8 @@ void PVGame::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
+//A bad method of storing menu color information. Consolidated into 1 method. 
+//Ideally should be moved to xml or assets should be made for the menu.
 void PVGame::SetMenuColors()
 {
 	cWidth = (float)renderMan->GetClientHeight();
