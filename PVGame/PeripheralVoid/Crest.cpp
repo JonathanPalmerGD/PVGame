@@ -94,7 +94,7 @@ void Crest::SetTargetObject(MovingObject *newTargetObject)
 	}
 }
 
-//Accessor to see if the crest is currently being viewed
+//Accessor to see what type of crest it is.
 CREST_TYPE Crest::GetCrestType()
 {
 	return crestType;
@@ -176,10 +176,10 @@ void Crest::CreateLightAndIndex()
 		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case MOBILITY:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		//SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.00f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case LEAP:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		//SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case UNLOCK:   //255, 215, 0
 		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(10.0f, 8.4f, 0.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
@@ -188,7 +188,7 @@ void Crest::CreateLightAndIndex()
 		//SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f), XMFLOAT4(3.0f, 3.0f, 3.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 5.0f, XMFLOAT3(-7.5f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case HEPHAESTUS:
-		SetLightIndex(renderMan->CreateLight(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 10.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
+		SetLightIndex(renderMan->CreateLight(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(10.0f, 10.0f, 10.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
 		break;
 	case WIN:
 		SetLightIndex(renderMan->CreateLight(XMFLOAT4(0.0f, 0.00f, 0.0f, 1.0f), XMFLOAT4(10.0f, 10.0f, 0.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f), 5.0f, XMFLOAT3(-0.0f, 0.5f, -7.5f), XMFLOAT3(0.0f, 0.0f, 2.0f)));
@@ -264,7 +264,7 @@ void Crest::Update(Player* player)
 				//Change the targetObject to the locked state.
 				targetObject->SetTargetPosition(0);
 			}
-		}
+		}/*
 		if(crestType == HADES)
 		{
 			//Hi
@@ -276,6 +276,6 @@ void Crest::Update(Player* player)
 			{
 				//canChange = true;
 			}
-		}
+		}*/
 	}
 }
