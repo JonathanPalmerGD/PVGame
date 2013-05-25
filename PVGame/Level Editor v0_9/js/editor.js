@@ -512,7 +512,7 @@ function createXML()
 					var targetCube;
 					var placementType;
 					
-					if (strArray[1] == 3)
+					if (strArray[1] == 3 || strArray[1] == 6)
 					{
 						targetCube = strArray[2];
 						placementType = "";

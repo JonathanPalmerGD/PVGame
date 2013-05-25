@@ -303,6 +303,8 @@ void PVGame::UpdateScene(float dt)
 		else
 			player->getListener()->mute();
 	}
+
+	
 	#pragma endregion
 	switch(gameState)
 	{
@@ -312,6 +314,14 @@ void PVGame::UpdateScene(float dt)
 		{
 			audioSource->restartAndPlay();
 		}
+
+		//This might stop the whole 'Win crest playing in the main menu' bit
+		if(!player->getWinStatus())
+		{
+			if(audioWin->isPlaying())
+				audioWin->stop();
+		}
+
 		ListenSelectorChange();
 		break;
 	#pragma endregion
@@ -386,7 +396,7 @@ void PVGame::UpdateScene(float dt)
 			}
 			return;
 		}
-
+		#pragma endregion
 		player->Update(dt, input);
 		#pragma region Player Wireframe and blur controls
 		if(devMode)
@@ -424,7 +434,6 @@ void PVGame::UpdateScene(float dt)
 		}
 		#pragma endregion
 
-
 		#pragma region Physics for Worlds Game Objects
 		// If physics updated, tell the game objects to update their world matrix.
 		if (physicsMan->update(dt))
@@ -457,6 +466,7 @@ void PVGame::UpdateScene(float dt)
 					break;
 			}
 		}
+
 		//If the player falls of the edge of the world, respawn in current room
 		if(devMode)
 		{
@@ -488,8 +498,8 @@ void PVGame::UpdateScene(float dt)
 					player->setRotation(3.14f *2.0f);
 			}
 		}
-			
 		#pragma endregion
+		
 		#pragma region Player Statuses and Vision Affected Object Updating
 		if(!player->getWinStatus())
 		{

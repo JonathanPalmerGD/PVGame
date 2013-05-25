@@ -77,9 +77,7 @@
 <floor row="14" col="4" xLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="14.5" texture="Floor"/>
 <floor row="14" col="13" xLength="7" zLength="1" centerX="16.5" centerY="0" centerZ="14.5" texture="Floor"/>
 <floor row="15" col="4" xLength="8" zLength="3" centerX="8" centerY="0" centerZ="16.5" texture="Floor"/>
-<floor row="15" col="13" xLength="8" zLength="1" centerX="17" centerY="0" centerZ="15.5" texture="Floor"/>
-<floor row="16" col="13" xLength="7" zLength="1" centerX="16.5" centerY="0" centerZ="16.5" texture="Floor"/>
-<floor row="17" col="13" xLength="8" zLength="1" centerX="17" centerY="0" centerZ="17.5" texture="Floor"/>
+<floor row="15" col="13" xLength="8" zLength="3" centerX="17" centerY="0" centerZ="16.5" texture="Floor"/>
 <floor row="18" col="2" xLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="18.5" texture="Floor"/>
 <floor row="18" col="14" xLength="6" zLength="1" centerX="17" centerY="0" centerZ="18.5" texture="Floor"/>
 <floor row="19" col="1" xLength="11" zLength="1" centerX="6.5" centerY="0" centerZ="19.5" texture="Floor"/>
