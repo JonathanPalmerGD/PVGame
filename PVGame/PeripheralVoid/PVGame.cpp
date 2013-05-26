@@ -270,6 +270,22 @@ void PVGame::OnResize()
 	//XMStoreFloat4x4(&mProj, P);
 }
 
+
+void PVGame::SpawnPlayer()
+{
+	if(currentRoom)
+	{
+		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		if(currentRoom->getSpawn()->direction.compare("up") == 0)
+			player->setRotation(3.14f/2.0f);
+		else if(currentRoom->getSpawn()->direction.compare("left") == 0)
+			player->setRotation(3.14f);
+		else if(currentRoom->getSpawn()->direction.compare("down") == 0)
+			player->setRotation((3.0f*3.14f)/2.0f);
+		else if(currentRoom->getSpawn()->direction.compare("right") == 0)
+			player->setRotation(3.14f *2.0f);
+	}
+}
 #pragma region Awful use of variables courtesy of Jason
 bool is1Up = true;
 bool is2Up = true;
@@ -350,7 +366,7 @@ void PVGame::UpdateScene(float dt)
 			if(currentRoom->getExits().size() == 1)
 			{
 				currentRoom = loadedRooms[0];
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				SpawnPlayer();
 				gameState = END;
 			}
 			else if(currentRoom->getExits().size() == 2) //Go to Next Area
@@ -390,7 +406,7 @@ void PVGame::UpdateScene(float dt)
 				currentRoom = startRoom;
 				BuildRooms(currentRoom, curRoom);
 			
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				SpawnPlayer();
 				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
@@ -474,30 +490,14 @@ void PVGame::UpdateScene(float dt)
 		{
 			if (player->getPosition().y < -100)
 			{
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-				if(currentRoom->getSpawn()->direction.compare("up") == 0)
-					player->setRotation(3.14f/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
-					player->setRotation(3.14f);
-				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
-					player->setRotation((3.0f*3.14f)/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
-					player->setRotation(3.14f *2.0f);
+				SpawnPlayer();
 			}
 		}
 		else
 		{
 			if (player->getPosition().y < -5)
 			{
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-				if(currentRoom->getSpawn()->direction.compare("up") == 0)
-					player->setRotation(3.14f/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
-					player->setRotation(3.14f);
-				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
-					player->setRotation((3*3.14f)/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
-					player->setRotation(3.14f *2.0f);
+				SpawnPlayer();
 			}
 		}
 		#pragma endregion
@@ -746,7 +746,7 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[loadedRooms.size() - 1];
 
-						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						SpawnPlayer();
 						break;
 					}
 				}
@@ -762,7 +762,7 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[0];
 
-						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						SpawnPlayer();
 						break;
 					}
 				}
@@ -826,6 +826,7 @@ void PVGame::ListenSelectorChange()
 			{
 				ShowCursor(false);
 				ReadCurrentRoom();
+				SpawnPlayer();
 				gameState = PLAYING;
 				return;
 			}
@@ -835,6 +836,7 @@ void PVGame::ListenSelectorChange()
 				ShowCursor(false);
 				ResetRoomToStart();
 				ReadCurrentRoom();
+				SpawnPlayer();
 				gameState = PLAYING;
 				return;
 			}
@@ -940,6 +942,8 @@ void PVGame::ListenSelectorChange()
 			if(selector == 0)
 			{
 				ShowCursor(false);
+				ReadCurrentRoom();
+				SpawnPlayer();
 				gameState = PLAYING;
 				return;
 			}

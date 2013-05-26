@@ -44,6 +44,8 @@ public:
 		void SaveCurrentRoom();
 		void ReadCurrentRoom();
 		void ResetRoomToStart();
+
+		void SpawnPlayer();
 	private:
 		void BuildFX();
 		void BuildVertexLayout();
