@@ -73,7 +73,7 @@ bool PVGame::Init(char * args)
     
 	selector = 0;
 
-	SELECTOR_MAP[MENU]			=  5;
+	SELECTOR_MAP[MENU]			=  6;
 	SELECTOR_MAP[OPTION]		=  7;
 	SELECTOR_MAP[INSTRUCTIONS]	=  2;
 	SELECTOR_MAP[END]			=  1;
@@ -290,10 +290,12 @@ void PVGame::UpdateScene(float dt)
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 		else
 		{
+			SaveCurrentRoom();
 			player->resetWinPercent();
-			currentRoom = loadedRooms[0];
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-			gameState = END;
+			//currentRoom = loadedRooms[0];
+			//player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			gameState = MENU;
+			selector = 0;
 		}
 	}
 	if(input->wasKeyPressed('M'))
@@ -387,7 +389,7 @@ void PVGame::UpdateScene(float dt)
 				startRoom->loadRoom();
 				currentRoom = startRoom;
 				BuildRooms(currentRoom, curRoom);
-				
+			
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				delete[] map;
 				delete[] curRoom;
@@ -819,36 +821,46 @@ void PVGame::ListenSelectorChange()
 		#pragma region MENU
 		if(gameState == MENU)
 		{
-			//Play
+			//Continue
 			if(selector == 0)
 			{
 				ShowCursor(false);
+				ReadCurrentRoom();
+				gameState = PLAYING;
+				return;
+			}
+			//Play
+			if(selector == 1)
+			{
+				ShowCursor(false);
+				ResetRoomToStart();
+				ReadCurrentRoom();
 				gameState = PLAYING;
 				return;
 			}
 			//Instructions
-			if(selector == 1)
+			if(selector == 2)
 			{
 				selector = 0;
 				gameState = INSTRUCTIONS;
 				return;
 			}
 			//Options
-			if(selector == 2)
+			if(selector == 3)
 			{
 				selector = 0;
 				gameState = OPTION;
 				return;
 			}
 			//Credits
-			if(selector == 3)
+			if(selector == 4)
 			{
 				selector = 0;
 				gameState = END;
 				return;
 			}
 			//End
-			if(selector == 4)
+			if(selector == 5)
 			{
 				PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 				return;
@@ -897,7 +909,7 @@ void PVGame::ListenSelectorChange()
 			//Menu
 			if(selector == 6)
 			{
-				selector = 2;
+				selector = 3;
 				WriteOptions();
 				ReadOptions();
 				ApplyOptions();
@@ -915,7 +927,7 @@ void PVGame::ListenSelectorChange()
 				{
 					audioWin->stop();
 				}
-				selector = 3;
+				selector = 4;
 				gameState = MENU;
 				return;
 			//}
@@ -934,7 +946,7 @@ void PVGame::ListenSelectorChange()
 			//MENU
 			if(selector == 1)
 			{
-				selector = 1;
+				selector = 2;
 				gameState = MENU;
 				return;
 				return;
@@ -1014,6 +1026,87 @@ void PVGame::HandleOptions()
 		}
 	}
 	#pragma endregion
+}
+
+void PVGame::ResetRoomToStart()
+{
+	tinyxml2::XMLDocument doc;
+	if(doc.LoadFile(SAVE_FILE) != XML_NO_ERROR)
+	{
+		XMLElement* level = doc.NewElement("Level");
+		level->SetAttribute("level", "Assets/level1.xml");
+		doc.InsertFirstChild(level);
+	}
+	else
+	{
+		XMLElement* level = doc.FirstChildElement("Level");
+		level->SetAttribute("level", "Assets/level1.xml");
+	}
+	doc.SaveFile(SAVE_FILE);
+}
+
+//////////////////////////////////////////////////////
+// SaveCurrentRoom()
+//
+// Saves the map file of the current room to the save file
+//////////////////////////////////////////////////////
+void PVGame::SaveCurrentRoom()
+{
+	if(currentRoom)
+	{
+		tinyxml2::XMLDocument doc;
+		if(doc.LoadFile(SAVE_FILE) != XML_NO_ERROR)
+		{
+			XMLElement* level = doc.NewElement("Level");
+			string toSave(currentRoom->getMapFile());
+			level->SetAttribute("level", toSave.c_str());
+			doc.InsertFirstChild(level);
+		}
+		else
+		{
+			XMLElement* level = doc.FirstChildElement("Level");
+			string toSave(currentRoom->getMapFile());
+			level->SetAttribute("level", toSave.c_str());
+		}
+		doc.SaveFile(SAVE_FILE);
+	}
+}
+
+void PVGame::ReadCurrentRoom()
+{
+	tinyxml2::XMLDocument doc;
+	while(doc.LoadFile(SAVE_FILE) != XML_NO_ERROR)
+	{
+		SaveCurrentRoom();
+	}
+	XMLElement* saved_level = doc.FirstChildElement("Level");
+	if(!saved_level)
+	{
+		WriteOptions();
+		saved_level = doc.FirstChildElement("Level");
+	}
+
+	const char* lvl = saved_level->Attribute("level");
+	
+	ClearRooms();	
+	loadedRooms.clear();
+	
+	for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+	{
+		delete proceduralGameObjects[i];
+	}
+
+	gameObjects.clear();
+	proceduralGameObjects.clear();
+				
+	Room* startRoom = new Room(lvl, physicsMan, 0, 0);
+	startRoom->loadRoom();
+	currentRoom = startRoom;
+	BuildRooms(currentRoom, "LOADALL");
+				
+	player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+	SortGameObjects();
+	renderMan->BuildInstancedBuffer(gameObjects);
 }
 
 ////////////////////////////////////////////////////////////
@@ -1209,29 +1302,35 @@ void PVGame::DrawScene()
 		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Continue", smlSize, cWidth * .20f, cHeight * .25f, color2);
 		}
 		else
-			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString("  Continue", smlSize, cWidth * .20f, cHeight * .25f, color4);
 		if(selector == 1)
+		{
+			renderMan->DrawString(">New Game", smlSize, cWidth * .20f, cHeight * .30f, color2);
+		}
+		else
+			renderMan->DrawString("  New Game", smlSize, cWidth * .20f, cHeight * .30f, color4);
+		if(selector == 2)
 		{
 			renderMan->DrawString(">Instructions", smlSize, cWidth * .20f, cHeight * .35f, color2);
 		}
 		else
 			renderMan->DrawString("  Instructions", smlSize, cWidth * .20f, cHeight * .35f, color4);
-		if(selector == 2)
+		if(selector == 3)
 		{
 			renderMan->DrawString(">Options", smlSize, cWidth * .20f, cHeight * .40f, color2);
 		}
 		else
 			renderMan->DrawString("  Options", smlSize, cWidth * .20f, cHeight * .40f, color4);
-		if(selector == 3)
+		if(selector == 4)
 		{
 			renderMan->DrawString(">Credits", smlSize, cWidth * .20f, cHeight * .45f, color2);
 		}
 		else
 			renderMan->DrawString("  Credits", smlSize, cWidth * .20f, cHeight * .45f, color4);
-		if(selector == 4)
+		if(selector == 5)
 		{
 			renderMan->DrawString(">Exit", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}

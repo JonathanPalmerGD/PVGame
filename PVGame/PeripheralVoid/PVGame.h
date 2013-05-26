@@ -41,6 +41,9 @@ public:
 		void ReadOptions();
 		void ApplyOptions();
 
+		void SaveCurrentRoom();
+		void ReadCurrentRoom();
+		void ResetRoomToStart();
 	private:
 		void BuildFX();
 		void BuildVertexLayout();

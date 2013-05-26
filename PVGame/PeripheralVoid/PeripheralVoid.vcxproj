@@ -47,8 +47,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>Audio\AL;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>Audio\AL;$(DXSDK_DIR)Lib\x86;Common;$(LibraryPath)</LibraryPath>
+    <IncludePath>LibOVR\Include;Audio\AL;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>LibOVR\Lib\Win32;Audio\AL;$(DXSDK_DIR)Lib\x86;Common;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>LibOVR\Obj\Win32;$(DXSDK_DIR)Utilities\bin\x86;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(MSBuildToolsPath32);$(VSInstallDir);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
+    <SourcePath>LibOVR\Src;$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
+    <ReferencePath>$(VCInstallDir)atlmfc\lib;$(VCInstallDir)lib;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -58,6 +61,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>LibOVR\Include;FW1FontWrapper;Audio\AL;bullet-2.81-rev2613\src</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -76,15 +80,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Audio\AL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>LibOVR\Include;FW1FontWrapper;Audio\AL;bullet-2.81-rev2613\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>OpenAL32.lib;d3d11.lib;d3dx11.lib;XInput.lib;d3dx11.lib;D3DCompiler.lib;Effects11.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Audio\AL</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;winmm.lib;libovr.lib;BulletCollision_vs2010.lib;BulletDynamics_vs2010.lib;LinearMath_vs2010.lib;BulletSoftBody_vs2010.lib;OpenAL32.lib;d3d11.lib;d3dx11.lib;XInput.lib;D3DCompiler.lib;Effects11.lib;dxerr.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>LibOVR\Obj\Win32;LibOVR\Lib\Win32;Audio\AL;bullet-2.81-rev2613\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
