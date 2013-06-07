@@ -1,6 +1,6 @@
 <TextureList>
   <Atlas name="BasicAtlas" filename="Textures/TextureAtlas01Super.dds" type="Diffuse">
-	  <Texture name="Wall01">
+	  <Texture name="engraved">
       <OffsetU>0</OffsetU>
       <OffsetV>0</OffsetV>
       <Type>Diffuse</Type>
@@ -9,7 +9,7 @@
 			<OffsetU>0</OffsetU>
 			<OffsetV>1</OffsetV>
 		</Texture>
-		<Texture name="snow">
+		<Texture name="hephaestuscrest">
 			<OffsetU>0</OffsetU>
 			<OffsetV>2</OffsetV>
 		</Texture>
@@ -17,7 +17,7 @@
 			<OffsetU>0</OffsetU>
 			<OffsetV>3</OffsetV>
 		</Texture>
-		<Texture name="WoodCrate01">
+		<Texture name="wood">
 			<OffsetU>1</OffsetU>
 			<OffsetV>0</OffsetV>
 		</Texture>

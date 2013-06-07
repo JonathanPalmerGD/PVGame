@@ -39,8 +39,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>LibOVR\Include;Audio\AL;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>LibOVR\Lib\Win32;$(DXSDK_DIR)Lib\x86;Common;Audio\AL;$(LibraryPath)</LibraryPath>
+    <IncludePath>LibOVR\Include;Audio\AL;$(DXSDK_DIR)Include;C:\Users\Jon Palmer\Downloads\boost_1_53_0;$(IncludePath)</IncludePath>
+    <LibraryPath>LibOVR\Lib\Win32;$(DXSDK_DIR)Lib\x86;Common;Audio\AL;C:\Users\Jon Palmer\Downloads\boost_1_53_0;$(LibraryPath)</LibraryPath>
     <ExecutablePath>LibOVR\Obj\Win32;$(DXSDK_DIR)Utilities\bin\x86;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(MSBuildToolsPath32);$(VSInstallDir);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);PhysX-3.2_PC_SDK_Core\Bin\win32;$(ExecutablePath)</ExecutablePath>
     <ReferencePath>$(VCInstallDir)atlmfc\lib;$(VCInstallDir)lib;$(ReferencePath)</ReferencePath>
     <SourcePath>LibOVR\Src;$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;$(SourcePath)</SourcePath>
@@ -57,7 +57,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>LibOVR\Include;FW1FontWrapper;Audio\AL;bullet-2.81-rev2613\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>LibOVR\Include;FW1FontWrapper;Audio\AL;bullet-2.81-rev2613\src;C:\Program Files\boost\boost_1_53_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -19,10 +19,10 @@
 <wall row="11" col="11" xLength="1" yLength="8" zLength="2" centerX="11.5" centerY="0" centerZ="12" texture="Hedge"/>
 <wall row="12" col="4" xLength="7" yLength="4" zLength="1" centerX="7.5" centerY="0" centerZ="12.5" texture="Tiles"/>
 <wall row="13" col="1" xLength="1" yLength="8" zLength="1" centerX="1.5" centerY="0" centerZ="13.5" texture="Hedge"/>
-<wall row="13" col="2" xLength="1" yLength="8" zLength="1" centerX="2.5" centerY="0" centerZ="13.5" texture="Floor"/>
+<wall row="13" col="2" xLength="1" yLength="8" zLength="1" centerX="2.5" centerY="0" centerZ="13.5" texture="Hedge"/>
 <wall row="13" col="4" xLength="7" yLength="4" zLength="1" centerX="7.5" centerY="0" centerZ="13.5" texture="Tiles"/>
 <wall row="13" col="11" xLength="3" yLength="8" zLength="1" centerX="12.5" centerY="0" centerZ="13.5" texture="Hedge"/>
-<wall row="14" col="1" xLength="1" yLength="8" zLength="5" centerX="1.5" centerY="0" centerZ="16.5" texture="Floor"/>
+<wall row="14" col="1" xLength="1" yLength="8" zLength="5" centerX="1.5" centerY="0" centerZ="16.5" texture="Hedge"/>
 <wall row="14" col="5" xLength="5" yLength="7" zLength="1" centerX="7.5" centerY="0" centerZ="14.5" texture="Rock"/>
 <wall row="14" col="13" xLength="1" yLength="8" zLength="5" centerX="13.5" centerY="0" centerZ="16.5" texture="Hedge"/>
 <wall row="19" col="1" xLength="13" yLength="8" zLength="1" centerX="7.5" centerY="0" centerZ="19.5" texture="Hedge"/>

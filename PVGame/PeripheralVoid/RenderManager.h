@@ -702,8 +702,8 @@ class RenderManager
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
 		void LoadContent()
 		{
-			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/WoodCrate01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
-			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/Wall01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/wood.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/engraved.dds", 0, 0, &mDiffuseMapSRV, 0 ));
 			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,L"defaultspec.dds", 0, 0, &mSpecMapRV, 0 ));
 		}
 		

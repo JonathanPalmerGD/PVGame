@@ -149,7 +149,7 @@
 <spawn row="2" col="4" xLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="2.5" dir="up"/>
 </spawns>
 <exits>
-<exit row="1" col="4" xLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="1.5" file="level5.xml"/>
+<exit row="1" col="4" xLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="1.5" file="level4.xml"/>
 <exit row="24" col="4" xLength="3" zLength="1" centerX="5.5" centerY="0" centerZ="24.5" file="level7.xml"/>
 </exits>
 <cubes>

@@ -1,11 +1,11 @@
 <MaterialsList>
 	<Material name="Wood">
 		<SurfaceMaterial>Red</SurfaceMaterial>
-		<DiffuseMap>WoodCrate01</DiffuseMap>
+		<DiffuseMap>wood</DiffuseMap>
 	</Material>
-  <Material name="Wall">
+  <Material name="Engraved">
     <SurfaceMaterial>Basic</SurfaceMaterial>
-    <DiffuseMap>Wall01</DiffuseMap>
+    <DiffuseMap>engraved</DiffuseMap>
 		<Glow r="0.0" g="0.0" b="0.0" a="0.0"></Glow>
   </Material>
 	<Material name="Floor">
@@ -28,6 +28,11 @@
 		<DiffuseMap>medusacrest</DiffuseMap>
 		<Glow r="0.0" g="0.7" b="0.0" a="1.0"></Glow>
 	</Material>
+	<Material name="HephaestusCrest">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>hephaestuscrest</DiffuseMap>
+		<Glow r="0.7" g="0.7" b="0.7" a="1.0"></Glow>
+	</Material>
 	<Material name="UnlockCrest">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
 		<DiffuseMap>unlockcrest</DiffuseMap>
@@ -36,7 +41,7 @@
   <Material name="WinCrest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>boat</DiffuseMap>
-    <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
+    <Glow r="0.5" g="0.5" b="0.4" a="1.0"></Glow>
   </Material>
 	<Material name="Tiles">
 		<SurfaceMaterial>Basic</SurfaceMaterial>
@@ -77,25 +82,25 @@
 	
   <Material name="Leap Crest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
-    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <DiffuseMap>wood</DiffuseMap>
     <Glow r="0.0" g="0.0" b="0.7" a="1.0"></Glow>
   </Material>
   
   <Material name="Medusa Crest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
-    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <DiffuseMap>wood</DiffuseMap>
     <Glow r="0.0" g="0.7" b="0.0" a="1.0"></Glow>
   </Material>
 
   <Material name="Mobility Crest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
-    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <DiffuseMap>wood</DiffuseMap>
     <Glow r="0.7" g="0.0" b="0.0" a="1.0"></Glow>
   </Material>
 
   <Material name="Unlock Crest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
-    <DiffuseMap>WoodCrate01</DiffuseMap>
+    <DiffuseMap>wood</DiffuseMap>
     <Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
   </Material>
 

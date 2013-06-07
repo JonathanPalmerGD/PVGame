@@ -224,15 +224,15 @@ bool PVGame::LoadXML()
 
 	#pragma region Make Turrets
 	
-	GameObject* turretGOJ = new Turret("column", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 2.5f, 13.0f, 0.0f), physicsMan, ALPHA);
-	if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
-	{
+	//GameObject* turretGOJ = new Turret("column", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 2.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	//if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
+	//{
 		//turretOJ->CreateProjectiles(gameObjects);
-	}
+	//}
 	
 	//turretGOJ->scale(1.0f, 1.0f, 1.0f);
 	//turretGOJ->rotate(0.0f, 0.0f, 0.0f);
-	gameObjects.push_back(turretGOJ);
+	//gameObjects.push_back(turretGOJ);
 	
 	/*
 	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
@@ -911,6 +911,7 @@ void PVGame::ListenSelectorChange()
 		{
 			//if(selector == 0 || selector == 1)
 			//{
+				player->setWinStatus(false);
 				if(audioWin->isPlaying())
 				{
 					audioWin->stop();

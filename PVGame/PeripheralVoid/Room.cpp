@@ -475,7 +475,7 @@ void Room::loadRoom(float xPos, float zPos)
 			winRoom = true;
 			break;
 		case HEPHAESTUS:
-			crestObj = new Crest("unlockcrest", "UnlockCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj = new Crest("unlockcrest", "HephaestusCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, 1.5f, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->translate(0.0f, crestVector[i]->yLength, 0.0f);
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
