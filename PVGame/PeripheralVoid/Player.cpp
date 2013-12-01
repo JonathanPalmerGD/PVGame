@@ -29,7 +29,8 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	//Set up the character controller
 	controller = physicsMan->createCharacterController( .4f, 1.0f, .1f);
 	//controller = physicsMan->createCharacterController( 1.0f, .3f, .025f);
-	controller->setGravity(30.0f);
+	//controller->setGravity(30.0f);
+	controller->setGravity(9.81f);
 	controller->setJumpSpeed(9.0f);
 	controller->setMaxJumpHeight(50.0f);
 	controller->setMaxSlope(3.0f * 3.1415f);
@@ -94,21 +95,30 @@ void Player::Update(float dt, Input* input)
 	{
 		if(leapStatus)
 		{
-			controller->setMaxJumpHeight(40.0f);
-			controller->setJumpSpeed(8.5f);
+			//controller->setMaxJumpHeight(40.0f);
+			//controller->setJumpSpeed(8.5f);
+			controller->setMaxJumpHeight(AUG_JUMP_SPEED);
+			controller->setJumpSpeed(AUG_JUMP_HEIGHT);
 		}
 		else
 		{
-			controller->setJumpSpeed(5.5f);
-			controller->setMaxJumpHeight(20.0f);
+			//controller->setJumpSpeed(5.5f);
+			//controller->setMaxJumpHeight(20.0f);
+			controller->setJumpSpeed(NORMAL_JUMP_SPEED);
+			controller->setMaxJumpHeight(NORMAL_JUMP_HEIGHT);
 		}
 	}
 	
 	//playerSpeed = (physicsMan->getStepSize()) * PIXELS_PER_SEC;
 	playerSpeed = dt * PIXELS_PER_SEC;
 	//controller->setGravity(1750.0f*dt);
-	controller->setGravity(650.0f * physicsMan->getStepSize());
-	controller->setFallSpeed(250.0f * dt);
+	//controller->setGravity(650.0f * physicsMan->getStepSize());
+	controller->setGravity(PLAYER_GRAV);
+
+	//This controls terminal velocity
+	//controller->setFallSpeed(250.0f * dt);
+	controller->setFallSpeed(PLAYER_TERMINAL_VEL);
+	
 	camLookSpeed = dt * LOOK_SPEED;
 	this->HandleInput(input);
 	controller->updateAction(physicsMan->getWorld(), dt);

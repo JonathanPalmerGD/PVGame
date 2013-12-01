@@ -14,13 +14,13 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
-#define DEV_MODE 0
+#define DEV_MODE 1
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
 #define FINE_PHASE 0
 #define MOBILITY_MULTIPLIER 0.75f
 
-#define USINGVLD 1
+#define USINGVLD 0
 #if USINGVLD 
 #include <vld.h>
 #endif
@@ -35,6 +35,18 @@ const enum TURRET_TYPE { ALPHA, BETA, GAMMA };
 const float TARGET_FPS = 1000.0f/60.0f; //in milliseconds
 
 const float GAME_SCALE = 0.5f;
+
+/*const float NORMAL_JUMP_SPEED = 40.0f;
+const float NORMAL_JUMP_HEIGHT = 8.5f;
+const float AUG_JUMP_SPEED = 5.5f;
+const float AUG_JUMP_HEIGHT = 20.0f;*/
+
+const float NORMAL_JUMP_SPEED = 4.0f;
+const float NORMAL_JUMP_HEIGHT = 5.0f;
+const float AUG_JUMP_SPEED = 4.0f;
+const float AUG_JUMP_HEIGHT = 6.0f;
+const float PLAYER_GRAV = 6.0f;
+const float PLAYER_TERMINAL_VEL = 6.0f;
 
 struct Vertex
 {
