@@ -219,7 +219,7 @@ bool PVGame::LoadXML()
 	//Get the filename from constants, hand it into tinyxml
 	BuildRooms(currentRoom, "NOLOAD");
 
-	player->setPosition(currentRoom->getSpawn()->col, 4.0f, currentRoom->getSpawn()->row);
+	player->setPosition(currentRoom->getSpawn()->col, currentRoom->getSpawn()->centerY + 4.0f, currentRoom->getSpawn()->row);
 	#pragma endregion
 
 	#pragma region Make Turrets
@@ -292,7 +292,7 @@ void PVGame::UpdateScene(float dt)
 		{
 			player->resetWinPercent();
 			currentRoom = loadedRooms[0];
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 			gameState = END;
 		}
 	}
@@ -348,7 +348,7 @@ void PVGame::UpdateScene(float dt)
 			if(currentRoom->getExits().size() == 1)
 			{
 				currentRoom = loadedRooms[0];
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				gameState = END;
 			}
 			else if(currentRoom->getExits().size() == 2) //Go to Next Area
@@ -388,7 +388,7 @@ void PVGame::UpdateScene(float dt)
 				currentRoom = startRoom;
 				BuildRooms(currentRoom, curRoom);
 				
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
@@ -472,7 +472,7 @@ void PVGame::UpdateScene(float dt)
 		{
 			if (player->getPosition().y < -100)
 			{
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				if(currentRoom->getSpawn()->direction.compare("up") == 0)
 					player->setRotation(3.14f/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
@@ -487,7 +487,7 @@ void PVGame::UpdateScene(float dt)
 		{
 			if (player->getPosition().y < -5)
 			{
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				if(currentRoom->getSpawn()->direction.compare("up") == 0)
 					player->setRotation(3.14f/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
@@ -744,7 +744,7 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[loadedRooms.size() - 1];
 
-						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 						break;
 					}
 				}
@@ -760,7 +760,7 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[0];
 
-						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 						break;
 					}
 				}

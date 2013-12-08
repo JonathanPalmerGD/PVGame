@@ -126,12 +126,37 @@ class RenderManager
 			//{
 			HRESULT hr = D3D11CreateDevice( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, &featureLevels[0], _countof(featureLevels)-1, D3D11_SDK_VERSION, &md3dDevice, &featureLevel, &md3dImmediateContext ); 
 			//} 
+			
+			/*if( featureLevel == D3D_FEATURE_LEVEL_11_0)
+			{
+				MessageBox(0, L"Direct3D Feature Level 11 executing", 0, 0);
+			}
 
-			if( featureLevel != D3D_FEATURE_LEVEL_11_0 && featureLevel != D3D_FEATURE_LEVEL_10_0 && featureLevel != D3D_FEATURE_LEVEL_10_1)
+			if( featureLevel == D3D_FEATURE_LEVEL_10_1)
+			{
+				MessageBox(0, L"Direct3D Feature Level 10_1 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_10_0)
+			{
+				MessageBox(0, L"Direct3D Feature Level 10_0 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_9_3)
+			{
+				MessageBox(0, L"Direct3D Feature Level 9_3 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_9_2)
+			{
+				MessageBox(0, L"Direct3D Feature Level 9_2 executing", 0, 0);
+			}*/
+
+			/*if( featureLevel != D3D_FEATURE_LEVEL_11_0 && featureLevel != D3D_FEATURE_LEVEL_10_0 && featureLevel != D3D_FEATURE_LEVEL_10_1)
 			{
 				MessageBox(0, L"Direct3D Feature Level 11, 10, 10.1 unsupported, exiting.", 0, 0);
 			}
-
+*/
 			if( FAILED(hr) )
 			{
 				MessageBox(0, L"D3D11CreateDevice Failed.", 0, 0);
