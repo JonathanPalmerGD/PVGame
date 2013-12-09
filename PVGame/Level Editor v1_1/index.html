@@ -8,6 +8,7 @@
 <body>
 	<table id="container">
 		<tr><td>
+			1_1 exp </br>
 			<div id=info>Tile Info</div>
 		</td>
 			
@@ -16,9 +17,12 @@
 		</td>
 		<td>
 			<form id="menu">
-				
 				<div>
-					<span>Texture (for walls and cubes): </span><br/>
+					<span>Level Height: </span>
+					<select id="levelHeight"></select><br/>
+				</div>
+				<div>
+					<span>Wall & Cube Texture </span>
 					<select id="textureType">
 						<option value="Hedge">Hedge</option>
 						<option value="Floor">Floor</option>
@@ -33,13 +37,13 @@
 				<div><input type="radio" id="emptyType" name="tileType" value="empty"/><label for="emptyType">Empty</label></div>
 				<div>
 					<input type="radio" id="wallType" name="tileType" value="wall"/><label for="wallType">Wall</label><br/>
-					<span>Height: </span><br/>
+					<span>Height: </span>
 					<select id="wallHeight"></select>
 				</div>
 				
 				<div>
 					<input type="radio" id="floorType" name="tileType" value="floor"/><label for="floorType">Floor</label><br/>
-					<span>Texture: </span><br/>
+					<span>Texture: </span>
 					<select id="floorTextureType">
 						<option value="Floor">Floor</option>
 						<option value="Hedge">Hedge</option>
@@ -68,9 +72,9 @@
 				<div>
 					<input type="radio" id="cubeType" name="tileType" value="cube"/><label for="cubeType">Cube</label><br/>
 					<span><input type="checkbox" id="cubeFloor" checked="true"/><label for="cubeFloor">With floor</label></span><br/>
-					<span>Height: </span><br/>
+					<span>Height: </span>
 					<select id="cubeHeight"></select><br/>
-					<span>Translate: </span><br/>
+					<span>Translate: </span>
 					<select id="ucTranslateX"></select>
 					<select id="ucTranslateY"></select>
 					<select id="ucTranslateZ"></select><br/>
@@ -84,7 +88,7 @@
 						<option value="left">Left</option>
 						<option value="right">Right</option>
 					</select><br/>
-					<span>Height: </span><br/>
+					<span>Height: </span>
 					<select id="crestHeight"></select>
 					<span><input type="checkbox" id="crestFloor" checked="true"/><label for="crestFloor">With floor</label></span><br/>
 					<select id="crestName">

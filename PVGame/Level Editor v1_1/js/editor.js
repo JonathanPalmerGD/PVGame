@@ -9,6 +9,7 @@ var MAX_TRANSLATE_Z = 50;
 var MAX_WALL_HEIGHT = 10;
 var MAX_CUBE_HEIGHT = 10;
 var MAX_CREST_HEIGHT = 6;
+var MAX_LEVEL_HEIGHT = 20;
 
 var isMouseDown = false;
 var xmlString = "";
@@ -25,8 +26,19 @@ function init()
 	output.addEventListener("change", loadXML);
 
 	var wallHeight = document.getElementById("wallHeight");
+	var levelHeight = document.getElementById("levelHeight");
 	var cubeHeight = document.getElementById("cubeHeight");
 	var crestHeight = document.getElementById("crestHeight");
+	
+	for (var i = -MAX_LEVEL_HEIGHT; i < MAX_LEVEL_HEIGHT; i++)
+	{
+		var option = document.createElement("option");
+		
+		option.value = i + 1;
+		option.appendChild(document.createTextNode(option.value));
+		
+		levelHeight.appendChild(option);
+	}
 	
 	for (var i = 0; i < MAX_WALL_HEIGHT; i++)
 	{
@@ -251,6 +263,7 @@ function loadXML()
 		var zLength = parseInt(floors[i].getAttribute("zLength"));
 		var centerX = parseFloat(floors[i].getAttribute("centerX"));
 		var centerY = parseFloat(floors[i].getAttribute("centerY"));
+		document.getElementById("levelHeight").value = centerY;
 		var centerZ = parseFloat(floors[i].getAttribute("centerZ"));
 		var texture = floors[i].getAttribute("texture");
 		
@@ -579,6 +592,7 @@ function combineElements (elementArray)
 		tempWall.target = elementArray[i].target;
 		tempWall.placement = elementArray[i].placement;
 		tempWall.centerX = tempWall.col + tempWall.xLength / 2;
+		tempWall.centerY = document.getElementById("levelHeight").value;
 		tempWall.centerZ = tempWall.row + tempWall.zLength / 2;
 		tempWall.translateX = elementArray[i].translateX;
 		tempWall.translateY = elementArray[i].translateY;
