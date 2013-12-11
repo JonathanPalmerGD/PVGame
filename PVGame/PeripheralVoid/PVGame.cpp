@@ -1204,10 +1204,10 @@ void PVGame::DrawScene()
 	case MENU:
 		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
-		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
+		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		//renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		//renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
 		if(selector == 0)
 		{
 			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .30f, color2);
@@ -1256,9 +1256,9 @@ void PVGame::DrawScene()
 	case OPTION:
 		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		//renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
 		if(!FULLSCREEN)
 		{
 			renderMan->DrawString("Options", medSize, cWidth * .20f, cHeight * .15f, color1);
@@ -1369,10 +1369,10 @@ void PVGame::DrawScene()
 /*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
 		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
 		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 20, color3);*/
-		renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
-		renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
-		renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
-		renderMan->DrawString("Game Instructions", medSize, cWidth * .20f, cHeight * .06f, color1);
+		//renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
+		//renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
+		//renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
+		//renderMan->DrawString("Game Instructions", medSize, cWidth * .20f, cHeight * .06f, color1);
 		//If controller is connected
 		if(input->gamepadConnected(0))
 		{
@@ -1422,9 +1422,9 @@ void PVGame::DrawScene()
 	case END:
 		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		//renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
 		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .15f, color1);
 		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .28f, color4);
 		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .32f, color4);
