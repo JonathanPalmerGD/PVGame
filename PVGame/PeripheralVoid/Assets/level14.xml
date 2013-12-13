@@ -18,16 +18,12 @@
 </walls>
 <floors>
 <floor row="13" col="4" xLength="2" zLength="1" centerX="5" centerY="0" centerZ="13.5" texture="Floor"/>
-<floor row="13" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="13.5" texture="Floor"/>
+<floor row="13" col="20" xLength="2" zLength="1" centerX="21" centerY="0" centerZ="13.5" texture="Floor"/>
 <floor row="13" col="23" xLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="13.5" texture="Floor"/>
-<floor row="14" col="2" xLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="14" col="18" xLength="7" zLength="1" centerX="21.5" centerY="0" centerZ="14.5" texture="Floor"/>
-<floor row="15" col="2" xLength="4" zLength="1" centerX="4" centerY="0" centerZ="15.5" texture="Floor"/>
-<floor row="15" col="19" xLength="6" zLength="1" centerX="22" centerY="0" centerZ="15.5" texture="Floor"/>
-<floor row="16" col="2" xLength="5" zLength="1" centerX="4.5" centerY="0" centerZ="16.5" texture="Floor"/>
-<floor row="16" col="18" xLength="7" zLength="1" centerX="21.5" centerY="0" centerZ="16.5" texture="Floor"/>
+<floor row="14" col="2" xLength="5" zLength="3" centerX="4.5" centerY="0" centerZ="15.5" texture="Floor"/>
+<floor row="14" col="20" xLength="5" zLength="3" centerX="22.5" centerY="0" centerZ="15.5" texture="Floor"/>
 <floor row="17" col="4" xLength="2" zLength="1" centerX="5" centerY="0" centerZ="17.5" texture="Floor"/>
-<floor row="17" col="19" xLength="3" zLength="1" centerX="20.5" centerY="0" centerZ="17.5" texture="Floor"/>
+<floor row="17" col="20" xLength="2" zLength="1" centerX="21" centerY="0" centerZ="17.5" texture="Floor"/>
 <floor row="17" col="23" xLength="1" zLength="1" centerX="23.5" centerY="0" centerZ="17.5" texture="Floor"/>
 </floors>
 <spawns>
@@ -39,6 +35,9 @@
 <cubes>
 </cubes>
 <crests>
-<crest row="15" col="6" xLength="13" yLength="1" zLength="1" centerX="12.5" centerY="0" centerZ="15.5" effect="4" target="" dir="up" placement="platform"/>
+<crest row="15" col="7" xLength="2" yLength="1" zLength="1" centerX="8" centerY="0" centerZ="15.5" effect="4" target="" dir="down" placement="platform"/>
+<crest row="15" col="10" xLength="2" yLength="1" zLength="1" centerX="11" centerY="1" centerZ="15.5" effect="4" target="" dir="down" placement="platform"/>
+<crest row="15" col="13" xLength="2" yLength="1" zLength="1" centerX="14" centerY="2" centerZ="15.5" effect="4" target="" dir="down" placement="platform"/>
+<crest row="15" col="16" xLength="3" yLength="1" zLength="1" centerX="17.5" centerY="3" centerZ="15.5" effect="4" target="" dir="down" placement="platform"/>
 </crests>
 </level>

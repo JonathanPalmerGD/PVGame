@@ -39,6 +39,7 @@
 </spawns>
 <exits>
 <exit row="2" col="0" xLength="1" zLength="3" centerX="0.5" centerY="10" centerZ="3.5" file="level12.xml"/>
+<exit row="14" col="14" xLength="1" zLength="3" centerX="14.5" centerY="10" centerZ="15.5" file="level14.xml"/>
 </exits>
 <cubes>
 </cubes>
