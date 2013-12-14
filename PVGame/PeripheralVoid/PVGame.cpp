@@ -73,7 +73,7 @@ bool PVGame::Init(char * args)
     
 	selector = 0;
 
-	SELECTOR_MAP[MENU]			=  5;
+	SELECTOR_MAP[MENU]			=  6;
 	SELECTOR_MAP[OPTION]		=  7;
 	SELECTOR_MAP[INSTRUCTIONS]	=  2;
 	SELECTOR_MAP[END]			=  1;
@@ -270,6 +270,22 @@ void PVGame::OnResize()
 	//XMStoreFloat4x4(&mProj, P);
 }
 
+
+void PVGame::SpawnPlayer()
+{
+	if(currentRoom)
+	{
+		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		if(currentRoom->getSpawn()->direction.compare("up") == 0)
+			player->setRotation(3.14f/2.0f);
+		else if(currentRoom->getSpawn()->direction.compare("left") == 0)
+			player->setRotation(3.14f);
+		else if(currentRoom->getSpawn()->direction.compare("down") == 0)
+			player->setRotation((3.0f*3.14f)/2.0f);
+		else if(currentRoom->getSpawn()->direction.compare("right") == 0)
+			player->setRotation(3.14f *2.0f);
+	}
+}
 #pragma region Awful use of variables courtesy of Jason
 bool is1Up = true;
 bool is2Up = true;
@@ -290,10 +306,18 @@ void PVGame::UpdateScene(float dt)
 			PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 		else
 		{
+			SaveCurrentRoom();
 			player->resetWinPercent();
+<<<<<<< HEAD
 			currentRoom = loadedRooms[0];
 			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 			gameState = END;
+=======
+			//currentRoom = loadedRooms[0];
+			//player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+			gameState = MENU;
+			selector = 0;
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 		}
 	}
 	if(input->wasKeyPressed('M'))
@@ -348,7 +372,11 @@ void PVGame::UpdateScene(float dt)
 			if(currentRoom->getExits().size() == 1)
 			{
 				currentRoom = loadedRooms[0];
+<<<<<<< HEAD
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+=======
+				SpawnPlayer();
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 				gameState = END;
 			}
 			else if(currentRoom->getExits().size() == 2) //Go to Next Area
@@ -387,8 +415,13 @@ void PVGame::UpdateScene(float dt)
 				startRoom->loadRoom();
 				currentRoom = startRoom;
 				BuildRooms(currentRoom, curRoom);
+<<<<<<< HEAD
 				
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+=======
+			
+				SpawnPlayer();
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
@@ -472,6 +505,7 @@ void PVGame::UpdateScene(float dt)
 		{
 			if (player->getPosition().y < -100)
 			{
+<<<<<<< HEAD
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				if(currentRoom->getSpawn()->direction.compare("up") == 0)
 					player->setRotation(3.14f/2.0f);
@@ -481,12 +515,16 @@ void PVGame::UpdateScene(float dt)
 					player->setRotation((3.0f*3.14f)/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
 					player->setRotation(3.14f *2.0f);
+=======
+				SpawnPlayer();
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 			}
 		}
 		else
 		{
 			if (player->getPosition().y < -5)
 			{
+<<<<<<< HEAD
 				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 				if(currentRoom->getSpawn()->direction.compare("up") == 0)
 					player->setRotation(3.14f/2.0f);
@@ -496,6 +534,9 @@ void PVGame::UpdateScene(float dt)
 					player->setRotation((3*3.14f)/2.0f);
 				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
 					player->setRotation(3.14f *2.0f);
+=======
+				SpawnPlayer();
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 			}
 		}
 		#pragma endregion
@@ -744,7 +785,11 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[loadedRooms.size() - 1];
 
+<<<<<<< HEAD
 						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+=======
+						SpawnPlayer();
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 						break;
 					}
 				}
@@ -760,7 +805,11 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[0];
 
+<<<<<<< HEAD
 						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+=======
+						SpawnPlayer();
+>>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 						break;
 					}
 				}
@@ -819,36 +868,48 @@ void PVGame::ListenSelectorChange()
 		#pragma region MENU
 		if(gameState == MENU)
 		{
-			//Play
+			//Continue
 			if(selector == 0)
 			{
 				ShowCursor(false);
+				ReadCurrentRoom();
+				SpawnPlayer();
+				gameState = PLAYING;
+				return;
+			}
+			//Play
+			if(selector == 1)
+			{
+				ShowCursor(false);
+				ResetRoomToStart();
+				ReadCurrentRoom();
+				SpawnPlayer();
 				gameState = PLAYING;
 				return;
 			}
 			//Instructions
-			if(selector == 1)
+			if(selector == 2)
 			{
 				selector = 0;
 				gameState = INSTRUCTIONS;
 				return;
 			}
 			//Options
-			if(selector == 2)
+			if(selector == 3)
 			{
 				selector = 0;
 				gameState = OPTION;
 				return;
 			}
 			//Credits
-			if(selector == 3)
+			if(selector == 4)
 			{
 				selector = 0;
 				gameState = END;
 				return;
 			}
 			//End
-			if(selector == 4)
+			if(selector == 5)
 			{
 				PostMessage(this->mhMainWnd, WM_CLOSE, 0, 0);
 				return;
@@ -897,7 +958,7 @@ void PVGame::ListenSelectorChange()
 			//Menu
 			if(selector == 6)
 			{
-				selector = 2;
+				selector = 3;
 				WriteOptions();
 				ReadOptions();
 				ApplyOptions();
@@ -916,7 +977,7 @@ void PVGame::ListenSelectorChange()
 				{
 					audioWin->stop();
 				}
-				selector = 3;
+				selector = 4;
 				gameState = MENU;
 				return;
 			//}
@@ -929,13 +990,15 @@ void PVGame::ListenSelectorChange()
 			if(selector == 0)
 			{
 				ShowCursor(false);
+				ReadCurrentRoom();
+				SpawnPlayer();
 				gameState = PLAYING;
 				return;
 			}
 			//MENU
 			if(selector == 1)
 			{
-				selector = 1;
+				selector = 2;
 				gameState = MENU;
 				return;
 				return;
@@ -1015,6 +1078,87 @@ void PVGame::HandleOptions()
 		}
 	}
 	#pragma endregion
+}
+
+void PVGame::ResetRoomToStart()
+{
+	tinyxml2::XMLDocument doc;
+	if(doc.LoadFile(SAVE_FILE) != XML_NO_ERROR)
+	{
+		XMLElement* level = doc.NewElement("Level");
+		level->SetAttribute("level", "Assets/level1.xml");
+		doc.InsertFirstChild(level);
+	}
+	else
+	{
+		XMLElement* level = doc.FirstChildElement("Level");
+		level->SetAttribute("level", "Assets/level1.xml");
+	}
+	doc.SaveFile(SAVE_FILE);
+}
+
+//////////////////////////////////////////////////////
+// SaveCurrentRoom()
+//
+// Saves the map file of the current room to the save file
+//////////////////////////////////////////////////////
+void PVGame::SaveCurrentRoom()
+{
+	if(currentRoom)
+	{
+		tinyxml2::XMLDocument doc;
+		if(doc.LoadFile(SAVE_FILE) != XML_NO_ERROR)
+		{
+			XMLElement* level = doc.NewElement("Level");
+			string toSave(currentRoom->getMapFile());
+			level->SetAttribute("level", toSave.c_str());
+			doc.InsertFirstChild(level);
+		}
+		else
+		{
+			XMLElement* level = doc.FirstChildElement("Level");
+			string toSave(currentRoom->getMapFile());
+			level->SetAttribute("level", toSave.c_str());
+		}
+		doc.SaveFile(SAVE_FILE);
+	}
+}
+
+void PVGame::ReadCurrentRoom()
+{
+	tinyxml2::XMLDocument doc;
+	while(doc.LoadFile(SAVE_FILE) != XML_NO_ERROR)
+	{
+		SaveCurrentRoom();
+	}
+	XMLElement* saved_level = doc.FirstChildElement("Level");
+	if(!saved_level)
+	{
+		WriteOptions();
+		saved_level = doc.FirstChildElement("Level");
+	}
+
+	const char* lvl = saved_level->Attribute("level");
+	
+	ClearRooms();	
+	loadedRooms.clear();
+	
+	for (unsigned int i = 0; i < proceduralGameObjects.size(); ++i)
+	{
+		delete proceduralGameObjects[i];
+	}
+
+	gameObjects.clear();
+	proceduralGameObjects.clear();
+				
+	Room* startRoom = new Room(lvl, physicsMan, 0, 0);
+	startRoom->loadRoom();
+	currentRoom = startRoom;
+	BuildRooms(currentRoom, "LOADALL");
+				
+	player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+	SortGameObjects();
+	renderMan->BuildInstancedBuffer(gameObjects);
 }
 
 ////////////////////////////////////////////////////////////
@@ -1210,29 +1354,35 @@ void PVGame::DrawScene()
 		//renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
 		if(selector == 0)
 		{
-			renderMan->DrawString(">Play", smlSize, cWidth * .20f, cHeight * .30f, color2);
+			renderMan->DrawString(">Continue", smlSize, cWidth * .20f, cHeight * .25f, color2);
 		}
 		else
-			renderMan->DrawString("  Play", smlSize, cWidth * .20f, cHeight * .30f, color4);
+			renderMan->DrawString("  Continue", smlSize, cWidth * .20f, cHeight * .25f, color4);
 		if(selector == 1)
+		{
+			renderMan->DrawString(">New Game", smlSize, cWidth * .20f, cHeight * .30f, color2);
+		}
+		else
+			renderMan->DrawString("  New Game", smlSize, cWidth * .20f, cHeight * .30f, color4);
+		if(selector == 2)
 		{
 			renderMan->DrawString(">Instructions", smlSize, cWidth * .20f, cHeight * .35f, color2);
 		}
 		else
 			renderMan->DrawString("  Instructions", smlSize, cWidth * .20f, cHeight * .35f, color4);
-		if(selector == 2)
+		if(selector == 3)
 		{
 			renderMan->DrawString(">Options", smlSize, cWidth * .20f, cHeight * .40f, color2);
 		}
 		else
 			renderMan->DrawString("  Options", smlSize, cWidth * .20f, cHeight * .40f, color4);
-		if(selector == 3)
+		if(selector == 4)
 		{
 			renderMan->DrawString(">Credits", smlSize, cWidth * .20f, cHeight * .45f, color2);
 		}
 		else
 			renderMan->DrawString("  Credits", smlSize, cWidth * .20f, cHeight * .45f, color4);
-		if(selector == 4)
+		if(selector == 5)
 		{
 			renderMan->DrawString(">Exit", smlSize, cWidth * .20f, cHeight * .50f, color2);
 		}
