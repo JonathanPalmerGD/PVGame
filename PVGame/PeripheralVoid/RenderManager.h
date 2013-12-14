@@ -106,28 +106,61 @@ class RenderManager
 				D3D_FEATURE_LEVEL_11_0,
 				D3D_FEATURE_LEVEL_10_1,
 				D3D_FEATURE_LEVEL_10_0,
+				D3D_FEATURE_LEVEL_9_3,
+				D3D_FEATURE_LEVEL_9_2,
+				D3D_FEATURE_LEVEL_9_1,
 			};
 
-			HRESULT hr = D3D11CreateDevice(
-					0,                 // default adapter
-					md3dDriverType,
-					0,                 // no software device
-					createDeviceFlags, 
-					featureLevels, ARRAYSIZE(featureLevels),              // default feature level array
-					D3D11_SDK_VERSION,
-					&md3dDevice,
-					&featureLevel,
-					&md3dImmediateContext);
 
+			//HRESULT hr = D3D11CreateDevice(
+			//		0,                 // default adapter
+			//		md3dDriverType,
+			//		0,                 // no software device
+			//		createDeviceFlags, 
+			//		featureLevels, ARRAYSIZE(featureLevels),              // default feature level array
+			//		D3D11_SDK_VERSION,
+			//		&md3dDevice,
+			//		&featureLevel,
+			//		&md3dImmediateContext);
+			//if ( hr == E_INVALIDARG )  
+			//{
+			HRESULT hr = D3D11CreateDevice( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, &featureLevels[0], _countof(featureLevels)-1, D3D11_SDK_VERSION, &md3dDevice, &featureLevel, &md3dImmediateContext ); 
+			//} 
+			
+			/*if( featureLevel == D3D_FEATURE_LEVEL_11_0)
+			{
+				MessageBox(0, L"Direct3D Feature Level 11 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_10_1)
+			{
+				MessageBox(0, L"Direct3D Feature Level 10_1 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_10_0)
+			{
+				MessageBox(0, L"Direct3D Feature Level 10_0 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_9_3)
+			{
+				MessageBox(0, L"Direct3D Feature Level 9_3 executing", 0, 0);
+			}
+
+			if( featureLevel == D3D_FEATURE_LEVEL_9_2)
+			{
+				MessageBox(0, L"Direct3D Feature Level 9_2 executing", 0, 0);
+			}*/
+
+			/*if( featureLevel != D3D_FEATURE_LEVEL_11_0 && featureLevel != D3D_FEATURE_LEVEL_10_0 && featureLevel != D3D_FEATURE_LEVEL_10_1)
+			{
+				MessageBox(0, L"Direct3D Feature Level 11, 10, 10.1 unsupported, exiting.", 0, 0);
+			}
+*/
 			if( FAILED(hr) )
 			{
 				MessageBox(0, L"D3D11CreateDevice Failed.", 0, 0);
 				return false;
-			}
-
-			if( featureLevel != D3D_FEATURE_LEVEL_11_0 && featureLevel != D3D_FEATURE_LEVEL_10_0 && featureLevel != D3D_FEATURE_LEVEL_10_1)
-			{
-				MessageBox(0, L"Direct3D Feature Level 11, 10, 10.1 unsupported, exiting.", 0, 0);
 			}
 
 			usingDX11 = (featureLevel == D3D_FEATURE_LEVEL_11_0);
@@ -702,8 +735,8 @@ class RenderManager
 		//This gets called during PVGame's load content. We need reference to md3dDevice and the shader resource view type stuff.
 		void LoadContent()
 		{
-			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/WoodCrate01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
-			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/Wall01.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/wood.dds", 0, 0, &mDiffuseMapSRV, 0 ));
+			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice, L"Textures/engraved.dds", 0, 0, &mDiffuseMapSRV, 0 ));
 			//HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,L"defaultspec.dds", 0, 0, &mSpecMapRV, 0 ));
 		}
 		

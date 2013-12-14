@@ -219,20 +219,20 @@ bool PVGame::LoadXML()
 	//Get the filename from constants, hand it into tinyxml
 	BuildRooms(currentRoom, "NOLOAD");
 
-	player->setPosition(currentRoom->getSpawn()->col, 4.0f, currentRoom->getSpawn()->row);
+	player->setPosition(currentRoom->getSpawn()->col, currentRoom->getSpawn()->centerY + 4.0f, currentRoom->getSpawn()->row);
 	#pragma endregion
 
 	#pragma region Make Turrets
 	
-	GameObject* turretGOJ = new Turret("column", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 2.5f, 13.0f, 0.0f), physicsMan, ALPHA);
-	if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
-	{
+	//GameObject* turretGOJ = new Turret("column", "Snow", physicsMan->createRigidBody("Cube", 29.0f, 2.5f, 13.0f, 0.0f), physicsMan, ALPHA);
+	//if(Turret* turretOJ = dynamic_cast<Turret*>(turretGOJ))
+	//{
 		//turretOJ->CreateProjectiles(gameObjects);
-	}
+	//}
 	
 	//turretGOJ->scale(1.0f, 1.0f, 1.0f);
 	//turretGOJ->rotate(0.0f, 0.0f, 0.0f);
-	gameObjects.push_back(turretGOJ);
+	//gameObjects.push_back(turretGOJ);
 	
 	/*
 	GameObject* turretGOJ2 = new Turret("Cube", "Sand", physicsMan->createRigidBody("Cube", 40.0f, 0.5f, 13.0f, 0.0f), physicsMan, BETA);
@@ -275,7 +275,7 @@ void PVGame::SpawnPlayer()
 {
 	if(currentRoom)
 	{
-		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getDepth() + 4, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		if(currentRoom->getSpawn()->direction.compare("up") == 0)
 			player->setRotation(3.14f/2.0f);
 		else if(currentRoom->getSpawn()->direction.compare("left") == 0)
@@ -308,8 +308,6 @@ void PVGame::UpdateScene(float dt)
 		{
 			SaveCurrentRoom();
 			player->resetWinPercent();
-			//currentRoom = loadedRooms[0];
-			//player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 			gameState = MENU;
 			selector = 0;
 		}
@@ -407,6 +405,7 @@ void PVGame::UpdateScene(float dt)
 				BuildRooms(currentRoom, curRoom);
 			
 				SpawnPlayer();
+
 				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
@@ -925,6 +924,7 @@ void PVGame::ListenSelectorChange()
 		{
 			//if(selector == 0 || selector == 1)
 			//{
+				player->setWinStatus(false);
 				if(audioWin->isPlaying())
 				{
 					audioWin->stop();
@@ -1300,10 +1300,10 @@ void PVGame::DrawScene()
 	case MENU:
 		renderMan->ClearTargetToColor(); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
-		renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
+		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		//renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		//renderMan->DrawString("By Entire Team is Babies", medSize, cWidth * .20f, cHeight * .15f, color1);
 		if(selector == 0)
 		{
 			renderMan->DrawString(">Continue", smlSize, cWidth * .20f, cHeight * .25f, color2);
@@ -1358,9 +1358,9 @@ void PVGame::DrawScene()
 	case OPTION:
 		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		//renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
 		if(!FULLSCREEN)
 		{
 			renderMan->DrawString("Options", medSize, cWidth * .20f, cHeight * .15f, color1);
@@ -1471,10 +1471,10 @@ void PVGame::DrawScene()
 /*		renderMan->DrawString("P", cHeight * .10f, cWidth * .20f, cHeight / 20, color1);
 		renderMan->DrawString("   eripheral Voi", cHeight * .10f, cWidth * .175f, cHeight / 20, color4);
 		renderMan->DrawString("                       d", cHeight * .10f, cWidth * .185f, cHeight / 20, color3);*/
-		renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
-		renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
-		renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
-		renderMan->DrawString("Game Instructions", medSize, cWidth * .20f, cHeight * .06f, color1);
+		//renderMan->DrawString("P", xmdSize, cWidth * .20f, 0.0f, color1);
+		//renderMan->DrawString("    eripheral Voi", xmdSize, cWidth * .175f, 0.0f, color4);
+		//renderMan->DrawString("                        d", xmdSize, cWidth * .185f, 0.0f, color3);
+		//renderMan->DrawString("Game Instructions", medSize, cWidth * .20f, cHeight * .06f, color1);
 		//If controller is connected
 		if(input->gamepadConnected(0))
 		{
@@ -1524,9 +1524,9 @@ void PVGame::DrawScene()
 	case END:
 		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
 		renderMan->DrawMenuBackground();
-		renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
-		renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
-		renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
+		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
+		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
+		//renderMan->DrawString("                       d", lgSize, cWidth * .185f, cHeight * .03f, color3);
 		renderMan->DrawString("Credits!", medSize, cWidth * .20f, cHeight * .15f, color1);
 		renderMan->DrawString("  Thanks Chris Cascioli, Jen Stanton, Frank Luna,", smlSize, cWidth * .20f, cHeight * .28f, color4);
 		renderMan->DrawString("        Oculus VR, SFXR, FW1FontWrapper", smlSize, cWidth * .20f, cHeight * .32f, color4);

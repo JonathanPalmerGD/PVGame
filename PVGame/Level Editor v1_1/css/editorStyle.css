@@ -1,0 +1,80 @@
+﻿body
+{
+	font-size: 22px;
+}
+
+span
+{
+	font-size: 16px;
+}
+
+#container
+{
+	border: 1px solid black;
+	background-color: #01BC40;
+}
+
+#info
+{
+	font-size: 16px;
+	width: 120px;
+	border: 1px solid black;
+	background-color: #54FE32;
+	text-align: center;
+	cursor: pointer;
+}
+
+#grid
+{
+	display: block;
+}
+
+.gridElement
+{
+	width: 25px;
+	height: 25px;
+	border: 1px solid black;
+	font-size: 10px;
+	background-color: #FFFFFF;
+	text-align: center;
+	cursor: default;
+}
+
+.gridElement:hover
+{
+	background-color: #FFFF00;
+}
+
+#menu
+{
+	width: 210px;
+}
+
+#menu div
+{
+	padding-bottom: 10px;
+	padding-top: 10px;
+	border: 1px solid black;
+}
+
+#createXMLButton
+{
+	text-align: center;
+	width: 140px;
+}
+
+#writeToFileButton
+{
+	font-size: 30px;
+	text-align: center;
+	width: 800px;
+}
+
+#output
+{
+	width: 800px;
+	height: 600px;
+	font-size: 16px;
+	background-color: #54FE32;
+	border: 1px solid black;
+}

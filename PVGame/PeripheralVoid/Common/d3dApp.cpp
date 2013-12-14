@@ -67,6 +67,8 @@ int D3DApp::Run()
  
 	mTimer.Reset();
 
+	//Temp solution to time issues.
+
 	while(msg.message != WM_QUIT)
 	{
 		//Do PVGame's input stuff in the message processing

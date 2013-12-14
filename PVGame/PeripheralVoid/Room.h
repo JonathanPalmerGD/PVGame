@@ -44,6 +44,7 @@ class Room
 		float z;
 		float width; 
 		float depth;
+		float height;
 		float mapOffsetX;
 		float mapOffsetZ;
 		void loadRoom(float xPos, float zPos);

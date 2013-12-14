@@ -172,7 +172,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 9
                 
-                #line 123 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 123 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -346,7 +346,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 18
                 
-                #line 198 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 198 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v8.xyzx, v8.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v8.xyzx  // pin<32:NaN:Inf,33:NaN:Inf,34:NaN:Inf>
@@ -447,7 +447,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -539,7 +539,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -625,7 +625,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -711,7 +711,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -797,7 +797,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -883,7 +883,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -969,7 +969,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1055,7 +1055,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1141,7 +1141,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1227,7 +1227,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1294,7 +1294,7 @@ fxgroup
                   movc r10.xyz, r4.wwww, r10.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r11.xyz, r4.wwww, r11.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 248 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r9.xyz, r9.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r10.xyz, r10.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r11.xyz, r11.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1451,7 +1451,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 9
                 
-                #line 123 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 123 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -1623,7 +1623,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 18
                 
-                #line 198 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 198 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v8.xyzx, v8.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v8.xyzx  // pin<32:NaN:Inf,33:NaN:Inf,34:NaN:Inf>
@@ -1724,7 +1724,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1816,7 +1816,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1902,7 +1902,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -1988,7 +1988,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2074,7 +2074,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2160,7 +2160,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2246,7 +2246,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2332,7 +2332,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2418,7 +2418,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2504,7 +2504,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2571,7 +2571,7 @@ fxgroup
                   movc r10.xyz, r4.wwww, r10.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r11.xyz, r4.wwww, r11.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 248 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r9.xyz, r9.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r10.xyz, r10.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r11.xyz, r11.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -2721,7 +2721,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 8
                 
-                #line 150 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 150 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.y, r0.xyzw, cb0[0].xyzw  // vout<29:NaN:Inf>
@@ -2806,7 +2806,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 308 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 308 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v6.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
@@ -2912,7 +2912,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 8
                 
-                #line 150 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 150 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.y, r0.xyzw, cb0[0].xyzw  // vout<29:NaN:Inf>
@@ -2997,7 +2997,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 288 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 288 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v6.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v6.x
@@ -3073,7 +3073,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -3212,7 +3212,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 323 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 323 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -3311,7 +3311,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -3450,7 +3450,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 327 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 327 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -3549,7 +3549,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -3688,7 +3688,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 327 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 327 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -3783,7 +3783,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -3922,7 +3922,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 323 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 323 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -4071,7 +4071,7 @@ fxgroup
                 dcl_output o6.zw
                 dcl_temps 6
                 
-                #line 182 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 182 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
@@ -4206,7 +4206,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 3
                 
-                #line 364 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 364 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v6.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
@@ -4376,7 +4376,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 9
                 
-                #line 123 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 123 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -4549,7 +4549,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 18
                 
-                #line 198 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 198 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v8.xyzx, v8.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v8.xyzx  // pin<32:NaN:Inf,33:NaN:Inf,34:NaN:Inf>
@@ -4650,7 +4650,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4742,7 +4742,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4828,7 +4828,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -4914,7 +4914,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5000,7 +5000,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5086,7 +5086,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5172,7 +5172,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5258,7 +5258,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5344,7 +5344,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5430,7 +5430,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5497,7 +5497,7 @@ fxgroup
                   movc r10.xyz, r4.wwww, r10.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r11.xyz, r4.wwww, r11.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 248 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r9.xyz, r9.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r10.xyz, r10.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r11.xyz, r11.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -5653,7 +5653,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 9
                 
-                #line 123 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 123 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mul r0.xyz, v0.xxxx, v3.xyzx
                 mul r1.xyz, v0.yyyy, v4.xyzx
                 add r0.xyz, r0.xyzx, r1.xyzx
@@ -5824,7 +5824,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 18
                 
-                #line 198 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 198 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 dp3 r0.x, v8.xyzx, v8.xyzx
                 rsq r0.x, r0.x
                 mul r0.xyz, r0.xxxx, v8.xyzx  // pin<32:NaN:Inf,33:NaN:Inf,34:NaN:Inf>
@@ -5925,7 +5925,7 @@ fxgroup
                     mov r5.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r3.xyz, r3.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r4.xyz, r4.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r5.xyz, r5.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6017,7 +6017,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6103,7 +6103,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6189,7 +6189,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6275,7 +6275,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6361,7 +6361,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6447,7 +6447,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6533,7 +6533,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6619,7 +6619,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6705,7 +6705,7 @@ fxgroup
                     mov r8.xyz, l(0,0,0,0)  // spec<0: 0f,1: 0f,2: 0f>
                   endif 
                 
-                #line 237 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 237 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r6.xyz, r6.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r7.xyz, r7.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r8.xyz, r8.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6772,7 +6772,7 @@ fxgroup
                   movc r10.xyz, r4.wwww, r10.xyzx, l(0,0,0,0)  // diffuse<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   movc r11.xyz, r4.wwww, r11.xyzx, l(0,0,0,0)  // spec<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                 
-                #line 248 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 248 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                   mov r9.xyz, r9.xyzx  // A<0:Inf,1:Inf,2:Inf>
                   mov r10.xyz, r10.xyzx  // D<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
                   mov r11.xyz, r11.xyzx  // S<0:NaN:Inf,1:NaN:Inf,2:NaN:Inf>
@@ -6921,7 +6921,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 8
                 
-                #line 150 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 150 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.y, r0.xyzw, cb0[0].xyzw  // vout<29:NaN:Inf>
@@ -7005,7 +7005,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 308 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 308 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 sample r0.xyzw, v6.xyxx, t0.xyzw, s0  // texColor<0:Inf,1:Inf,2:Inf,3:Inf>
                 mov r0.xyz, r0.xyzx  // litColor<0:Inf,1:Inf,2:Inf>
                 
@@ -7110,7 +7110,7 @@ fxgroup
                 dcl_output o8.xyz
                 dcl_temps 8
                 
-                #line 150 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 150 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.y, r0.xyzw, cb0[0].xyzw  // vout<29:NaN:Inf>
@@ -7194,7 +7194,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 1
                 
-                #line 288 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 288 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 ge r0.x, v6.x, l(0.495000)
                 and r0.x, r0.x, l(-1)
                 ge r0.y, l(0.505000), v6.x
@@ -7269,7 +7269,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -7407,7 +7407,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 323 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 323 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -7505,7 +7505,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -7643,7 +7643,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 327 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 327 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -7741,7 +7741,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -7879,7 +7879,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 327 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 327 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, l(0)  // texOffset<0: 0f>
                 mov r0.y, cb0[80].y  // texOffset<1>
                 
@@ -7973,7 +7973,7 @@ fxgroup
                 dcl_output o1.xy
                 dcl_temps 2
                 
-                #line 170 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 170 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx  // vout<0,1,2>
                 mov r0.w, l(1.000000)  // vout<3: 1f>
                 
@@ -8111,7 +8111,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 6
                 
-                #line 323 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 323 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.x, cb0[80].x  // texOffset<0>
                 mov r0.y, l(0)  // texOffset<1: 0f>
                 
@@ -8259,7 +8259,7 @@ fxgroup
                 dcl_output o6.zw
                 dcl_temps 6
                 
-                #line 182 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 182 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw  // vout<0:NaN:Inf>
@@ -8393,7 +8393,7 @@ fxgroup
                 dcl_output o0.xyzw
                 dcl_temps 4
                 
-                #line 364 "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
+                #line 364 "C:\Users\Jason\Documents\PVGameFork\PVGame\PeripheralVoid\FX\HardwareInstancing.fx"
                 mov r0.xy, -cb0[81].xyxx
                 add r0.xy, r0.xyxx, v6.xyxx
                 mul r0.xy, r0.xyxx, cb0[82].zwzz  // theta<0:NaN:Inf,1:NaN:Inf>
