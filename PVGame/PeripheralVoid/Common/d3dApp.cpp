@@ -364,6 +364,7 @@ void D3DApp::CalculateFrameStats()
 		std::wostringstream outs;   
 		outs.precision(6);
 		outs << mMainWndCaption << L"    "
+			 << L"Current Room: " << curRoomStr.c_str() << "    "
 			 << L"FPS: " << fps << L"    " 
 			 << L"Frame Time: " << mspf << L" (ms)";
 		SetWindowText(mhMainWnd, outs.str().c_str());

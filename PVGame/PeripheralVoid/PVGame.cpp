@@ -143,10 +143,6 @@ bool PVGame::LoadContent()
 
 bool PVGame::LoadXML()
 {
-	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan, 0, 0);
-	startRoom->loadRoom();
-	currentRoom = startRoom;
-
 	tinyxml2::XMLDocument doc;
 
 	#pragma region Textures
@@ -216,10 +212,15 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Map Loading
+
+	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan, 0, 0);
+	startRoom->loadRoom();
+	currentRoom = startRoom;
+
 	//Get the filename from constants, hand it into tinyxml
 	BuildRooms(currentRoom, "NOLOAD");
 
-	player->setPosition(currentRoom->getSpawn()->col, currentRoom->getSpawn()->centerY + 4.0f, currentRoom->getSpawn()->row);
+	SpawnPlayer();
 	#pragma endregion
 
 	#pragma region Make Turrets
@@ -275,7 +276,7 @@ void PVGame::SpawnPlayer()
 {
 	if(currentRoom)
 	{
-		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		if(currentRoom->getSpawn()->direction.compare("up") == 0)
 			player->setRotation(3.14f/2.0f);
 		else if(currentRoom->getSpawn()->direction.compare("left") == 0)
@@ -308,16 +309,8 @@ void PVGame::UpdateScene(float dt)
 		{
 			SaveCurrentRoom();
 			player->resetWinPercent();
-<<<<<<< HEAD
-			currentRoom = loadedRooms[0];
-			player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-			gameState = END;
-=======
-			//currentRoom = loadedRooms[0];
-			//player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 			gameState = MENU;
 			selector = 0;
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 		}
 	}
 	if(input->wasKeyPressed('M'))
@@ -357,6 +350,10 @@ void PVGame::UpdateScene(float dt)
 	#pragma endregion
 	#pragma region Playing
 	case PLAYING:
+
+		if(currentRoom)
+			curRoomStr = currentRoom->getMapFile();
+
 		if(audioSource->isPlaying())
 		{
 			audioSource->stop();
@@ -372,11 +369,7 @@ void PVGame::UpdateScene(float dt)
 			if(currentRoom->getExits().size() == 1)
 			{
 				currentRoom = loadedRooms[0];
-<<<<<<< HEAD
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-=======
 				SpawnPlayer();
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 				gameState = END;
 			}
 			else if(currentRoom->getExits().size() == 2) //Go to Next Area
@@ -415,13 +408,9 @@ void PVGame::UpdateScene(float dt)
 				startRoom->loadRoom();
 				currentRoom = startRoom;
 				BuildRooms(currentRoom, curRoom);
-<<<<<<< HEAD
-				
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-=======
-			
+
 				SpawnPlayer();
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
+
 				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
@@ -503,40 +492,16 @@ void PVGame::UpdateScene(float dt)
 		//If the player falls of the edge of the world, respawn in current room
 		if(devMode)
 		{
-			if (player->getPosition().y < -100)
+			if (player->getPosition().y < -50)
 			{
-<<<<<<< HEAD
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-				if(currentRoom->getSpawn()->direction.compare("up") == 0)
-					player->setRotation(3.14f/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
-					player->setRotation(3.14f);
-				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
-					player->setRotation((3.0f*3.14f)/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
-					player->setRotation(3.14f *2.0f);
-=======
 				SpawnPlayer();
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 			}
 		}
 		else
 		{
 			if (player->getPosition().y < -5)
 			{
-<<<<<<< HEAD
-				player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-				if(currentRoom->getSpawn()->direction.compare("up") == 0)
-					player->setRotation(3.14f/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("left") == 0)
-					player->setRotation(3.14f);
-				else if(currentRoom->getSpawn()->direction.compare("down") == 0)
-					player->setRotation((3*3.14f)/2.0f);
-				else if(currentRoom->getSpawn()->direction.compare("right") == 0)
-					player->setRotation(3.14f *2.0f);
-=======
 				SpawnPlayer();
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 			}
 		}
 		#pragma endregion
@@ -785,11 +750,7 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[loadedRooms.size() - 1];
 
-<<<<<<< HEAD
-						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-=======
 						SpawnPlayer();
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 						break;
 					}
 				}
@@ -805,11 +766,7 @@ void PVGame::UpdateScene(float dt)
 						else
 							currentRoom = loadedRooms[0];
 
-<<<<<<< HEAD
-						player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
-=======
 						SpawnPlayer();
->>>>>>> 8f55e118b10a5e71465b1676edd1a6313379ea08
 						break;
 					}
 				}
@@ -1139,7 +1096,9 @@ void PVGame::ReadCurrentRoom()
 	}
 
 	const char* lvl = saved_level->Attribute("level");
-	
+	char* map = (char *)malloc(sizeof(char) * strlen(lvl) + 1);
+	map = (char*)memcpy(map, lvl, sizeof(char)*strlen(lvl) + 1);
+
 	ClearRooms();	
 	loadedRooms.clear();
 	
@@ -1151,12 +1110,12 @@ void PVGame::ReadCurrentRoom()
 	gameObjects.clear();
 	proceduralGameObjects.clear();
 				
-	Room* startRoom = new Room(lvl, physicsMan, 0, 0);
+	Room* startRoom = new Room(map, physicsMan, 0, 0);
 	startRoom->loadRoom();
 	currentRoom = startRoom;
 	BuildRooms(currentRoom, "LOADALL");
 				
-	player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+	SpawnPlayer();
 	SortGameObjects();
 	renderMan->BuildInstancedBuffer(gameObjects);
 }

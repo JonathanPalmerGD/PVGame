@@ -50,6 +50,8 @@ Player::Player(PhysicsManager* pm, RenderManager* rm, RiftManager* riftM)
 	listener->mute();
 	audioSource = new AudioSource();
 	audioSource->initialize("Audio\\Jump.wav", AudioSource::WAV);
+	winAudio = new AudioSource();
+	winAudio->initialize("Audio\\test_mono_8000Hz_8bit_PCM.wav", AudioSource::WAV);
 
 	//Rift Head Tracking variables
 	EyeYaw = 0;
@@ -478,6 +480,13 @@ void Player::increaseWinPercent()
 {
 	if(winStatus && winPercent < 1.0f)
 	{
+		if(winPercent == 0)
+		{
+			winAudio->setPosition(controller->getGhostObject()->getWorldTransform().getOrigin().getX(),
+				controller->getGhostObject()->getWorldTransform().getOrigin().getY(),
+				controller->getGhostObject()->getWorldTransform().getOrigin().getZ());
+			winAudio->play();
+		}
 		winPercent += 0.008f;
 	}
 }
@@ -485,6 +494,7 @@ void Player::increaseWinPercent()
 void Player::resetWinPercent()
 {
 	winPercent = 0.0f;
+	winAudio->stop();
 }
 
 #pragma region ACCESSORS AND MUTATORS

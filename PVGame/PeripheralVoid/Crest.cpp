@@ -55,7 +55,7 @@ void Crest::ChangeView(bool newVisionBool)
 {
 	if(newVisionBool && !inVision)
 	{
-		if(!audioSource->isPlaying())
+		if(!audioSource->isPlaying() && crestType != WIN)
 		{
 			audioSource->play();
 		}

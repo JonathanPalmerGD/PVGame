@@ -40,6 +40,7 @@ class Room
 		vector<Room*> neighbors;
 		map<string, MovingObject*> cubeMap; 
 		const char* mapFile;
+		bool errorLoading;
 		float x;
 		float z;
 		float width; 

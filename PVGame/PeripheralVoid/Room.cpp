@@ -4,6 +4,8 @@
 Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 {
 	winRoom = false;
+			if(strcmp(xmlFile, "Assets/level1.xml") == 0)
+				int xqya = 1;
 	mapFile = xmlFile;
 	physicsMan = pm;
 	x = xPos;
@@ -14,9 +16,12 @@ Room::Room(const char* xmlFile, PhysicsManager* pm, float xPos, float zPos)
 	doc.LoadFile(xmlFile);
 	if(doc.ErrorID() != 0)
 	{
-		mapFile = NULL;
+		errorLoading = true;
 		return;
-	}
+	}else
+		errorLoading = false;
+	
+
 	// Set initial room dimensions
 	width = -100.0f;
 	depth = -100.0f;
@@ -456,7 +461,7 @@ void Room::loadRoom(float xPos, float zPos)
 			crestObj->SetTexScale(0.0f, 0.0f, 0.0f, 0.0f);
 			break;
 		case HADES:
-			crestObj = new Crest("Cube", "Brick", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
+			crestObj = new Crest("Cube", "HadesCrest", physicsMan->createRigidBody("Cube", crestVector[i]->centerX + xPos, crestVector[i]->centerY, crestVector[i]->centerZ + zPos, 0.0f), physicsMan, crestVector[i]->effect, 0.0f);
 			crestObj->scale(crestVector[i]->xLength, crestVector[i]->yLength, crestVector[i]->zLength);
 			crestObj->SetTexScale(2.0f, 2.0f, 0.0f, 1.0f);
 			break;
@@ -509,52 +514,54 @@ void Room::loadNeighbors(vector<Room*> loadedRooms)
 		if (!isLoaded)
 		{
 			float offsetX = x, offsetZ = z;
-
-			Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
-			Wall* roomEntrance;
-
-			if(tmpRoom->getFile() == NULL)
+			if(strcmp(exitVector[i]->file.substr(0, 6).c_str(), "Assets") == 0)
 			{
-				delete tmpRoom;
-			}
-			else
-			{
-				for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+				Room* tmpRoom = new Room(exitVector[i]->file.c_str(), physicsMan, 0, 0); 
+				Wall* roomEntrance;
+
+				if(tmpRoom->errorLoading == true)
 				{
-					if (tmpRoom->getExits()[j]->file == mapFile)
-						roomEntrance = tmpRoom->getExits()[j];
+					delete tmpRoom;
 				}
-
-				if (exitVector[i]->row == 0)
+				else
 				{
-					offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-					offsetZ -= tmpRoom->depth;
+					for (unsigned int j = 0; j < tmpRoom->getExits().size(); j++)
+					{
+						if (tmpRoom->getExits()[j]->file == mapFile)
+							roomEntrance = tmpRoom->getExits()[j];
+					}
+
+					if (exitVector[i]->row == 0)
+					{
+						offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+						offsetZ -= tmpRoom->depth;
+					}
+
+					if (exitVector[i]->row == depth - 1)
+					{
+						offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
+						offsetZ += depth;
+					}
+
+					if (exitVector[i]->col == 0)
+					{
+						offsetX -= tmpRoom->width;
+						offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+					}
+
+					if (exitVector[i]->col == width - 1)
+					{
+						offsetX += width;
+						offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
+					}
+
+					tmpRoom->setX(offsetX);
+					tmpRoom->setZ(offsetZ);
+
+					tmpRoom->loadRoom(offsetX, offsetZ);
+
+					neighbors.push_back(tmpRoom);
 				}
-
-				if (exitVector[i]->row == depth - 1)
-				{
-					offsetX -= (roomEntrance->centerX - exitVector[i]->centerX);
-					offsetZ += depth;
-				}
-
-				if (exitVector[i]->col == 0)
-				{
-					offsetX -= tmpRoom->width;
-					offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-				}
-
-				if (exitVector[i]->col == width - 1)
-				{
-					offsetX += width;
-					offsetZ -= (roomEntrance->centerZ - exitVector[i]->centerZ);
-				}
-
-				tmpRoom->setX(offsetX);
-				tmpRoom->setZ(offsetZ);
-
-				tmpRoom->loadRoom(offsetX, offsetZ);
-
-				neighbors.push_back(tmpRoom);
 			}
 		}
 		else
