@@ -143,10 +143,6 @@ bool PVGame::LoadContent()
 
 bool PVGame::LoadXML()
 {
-	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan, 0, 0);
-	startRoom->loadRoom();
-	currentRoom = startRoom;
-
 	tinyxml2::XMLDocument doc;
 
 	#pragma region Textures
@@ -216,10 +212,15 @@ bool PVGame::LoadXML()
 	#pragma endregion
 
 	#pragma region Map Loading
+
+	Room* startRoom = new Room(MAP_LEVEL_1, physicsMan, 0, 0);
+	startRoom->loadRoom();
+	currentRoom = startRoom;
+
 	//Get the filename from constants, hand it into tinyxml
 	BuildRooms(currentRoom, "NOLOAD");
 
-	player->setPosition(currentRoom->getSpawn()->col, currentRoom->getSpawn()->centerY + 4.0f, currentRoom->getSpawn()->row);
+	SpawnPlayer();
 	#pragma endregion
 
 	#pragma region Make Turrets
@@ -275,7 +276,7 @@ void PVGame::SpawnPlayer()
 {
 	if(currentRoom)
 	{
-		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getDepth() + 4, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+		player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), currentRoom->getSpawn()->centerY + 4, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
 		if(currentRoom->getSpawn()->direction.compare("up") == 0)
 			player->setRotation(3.14f/2.0f);
 		else if(currentRoom->getSpawn()->direction.compare("left") == 0)
@@ -349,6 +350,10 @@ void PVGame::UpdateScene(float dt)
 	#pragma endregion
 	#pragma region Playing
 	case PLAYING:
+
+		if(currentRoom)
+			curRoomStr = currentRoom->getMapFile();
+
 		if(audioSource->isPlaying())
 		{
 			audioSource->stop();
@@ -487,7 +492,7 @@ void PVGame::UpdateScene(float dt)
 		//If the player falls of the edge of the world, respawn in current room
 		if(devMode)
 		{
-			if (player->getPosition().y < -100)
+			if (player->getPosition().y < -50)
 			{
 				SpawnPlayer();
 			}
@@ -1091,7 +1096,9 @@ void PVGame::ReadCurrentRoom()
 	}
 
 	const char* lvl = saved_level->Attribute("level");
-	
+	char* map = (char *)malloc(sizeof(char) * strlen(lvl) + 1);
+	map = (char*)memcpy(map, lvl, sizeof(char)*strlen(lvl) + 1);
+
 	ClearRooms();	
 	loadedRooms.clear();
 	
@@ -1103,12 +1110,12 @@ void PVGame::ReadCurrentRoom()
 	gameObjects.clear();
 	proceduralGameObjects.clear();
 				
-	Room* startRoom = new Room(lvl, physicsMan, 0, 0);
+	Room* startRoom = new Room(map, physicsMan, 0, 0);
 	startRoom->loadRoom();
 	currentRoom = startRoom;
 	BuildRooms(currentRoom, "LOADALL");
 				
-	player->setPosition((currentRoom->getX() + currentRoom->getSpawn()->centerX), 4.0f, (currentRoom->getZ() + currentRoom->getSpawn()->centerZ));
+	SpawnPlayer();
 	SortGameObjects();
 	renderMan->BuildInstancedBuffer(gameObjects);
 }

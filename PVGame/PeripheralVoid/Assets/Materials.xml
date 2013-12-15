@@ -38,6 +38,11 @@
 		<DiffuseMap>unlockcrest</DiffuseMap>
 		<Glow r="0.7" g="0.7" b="0.0" a="1.0"></Glow>
 	</Material>
+	<Material name="HadesCrest">
+		<SurfaceMaterial>Basic</SurfaceMaterial>
+		<DiffuseMap>slate</DiffuseMap>
+		<Glow r="0.7" g="0.0" b="0.7" a="1.0"></Glow>
+	</Material>
   <Material name="WinCrest">
     <SurfaceMaterial>Basic</SurfaceMaterial>
     <DiffuseMap>boat</DiffuseMap>
