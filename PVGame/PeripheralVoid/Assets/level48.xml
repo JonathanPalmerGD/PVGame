@@ -96,7 +96,7 @@
 <floor row="21" col="20" xLength="1" zLength="1" centerX="20.5" centerY="6" centerZ="21.5" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="7" col="22" xLength="1" zLength="1" centerX="22.5" centerY="6" centerZ="7.5" dir="up"/>
+<spawn row="7" col="22" xLength="1" zLength="1" centerX="22.5" centerY="6" centerZ="7.5" dir="right"/>
 </spawns>
 <exits>
 <exit row="0" col="4" xLength="3" zLength="1" centerX="5.5" centerY="6" centerZ="0.5" file="level10.xml"/>

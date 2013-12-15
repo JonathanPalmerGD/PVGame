@@ -35,10 +35,11 @@
 <floor row="15" col="2" xLength="11" zLength="4" centerX="7.5" centerY="10" centerZ="17" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="3" col="2" xLength="1" zLength="1" centerX="2.5" centerY="10" centerZ="3.5" dir="right"/>
+<spawn row="3" col="2" xLength="1" zLength="1" centerX="2.5" centerY="10" centerZ="3.5" dir="up"/>
 </spawns>
 <exits>
 <exit row="2" col="0" xLength="1" zLength="3" centerX="0.5" centerY="10" centerZ="3.5" file="level12.xml"/>
+<exit row="20" col="6" xLength="3" zLength="1" centerX="7.5" centerY="10" centerZ="20.5" file="level40.xml"/>
 </exits>
 <cubes>
 </cubes>

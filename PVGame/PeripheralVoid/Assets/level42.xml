@@ -1,0 +1,29 @@
+<level>
+<walls>
+<wall row="1" col="11" xLength="1" yLength="8" zLength="1" centerX="11.5" centerY="18" centerZ="1.5" texture="Hedge"/>
+<wall row="1" col="15" xLength="1" yLength="8" zLength="1" centerX="15.5" centerY="18" centerZ="1.5" texture="Hedge"/>
+<wall row="2" col="10" xLength="1" yLength="8" zLength="14" centerX="10.5" centerY="18" centerZ="9" texture="Hedge"/>
+<wall row="2" col="16" xLength="1" yLength="8" zLength="10" centerX="16.5" centerY="18" centerZ="7" texture="Hedge"/>
+<wall row="12" col="16" xLength="3" yLength="8" zLength="1" centerX="17.5" centerY="18" centerZ="12.5" texture="Hedge"/>
+<wall row="16" col="10" xLength="9" yLength="8" zLength="1" centerX="14.5" centerY="18" centerZ="16.5" texture="Hedge"/>
+</walls>
+<floors>
+<floor row="1" col="12" xLength="3" zLength="1" centerX="13.5" centerY="18" centerZ="1.5" texture="Floor"/>
+<floor row="2" col="11" xLength="5" zLength="2" centerX="13.5" centerY="18" centerZ="3" texture="Floor"/>
+<floor row="4" col="11" xLength="5" zLength="4" centerX="13.5" centerY="18" centerZ="6" texture="Floor"/>
+<floor row="13" col="11" xLength="8" zLength="3" centerX="15" centerY="18" centerZ="14.5" texture="Floor"/>
+</floors>
+<spawns>
+<spawn row="2" col="13" xLength="1" zLength="1" centerX="13.5" centerY="18" centerZ="2.5" dir="right"/>
+</spawns>
+<exits>
+<exit row="1" col="12" xLength="3" zLength="1" centerX="13.5" centerY="18" centerZ="1.5" file="level41.xml"/>
+<exit row="13" col="18" xLength="1" zLength="3" centerX="18.5" centerY="18" centerZ="14.5" file="level43.xml"/>
+</exits>
+<cubes>
+</cubes>
+<crests>
+<crest row="15" col="12" xLength="1" yLength="2" zLength="1" centerX="12.5" centerY="19" centerZ="15.5" effect="2" target="" dir="down" placement=""/>
+<crest row="15" col="14" xLength="1" yLength="2" zLength="1" centerX="14.5" centerY="19" centerZ="15.5" effect="1" target="" dir="down" placement=""/>
+</crests>
+</level>

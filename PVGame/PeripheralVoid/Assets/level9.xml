@@ -11,7 +11,7 @@
 <floor row="21" col="15" xLength="9" zLength="3" centerX="19.5" centerY="0" centerZ="22.5" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="22" col="17" xLength="1" zLength="1" centerX="17.5" centerY="0" centerZ="22.5" dir="right"/>
+<spawn row="22" col="17" xLength="1" zLength="1" centerX="17.5" centerY="0" centerZ="22.5" dir="up"/>
 </spawns>
 <exits>
 <exit row="13" col="21" xLength="3" zLength="1" centerX="22.5" centerY="0" centerZ="13.5" file="level47.xml"/>
