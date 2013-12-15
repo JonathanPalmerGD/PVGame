@@ -69,6 +69,7 @@ protected:
 	GameTimer mTimer;
 
 	std::wstring mMainWndCaption;
+	std::string curRoomStr;
 
 	Input* input;
 	RenderManager* renderMan;

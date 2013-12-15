@@ -42,6 +42,11 @@ public:
 		void ReadOptions();
 		void ApplyOptions();
 
+		void SaveCurrentRoom();
+		void ReadCurrentRoom();
+		void ResetRoomToStart();
+
+		void SpawnPlayer();
 	private:
 		void BuildFX();
 		void BuildVertexLayout();

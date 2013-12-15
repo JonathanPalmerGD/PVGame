@@ -1,39 +1,19 @@
-﻿Build started 3/24/2013 12:48:47 AM.
-     1>Project "C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\Peripheral Void Main Directory\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
+﻿Build started 5/25/2013 5:29:35 PM.
+     1>Project "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Release\PeripheralVoid.unsuccessfulbuild" because "AlwaysCreate" was specified.
        CustomBuild:
-         fxc compile for release: C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\Peripheral Void Main Directory\PeripheralVoid\FX\Lighting.fx
-         Microsoft (R) Direct3D Shader Compiler 9.29.952.3111
-         Copyright (C) Microsoft Corporation 2002-2009. All rights reserved.
-         
-         compilation succeeded; see C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\Peripheral Void Main Directory\PeripheralVoid\FX\Lighting.fxo
+         All outputs are up-to-date.
        ClCompile:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IAudio\AL /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MDd /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Audio\AudioListener.cpp Audio\AudioSource.cpp Common\Camera.cpp Common\d3dApp.cpp Common\d3dUtil.cpp Common\GameTimer.cpp Common\GeometryGenerator.cpp Common\LightHelper.cpp Common\MathHelper.cpp Common\TextureMgr.cpp Common\Waves.cpp Common\xnacollision.cpp FileLoader.cpp GameObject.cpp Input.cpp PhysicsManager.cpp Player.cpp PVGame.cpp tinyxml2.cpp
-         AudioListener.cpp
-         AudioSource.cpp
-         Camera.cpp
-         d3dApp.cpp
-         d3dUtil.cpp
-         GameTimer.cpp
-         GeometryGenerator.cpp
-         LightHelper.cpp
-         MathHelper.cpp
-         TextureMgr.cpp
-         Waves.cpp
-         xnacollision.cpp
-         FileLoader.cpp
-         GameObject.cpp
-         Input.cpp
-         PhysicsManager.cpp
-     1>c:\users\kennyrules\documents\github\peripheralvoid\peripheral void main directory\peripheralvoid\physx-3.2_pc_sdk_core\include\foundation/PxPreprocessor.h(309): fatal error C1189: #error :  Exactly one of NDEBUG and _DEBUG needs to be defined by preprocessor
-         Player.cpp
-     1>c:\users\kennyrules\documents\github\peripheralvoid\peripheral void main directory\peripheralvoid\physx-3.2_pc_sdk_core\include\foundation/PxPreprocessor.h(309): fatal error C1189: #error :  Exactly one of NDEBUG and _DEBUG needs to be defined by preprocessor
-         PVGame.cpp
-     1>c:\users\kennyrules\documents\github\peripheralvoid\peripheral void main directory\peripheralvoid\physx-3.2_pc_sdk_core\include\foundation/PxPreprocessor.h(309): fatal error C1189: #error :  Exactly one of NDEBUG and _DEBUG needs to be defined by preprocessor
-         tinyxml2.cpp
-     1>Done Building Project "C:\Users\KennyRules\Documents\GitHub\PeripheralVoid\Peripheral Void Main Directory\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)) -- FAILED.
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+         PeripheralVoid.vcxproj -> C:\Users\Jason\Documents\PVGame\PVGame\Release\PeripheralVoid.exe
+       FinalizeBuildStatus:
+         Deleting file "Release\PeripheralVoid.unsuccessfulbuild".
+         Touching "Release\PeripheralVoid.lastbuildstate".
+     1>Done Building Project "C:\Users\Jason\Documents\PVGame\PVGame\PeripheralVoid\PeripheralVoid.vcxproj" (build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:09.40
+Time Elapsed 00:00:00.07

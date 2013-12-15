@@ -14,7 +14,7 @@ using std::string;
 
 #define BIT(x) (1<<(x))
 
-#define DEV_MODE 1
+#define DEV_MODE 0
 #define WALL_LOWERED 1
 #define USE_FRUSTUM_CULLING 1
 #define DRAW_FRUSTUM 0 //Only Make 1 if USE_FRUSTUM_CULLING is 1
@@ -283,11 +283,12 @@ struct InstancedData
 };
 
 //List our levels:
-const char MAP_LEVEL_1[] = "Assets/level1.xml";
-const char TEXTURES_FILE[] = "Assets/Textures.xml";
+const char MAP_LEVEL_1[]            = "Assets/level1.xml";
+const char TEXTURES_FILE[]          = "Assets/Textures.xml";
 const char SURFACE_MATERIALS_FILE[] = "Assets/SurfaceMaterials.xml";
-const char MATERIALS_FILE[] = "Assets/Materials.xml";
-const char OPTIONS_FILE[] = "Config/options.xml";
+const char MATERIALS_FILE[]         = "Assets/Materials.xml";
+const char OPTIONS_FILE[]           = "Config/options.xml";
+const char SAVE_FILE[]              = "Config/save.xml";
 
 const enum PostProcessingEffects
 {
