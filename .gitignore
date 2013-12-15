@@ -13,4 +13,7 @@
 *.idb
 *.bak
 *.orig
+*.cod
+*.fxo
+PVGame/PeripheralVoid/Config/*
 PVGame/Debug/*

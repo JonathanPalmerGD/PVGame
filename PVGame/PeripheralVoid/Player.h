@@ -53,6 +53,7 @@ class Player
 		void setInverted(bool i);
 
 		void setRotation(float rotRad);
+
 	private:
 		bool leapStatus;
 		bool mobilityStatus;
@@ -78,6 +79,7 @@ class Player
 
 		AudioListener* listener;
 		AudioSource* audioSource;
+
 		//Camera movement variables
 		float mTheta;
 		float mPhi;

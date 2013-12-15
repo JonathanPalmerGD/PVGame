@@ -408,7 +408,7 @@ void PVGame::UpdateScene(float dt)
 				startRoom->loadRoom();
 				currentRoom = startRoom;
 				BuildRooms(currentRoom, curRoom);
-			
+
 				SpawnPlayer();
 
 				delete[] map;
