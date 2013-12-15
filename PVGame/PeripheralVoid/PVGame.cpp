@@ -165,7 +165,7 @@ bool PVGame::LoadXML()
 
 	// Explictitly load menu background texture for now.
 	renderMan->LoadTexture("Menu Background", "Textures/MenuBackground.dds", "Diffuse");
-	
+	renderMan->LoadTexture("Oculus Credits", "Textures/CreditsOculus.dds", "Diffuse");
 	#pragma endregion
 
 	#pragma region Materials
@@ -1532,6 +1532,9 @@ void PVGame::DrawScene()
 	#pragma region END
 	case END:
 		renderMan->ClearTargetToColor(reinterpret_cast<const float*>(&Colors::Silver)); //Colors::Silver reinterpret_cast<const float*>(&Colors::Silver)
+		
+		if(!OCULUS)
+		{
 		renderMan->DrawMenuBackground();
 		//renderMan->DrawString("P", lgSize, cWidth * .20f, cHeight * .03f, color1);
 		//renderMan->DrawString("   eripheral Voi", lgSize, cWidth * .175f, cHeight * .03f, color4);
@@ -1573,6 +1576,9 @@ void PVGame::DrawScene()
 		//}
 		//else
 		//	renderMan->DrawString("  Menu", smlSize, cWidth * .20f, cHeight * .52f, color4);
+		}
+		else
+			renderMan->DrawOculusCredits();
 		renderMan->EndDrawMenu();
 		break;
 	#pragma endregion
