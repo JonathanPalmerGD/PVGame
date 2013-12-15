@@ -308,6 +308,11 @@ class RenderManager
 				);
 		}
 
+		void DrawOculusCredits()
+		{
+			DrawFullscreenImage("Oculus Credits");
+		}
+
 		void DrawMenuBackground()
 		{
 			DrawFullscreenImage("Menu Background");
