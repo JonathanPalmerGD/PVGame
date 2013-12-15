@@ -411,7 +411,6 @@ void PVGame::UpdateScene(float dt)
 
 				SpawnPlayer();
 
-				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
 				renderMan->BuildInstancedBuffer(gameObjects);
