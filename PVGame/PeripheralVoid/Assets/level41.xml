@@ -1,0 +1,28 @@
+<level>
+<walls>
+<wall row="8" col="0" xLength="1" yLength="0.01" zLength="1" centerX="0.5" centerY="1000" centerZ="8.5" texture="Floor"/>
+<wall row="8" col="19" xLength="1" yLength="0.01" zLength="1" centerX="19.5" centerY="1000" centerZ="8.5" texture="Hedge"/>
+<wall row="16" col="0" xLength="1" yLength="0.01" zLength="1" centerX="0.5" centerY="1000" centerZ="16.5" texture="Hedge"/>
+<wall row="16" col="19" xLength="1" yLength="0.01" zLength="1" centerX="19.5" centerY="1000" centerZ="16.5" texture="Hedge"/>
+</walls>
+<floors>
+<floor row="9" col="0" xLength="2" zLength="2" centerX="1" centerY="25" centerZ="10" texture="Floor"/>
+<floor row="11" col="0" xLength="1" zLength="1" centerX="0.5" centerY="25" centerZ="11.5" texture="Floor"/>
+<floor row="11" col="1" xLength="1" zLength="1" centerX="1.5" centerY="25" centerZ="11.5" texture="Floor"/>
+<floor row="13" col="16" xLength="3" zLength="4" centerX="17.5" centerY="18" centerZ="15" texture="Floor"/>
+</floors>
+<spawns>
+<spawn row="10" col="1" xLength="1" zLength="1" centerX="1.5" centerY="25" centerZ="10.5" dir="up"/>
+</spawns>
+<exits>
+<exit row="9" col="0" xLength="1" zLength="3" centerX="0.5" centerY="20" centerZ="10.5" file="level40.xml"/>
+<exit row="16" col="16" xLength="3" zLength="1" centerX="17.5" centerY="20" centerZ="16.5" file="level42.xml"/>
+</exits>
+<cubes>
+</cubes>
+<crests>
+<crest row="9" col="3" xLength="3" yLength="0.1" zLength="3" centerX="4.5" centerY="24" centerZ="10.5" effect="4" target="" dir="up" placement="platform"/>
+<crest row="11" col="8" xLength="2" yLength="0.1" zLength="2" centerX="9" centerY="22" centerZ="12" effect="4" target="" dir="up" placement="platform"/>
+<crest row="12" col="12" xLength="2" yLength="0.1" zLength="2" centerX="13" centerY="20" centerZ="13" effect="4" target="" dir="up" placement="platform"/>
+</crests>
+</level>

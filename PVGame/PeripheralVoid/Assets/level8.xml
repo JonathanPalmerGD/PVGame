@@ -29,7 +29,7 @@
 <floor row="20" col="3" xLength="12" zLength="2" centerX="9" centerY="2" centerZ="21" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="17" col="2" xLength="1" zLength="3" centerX="2.5" centerY="2" centerZ="18.5" dir="right"/>
+<spawn row="17" col="2" xLength="1" zLength="3" centerX="2.5" centerY="2" centerZ="18.5" dir="up"/>
 </spawns>
 <exits>
 <exit row="17" col="0" xLength="1" zLength="3" centerX="0.5" centerY="2" centerZ="18.5" file="level7.xml"/>

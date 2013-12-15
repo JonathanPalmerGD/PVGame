@@ -146,7 +146,7 @@
 <floor row="24" col="4" xLength="3" zLength="1" centerX="5.5" centerY="1" centerZ="24.5" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="2" col="4" xLength="3" zLength="1" centerX="5.5" centerY="1" centerZ="2.5" dir="up"/>
+<spawn row="2" col="4" xLength="3" zLength="1" centerX="5.5" centerY="1" centerZ="2.5" dir="right"/>
 </spawns>
 <exits>
 <exit row="1" col="4" xLength="3" zLength="1" centerX="5.5" centerY="1" centerZ="1.5" file="level4.xml"/>

@@ -62,7 +62,7 @@
 <floor row="24" col="5" xLength="3" zLength="1" centerX="6.5" centerY="12" centerZ="24.5" texture="Floor"/>
 </floors>
 <spawns>
-<spawn row="22" col="6" xLength="1" zLength="1" centerX="6.5" centerY="12" centerZ="22.5" dir="down"/>
+<spawn row="22" col="6" xLength="1" zLength="1" centerX="6.5" centerY="12" centerZ="22.5" dir="left"/>
 </spawns>
 <exits>
 <exit row="0" col="21" xLength="3" zLength="1" centerX="22.5" centerY="2" centerZ="0.5" file="level11.xml"/>

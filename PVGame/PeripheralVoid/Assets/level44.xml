@@ -1,0 +1,88 @@
+<level>
+<walls>
+<wall row="1" col="7" xLength="1" yLength="7" zLength="1" centerX="7.5" centerY="18" centerZ="1.5" texture="Hedge"/>
+<wall row="1" col="15" xLength="1" yLength="7" zLength="1" centerX="15.5" centerY="18" centerZ="1.5" texture="Hedge"/>
+<wall row="2" col="8" xLength="1" yLength="6" zLength="1" centerX="8.5" centerY="18" centerZ="2.5" texture="Hedge"/>
+<wall row="2" col="14" xLength="1" yLength="6" zLength="1" centerX="14.5" centerY="18" centerZ="2.5" texture="Hedge"/>
+<wall row="3" col="7" xLength="1" yLength="7" zLength="1" centerX="7.5" centerY="18" centerZ="3.5" texture="Hedge"/>
+<wall row="3" col="15" xLength="1" yLength="7" zLength="1" centerX="15.5" centerY="18" centerZ="3.5" texture="Hedge"/>
+<wall row="4" col="5" xLength="1" yLength="9" zLength="1" centerX="5.5" centerY="18" centerZ="4.5" texture="Hedge"/>
+<wall row="4" col="6" xLength="1" yLength="8" zLength="1" centerX="6.5" centerY="18" centerZ="4.5" texture="Hedge"/>
+<wall row="4" col="16" xLength="1" yLength="8" zLength="1" centerX="16.5" centerY="18" centerZ="4.5" texture="Hedge"/>
+<wall row="4" col="17" xLength="1" yLength="9" zLength="1" centerX="17.5" centerY="18" centerZ="4.5" texture="Hedge"/>
+<wall row="5" col="3" xLength="2" yLength="9" zLength="1" centerX="4" centerY="18" centerZ="5.5" texture="Hedge"/>
+<wall row="5" col="18" xLength="2" yLength="9" zLength="1" centerX="19" centerY="18" centerZ="5.5" texture="Hedge"/>
+<wall row="6" col="2" xLength="1" yLength="9" zLength="1" centerX="2.5" centerY="18" centerZ="6.5" texture="Hedge"/>
+<wall row="6" col="20" xLength="1" yLength="9" zLength="1" centerX="20.5" centerY="18" centerZ="6.5" texture="Hedge"/>
+<wall row="7" col="1" xLength="1" yLength="9" zLength="11" centerX="1.5" centerY="18" centerZ="12.5" texture="Hedge"/>
+<wall row="7" col="21" xLength="1" yLength="9" zLength="1" centerX="21.5" centerY="18" centerZ="7.5" texture="Hedge"/>
+<wall row="8" col="2" xLength="1" yLength="9" zLength="1" centerX="2.5" centerY="18" centerZ="8.5" texture="Tiles"/>
+<wall row="8" col="20" xLength="1" yLength="9" zLength="1" centerX="20.5" centerY="18" centerZ="8.5" texture="Tiles"/>
+<wall row="8" col="21" xLength="1" yLength="9" zLength="10" centerX="21.5" centerY="18" centerZ="13" texture="Hedge"/>
+<wall row="11" col="2" xLength="1" yLength="9" zLength="1" centerX="2.5" centerY="18" centerZ="11.5" texture="Tiles"/>
+<wall row="11" col="20" xLength="1" yLength="9" zLength="1" centerX="20.5" centerY="18" centerZ="11.5" texture="Tiles"/>
+<wall row="14" col="2" xLength="1" yLength="9" zLength="1" centerX="2.5" centerY="18" centerZ="14.5" texture="Tiles"/>
+<wall row="14" col="20" xLength="1" yLength="9" zLength="1" centerX="20.5" centerY="18" centerZ="14.5" texture="Tiles"/>
+<wall row="17" col="2" xLength="1" yLength="9" zLength="1" centerX="2.5" centerY="18" centerZ="17.5" texture="Tiles"/>
+<wall row="17" col="20" xLength="1" yLength="9" zLength="1" centerX="20.5" centerY="18" centerZ="17.5" texture="Tiles"/>
+<wall row="18" col="1" xLength="7" yLength="9" zLength="1" centerX="4.5" centerY="18" centerZ="18.5" texture="Hedge"/>
+<wall row="18" col="10" xLength="3" yLength="9" zLength="1" centerX="11.5" centerY="18" centerZ="18.5" texture="Rock"/>
+<wall row="18" col="15" xLength="7" yLength="9" zLength="1" centerX="18.5" centerY="18" centerZ="18.5" texture="Hedge"/>
+<wall row="19" col="8" xLength="1" yLength="9" zLength="5" centerX="8.5" centerY="18" centerZ="21.5" texture="Hedge"/>
+<wall row="19" col="14" xLength="1" yLength="9" zLength="5" centerX="14.5" centerY="18" centerZ="21.5" texture="Hedge"/>
+<wall row="24" col="8" xLength="7" yLength="9" zLength="1" centerX="11.5" centerY="18" centerZ="24.5" texture="Hedge"/>
+</walls>
+<floors>
+<floor row="1" col="8" xLength="7" zLength="1" centerX="11.5" centerY="18" centerZ="1.5" texture="Floor"/>
+<floor row="2" col="9" xLength="5" zLength="1" centerX="11.5" centerY="18" centerZ="2.5" texture="Floor"/>
+<floor row="3" col="8" xLength="7" zLength="1" centerX="11.5" centerY="18" centerZ="3.5" texture="Floor"/>
+<floor row="4" col="7" xLength="9" zLength="1" centerX="11.5" centerY="18" centerZ="4.5" texture="Floor"/>
+<floor row="5" col="5" xLength="13" zLength="1" centerX="11.5" centerY="18" centerZ="5.5" texture="Floor"/>
+<floor row="6" col="3" xLength="17" zLength="1" centerX="11.5" centerY="18" centerZ="6.5" texture="Floor"/>
+<floor row="7" col="2" xLength="19" zLength="1" centerX="11.5" centerY="18" centerZ="7.5" texture="Floor"/>
+<floor row="8" col="3" xLength="17" zLength="1" centerX="11.5" centerY="18" centerZ="8.5" texture="Floor"/>
+<floor row="9" col="2" xLength="19" zLength="2" centerX="11.5" centerY="18" centerZ="10" texture="Floor"/>
+<floor row="11" col="3" xLength="17" zLength="1" centerX="11.5" centerY="18" centerZ="11.5" texture="Floor"/>
+<floor row="12" col="2" xLength="19" zLength="2" centerX="11.5" centerY="18" centerZ="13" texture="Floor"/>
+<floor row="14" col="3" xLength="17" zLength="1" centerX="11.5" centerY="18" centerZ="14.5" texture="Floor"/>
+<floor row="15" col="2" xLength="19" zLength="2" centerX="11.5" centerY="18" centerZ="16" texture="Floor"/>
+<floor row="17" col="3" xLength="17" zLength="1" centerX="11.5" centerY="18" centerZ="17.5" texture="Floor"/>
+<floor row="18" col="8" xLength="2" zLength="1" centerX="9" centerY="18" centerZ="18.5" texture="Floor"/>
+<floor row="18" col="13" xLength="2" zLength="1" centerX="14" centerY="18" centerZ="18.5" texture="Floor"/>
+<floor row="19" col="9" xLength="5" zLength="5" centerX="11.5" centerY="18" centerZ="21.5" texture="Floor"/>
+</floors>
+<spawns>
+<spawn row="3" col="11" xLength="1" zLength="1" centerX="11.5" centerY="18" centerZ="3.5" dir="right"/>
+</spawns>
+<exits>
+<exit row="1" col="8" xLength="7" zLength="1" centerX="11.5" centerY="18" centerZ="1.5" file="level43.xml"/>
+</exits>
+<cubes>
+<cube row="10" col="4" xLength="15" yLength="1" zLength="1" centerX="11.5" centerY="18" centerZ="10.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="11" col="4" xLength="1" yLength="1" zLength="7" centerX="4.5" centerY="18" centerZ="14.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="11" col="5" xLength="13" yLength="2" zLength="1" centerX="11.5" centerY="18" centerZ="11.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="11" col="18" xLength="1" yLength="1" zLength="1" centerX="18.5" centerY="18" centerZ="11.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="12" col="5" xLength="1" yLength="2" zLength="6" centerX="5.5" centerY="18" centerZ="15" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="12" col="6" xLength="11" yLength="3" zLength="1" centerX="11.5" centerY="18" centerZ="12.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="12" col="17" xLength="1" yLength="2" zLength="2" centerX="17.5" centerY="18" centerZ="13" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="12" col="18" xLength="1" yLength="1" zLength="2" centerX="18.5" centerY="18" centerZ="13" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="13" col="6" xLength="1" yLength="3" zLength="5" centerX="6.5" centerY="18" centerZ="15.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="13" col="7" xLength="9" yLength="4" zLength="1" centerX="11.5" centerY="18" centerZ="13.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="13" col="16" xLength="1" yLength="3" zLength="1" centerX="16.5" centerY="18" centerZ="13.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="14" col="7" xLength="1" yLength="4" zLength="4" centerX="7.5" centerY="18" centerZ="16" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="14" col="8" xLength="7" yLength="5" zLength="4" centerX="11.5" centerY="18" centerZ="16" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="14" col="15" xLength="1" yLength="4" zLength="4" centerX="15.5" centerY="18" centerZ="16" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="14" col="16" xLength="1" yLength="3" zLength="4" centerX="16.5" centerY="18" centerZ="16" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="14" col="17" xLength="1" yLength="2" zLength="4" centerX="17.5" centerY="18" centerZ="16" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="14" col="18" xLength="1" yLength="1" zLength="4" centerX="18.5" centerY="18" centerZ="16" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="18" col="8" xLength="2" yLength="5" zLength="1" centerX="9" centerY="18" centerZ="18.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="18" col="13" xLength="2" yLength="5" zLength="1" centerX="14" centerY="18" centerZ="18.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="19" col="9" xLength="2" yLength="5" zLength="1" centerX="10" centerY="18" centerZ="19.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="19" col="12" xLength="2" yLength="5" zLength="1" centerX="13" centerY="18" centerZ="19.5" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+<cube row="20" col="9" xLength="5" yLength="5" zLength="4" centerX="11.5" centerY="18" centerZ="22" translateX="-49" translateY="-9" translateZ="-49" texture="Grass"/>
+</cubes>
+<crests>
+<crest row="2" col="9" xLength="5" yLength="6" zLength="1" centerX="11.5" centerY="18" centerZ="2.5" effect="4" target="" dir="up" placement="wall"/>
+<crest row="19" col="11" xLength="1" yLength="4" zLength="1" centerX="11.5" centerY="18" centerZ="19.5" effect="5" target="" dir="down" placement=""/>
+</crests>
+</level>
