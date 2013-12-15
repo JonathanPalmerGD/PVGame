@@ -54,7 +54,6 @@ class Player
 
 		void setRotation(float rotRad);
 
-		inline AudioSource* getWinAudio() { return winAudio; }
 	private:
 		bool leapStatus;
 		bool mobilityStatus;
@@ -80,7 +79,7 @@ class Player
 
 		AudioListener* listener;
 		AudioSource* audioSource;
-		AudioSource* winAudio;
+
 		//Camera movement variables
 		float mTheta;
 		float mPhi;
