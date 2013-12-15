@@ -411,7 +411,6 @@ void PVGame::UpdateScene(float dt)
 
 				SpawnPlayer();
 
-				delete[] map;
 				delete[] curRoom;
 				SortGameObjects();
 				renderMan->BuildInstancedBuffer(gameObjects);
@@ -1098,6 +1097,9 @@ void PVGame::ReadCurrentRoom()
 	const char* lvl = saved_level->Attribute("level");
 	char* map = (char *)malloc(sizeof(char) * strlen(lvl) + 1);
 	map = (char*)memcpy(map, lvl, sizeof(char)*strlen(lvl) + 1);
+
+	if(strcmp( std::string(map).substr(0, 6).c_str(), "Assets") != 0)
+		map = "Assets/level1.xml";
 
 	ClearRooms();	
 	loadedRooms.clear();
