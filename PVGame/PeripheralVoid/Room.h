@@ -37,6 +37,7 @@ class Room
 		vector<Wall*> spawnVector;
 		vector<Cube*> cubeVector;
 		vector<Wall*> crestVector;
+		vector<Wall*> detailVector;
 		vector<Room*> neighbors;
 		map<string, MovingObject*> cubeMap; 
 		const char* mapFile;

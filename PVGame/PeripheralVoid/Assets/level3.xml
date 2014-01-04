@@ -1,20 +1,20 @@
 <level>
 <walls>
-<wall row="19" col="0" xLength="5" yLength="10" zLength="1" centerX="2.5" centerY="0" centerZ="19.5" texture="Hedge"/>
-<wall row="23" col="0" xLength="5" yLength="10" zLength="1" centerX="2.5" centerY="0" centerZ="23.5" texture="Hedge"/>
+<wall row="0" col="0" xLength="1" yLength="1" zLength="1" centerX="12" centerY="0" centerZ="-12" texture="Slate" />
+<wall row="0" col="0" xLength="1" yLength="1" zLength="1" centerX="12" centerY="0" centerZ="12" texture="Slate" />
+<wall row="0" col="0" xLength="1" yLength="1" zLength="1" centerX="-12" centerY="0" centerZ="12" texture="Slate" />
+<wall row="0" col="0" xLength="1" yLength="1" zLength="1" centerX="-12" centerY="0" centerZ="-12" texture="Slate" />
 </walls>
 <floors>
-<floor row="20" col="0" xLength="5" zLength="3" centerX="2.5" centerY="0" centerZ="21.5" texture="Floor"/>
+<floor row="0" col="0" xLength="25" yLength="1" zLength="25" centerX="0" centerY="-1" centerZ="0" texture="Hedge" />
 </floors>
 <spawns>
-<spawn row="21" col="2" xLength="1" zLength="1" centerX="2.5" centerY="0" centerZ="21.5" dir="up"/>
+<spawn row="0" col="0" xLength="1" zLength="1" centerX="0" centerY="0" centerZ="0" dir="up" />
 </spawns>
 <exits>
-<exit row="20" col="0" xLength="1" zLength="3" centerX="0.5" centerY="0" centerZ="21.5" file="level1.xml"/>
-<exit row="20" col="4" xLength="1" zLength="3" centerX="4.5" centerY="0" centerZ="21.5" file="level4.xml"/>
+<exit row="0" col="0" xLength="2" zLength="1" centerX="0" centerY="0" centerZ="12" file="level1.xml" />
 </exits>
-<cubes>
-</cubes>
-<crests>
-</crests>
+<cubes />
+<crests />
+<details />
 </level>

@@ -105,7 +105,6 @@ Room::~Room(void)
 		delete temp;
 		--i;
 	}
-	//floorVector.clear();
 
 	for (unsigned int i = 0; i < exitVector.size(); ++i)
 	{
@@ -114,7 +113,6 @@ Room::~Room(void)
 		delete temp;
 		--i;
 	}
-	//exitVector.clear();
 
 	for (unsigned int i = 0; i < spawnVector.size(); ++i)
 	{
@@ -123,8 +121,6 @@ Room::~Room(void)
 		delete temp;
 		--i;
 	}
-	//spawnVector.clear();
-
 
 	for (unsigned int i = 0; i < cubeVector.size(); ++i)
 	{
@@ -133,8 +129,7 @@ Room::~Room(void)
 		delete temp;
 		--i;
 	}
-	//cubeVector.clear();
-
+	
 	for (unsigned int i = 0; i < crestVector.size(); ++i)
 	{
 		Wall* temp = crestVector[crestVector.size() - 1];
@@ -142,7 +137,14 @@ Room::~Room(void)
 		delete temp;
 		--i;
 	}
-	//crestVector.clear();
+
+	for (unsigned int i = 0; i < detailVector.size(); ++i)
+	{
+		Wall* temp = detailVector[detailVector.size() - 1];
+		detailVector.pop_back();
+		delete temp;
+		--i;
+	}
 
 	for (unsigned int i = 0; i < gameObjs.size(); ++i)
 	{
@@ -170,6 +172,7 @@ void Room::loadRoom(float xPos, float zPos)
 	XMLElement* spawns = doc.FirstChildElement( "level" )->FirstChildElement( "spawns" );
 	XMLElement* cubes = doc.FirstChildElement( "level" )->FirstChildElement( "cubes" );
 	XMLElement* crests = doc.FirstChildElement( "level" )->FirstChildElement( "crests" );
+	XMLElement* details = doc.FirstChildElement( "level" )->FirstChildElement( "details" );
 
 	vector<vector<Wall*>> wallRowCol;
 	vector<Wall*> wallVector;
@@ -385,6 +388,38 @@ void Room::loadRoom(float xPos, float zPos)
 
 		crestVector.push_back(tempWall);
 	}
+
+
+	for (XMLElement* detail = details->FirstChildElement("detail"); detail != NULL; detail = detail->NextSiblingElement("detail"))
+	{
+		Wall* tempWall = new Wall();
+
+		const char* row = detail->Attribute("row");
+		const char* col = detail->Attribute("col");
+		const char* xLength = detail->Attribute("xLength");
+		const char* yLength = detail->Attribute("yLength");
+		const char* zLength = detail->Attribute("zLength");
+		const char* centerX = detail->Attribute("centerX");
+		const char* centerY = detail->Attribute("centerY");
+		const char* centerZ = detail->Attribute("centerZ");
+		const char* texture = detail->Attribute("texture");
+
+		tempWall->row = (float)atof(row) + mapOffsetZ;
+		tempWall->col = (float)atof(col) + mapOffsetX;
+		tempWall->xLength = (float)atof(xLength);
+		tempWall->yLength = (float)atof(yLength);
+		tempWall->zLength = (float)atof(zLength);
+		tempWall->centerX = (float)atof(centerX) + mapOffsetX;
+		tempWall->centerY = (float)atof(centerY);
+		tempWall->centerZ = (float)atof(centerZ) + mapOffsetZ;
+		tempWall->direction = "";
+		tempWall->file = "";
+		tempWall->texture = texture;
+	
+		detailVector.push_back(tempWall);
+	}
+
+
 	
 	// Create walls and add to GameObject vector
 	for (unsigned int i = 0; i < wallRowCol.size(); i++)
@@ -432,6 +467,34 @@ void Room::loadRoom(float xPos, float zPos)
 			cubeMap[mapString] = cubeObj;
 
 		gameObjs.push_back(cubeObj);
+	}
+
+	for (unsigned int i = 0; i < detailVector.size(); i++)
+	{
+		GameObject* detailObj = new GameObject("medusacrest", detailVector[i]->texture, physicsMan->createRigidBody("Cube", detailVector[i]->centerX + xPos, detailVector[i]->centerY + detailVector[i]->yLength / 2, detailVector[i]->centerZ + zPos), physicsMan, WORLD);
+		
+	//	GameObject* detailObj = new GameObject("medusacrest", detailVector[i]->texture, physicsMan->createRigidBody("Cube", detailVector[i]->centerX + xPos, detailVector[i]->centerY + detailVector[i]->yLength / 2, detailVector[i]->centerZ + zPos), physicsMan);
+		detailObj->scale(detailVector[i]->xLength, detailVector[i]->yLength, detailVector[i]->zLength);
+		detailObj->SetTexScale(detailVector[i]->xLength, detailVector[i]->zLength, 0.0f, 1.0f);
+
+		float rowId = detailVector[i]->row - mapOffsetZ;
+		float colId = detailVector[i]->col - mapOffsetX;
+		
+		char rowChar[30];
+		char colChar[30];
+
+		itoa((int)rowId, rowChar, 10); 
+		itoa((int)colId, colChar, 10); 
+
+		strcat(rowChar, "|");
+		strcat(rowChar, colChar);
+
+		string mapString = rowChar;
+
+		//if (strcmp(mapString.c_str(), "") != 0)
+		//	cubeMap[mapString] = detailObj;
+
+		gameObjs.push_back(detailObj);
 	}
 
 	for (unsigned int i = 0; i < crestVector.size(); i++)
