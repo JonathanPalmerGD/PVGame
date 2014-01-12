@@ -17,7 +17,7 @@ PhysicsManager::PhysicsManager(void)
 	broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 	world->setGravity(btVector3(0.0f,-9.81f,0.0f));
 
-	pStepSize = 1.0f / 60.0f; //Update at 60 fps
+	pStepSize = 1.0f / 30.0f; //Update at 60 fps
 	pAccumulator = 0.0f;
 }
 
